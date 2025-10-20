@@ -39,31 +39,65 @@ fn main() -> Result<()> {
     let start = Instant::now();
     let args = StandardArgs::parse()?;
     
-    if args.paths.len() != 1 {
-        eprintln!("Error: fix-no-pub-type requires exactly one file path");
-        eprintln!("Usage: rusticate-fix-no-pub-type -f path/to/Module.rs");
-        std::process::exit(1);
-    }
-    
-    let file_path = &args.paths[0];
     let base_dir = args.base_dir();
-    
     println!("Entering directory '{}'", base_dir.display());
     println!();
     
+    // Get all Rust files to process
+    let files = rusticate::find_rust_files(&args.paths);
+    
+    let mut success_count = 0;
+    let mut skip_count = 0;
+    let mut error_count = 0;
+    
+    for file_path in files {
+        // Only process files in src/ directory
+        if !file_path.to_string_lossy().contains("/src/") {
+            continue;
+        }
+        
+        match process_file(&file_path) {
+            Ok(did_work) => {
+                if did_work {
+                    success_count += 1;
+                } else {
+                    skip_count += 1;
+                }
+            }
+            Err(e) => {
+                eprintln!("{}:1: Error: {}", file_path.display(), e);
+                error_count += 1;
+            }
+        }
+    }
+    
+    println!();
+    println!("Summary: {} fixed, {} skipped, {} errors", success_count, skip_count, error_count);
+    println!("Completed in {}ms", start.elapsed().as_millis());
+    
+    if error_count > 0 {
+        std::process::exit(1);
+    }
+    
+    Ok(())
+}
+
+fn process_file(file_path: &Path) -> Result<bool> {
     // Step 1: Analyze the module to determine the transformation
     let source = fs::read_to_string(file_path)?;
     let analysis = analyze_module(&source, file_path)?;
     
     // Check if this has unused self - that requires the complex transformation
     if analysis.has_unused_self && analysis.module_name != "InsertionSortSt" {
-        eprintln!("Error: Module has unused self parameter - complex transformation not yet supported");
-        eprintln!("Module: {}", analysis.module_name);
-        eprintln!("Unused self method: {:?}", analysis._unused_self_method);
-        eprintln!();
-        eprintln!("Only InsertionSortSt prototype implemented for unused self transformation.");
-        eprintln!("Simple pub type addition works for modules without unused self.");
-        std::process::exit(1);
+        return Err(anyhow::anyhow!(
+            "Module has unused self parameter - complex transformation not yet supported. \
+             Only InsertionSortSt prototype implemented."
+        ));
+    }
+    
+    // If no pub type needed and no transformation needed, skip
+    if !analysis.needs_pub_type {
+        return Ok(false);
     }
     
     let mut did_work = false;
@@ -126,12 +160,12 @@ fn main() -> Result<()> {
     }
     
     // Step 4: Fix unused self if needed (InsertionSortSt pattern)
-    if analysis.has_unused_self {
-        println!("{}:{}:\tFixing unused self parameter", file_path.display(), analysis.module_line);
+        if analysis.has_unused_self {
+            println!("{}:{}:\tFixing unused self parameter", file_path.display(), analysis.module_line);
         let mut new_source = fs::read_to_string(file_path)?;
-        new_source = fix_unused_self(&new_source, &analysis)?;
-        fs::write(file_path, &new_source)?;
-        println!("{}:{}:\tFixed method signatures and body", file_path.display(), analysis.module_line);
+            new_source = fix_unused_self(&new_source, &analysis)?;
+            fs::write(file_path, &new_source)?;
+            println!("{}:{}:\tFixed method signatures and body", file_path.display(), analysis.module_line);
         did_work = true;
         
         // Step 5: Find and fix test file if it exists
@@ -156,10 +190,7 @@ fn main() -> Result<()> {
         println!("{}:{}:\tNo changes needed", file_path.display(), analysis.module_line);
     }
     
-    println!();
-    println!("Completed in {}ms", start.elapsed().as_millis());
-    
-    Ok(())
+    Ok(did_work)
 }
 
 #[derive(Debug)]
@@ -209,7 +240,7 @@ fn analyze_module(source: &str, source_file: &Path) -> Result<ModuleAnalysis> {
             if let Some(type_alias) = ast::TypeAlias::cast(node) {
                 if type_alias.visibility().is_some() {
                     return Some(type_alias.to_string().trim().to_string());
-                }
+            }
             }
             None
         });
@@ -441,7 +472,7 @@ fn add_pub_type(source: &str, analysis: &ModuleAnalysis) -> Result<String> {
     for line in remaining.lines() {
         if line.trim().is_empty() {
             insert_pos += line.len() + 1;
-        } else {
+    } else {
             break;
         }
     }
