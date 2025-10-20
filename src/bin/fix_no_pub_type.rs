@@ -180,19 +180,26 @@ fn analyze_module(source: &str, source_file: &Path) -> Result<ModuleAnalysis> {
     }
     let tree = parsed.tree();
     
-    // Find module name
-    let module_name = if let Some(start) = source.find("pub mod ") {
-        let rest = &source[start + 8..];
-        if let Some(end) = rest.find(" {") {
-            rest[..end].trim().to_string()
-        } else {
-            "Unknown".to_string()
-        }
-    } else {
-        "Unknown".to_string()
-    };
+    // Find module name using AST
+    let root = tree.syntax();
+    let mut module_name = "Unknown".to_string();
+    let mut module_line = 1;
     
-    let module_line = source[..source.find("pub mod ").unwrap_or(0)].lines().count() + 1;
+    for node in root.children() {
+        if node.kind() == SyntaxKind::MODULE {
+            if let Some(module) = ast::Module::cast(node.clone()) {
+                if let Some(vis) = module.visibility() {
+                    if vis.to_string() == "pub" {
+                        if let Some(name) = module.name() {
+                            module_name = name.to_string();
+                            module_line = get_line_number(source, node.text_range().start().into());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     // Check if pub type exists and extract it
     let root = tree.syntax();
@@ -270,75 +277,67 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
     // If no multi-param traits found, check impl blocks
     for node in root.descendants() {
         if node.kind() == SyntaxKind::IMPL {
-            // Extract "for Type" part
-            let impl_text = node.to_string();
-            
-            // First check for impl Trait for ExternalType (like AtomicUsize)
-            if impl_text.contains(" for ") {
-                // Extract the type after "for"
-                if let Some(for_pos) = impl_text.find(" for ") {
-                    let after_for = &impl_text[for_pos + 5..]; // Skip " for "
-                    
-                    // Find the type name (until { or <)
-                    let type_end = after_for.find('{')
-                        .or_else(|| after_for.find('<'))
-                        .unwrap_or(after_for.len());
-                    let type_name = after_for[..type_end].trim();
-                    
-                    // If it's not just "T" or "T{", it's an external type
-                    if type_name != "T" && !type_name.is_empty() {
-                        // Check if it's a concrete type (starts with uppercase, or contains ::)
-                        if type_name.chars().next().map_or(false, |c| c.is_uppercase()) || type_name.contains("::") {
-                            proposed_type = Some(format!("pub type T = {};", type_name));
-                            break;
+            if let Some(impl_ast) = ast::Impl::cast(node.clone()) {
+                // First check for impl Trait for ExternalType (like AtomicUsize)
+                if let Some(trait_ref) = impl_ast.trait_() {
+                    if let Some(self_ty) = impl_ast.self_ty() {
+                        let type_name = self_ty.to_string();
+                        
+                        // If it's not just "T", it's an external type
+                        if type_name != "T" {
+                            // Check if it's a concrete type (starts with uppercase, or contains ::)
+                            if type_name.chars().next().map_or(false, |c| c.is_uppercase()) || type_name.contains("::") {
+                                proposed_type = Some(format!("pub type T = {};", type_name));
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            
-            // Check if this is impl<T> ... for T pattern
-            if impl_text.contains(" for T ") || impl_text.contains(" for T{") {
-                // Look at method parameters to find the actual data type
-                for child in node.descendants() {
-                    if child.kind() == SyntaxKind::FN {
-                        if let Some(fn_ast) = ast::Fn::cast(child.clone()) {
-                            if let Some(param_list) = fn_ast.param_list() {
-                                for param in param_list.params() {
-                                    let param_text = param.to_string();
-                                    // Skip &self parameters
-                                    if param_text.contains("&self") || param_text == "self" {
-                                        // Check if self is unused (simple heuristic: look for method body)
-                                        if let Some(body) = fn_ast.body() {
-                                            let body_text = body.to_string();
-                                            // Very simple check: if body mentions the second parameter name
-                                            // and method has &self, it might have unused self
-                                            if param_text.contains("&self") && !body_text.contains("self") {
-                                                has_unused_self = true;
+                
+                // Check if this is impl<T> ... for T pattern
+                if let Some(self_ty) = impl_ast.self_ty() {
+                    if self_ty.to_string().trim() == "T" {
+                        // Look at method parameters to find the actual data type
+                        for child in node.descendants() {
+                            if child.kind() == SyntaxKind::FN {
+                                if let Some(fn_ast) = ast::Fn::cast(child.clone()) {
+                                    if let Some(param_list) = fn_ast.param_list() {
+                                        for param in param_list.params() {
+                                            // Check if this is a self parameter
+                                            if let Some(_self_param) = ast::SelfParam::cast(param.syntax().clone()) {
+                                                // Check if self is unused (simple heuristic: look for method body)
+                                                if let Some(body) = fn_ast.body() {
+                                                    let body_text = body.to_string();
+                                                    // Very simple check: if body doesn't mention "self"
+                                                    if !body_text.contains("self") {
+                                                        has_unused_self = true;
+                                                    }
+                                                }
+                                                continue;
+                                            }
+                                            
+                                            // Extract type from parameter using AST
+                                            if let Some(ty) = param.ty() {
+                                                let type_str = ty.to_string();
+                                                
+                                                // Extract the base type
+                                                if type_str.starts_with("&mut ") {
+                                                    let base = &type_str[5..];
+                                                    proposed_type = Some(format!("pub type T<S> = {};", base));
+                                                } else if type_str.starts_with("&") {
+                                                    let base = &type_str[1..].trim();
+                                                    proposed_type = Some(format!("pub type T<S> = {};", base));
+                                                } else {
+                                                    proposed_type = Some(format!("pub type T<S> = {};", type_str));
+                                                }
+                                                break;
                                             }
                                         }
-                                        continue;
-                                    }
-                                    
-                                    // Extract type from parameter (e.g., "slice: &mut [T]")
-                                    if let Some(colon_pos) = param_text.find(':') {
-                                        let type_part = param_text[colon_pos + 1..].trim();
-                                        
-                                        // Extract the base type
-                                        if type_part.starts_with("&mut ") {
-                                            let base = &type_part[5..];
-                                            proposed_type = Some(format!("pub type T<S> = {};", base));
-                                        } else if type_part.starts_with("&") {
-                                            let base = &type_part[1..].trim();
-                                            proposed_type = Some(format!("pub type T<S> = {};", base));
-                                        } else {
-                                            proposed_type = Some(format!("pub type T<S> = {};", type_part));
-                                        }
-                                        break;
                                     }
                                 }
-                            }
-                            if proposed_type.is_some() {
-                                break;
+                                if proposed_type.is_some() {
+                                    break;
+                                }
                             }
                         }
                     }
@@ -357,10 +356,19 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
         let mut has_types_import = false;
         for node in root.descendants() {
             if node.kind() == SyntaxKind::USE {
-                let use_text = node.to_string();
-                if use_text.contains("Types::Types::*") {
-                    has_types_import = true;
-                    break;
+                if let Some(use_item) = ast::Use::cast(node.clone()) {
+                    if let Some(use_tree) = use_item.use_tree() {
+                        // Check for Types::Types::* pattern using AST
+                        if let Some(path) = use_tree.path() {
+                            let segments: Vec<_> = path.segments().map(|s| s.to_string()).collect();
+                            if segments.len() >= 2 && segments[0] == "Types" && segments[1] == "Types" {
+                                if use_tree.to_string().ends_with("::*") {
+                                    has_types_import = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -916,9 +924,15 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
                         if method_names.contains(&name) {
                             if let Some(vis) = fn_ast.visibility() {
                                 if vis.to_string() == "pub" {
-                                    // Get function body
+                                    // Get function body (without braces)
                                     if let Some(body) = fn_ast.body() {
-                                        let body_text = body.to_string();
+                                        // Get body text without outer braces using AST structure
+                                        let body_text = if let Some(stmt_list) = body.stmt_list() {
+                                            stmt_list.to_string()
+                                        } else {
+                                            // Fallback to full body
+                                            body.to_string()
+                                        };
                                         
                                         // Get return type
                                         let ret_type = if let Some(ret) = fn_ast.ret_type() {
@@ -984,10 +998,9 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
             impl_block.push_str(&format!("\n        fn {}(&self){} {{", method_name, ret_type));
             impl_block.push_str("\n            let n = *self;");
             
-            // Insert the original function body (strip outer braces)
-            let body_inner = body_text.trim().trim_start_matches('{').trim_end_matches('}');
+            // Insert the original function body (braces already removed by AST extraction)
             impl_block.push_str("\n            ");
-            impl_block.push_str(body_inner);
+            impl_block.push_str(&body_text);
             impl_block.push_str("\n        }");
         } else {
             // Multi-parameter: keep remaining params, replace first param name with self in body
@@ -996,9 +1009,8 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
             
             impl_block.push_str(&format!("\n        fn {}(&self, {}){} {{", method_name, params_str, ret_type));
             
-            // Replace first parameter name with self in the body
-            let body_inner = body_text.trim().trim_start_matches('{').trim_end_matches('}');
-            let modified_body = body_inner.replace(&first_param_name, "self");
+            // Replace first parameter name with self in the body (braces already removed)
+            let modified_body = body_text.replace(&first_param_name, "self");
             
             impl_block.push_str("\n            ");
             impl_block.push_str(&modified_body);
@@ -1378,3 +1390,6 @@ fn fix_unused_self_calls(source: &str) -> Result<String> {
     Ok(result)
 }
 
+fn get_line_number(source: &str, byte_offset: usize) -> usize {
+    source[..byte_offset].lines().count()
+}
