@@ -96,13 +96,24 @@ struct ModuleAnalysis {
 }
 
 fn extract_module_info(source: &str) -> Option<(String, usize)> {
-    if let Some(start) = source.find("pub mod ") {
-        let rest = &source[start + 8..];
-        if let Some(end) = rest.find(" {") {
-            let name = rest[..end].trim().to_string();
-            // Count line number
-            let line = source[..start].lines().count() + 1;
-            return Some((name, line));
+    // Parse source and find MODULE node with pub visibility
+    let parsed = SourceFile::parse(source, Edition::Edition2021);
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    for node in root.children() {
+        if node.kind() == SyntaxKind::MODULE {
+            if let Some(module) = ast::Module::cast(node.clone()) {
+                if let Some(vis) = module.visibility() {
+                    if vis.to_string() == "pub" {
+                        if let Some(name) = module.name() {
+                            let start: usize = node.text_range().start().into();
+                            let line = source[..start].lines().count() + 1;
+                            return Some((name.to_string(), line));
+                        }
+                    }
+                }
+            }
         }
     }
     None
@@ -111,6 +122,57 @@ fn extract_module_info(source: &str) -> Option<(String, usize)> {
 fn extract_type_name(self_ty: &ast::Type) -> String {
     let text = self_ty.syntax().text().to_string();
     text.split('<').next().unwrap_or(&text).trim().to_string()
+}
+
+fn check_calls_trait(body: &str) -> bool {
+    // Parse the body and check if it contains trait method calls or UFCS
+    // Wrap in braces to make it a valid block expression
+    let wrapped = format!("{{ {} }}", body);
+    let parsed = SourceFile::parse(&wrapped, Edition::Edition2021);
+    if !parsed.errors().is_empty() {
+        // If parse fails, can't determine - assume not a delegation
+        return false;
+    }
+    
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    // Look for method calls or paths containing Self
+    for node in root.descendants() {
+        match node.kind() {
+            SyntaxKind::METHOD_CALL_EXPR => {
+                // Found a method call (e.g., self.method())
+                return true;
+            }
+            SyntaxKind::PATH => {
+                // Check if path contains Self segment
+                if let Some(path) = ast::Path::cast(node.clone()) {
+                    for segment in path.segments() {
+                        if segment.to_string() == "Self" {
+                            return true;
+                        }
+                    }
+                }
+            }
+            SyntaxKind::CALL_EXPR => {
+                // Check if it's a UFCS call with cast expression
+                if let Some(call_expr) = ast::CallExpr::cast(node.clone()) {
+                    if let Some(expr) = call_expr.expr() {
+                        // Check if expression contains a cast (CAST_EXPR for "as")
+                        for child in expr.syntax().descendants() {
+                            if child.kind() == SyntaxKind::CAST_EXPR {
+                                // This is a cast expression, likely <Self as Trait>
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+    
+    false
 }
 
 fn line_number(node: &ra_ap_syntax::SyntaxNode, source: &str) -> usize {
@@ -887,8 +949,8 @@ fn main() -> Result<()> {
                         let body1 = &bodies[0];
                         let body2 = &bodies[1];
                         
-                        // Check for stub delegation patterns
-                        let calls_trait = body1.contains("<Self as") || body1.contains("Self::") || body1.contains("self.");
+                        // Check for stub delegation patterns using AST
+                        let calls_trait = check_calls_trait(body1);
                         let is_very_short = body1.len() < 80 && body2.len() > body1.len() * 2;
                         
                         if calls_trait && is_very_short {
