@@ -50,7 +50,7 @@ fn main() -> Result<()> {
     
     // Step 1: Analyze the module to determine the transformation
     let source = fs::read_to_string(file_path)?;
-    let analysis = analyze_module(&source)?;
+    let analysis = analyze_module(&source, file_path)?;
     
     // Check if this has unused self - that requires the complex transformation
     if analysis.has_unused_self && analysis.module_name != "InsertionSortSt" {
@@ -102,6 +102,23 @@ fn main() -> Result<()> {
         new_source = remove_standalone_pub_fn(&new_source, &analysis)?;
         fs::write(file_path, &new_source)?;
         println!("{}:{}:\tRemoved standalone pub fn", file_path.display(), analysis.module_line);
+        
+        // Step F: Fix call sites in test and bench files
+        match find_test_file(file_path)? {
+            Some(test_file) => {
+                println!("{}:1:\tFixing test call sites", test_file.display());
+                fix_call_sites(&test_file, &analysis)?;
+                println!("{}:1:\tFixed test call sites", test_file.display());
+            }
+            None => {}
+        }
+        
+        if let Some(bench_file) = find_bench_file(file_path)? {
+            println!("{}:1:\tFixing bench call sites", bench_file.display());
+            fix_call_sites(&bench_file, &analysis)?;
+            println!("{}:1:\tFixed bench call sites", bench_file.display());
+        }
+        
         did_work = true;
     }
     
@@ -150,9 +167,10 @@ struct ModuleAnalysis {
     recommended_type: String,
     has_unused_self: bool,
     _unused_self_method: Option<String>,
+    source_file: PathBuf,
 }
 
-fn analyze_module(source: &str) -> Result<ModuleAnalysis> {
+fn analyze_module(source: &str, source_file: &Path) -> Result<ModuleAnalysis> {
     let parsed = SourceFile::parse(source, Edition::Edition2021);
     if !parsed.errors().is_empty() {
         return Err(anyhow::anyhow!("Parse errors: {:?}", parsed.errors()));
@@ -194,6 +212,7 @@ fn analyze_module(source: &str) -> Result<ModuleAnalysis> {
             recommended_type: existing_type,
             has_unused_self: false,
             _unused_self_method: None,
+            source_file: source_file.to_path_buf(),
         });
     }
     
@@ -207,6 +226,7 @@ fn analyze_module(source: &str) -> Result<ModuleAnalysis> {
         recommended_type,
         has_unused_self,
         _unused_self_method: None,
+        source_file: source_file.to_path_buf(),
     })
 }
 
@@ -396,6 +416,7 @@ fn add_pub_type(source: &str, analysis: &ModuleAnalysis) -> Result<String> {
 
 fn find_test_file(src_file: &Path) -> Result<Option<PathBuf>> {
     // src/ChapXX/ModuleName.rs -> tests/ChapXX/TestModuleName.rs
+    // Handle naming inconsistencies: Algorithm21_2 -> TestAlgorithm_21_2
     let file_stem = src_file.file_stem()
         .and_then(|s| s.to_str())
         .ok_or_else(|| anyhow::anyhow!("Invalid file name"))?;
@@ -408,16 +429,32 @@ fn find_test_file(src_file: &Path) -> Result<Option<PathBuf>> {
     let project_root = src_file.ancestors().nth(3)
         .ok_or_else(|| anyhow::anyhow!("Could not find project root"))?;
     
+    // Try pattern 1: TestModuleName.rs
     let test_file = project_root
         .join("tests")
         .join(parent)
         .join(format!("Test{}.rs", file_stem));
     
     if test_file.exists() {
-        Ok(Some(test_file))
-    } else {
-        Ok(None)
+        return Ok(Some(test_file));
     }
+    
+    // Try pattern 2: Insert underscore before first digit (Algorithm21_2 -> TestAlgorithm_21_2)
+    if let Some(first_digit_pos) = file_stem.find(|c: char| c.is_ascii_digit()) {
+        let modified_stem = format!("{}_{}",
+            &file_stem[..first_digit_pos],
+            &file_stem[first_digit_pos..]);
+        let test_file2 = project_root
+            .join("tests")
+            .join(parent)
+            .join(format!("Test{}.rs", modified_stem));
+        
+        if test_file2.exists() {
+            return Ok(Some(test_file2));
+        }
+    }
+    
+    Ok(None)
 }
 
 fn find_bench_file(src_file: &Path) -> Result<Option<PathBuf>> {
@@ -444,15 +481,135 @@ fn find_bench_file(src_file: &Path) -> Result<Option<PathBuf>> {
     }
 }
 
-fn fix_call_sites(file_path: &Path, _analysis: &ModuleAnalysis) -> Result<()> {
+fn fix_call_sites(file_path: &Path, analysis: &ModuleAnalysis) -> Result<()> {
     let source = fs::read_to_string(file_path)?;
     
-    // Generic transformation: change receiver.method(&mut data) to data.method()
-    // This handles any method with the "unused self" pattern
-    let new_source = fix_unused_self_calls(&source)?;
+    let new_source = if analysis.has_unused_self {
+        // InsertionSortSt pattern: change receiver.method(&mut data) to data.method()
+        fix_unused_self_calls(&source)?
+    } else if analysis.recommended_type.contains("pub type T = N") {
+        // Algorithm module pattern: change function_name(n) to n.function_name()
+        fix_algorithm_call_sites(&source, analysis)?
+    } else {
+        // No transformation needed
+        return Ok(());
+    };
+    
     fs::write(file_path, new_source)?;
     
     Ok(())
+}
+
+fn fix_algorithm_call_sites(source: &str, analysis: &ModuleAnalysis) -> Result<String> {
+    // Transform function_name(n) to n.function_name()
+    // Extract method names from the module's trait definition
+    
+    let module_source = fs::read_to_string(&analysis.source_file)?;
+    let method_names = extract_trait_method_names_from_source(&module_source)?;
+    
+    if method_names.is_empty() {
+        return Ok(source.to_string());
+    }
+    
+    let mut result = source.to_string();
+    
+    // For each method name, find and replace call sites
+    for method_name in &method_names {
+        // Pattern: method_name(arg) -> arg.method_name()
+        // Use a simple regex-like approach, but with AST validation
+        let pattern = format!("{}(", method_name);
+        let mut replacements: Vec<(usize, usize, String)> = Vec::new();
+        
+        let mut idx = 0;
+        while let Some(pos) = result[idx..].find(&pattern) {
+            let actual_pos = idx + pos;
+            
+            // Check if this is a function call (not a method call)
+            let before = &result[..actual_pos];
+            let is_method_call = before.ends_with('.');
+            
+            if !is_method_call {
+                // Find the matching closing paren and extract the argument
+                if let Some((arg, end_pos)) = extract_function_arg(&result[actual_pos + pattern.len()..]) {
+                    let full_end = actual_pos + pattern.len() + end_pos + 1; // +1 for closing paren
+                    let replacement = format!("{}.{}()", arg, method_name);
+                    replacements.push((actual_pos, full_end, replacement));
+                    idx = full_end;
+                    continue;
+                }
+            }
+            
+            idx = actual_pos + 1;
+        }
+        
+        // Apply replacements from end to start
+        replacements.sort_by_key(|(start, _, _)| std::cmp::Reverse(*start));
+        for (start, end, replacement) in replacements {
+            result.replace_range(start..end, &replacement);
+        }
+    }
+    
+    Ok(result)
+}
+
+fn extract_function_arg(s: &str) -> Option<(String, usize)> {
+    // Extract the argument from a function call: "5)" -> ("5", 1)
+    // Handle simple cases: literals, identifiers, simple expressions
+    
+    let mut depth = 0;
+    let mut arg = String::new();
+    
+    for (i, ch) in s.chars().enumerate() {
+        match ch {
+            '(' => {
+                depth += 1;
+                arg.push(ch);
+            }
+            ')' => {
+                if depth == 0 {
+                    return Some((arg.trim().to_string(), i));
+                }
+                depth -= 1;
+                arg.push(ch);
+            }
+            _ => arg.push(ch),
+        }
+    }
+    
+    None
+}
+
+fn extract_trait_method_names_from_source(source: &str) -> Result<Vec<String>> {
+    // Parse the source module and extract trait method names
+    
+    let parsed = SourceFile::parse(source, Edition::Edition2021);
+    if !parsed.errors().is_empty() {
+        return Err(anyhow::anyhow!("Parse errors"));
+    }
+    
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    let mut method_names = Vec::new();
+    
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::TRAIT {
+            if let Some(_trait_ast) = ast::Trait::cast(node.clone()) {
+                // Collect method names from trait
+                for child in node.descendants() {
+                    if child.kind() == SyntaxKind::FN {
+                        if let Some(fn_ast) = ast::Fn::cast(child.clone()) {
+                            if let Some(fn_name) = fn_ast.name() {
+                                method_names.push(fn_name.text().to_string());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    Ok(method_names)
 }
 
 fn has_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<bool> {
