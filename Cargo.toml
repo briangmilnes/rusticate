@@ -123,6 +123,10 @@ name = "rusticate-review-public-only-inherent-impls"
 path = "src/bin/review_public_only_inherent_impls.rs"
 
 [[bin]]
+name = "rusticate-review-string-hacking"
+path = "src/bin/review_string_hacking.rs"
+
+[[bin]]
 name = "rusticate-review-stub-delegation"
 path = "src/bin/review_stub_delegation.rs"
 
