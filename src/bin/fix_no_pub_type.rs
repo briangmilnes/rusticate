@@ -309,7 +309,7 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
     let mut has_unused_self = false;
     let mut proposed_type: Option<String> = None;
     
-    // Check trait methods for multi-parameter patterns
+    // Check trait methods for parameter patterns
     for node in root.descendants() {
         if node.kind() == SyntaxKind::TRAIT {
             for child in node.descendants() {
@@ -317,8 +317,22 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
                     if let Some(fn_ast) = ast::Fn::cast(child.clone()) {
                         if let Some(param_list) = fn_ast.param_list() {
                             let params: Vec<_> = param_list.params().collect();
-                            // If 2+ parameters, use first parameter's type
-                            if params.len() >= 2 {
+                            
+                            if params.len() == 1 {
+                                // Single parameter: use that parameter's type
+                                if let Some(first_param) = params.first() {
+                                    let param_text = first_param.to_string();
+                                    // Extract type from "name: Type" or "name: &Type"
+                                    if let Some(colon_pos) = param_text.find(':') {
+                                        let type_part = param_text[colon_pos + 1..].trim();
+                                        // Remove leading & if present
+                                        let clean_type = type_part.trim_start_matches('&').trim();
+                                        proposed_type = Some(format!("pub type T = {};", clean_type));
+                                        return Ok((proposed_type.unwrap(), has_unused_self));
+                                    }
+                                }
+                            } else if params.len() >= 2 {
+                                // Multi-parameter: use first parameter's type
                                 if let Some(first_param) = params.first() {
                                     let param_text = first_param.to_string();
                                     // Extract type from "name: Type" or "name: &Type"
@@ -1066,13 +1080,19 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
     
     for (method_name, ret_type, params, first_param_name, body_text) in impl_methods {
         if params.len() == 1 {
-            // Single parameter: use existing logic
+            // Single parameter: replace param name with self in body
             impl_block.push_str(&format!("\n        fn {}(&self){} {{", method_name, ret_type));
-            impl_block.push_str("\n            let n = *self;");
             
-            // Insert the original function body (braces already removed by AST extraction)
+            // Replace first parameter name with self in the body (if not empty)
+            let modified_body = if !first_param_name.is_empty() {
+                body_text.replace(&first_param_name, "self")
+            } else {
+                body_text
+            };
+            
+            // Insert the modified function body (braces already removed by AST extraction)
             impl_block.push_str("\n            ");
-            impl_block.push_str(&body_text);
+            impl_block.push_str(&modified_body);
             impl_block.push_str("\n        }");
         } else {
             // Multi-parameter: keep remaining params, replace first param name with self in body
