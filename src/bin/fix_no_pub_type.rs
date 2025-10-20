@@ -72,7 +72,11 @@ fn main() -> Result<()> {
     }
     
     println!();
-    println!("Summary: {} fixed, {} skipped, {} errors", success_count, skip_count, error_count);
+    let file_word = if success_count == 1 { "file" } else { "files" };
+    let skip_word = if skip_count == 1 { "file" } else { "files" };
+    let error_word = if error_count == 1 { "file" } else { "files" };
+    println!("Summary: {} {} fixed, {} {} skipped, {} {} with errors", 
+             success_count, file_word, skip_count, skip_word, error_count, error_word);
     println!("Completed in {}ms", start.elapsed().as_millis());
     
     if error_count > 0 {
