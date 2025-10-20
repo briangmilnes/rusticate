@@ -359,13 +359,21 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
                 if let Some(use_item) = ast::Use::cast(node.clone()) {
                     if let Some(use_tree) = use_item.use_tree() {
                         // Check for Types::Types::* pattern using AST
+                        // Handles both "crate::Types::Types::*" and "Types::Types::*"
                         if let Some(path) = use_tree.path() {
                             let segments: Vec<_> = path.segments().map(|s| s.to_string()).collect();
-                            if segments.len() >= 2 && segments[0] == "Types" && segments[1] == "Types" {
-                                if use_tree.to_string().ends_with("::*") {
-                                    has_types_import = true;
-                                    break;
-                                }
+                            // Check for Types::Types or crate::Types::Types
+                            let has_types_types = if segments.len() >= 2 && segments[0] == "Types" && segments[1] == "Types" {
+                                true
+                            } else if segments.len() >= 3 && segments[0] == "crate" && segments[1] == "Types" && segments[2] == "Types" {
+                                true
+                            } else {
+                                false
+                            };
+                            
+                            if has_types_types && use_tree.to_string().ends_with("::*") {
+                                has_types_import = true;
+                                break;
                             }
                         }
                     }
