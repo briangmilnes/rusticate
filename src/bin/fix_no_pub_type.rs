@@ -357,7 +357,7 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
         if node.kind() == SyntaxKind::IMPL {
             if let Some(impl_ast) = ast::Impl::cast(node.clone()) {
                 // First check for impl Trait for ExternalType (like AtomicUsize)
-                if let Some(trait_ref) = impl_ast.trait_() {
+                if let Some(_trait_ref) = impl_ast.trait_() {
                     if let Some(self_ty) = impl_ast.self_ty() {
                         let type_name = self_ty.to_string();
                         
@@ -941,6 +941,66 @@ fn remove_standalone_pub_fn(source: &str, _analysis: &ModuleAnalysis) -> Result<
     Ok(result)
 }
 
+/// Replace all references to `old_name` with `new_name` in the given body text using AST
+fn replace_identifier_in_body(body_text: &str, old_name: &str, new_name: &str) -> Result<String> {
+    if old_name.is_empty() {
+        return Ok(body_text.to_string());
+    }
+    
+    // Wrap in a function so we can parse it as a valid Rust fragment
+    let wrapped = format!("fn dummy() {{ {} }}", body_text);
+    let parsed = SourceFile::parse(&wrapped, Edition::Edition2021);
+    if !parsed.errors().is_empty() {
+        // If parsing fails, fall back to original text
+        return Ok(body_text.to_string());
+    }
+    
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    // Collect all PATH_EXPR nodes that reference old_name
+    let mut replacements: Vec<(usize, usize)> = Vec::new();
+    
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::PATH_EXPR {
+            if let Some(path_expr) = ast::PathExpr::cast(node.clone()) {
+                if let Some(path) = path_expr.path() {
+                    // Check if this is a simple identifier (not qualified like foo::bar)
+                    let segments: Vec<_> = path.segments().collect();
+                    if segments.len() == 1 {
+                        if let Some(segment) = segments.first() {
+                            let ident = segment.to_string();
+                            if ident == old_name {
+                                // Found a reference - record its position in the wrapped source
+                                let start: usize = node.text_range().start().into();
+                                let end: usize = node.text_range().end().into();
+                                replacements.push((start, end));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Apply replacements from end to start in the wrapped source
+    let mut result = wrapped.clone();
+    replacements.sort_by_key(|(start, _)| std::cmp::Reverse(*start));
+    
+    for (start, end) in replacements {
+        result.replace_range(start..end, new_name);
+    }
+    
+    // Extract the body back out (remove "fn dummy() { " and " }")
+    let prefix = "fn dummy() { ";
+    let suffix = " }";
+    if result.starts_with(prefix) && result.ends_with(suffix) {
+        Ok(result[prefix.len()..result.len() - suffix.len()].to_string())
+    } else {
+        Ok(body_text.to_string())
+    }
+}
+
 fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String> {
     // Step C: Create impl Trait for T block by moving pub fn implementations
     
@@ -1080,34 +1140,25 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
     
     for (method_name, ret_type, params, first_param_name, body_text) in impl_methods {
         if params.len() == 1 {
-            // Single parameter: replace param name with self in body
+            // Single parameter: replace param name with self in body using AST
             impl_block.push_str(&format!("\n        fn {}(&self){} {{", method_name, ret_type));
             
-            // Replace first parameter name with self in the body (if not empty)
-            let modified_body = if !first_param_name.is_empty() {
-                body_text.replace(&first_param_name, "self")
-            } else {
-                body_text
-            };
+            // Use AST-based identifier replacement
+            let modified_body = replace_identifier_in_body(&body_text, &first_param_name, "self")?;
             
             // Insert the modified function body (braces already removed by AST extraction)
             impl_block.push_str("\n            ");
             impl_block.push_str(&modified_body);
             impl_block.push_str("\n        }");
         } else {
-            // Multi-parameter: keep remaining params, replace first param name with self in body
+            // Multi-parameter: keep remaining params, replace first param name with self in body using AST
             let remaining_params: Vec<&str> = params.iter().skip(1).map(|s| s.as_str()).collect();
             let params_str = remaining_params.join(", ");
             
             impl_block.push_str(&format!("\n        fn {}(&self, {}){} {{", method_name, params_str, ret_type));
             
-            // Replace first parameter name with self in the body (braces already removed)
-            // Only do replacement if we have a first parameter (avoid replacing empty string)
-            let modified_body = if !first_param_name.is_empty() {
-                body_text.replace(&first_param_name, "self")
-            } else {
-                body_text
-            };
+            // Use AST-based identifier replacement
+            let modified_body = replace_identifier_in_body(&body_text, &first_param_name, "self")?;
             
             impl_block.push_str("\n            ");
             impl_block.push_str(&modified_body);
@@ -1383,36 +1434,54 @@ fn fix_method_body(source: &str) -> Result<String> {
     let tree = parsed.tree();
     let root = tree.syntax();
     
-    // Find the impl method body
+    // Find the impl method body using AST
     for node in root.descendants() {
         if node.kind() == SyntaxKind::IMPL {
-            let impl_text = node.to_string();
-            if impl_text.contains("InsertionSortStTrait") {
-                // Find fn insSort inside this impl
-                for child in node.descendants() {
-                    if child.kind() == SyntaxKind::FN {
-                        if let Some(fn_ast) = ast::Fn::cast(child.clone()) {
-                            if let Some(name) = fn_ast.name() {
-                                if name.text() == "insSort" {
-                                    // Found it - replace slice with self in body
-                                    let fn_start: usize = child.text_range().start().into();
-                                    let fn_end: usize = child.text_range().end().into();
-                                    let fn_text = &source[fn_start..fn_end];
-                                    
-                                    // Replace slice with self (word boundaries)
-                                    let new_fn_text = fn_text
-                                        .replace("slice.len()", "self.len()")
-                                        .replace("slice[", "self[");
-                                    
-                                    let mut result = String::new();
-                                    result.push_str(&source[..fn_start]);
-                                    result.push_str(&new_fn_text);
-                                    result.push_str(&source[fn_end..]);
-                                    
-                                    return Ok(result);
+            if let Some(impl_ast) = ast::Impl::cast(node.clone()) {
+                // Check if this impl is for InsertionSortStTrait using AST
+                if let Some(trait_type) = impl_ast.trait_() {
+                    // Cast the Type to PathType to access the path
+                    if let ast::Type::PathType(path_type) = trait_type {
+                        if let Some(path) = path_type.path() {
+                            if let Some(segment) = path.segment() {
+                                if let Some(name_ref) = segment.name_ref() {
+                                    if name_ref.text() == "InsertionSortStTrait" {
+                                    // Find fn insSort inside this impl
+                                    for child in node.descendants() {
+                                        if child.kind() == SyntaxKind::FN {
+                                            if let Some(fn_ast) = ast::Fn::cast(child.clone()) {
+                                                if let Some(name) = fn_ast.name() {
+                                                    if name.text() == "insSort" {
+                                                        // Found it - replace slice with self in body using AST
+                                                        
+                                                        // Use AST-based replacement for slice -> self
+                                                        // Extract just the body
+                                                        if let Some(body) = fn_ast.body() {
+                                                            if let Some(stmt_list) = body.stmt_list() {
+                                                                let body_text = stmt_list.to_string();
+                                                                let modified_body = replace_identifier_in_body(&body_text, "slice", "self")?;
+                                                                
+                                                                // Reconstruct the function with the new body
+                                                                let body_start: usize = stmt_list.syntax().text_range().start().into();
+                                                                let body_end: usize = stmt_list.syntax().text_range().end().into();
+                                                                
+                                                                let mut result = String::new();
+                                                                result.push_str(&source[..body_start]);
+                                                                result.push_str(&modified_body);
+                                                                result.push_str(&source[body_end..]);
+                                                                
+                                                                return Ok(result);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
+                    }
                     }
                 }
             }
@@ -1432,62 +1501,62 @@ fn fix_unused_self_calls(source: &str) -> Result<String> {
     // - Extract the actual data parameter from each call
     // - Replace the entire call expression
     
-    let mut result = source.to_string();
+    // Use AST to find and transform call sites
+    let parsed = SourceFile::parse(source, Edition::Edition2021);
+    if !parsed.errors().is_empty() {
+        return Err(anyhow::anyhow!("Parse errors"));
+    }
     
-    // Pattern to match: anything.insSort(&mut identifier)
-    // We'll use a loop to replace all occurrences
-    loop {
-        if let Some(pos) = result.find(".insSort(&mut ") {
-            // Find the start of this expression (work backwards to whitespace/delimiters)
-            let before = &result[..pos];
-            let mut expr_start = pos;
-            
-            // Find start of receiver expression (after last delimiter)
-            for (i, ch) in before.char_indices().rev() {
-                match ch {
-                    ' ' | '\t' | '\n' | ';' | '{' | '(' | ',' => {
-                        expr_start = i + ch.len_utf8();
-                        break;
-                    }
-                    _ => {
-                        if i == 0 {
-                            expr_start = 0;
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    // Collect all METHOD_CALL_EXPR nodes for insSort
+    let mut replacements: Vec<(usize, usize, String)> = Vec::new();
+    
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::METHOD_CALL_EXPR {
+            if let Some(call) = ast::MethodCallExpr::cast(node.clone()) {
+                if let Some(name_ref) = call.name_ref() {
+                    if name_ref.text() == "insSort" {
+                        // Found an insSort call - extract argument
+                        if let Some(arg_list) = call.arg_list() {
+                            let args: Vec<_> = arg_list.args().collect();
+                            if args.len() == 1 {
+                                // Get the first argument
+                                if let Some(first_arg) = args.first() {
+                                    // Extract the identifier from &mut identifier or &identifier
+                                    let arg_text = first_arg.to_string();
+                                    
+                                    let identifier = if arg_text.starts_with("&mut ") {
+                                        arg_text.trim_start_matches("&mut ").trim()
+                                    } else if arg_text.starts_with("&") {
+                                        arg_text.trim_start_matches("&").trim()
+                                    } else {
+                                        arg_text.trim()
+                                    };
+                                    
+                                    // Build new call: identifier.insSort()
+                                    let new_call = format!("{}.insSort()", identifier);
+                                    
+                                    // Record replacement for entire method call expression
+                                    let start: usize = node.text_range().start().into();
+                                    let end: usize = node.text_range().end().into();
+                                    replacements.push((start, end, new_call));
+                                }
+                            }
                         }
                     }
                 }
             }
-            
-            // Find the argument (after "&mut ")
-            let arg_start = pos + ".insSort(&mut ".len();
-            let after = &result[arg_start..];
-            
-            // Find the end of the argument (until ')')
-            if let Some(close_paren) = after.find(')') {
-                let arg = after[..close_paren].trim();
-                
-                // Calculate exact positions
-                let end_pos = arg_start + close_paren + 1; // +1 for ')'
-                
-                // Build replacement: arg.insSort()
-                let replacement = format!("{}.insSort()", arg);
-                
-                // Replace just the call part, preserving indentation
-                let indentation = &result[expr_start..pos];
-                let full_replacement = if indentation.trim().is_empty() {
-                    format!("{}{}", indentation, replacement)
-                } else {
-                    replacement
-                };
-                
-                result.replace_range(expr_start..end_pos, &full_replacement);
-            } else {
-                // Malformed, skip this one
-                break;
-            }
-        } else {
-            // No more matches
-            break;
         }
+    }
+    
+    // Apply replacements from end to start
+    let mut result = source.to_string();
+    replacements.sort_by_key(|(start, _, _)| std::cmp::Reverse(*start));
+    
+    for (start, end, new_text) in replacements {
+        result.replace_range(start..end, &new_text);
     }
     
     Ok(result)

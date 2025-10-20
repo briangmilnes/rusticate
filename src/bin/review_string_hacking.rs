@@ -147,6 +147,30 @@ fn check_for_string_hacking(source: &str, file_path: &str) -> Result<Vec<String>
                         }
                     }
                     
+                    // Check for .replace() on code/source variables
+                    if method_name == "replace" {
+                        if let Some(receiver) = call.receiver() {
+                            // Check if receiver is a path expression (variable reference)
+                            if let ast::Expr::PathExpr(path_expr) = receiver {
+                                if let Some(path) = path_expr.path() {
+                                    // Get the variable name from the path
+                                    if let Some(segment) = path.segments().last() {
+                                        let var_name = segment.to_string();
+                                        // Check for code-related variable names using AST name, not string contains
+                                        let code_related = ["source", "body", "text", "result", "modified_body", "body_text"];
+                                        if code_related.iter().any(|&name| var_name == name) {
+                                            let line = get_line_number(source, node.text_range().start().into());
+                                            violations.push(format!(
+                                                "{}:{}: String hacking detected: {}.replace() on code - Use AST node replacement instead",
+                                                file_path, line, var_name
+                                            ));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
                     // Check for trim_start_matches/trim_end_matches on syntax chars
                     if method_name == "trim_start_matches" || method_name == "trim_end_matches" {
                         if let Some(arg_list) = call.arg_list() {
