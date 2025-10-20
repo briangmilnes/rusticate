@@ -89,7 +89,18 @@ fn main() -> Result<()> {
 fn process_file(file_path: &Path) -> Result<bool> {
     // Step 1: Analyze the module to determine the transformation
     let source = fs::read_to_string(file_path)?;
-    let analysis = analyze_module(&source, file_path)?;
+    
+    let analysis = match analyze_module(&source, file_path) {
+        Ok(a) => a,
+        Err(e) => {
+            // Special case: if module already has pub struct/enum, skip (not an error)
+            let err_msg = e.to_string();
+            if err_msg.contains("already has pub struct") || err_msg.contains("already has pub enum") {
+                return Ok(false); // Skip this file
+            }
+            return Err(e); // Real error
+        }
+    };
     
     // Check if this has unused self - that requires the complex transformation
     if analysis.has_unused_self && analysis.module_name != "InsertionSortSt" {
@@ -276,6 +287,24 @@ fn analyze_module(source: &str, source_file: &Path) -> Result<ModuleAnalysis> {
 }
 
 fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, bool)> {
+    // First check: if module already has pub struct or pub enum, no type alias needed
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::STRUCT {
+            if let Some(struct_ast) = ast::Struct::cast(node.clone()) {
+                if struct_ast.visibility().map_or(false, |v| v.to_string() == "pub") {
+                    return Err(anyhow::anyhow!("Module already has pub struct - no type alias needed"));
+                }
+            }
+        }
+        if node.kind() == SyntaxKind::ENUM {
+            if let Some(enum_ast) = ast::Enum::cast(node.clone()) {
+                if enum_ast.visibility().map_or(false, |v| v.to_string() == "pub") {
+                    return Err(anyhow::anyhow!("Module already has pub enum - no type alias needed"));
+                }
+            }
+        }
+    }
+    
     // Look for trait methods first - if multi-parameter, use first param type
     let mut has_unused_self = false;
     let mut proposed_type: Option<String> = None;
