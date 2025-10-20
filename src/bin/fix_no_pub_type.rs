@@ -26,7 +26,10 @@
 //! Binary: rusticate-fix-no-pub-type
 
 use anyhow::Result;
-use ra_ap_syntax::{ast::{self, AstNode, HasVisibility, HasName}, SyntaxKind, SourceFile, Edition};
+use ra_ap_syntax::{
+    ast::{self, AstNode, HasVisibility, HasName, HasArgList},
+    SyntaxKind, SourceFile, Edition
+};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
@@ -76,9 +79,9 @@ fn main() -> Result<()> {
         did_work = true;
     }
     
-    // Steps B-D: For algorithm modules (T = N pattern), transform if needed
+    // Steps B-D: For modules with trait+pub fn pattern, transform if needed
     let current_source = fs::read_to_string(file_path)?;
-    if analysis.recommended_type.contains("pub type T = N") && has_standalone_pub_fn(&current_source, &analysis)? {
+    if analysis.recommended_type.contains("pub type T =") && has_standalone_pub_fn(&current_source, &analysis)? {
         let impl_exists = has_trait_impl(&current_source, &analysis)?;
         
         if !impl_exists {
@@ -231,10 +234,40 @@ fn analyze_module(source: &str, source_file: &Path) -> Result<ModuleAnalysis> {
 }
 
 fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, bool)> {
-    // Look for impl blocks and extract parameter types
+    // Look for trait methods first - if multi-parameter, use first param type
     let mut has_unused_self = false;
     let mut proposed_type: Option<String> = None;
     
+    // Check trait methods for multi-parameter patterns
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::TRAIT {
+            for child in node.descendants() {
+                if child.kind() == SyntaxKind::FN {
+                    if let Some(fn_ast) = ast::Fn::cast(child.clone()) {
+                        if let Some(param_list) = fn_ast.param_list() {
+                            let params: Vec<_> = param_list.params().collect();
+                            // If 2+ parameters, use first parameter's type
+                            if params.len() >= 2 {
+                                if let Some(first_param) = params.first() {
+                                    let param_text = first_param.to_string();
+                                    // Extract type from "name: Type" or "name: &Type"
+                                    if let Some(colon_pos) = param_text.find(':') {
+                                        let type_part = param_text[colon_pos + 1..].trim();
+                                        // Remove leading & if present
+                                        let clean_type = type_part.trim_start_matches('&').trim();
+                                        proposed_type = Some(format!("pub type T = {};", clean_type));
+                                        return Ok((proposed_type.unwrap(), has_unused_self));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // If no multi-param traits found, check impl blocks
     for node in root.descendants() {
         if node.kind() == SyntaxKind::IMPL {
             // Extract "for Type" part
@@ -487,8 +520,8 @@ fn fix_call_sites(file_path: &Path, analysis: &ModuleAnalysis) -> Result<()> {
     let new_source = if analysis.has_unused_self {
         // InsertionSortSt pattern: change receiver.method(&mut data) to data.method()
         fix_unused_self_calls(&source)?
-    } else if analysis.recommended_type.contains("pub type T = N") {
-        // Algorithm module pattern: change function_name(n) to n.function_name()
+    } else if analysis.recommended_type.contains("pub type T =") {
+        // All module patterns: change Module::method(arg1, ...) to arg1.method(...)
         fix_algorithm_call_sites(&source, analysis)?
     } else {
         // No transformation needed
@@ -501,8 +534,8 @@ fn fix_call_sites(file_path: &Path, analysis: &ModuleAnalysis) -> Result<()> {
 }
 
 fn fix_algorithm_call_sites(source: &str, analysis: &ModuleAnalysis) -> Result<String> {
-    // Transform function_name(n) to n.function_name()
-    // Extract method names from the module's trait definition
+    // Transform call sites from Module::method(arg1, arg2) to arg1.method(arg2)
+    // Uses AST traversal to find and transform call expressions
     
     let module_source = fs::read_to_string(&analysis.source_file)?;
     let method_names = extract_trait_method_names_from_source(&module_source)?;
@@ -511,74 +544,71 @@ fn fix_algorithm_call_sites(source: &str, analysis: &ModuleAnalysis) -> Result<S
         return Ok(source.to_string());
     }
     
-    let mut result = source.to_string();
+    let parsed = SourceFile::parse(source, Edition::Edition2021);
+    if !parsed.errors().is_empty() {
+        return Err(anyhow::anyhow!("Parse errors in test/bench file"));
+    }
     
-    // For each method name, find and replace call sites
-    for method_name in &method_names {
-        // Pattern: method_name(arg) -> arg.method_name()
-        // Use a simple regex-like approach, but with AST validation
-        let pattern = format!("{}(", method_name);
-        let mut replacements: Vec<(usize, usize, String)> = Vec::new();
-        
-        let mut idx = 0;
-        while let Some(pos) = result[idx..].find(&pattern) {
-            let actual_pos = idx + pos;
-            
-            // Check if this is a function call (not a method call)
-            let before = &result[..actual_pos];
-            let is_method_call = before.ends_with('.');
-            
-            if !is_method_call {
-                // Find the matching closing paren and extract the argument
-                if let Some((arg, end_pos)) = extract_function_arg(&result[actual_pos + pattern.len()..]) {
-                    let full_end = actual_pos + pattern.len() + end_pos + 1; // +1 for closing paren
-                    let replacement = format!("{}.{}()", arg, method_name);
-                    replacements.push((actual_pos, full_end, replacement));
-                    idx = full_end;
-                    continue;
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    let mut replacements: Vec<(usize, usize, String)> = Vec::new();
+    
+    // Find all CALL_EXPR nodes
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::CALL_EXPR {
+            if let Some(call_expr) = ast::CallExpr::cast(node.clone()) {
+                // Get the callee expression (the thing being called)
+                if let Some(callee_expr) = call_expr.expr() {
+                    let callee_text = callee_expr.to_string();
+                    
+                    // Check if this call is for one of our trait methods
+                    for method_name in &method_names {
+                        // Check if callee is "method_name" or "Module::method_name"
+                        // But NOT "receiver.method_call" (already a method call)
+                        let is_function_call = callee_text == *method_name || 
+                                              callee_text.ends_with(&format!("::{}", method_name));
+                        let is_method_call = callee_text.ends_with(&format!(".{}", method_name));
+                        
+                        if is_function_call && !is_method_call {
+                            // This is a function/static call, transform to method call
+                            if let Some(arg_list) = call_expr.arg_list() {
+                                let args: Vec<String> = arg_list.args().map(|a| a.to_string()).collect();
+                                
+                                if args.is_empty() {
+                                    continue;
+                                }
+                                
+                                // First argument becomes the receiver
+                                let receiver = &args[0];
+                                
+                                let new_call = if args.len() == 1 {
+                                    format!("{}.{}()", receiver, method_name)
+                                } else {
+                                    let remaining_args = args[1..].join(", ");
+                                    format!("{}.{}({})", receiver, method_name, remaining_args)
+                                };
+                                
+                                let start: usize = node.text_range().start().into();
+                                let end: usize = node.text_range().end().into();
+                                replacements.push((start, end, new_call));
+                                break; // Only replace once per call expr
+                            }
+                        }
+                    }
                 }
             }
-            
-            idx = actual_pos + 1;
         }
-        
-        // Apply replacements from end to start
-        eprintln!("DEBUG: Found {} replacements for method '{}'", replacements.len(), method_name);
-        replacements.sort_by_key(|(start, _, _)| std::cmp::Reverse(*start));
-        for (start, end, replacement) in replacements {
-            eprintln!("DEBUG: Replacing {}..{} with '{}'", start, end, replacement);
-            result.replace_range(start..end, &replacement);
-        }
+    }
+    
+    // Apply replacements from end to start to preserve offsets
+    let mut result = source.to_string();
+    replacements.sort_by_key(|(start, _, _)| std::cmp::Reverse(*start));
+    for (start, end, replacement) in replacements {
+        result.replace_range(start..end, &replacement);
     }
     
     Ok(result)
-}
-
-fn extract_function_arg(s: &str) -> Option<(String, usize)> {
-    // Extract the argument from a function call: "5)" -> ("5", 1)
-    // Handle simple cases: literals, identifiers, simple expressions
-    
-    let mut depth = 0;
-    let mut arg = String::new();
-    
-    for (i, ch) in s.chars().enumerate() {
-        match ch {
-            '(' => {
-                depth += 1;
-                arg.push(ch);
-            }
-            ')' => {
-                if depth == 0 {
-                    return Some((arg.trim().to_string(), i));
-                }
-                depth -= 1;
-                arg.push(ch);
-            }
-            _ => arg.push(ch),
-        }
-    }
-    
-    None
 }
 
 fn extract_trait_method_names_from_source(source: &str) -> Result<Vec<String>> {
@@ -860,7 +890,8 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
     let trait_end_pos = trait_end_pos.ok_or_else(|| anyhow::anyhow!("No trait position"))?;
     
     // Find all standalone pub fn that match trait method names
-    let mut impl_methods = Vec::new();
+    // Store: (name, ret_type, params, first_param_name, body_text)
+    let mut impl_methods: Vec<(String, String, Vec<String>, String, String)> = Vec::new();
     
     for node in root.descendants() {
         if node.kind() == SyntaxKind::FN {
@@ -896,7 +927,23 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
                                             String::new()
                                         };
                                         
-                                        impl_methods.push((name.clone(), ret_type, body_text));
+                                        // Get parameters
+                                        let mut params = Vec::new();
+                                        let mut first_param_name = String::new();
+                                        if let Some(param_list) = fn_ast.param_list() {
+                                            for (i, param) in param_list.params().enumerate() {
+                                                let param_str = param.to_string();
+                                                params.push(param_str.clone());
+                                                // Extract first parameter name
+                                                if i == 0 {
+                                                    if let Some(colon_pos) = param_str.find(':') {
+                                                        first_param_name = param_str[..colon_pos].trim().to_string();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        
+                                        impl_methods.push((name.clone(), ret_type, params, first_param_name, body_text));
                                     }
                                 }
                             }
@@ -911,7 +958,7 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
     // (Rust requires complete trait implementations - no partial impls allowed)
     if impl_methods.len() != method_names.len() {
         let missing: Vec<String> = method_names.iter()
-            .filter(|name| !impl_methods.iter().any(|(impl_name, _, _)| impl_name == *name))
+            .filter(|name| !impl_methods.iter().any(|(impl_name, _, _, _, _)| impl_name == *name))
             .cloned()
             .collect();
         
@@ -931,15 +978,32 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
     // Build the impl block
     let mut impl_block = format!("\n\n    impl {} for T {{", trait_name);
     
-    for (method_name, ret_type, body_text) in impl_methods {
-        impl_block.push_str(&format!("\n        fn {}(&self){} {{", method_name, ret_type));
-        impl_block.push_str("\n            let n = *self;");
-        
-        // Insert the original function body (strip outer braces)
-        let body_inner = body_text.trim().trim_start_matches('{').trim_end_matches('}');
-        impl_block.push_str("\n            ");
-        impl_block.push_str(body_inner);
-        impl_block.push_str("\n        }");
+    for (method_name, ret_type, params, first_param_name, body_text) in impl_methods {
+        if params.len() == 1 {
+            // Single parameter: use existing logic
+            impl_block.push_str(&format!("\n        fn {}(&self){} {{", method_name, ret_type));
+            impl_block.push_str("\n            let n = *self;");
+            
+            // Insert the original function body (strip outer braces)
+            let body_inner = body_text.trim().trim_start_matches('{').trim_end_matches('}');
+            impl_block.push_str("\n            ");
+            impl_block.push_str(body_inner);
+            impl_block.push_str("\n        }");
+        } else {
+            // Multi-parameter: keep remaining params, replace first param name with self in body
+            let remaining_params: Vec<&str> = params.iter().skip(1).map(|s| s.as_str()).collect();
+            let params_str = remaining_params.join(", ");
+            
+            impl_block.push_str(&format!("\n        fn {}(&self, {}){} {{", method_name, params_str, ret_type));
+            
+            // Replace first parameter name with self in the body
+            let body_inner = body_text.trim().trim_start_matches('{').trim_end_matches('}');
+            let modified_body = body_inner.replace(&first_param_name, "self");
+            
+            impl_block.push_str("\n            ");
+            impl_block.push_str(&modified_body);
+            impl_block.push_str("\n        }");
+        }
     }
     
     impl_block.push_str("\n    }");
@@ -976,22 +1040,29 @@ fn transform_algorithm_trait(source: &str, _analysis: &ModuleAnalysis) -> Result
                             if let Some(param_list) = fn_ast.param_list() {
                                 let params: Vec<_> = param_list.params().collect();
                                 
-                                // Check if first param is "n: N" or similar
+                                // Check if first param needs transformation
                                 if let Some(first_param) = params.first() {
                                     let param_text = first_param.to_string();
                                     
-                                        // Pattern: "n: N" or "n: T" - replace with "&self"
-                                        if (param_text.contains(": N") || param_text.contains(": T")) 
-                                            && !param_text.contains("self") {
-                                            
-                                            // Get the parameter list node directly
+                                    if !param_text.contains("self") {
+                                        if params.len() == 1 {
+                                            // Single parameter: replace entire param list with (&self)
                                             let param_list_start: usize = param_list.syntax().text_range().start().into();
                                             let param_list_end: usize = param_list.syntax().text_range().end().into();
-                                            
-                                            // Replace just the parameter list with (&self)
                                             let new_param_list = "(&self)".to_string();
                                             replacements.push((param_list_start, param_list_end, new_param_list));
+                                        } else {
+                                            // Multi-parameter: replace first param with &self, keep rest
+                                            let remaining_params: Vec<String> = params.iter().skip(1).map(|p| p.to_string()).collect();
+                                            let new_params = format!("&self, {}", remaining_params.join(", "));
+                                            
+                                            // Replace entire param list
+                                            let param_list_start: usize = param_list.syntax().text_range().start().into();
+                                            let param_list_end: usize = param_list.syntax().text_range().end().into();
+                                            let new_param_list = format!("({})", new_params);
+                                            replacements.push((param_list_start, param_list_end, new_param_list));
                                         }
+                                    }
                                 }
                             }
                         }
