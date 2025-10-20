@@ -857,31 +857,45 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
     let trait_name = trait_name.ok_or_else(|| anyhow::anyhow!("No trait found"))?;
     let trait_end_pos = trait_end_pos.ok_or_else(|| anyhow::anyhow!("No trait position"))?;
     
-    // Find all pub fn that match trait method names
+    // Find all standalone pub fn that match trait method names
     let mut impl_methods = Vec::new();
     
     for node in root.descendants() {
         if node.kind() == SyntaxKind::FN {
-            if let Some(fn_ast) = ast::Fn::cast(node.clone()) {
-                if let Some(fn_name) = fn_ast.name() {
-                    let name = fn_name.text().to_string();
-                    
-                    // Check if this is a pub fn matching a trait method
-                    if method_names.contains(&name) {
-                        if let Some(vis) = fn_ast.visibility() {
-                            if vis.to_string() == "pub" {
-                                // Get function body
-                                if let Some(body) = fn_ast.body() {
-                                    let body_text = body.to_string();
-                                    
-                                    // Get return type
-                                    let ret_type = if let Some(ret) = fn_ast.ret_type() {
-                                        ret.to_string()
-                                    } else {
-                                        String::new()
-                                    };
-                                    
-                                    impl_methods.push((name.clone(), ret_type, body_text));
+            // Check if this function is NOT inside an impl block
+            let mut in_impl = false;
+            let mut parent = node.parent();
+            while let Some(p) = parent {
+                if p.kind() == SyntaxKind::IMPL {
+                    in_impl = true;
+                    break;
+                }
+                parent = p.parent();
+            }
+            
+            // Only process standalone functions
+            if !in_impl {
+                if let Some(fn_ast) = ast::Fn::cast(node.clone()) {
+                    if let Some(fn_name) = fn_ast.name() {
+                        let name = fn_name.text().to_string();
+                        
+                        // Check if this is a pub fn matching a trait method
+                        if method_names.contains(&name) {
+                            if let Some(vis) = fn_ast.visibility() {
+                                if vis.to_string() == "pub" {
+                                    // Get function body
+                                    if let Some(body) = fn_ast.body() {
+                                        let body_text = body.to_string();
+                                        
+                                        // Get return type
+                                        let ret_type = if let Some(ret) = fn_ast.ret_type() {
+                                            ret.to_string()
+                                        } else {
+                                            String::new()
+                                        };
+                                        
+                                        impl_methods.push((name.clone(), ret_type, body_text));
+                                    }
                                 }
                             }
                         }
@@ -889,6 +903,27 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
                 }
             }
         }
+    }
+    
+    // Verify that all trait methods have corresponding implementations
+    // (Rust requires complete trait implementations - no partial impls allowed)
+    if impl_methods.len() != method_names.len() {
+        let missing: Vec<String> = method_names.iter()
+            .filter(|name| !impl_methods.iter().any(|(impl_name, _, _)| impl_name == *name))
+            .cloned()
+            .collect();
+        
+        eprintln!("Warning: Not all trait methods have standalone pub fn implementations.");
+        eprintln!("Missing: {:?}", missing);
+        eprintln!("Skipping transformation for this module (needs manual handling).");
+        
+        return Err(anyhow::anyhow!(
+            "Incomplete trait implementation - cannot create impl block"
+        ));
+    }
+    
+    if impl_methods.is_empty() {
+        return Err(anyhow::anyhow!("No standalone pub fn implementations found for trait methods"));
     }
     
     // Build the impl block
