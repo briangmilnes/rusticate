@@ -1082,7 +1082,12 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
             impl_block.push_str(&format!("\n        fn {}(&self, {}){} {{", method_name, params_str, ret_type));
             
             // Replace first parameter name with self in the body (braces already removed)
-            let modified_body = body_text.replace(&first_param_name, "self");
+            // Only do replacement if we have a first parameter (avoid replacing empty string)
+            let modified_body = if !first_param_name.is_empty() {
+                body_text.replace(&first_param_name, "self")
+            } else {
+                body_text
+            };
             
             impl_block.push_str("\n            ");
             impl_block.push_str(&modified_body);
@@ -1124,8 +1129,14 @@ fn transform_algorithm_trait(source: &str, _analysis: &ModuleAnalysis) -> Result
                             if let Some(param_list) = fn_ast.param_list() {
                                 let params: Vec<_> = param_list.params().collect();
                                 
-                                // Check if first param needs transformation
-                                if let Some(first_param) = params.first() {
+                                if params.is_empty() {
+                                    // Zero parameters: add &self
+                                    let param_list_start: usize = param_list.syntax().text_range().start().into();
+                                    let param_list_end: usize = param_list.syntax().text_range().end().into();
+                                    let new_param_list = "(&self)".to_string();
+                                    replacements.push((param_list_start, param_list_end, new_param_list));
+                                } else if let Some(first_param) = params.first() {
+                                    // Check if first param needs transformation
                                     let param_text = first_param.to_string();
                                     
                                     if !param_text.contains("self") {
