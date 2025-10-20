@@ -1,0 +1,18 @@
+
+Are you showing external/internal enums (algebraic data types)?
+
+So now we need to start labelling these analyses as BUG, WARNING or OK.
+
+Chap05/MappingStEph.rs:4: pub mod MappingStEph { - OK no module is a BUG
+Chap05/MappingStEph.rs:17:	struct MappingStEph (external) - no external data type (struct or enum) 
+Chap05/MappingStEph.rs:22:	trait MappingStEphTrait (external) - no external trait BUG
+Chap05/MappingStEph.rs:97-107:	standard trait impls (PartialEq, Eq, Debug, Display) - OK at the moment.
+Chap05/MappingStEph.rs:54:	impl<A: Eq + Hash, B: Eq + Hash> MappingStEph<A, B> { (for external type) - BUG
+Chap05/MappingStEph.rs:54:		1 internal functions
+Chap05/MappingStEph.rs:65:	impl<X: StT + Hash, Y: StT + Hash> MappingStEphTrait<X, Y> for MappingStEph<X, Y> { (for external type) - no Trait impl BUG
+Chap05/MappingStEph.rs:65:		8 internal (5 methods, 3 functions)
+Chap05/MappingStEph.rs:103:	duplicate method: fmt [internal trait impl MappingStEph, internal trait impl MappingStEph] - could be default trait method BUG
+
+
+This is a little different from what you are doing in that if thing's don't appear you have to state bug.
+

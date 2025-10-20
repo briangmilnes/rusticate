@@ -1,0 +1,2 @@
+So it rusticate setup as a library? One rust thing I don't know is that I really want a whole lot of entry points, it should generate multiple full exes.
+

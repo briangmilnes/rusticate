@@ -1,0 +1,156 @@
+[package]
+name = "rusticate"
+version = "0.1.0"
+edition = "2021"
+authors = ["Rusticate Contributors"]
+description = "AST-based Rust code review and fix tool for LLMs"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/yourusername/rusticate"
+readme = "README.md"
+
+[dependencies]
+ra_ap_syntax = "0.0.233"
+rowan = "0.15"
+anyhow = "1.0"
+clap = { version = "4.5", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[dev-dependencies]
+serial_test = "3.0"
+
+# Binary naming convention: rusticate-<category>-<operation>
+# Examples: rusticate-review-module-encapsulation, rusticate-fix-import-order
+
+[[bin]]
+name = "rusticate-review"
+path = "src/bin/review.rs"
+
+[[bin]]
+name = "rusticate-fix"
+path = "src/bin/fix.rs"
+
+[[bin]]
+name = "rusticate-parse"
+path = "src/bin/parse.rs"
+
+[[bin]]
+name = "rusticate-review-module-encapsulation"
+path = "src/bin/review_module_encapsulation.rs"
+
+[[bin]]
+name = "rusticate-review-no-extern-crate"
+path = "src/bin/review_no_extern_crate.rs"
+
+[[bin]]
+name = "rusticate-review-pascal-case-filenames"
+path = "src/bin/review_pascal_case_filenames.rs"
+
+[[bin]]
+name = "rusticate-review-snake-case-filenames"
+path = "src/bin/review_snake_case_filenames.rs"
+
+[[bin]]
+name = "rusticate-review-import-order"
+path = "src/bin/review_import_order.rs"
+
+[[bin]]
+name = "rusticate-fix-import-order"
+path = "src/bin/fix_import_order.rs"
+
+[[bin]]
+name = "rusticate-review-doctests"
+path = "src/bin/review_doctests.rs"
+
+[[bin]]
+name = "rusticate-fix-doctests"
+path = "src/bin/fix_doctests.rs"
+
+[[bin]]
+name = "rusticate-review-single-trait-impl"
+path = "src/bin/review_single_trait_impl.rs"
+
+[[bin]]
+name = "rusticate-review-integration-test-structure"
+path = "src/bin/review_integration_test_structure.rs"
+
+[[bin]]
+name = "rusticate-review-impl-order"
+path = "src/bin/review_impl_order.rs"
+
+[[bin]]
+name = "rusticate-review-where-clause-simplification"
+path = "src/bin/review_where_clause_simplification.rs"
+
+[[bin]]
+name = "rusticate-review-trait-bound-mismatches"
+path = "src/bin/review_trait_bound_mismatches.rs"
+
+[[bin]]
+name = "rusticate-review-variable-naming"
+path = "src/bin/review_variable_naming.rs"
+
+[[bin]]
+name = "rusticate-review-struct-file-naming"
+path = "src/bin/review_struct_file_naming.rs"
+
+[[bin]]
+name = "rusticate-review-bench-modules"
+path = "src/bin/review_bench_modules.rs"
+
+[[bin]]
+name = "rusticate-review-duplicate-bench-names"
+path = "src/bin/review_duplicate_bench_names.rs"
+
+[[bin]]
+name = "rusticate-review-test-modules"
+path = "src/bin/review_test_modules.rs"
+
+[[bin]]
+name = "rusticate-review-minimize-ufcs-call-sites"
+path = "src/bin/review_minimize_ufcs_call_sites.rs"
+
+[[bin]]
+name = "rusticate-review-inherent-and-trait-impl"
+path = "src/bin/review_inherent_and_trait_impl.rs"
+
+[[bin]]
+name = "rusticate-review-internal-method-impls"
+path = "src/bin/review_internal_method_impls.rs"
+
+[[bin]]
+name = "rusticate-review-public-only-inherent-impls"
+path = "src/bin/review_public_only_inherent_impls.rs"
+
+[[bin]]
+name = "rusticate-review-stub-delegation"
+path = "src/bin/review_stub_delegation.rs"
+
+[[bin]]
+name = "rusticate-review-typeclasses"
+path = "src/bin/review_typeclasses.rs"
+
+[[bin]]
+name = "rusticate-analyze-review-typeclasses"
+path = "src/bin/analyze_review_typeclasses.rs"
+
+[[bin]]
+name = "rusticate-fix-no-pub-type"
+path = "src/bin/fix_no_pub_type.rs"
+
+# Counting/metrics tools
+[[bin]]
+name = "rusticate-count-as"
+path = "src/bin/count_as.rs"
+
+[[bin]]
+name = "rusticate-count-vec"
+path = "src/bin/count_vec.rs"
+
+[[bin]]
+name = "rusticate-count-where"
+path = "src/bin/count_where.rs"
+
+[[bin]]
+name = "rusticate-count-loc"
+path = "src/bin/count_loc.rs"

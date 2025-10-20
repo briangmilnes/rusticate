@@ -1,0 +1,18 @@
+
+ We need a configuration which says which rules to run.
+
+ We need uniform logging to analyses and perhaps fixes.
+ In a directory for each program, with dates.
+
+ We need uniform timing for these.
+
+32 total binaries, with logging conventions at:
+29/32 have timing (Completed in Xms)
+22/32 have directory context (Entering directory)
+25/32 use comma formatting (format_number)
+Missing timing: fix.rs, parse.rs, review.rs (the original stub binaries)
+Most of our active tools (count-, review-, fix-, analyze-) are following the conventions. We can circle back to standardize the rest later.
+What would you like to work on next?
+
+ Is attic excluded everywhere?
+ 
