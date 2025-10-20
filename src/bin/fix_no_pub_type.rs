@@ -543,8 +543,10 @@ fn fix_algorithm_call_sites(source: &str, analysis: &ModuleAnalysis) -> Result<S
         }
         
         // Apply replacements from end to start
+        eprintln!("DEBUG: Found {} replacements for method '{}'", replacements.len(), method_name);
         replacements.sort_by_key(|(start, _, _)| std::cmp::Reverse(*start));
         for (start, end, replacement) in replacements {
+            eprintln!("DEBUG: Replacing {}..{} with '{}'", start, end, replacement);
             result.replace_range(start..end, &replacement);
         }
     }
