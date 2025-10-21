@@ -7,6 +7,7 @@
 use anyhow::Result;
 use clap::Parser;
 use std::path::PathBuf;
+use std::time::Instant;
 
 #[derive(Parser)]
 #[command(name = "fix")]
@@ -30,7 +31,14 @@ struct Args {
 }
 
 fn main() -> Result<()> {
+    let start = Instant::now();
     let args = Args::parse();
+    
+    // Print directory context
+    let parent_dir = args.path.parent()
+        .unwrap_or_else(|| std::path::Path::new("."));
+    println!("Entering directory '{}'", parent_dir.display());
+    println!();
     
     println!("Fixing file: {:?}", args.path);
     println!("In-place: {}", args.in_place);
@@ -40,6 +48,9 @@ fn main() -> Result<()> {
     }
     
     rusticate::fix_file(&args.path, args.in_place)?;
+    
+    println!();
+    println!("Completed in {}ms", start.elapsed().as_millis());
     
     Ok(())
 }

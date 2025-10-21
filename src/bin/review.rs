@@ -7,6 +7,7 @@
 use anyhow::Result;
 use clap::Parser;
 use std::path::PathBuf;
+use std::time::Instant;
 
 #[derive(Parser)]
 #[command(name = "review")]
@@ -26,7 +27,17 @@ struct Args {
 }
 
 fn main() -> Result<()> {
+    let start = Instant::now();
     let args = Args::parse();
+    
+    // Print directory context
+    let dir = if args.path.is_dir() {
+        &args.path
+    } else {
+        args.path.parent().unwrap_or_else(|| std::path::Path::new("."))
+    };
+    println!("Entering directory '{}'", dir.display());
+    println!();
     
     println!("Reviewing: {:?}", args.path);
     println!("Format: {}", args.format);
@@ -35,6 +46,9 @@ fn main() -> Result<()> {
     }
     
     rusticate::review(&args.path, &args.format)?;
+    
+    println!();
+    println!("Completed in {}ms", start.elapsed().as_millis());
     
     Ok(())
 }

@@ -5,6 +5,7 @@
 use anyhow::Result;
 use clap::Parser;
 use std::path::PathBuf;
+use std::time::Instant;
 
 #[derive(Parser)]
 #[command(name = "parse")]
@@ -20,12 +21,22 @@ struct Args {
 }
 
 fn main() -> Result<()> {
+    let start = Instant::now();
     let args = Args::parse();
+    
+    // Print directory context
+    let parent_dir = args.path.parent()
+        .unwrap_or_else(|| std::path::Path::new("."));
+    println!("Entering directory '{}'", parent_dir.display());
+    println!();
     
     println!("Parsing file: {:?}", args.path);
     println!("Format: {}", args.format);
     
     rusticate::parse(&args.path)?;
+    
+    println!();
+    println!("Completed in {}ms", start.elapsed().as_millis());
     
     Ok(())
 }
