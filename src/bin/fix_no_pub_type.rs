@@ -183,9 +183,9 @@ fn process_file(file_path: &Path) -> Result<bool> {
     let analysis = match analyze_module(&source, file_path) {
         Ok(a) => a,
         Err(e) => {
-            // Special case: if module already has pub struct/enum, skip (not an error)
+            // Special case: if module already has pub struct/enum/type, skip (not an error)
             let err_msg = e.to_string();
-            if err_msg.contains("already has pub struct") || err_msg.contains("already has pub enum") {
+            if err_msg.contains("already has pub struct") || err_msg.contains("already has pub enum") || err_msg.contains("already has pub type") {
                 return Ok(false); // Skip this file
             }
             return Err(e); // Real error
@@ -377,7 +377,7 @@ fn analyze_module(source: &str, source_file: &Path) -> Result<ModuleAnalysis> {
 }
 
 fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, bool)> {
-    // First check: if module already has pub struct or pub enum, no type alias needed
+    // First check: if module already has pub struct, pub enum, or pub type, no type alias needed
     for node in root.descendants() {
         if node.kind() == SyntaxKind::STRUCT {
             if let Some(struct_ast) = ast::Struct::cast(node.clone()) {
@@ -390,6 +390,13 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
             if let Some(enum_ast) = ast::Enum::cast(node.clone()) {
                 if enum_ast.visibility().map_or(false, |v| v.to_string() == "pub") {
                     return Err(anyhow::anyhow!("Module already has pub enum - no type alias needed"));
+                }
+            }
+        }
+        if node.kind() == SyntaxKind::TYPE_ALIAS {
+            if let Some(type_alias) = ast::TypeAlias::cast(node.clone()) {
+                if type_alias.visibility().map_or(false, |v| v.to_string() == "pub") {
+                    return Err(anyhow::anyhow!("Module already has pub type - no type alias needed"));
                 }
             }
         }
