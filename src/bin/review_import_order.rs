@@ -16,7 +16,7 @@
 
 use anyhow::Result;
 use rusticate::{StandardArgs, format_number, parse_source, find_nodes, find_rust_files};
-use ra_ap_syntax::{SyntaxKind, SyntaxNode, ast::AstNode};
+use ra_ap_syntax::{SyntaxKind, SyntaxNode, ast::{self, AstNode}};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
@@ -152,15 +152,31 @@ fn check_file(file_path: &Path, source: &str, in_src: bool) -> Result<Vec<Violat
             }
         }
         
-        // Check crate:: vs apas_ai:: usage
-        if use_text.contains("apas_ai::") && in_src {
+        // Check crate:: vs apas_ai:: usage using AST
+        let (has_apas_ai, has_crate) = if let Some(use_ast) = ast::Use::cast(use_node.clone()) {
+            if let Some(use_tree) = use_ast.use_tree() {
+                if let Some(path) = use_tree.path() {
+                    let first_segment = path.segments().next().map(|s| s.to_string());
+                    (first_segment == Some("apas_ai".to_string()), 
+                     first_segment == Some("crate".to_string()))
+                } else {
+                    (false, false)
+                }
+            } else {
+                (false, false)
+            }
+        } else {
+            (false, false)
+        };
+        
+        if has_apas_ai && in_src {
             violations.push(Violation {
                 file: file_path.to_path_buf(),
                 line_num,
                 message: "use apas_ai:: in src/ (should be crate::)".to_string(),
                 context: use_text.trim().to_string(),
             });
-        } else if use_text.contains("crate::") && !in_src {
+        } else if has_crate && !in_src {
             violations.push(Violation {
                 file: file_path.to_path_buf(),
                 line_num,
@@ -169,9 +185,23 @@ fn check_file(file_path: &Path, source: &str, in_src: bool) -> Result<Vec<Violat
             });
         }
         
-        // Check Types::Types::* ordering within internal section
+        // Check Types::Types::* ordering within internal section using AST
         if section == ImportSection::Internal {
-            let is_types_import = use_text.contains("Types::Types");
+            let is_types_import = if let Some(use_ast) = ast::Use::cast(use_node.clone()) {
+                if let Some(use_tree) = use_ast.use_tree() {
+                    if let Some(path) = use_tree.path() {
+                        let segments: Vec<String> = path.segments().map(|s| s.to_string()).collect();
+                        // Check for Types::Types pattern (consecutive "Types" segments)
+                        segments.windows(2).any(|w| w[0] == "Types" && w[1] == "Types")
+                    } else {
+                        false
+                    }
+                } else {
+                    false
+                }
+            } else {
+                false
+            };
             
             if is_types_import {
                 if seen_other_internal {

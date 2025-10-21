@@ -9,7 +9,7 @@
 //! Uses AST parsing and byte-offset manipulation to insert imports precisely
 
 use anyhow::Result;
-use ra_ap_syntax::{SourceFile, Edition};
+use ra_ap_syntax::{SourceFile, Edition, SyntaxKind, ast::AstNode};
 use std::collections::HashSet;
 use std::fs;
 use std::path::PathBuf;
@@ -78,11 +78,20 @@ fn infer_missing_imports(code: &str) -> Vec<String> {
     let parsed = SourceFile::parse(code, Edition::Edition2021);
     let has_errors = !parsed.errors().is_empty();
     
-    if !has_errors && !code.contains("use ") {
-        return Vec::new(); // Code is fine, no imports needed
+    // Check if there are already use statements using AST if code parses
+    if !has_errors {
+        let tree = parsed.tree();
+        let root = tree.syntax();
+        // Check for USE nodes in the AST
+        let has_use = root.descendants().any(|node| node.kind() == SyntaxKind::USE);
+        if has_use {
+            return Vec::new(); // Code has imports and no errors, no fixes needed
+        }
     }
     
-    // Check for common APAS patterns
+    // Check for common APAS patterns (heuristics for unparseable code fragments)
+    // Note: These string checks are appropriate here because we're analyzing
+    // doctest fragments that may not parse, looking for syntax patterns
     let has_triple_pattern = (code.contains("[(") || code.contains("(\"")) 
         && !code.contains("use") && !code.contains("Triple");
     let has_graph_macro = code.contains("GraphStEph") && code.contains("Lit!");

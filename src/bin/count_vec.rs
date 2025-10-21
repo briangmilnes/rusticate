@@ -7,8 +7,8 @@
 //! Binary: rusticate-count-vec
 
 use anyhow::Result;
-use rusticate::{StandardArgs, format_number, parse_source, find_nodes, node_text, find_rust_files};
-use ra_ap_syntax::{SyntaxKind, ast::AstNode};
+use rusticate::{StandardArgs, format_number, parse_source, find_nodes, find_rust_files};
+use ra_ap_syntax::{SyntaxKind, ast::{self, AstNode}};
 use std::fs;
 use std::path::Path;
 use std::time::Instant;
@@ -22,12 +22,16 @@ fn count_vec_in_file(file_path: &Path) -> Result<usize> {
     // Find all PATH_TYPE nodes
     let path_types = find_nodes(root, SyntaxKind::PATH_TYPE);
     
-    // Count only those that reference Vec
+    // Count only those that reference Vec using AST
     let vec_count = path_types.iter()
         .filter(|node| {
-            let text = node_text(node);
-            // Check if the path starts with Vec (e.g., Vec<T>, Vec::new)
-            text.starts_with("Vec") || text.contains("::Vec")
+            if let Some(path_type) = ast::PathType::cast((*node).clone()) {
+                if let Some(path) = path_type.path() {
+                    // Check if any segment in the path is "Vec"
+                    return path.segments().any(|seg| seg.to_string() == "Vec");
+                }
+            }
+            false
         })
         .count();
     

@@ -1,10 +1,13 @@
 
  We need a configuration which says which rules to run.
 
+I must be AFK so I would like you to execute relentlessly on
+the following things:
+
  We need uniform logging to analyses and perhaps fixes.
  In a directory for each program, with dates.
 
- We need uniform timing for these.
+ We need uniform timing for all programs.
 
 32 total binaries, with logging conventions at:
 29/32 have timing (Completed in Xms)
@@ -20,3 +23,4 @@ What would you like to work on next?
 
  Where are we not reporting units that we should?
 
+ Review the entire resticate codebase for string hacking and remove it. 

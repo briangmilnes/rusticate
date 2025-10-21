@@ -37,12 +37,23 @@ fn is_inside_impl_or_trait(node: &SyntaxNode) -> bool {
     })
 }
 
-/// Check if this path expression looks like UFCS: <Type as Trait>::method
+/// Check if this path expression looks like UFCS: <Type as Trait>::method using AST
 fn is_ufcs_path(path_node: &SyntaxNode) -> bool {
-    // UFCS patterns have PATH_TYPE nodes with generic arguments containing "as"
-    // The text will contain "<" and "as" keywords
-    let text = path_node.text().to_string();
-    text.contains('<') && text.contains(" as ") && text.contains(">::")
+    // UFCS patterns have PATH nodes with a generic_arg_list containing AS_KW
+    // Structure: PATH -> PATH_SEGMENT -> GENERIC_ARG_LIST -> (contains AS keyword)
+    for child in path_node.descendants() {
+        if child.kind() == SyntaxKind::GENERIC_ARG_LIST {
+            // Check if there's an AS keyword in the generic args (indicates "Type as Trait")
+            for token in child.descendants_with_tokens() {
+                if let Some(token) = token.as_token() {
+                    if token.kind() == SyntaxKind::AS_KW {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    false
 }
 
 fn check_file(file_path: &Path, source: &str) -> Result<Vec<Violation>> {
