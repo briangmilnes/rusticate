@@ -35,6 +35,22 @@ use std::path::{Path, PathBuf};
 use std::time::Instant;
 use rusticate::StandardArgs;
 
+/// Substitute generic T with concrete N to avoid recursive type aliases
+/// 
+/// Transforms:
+/// - `ArraySeqStPerS<T>` -> `ArraySeqStPerS<N>`
+/// - `BTreeSet<T>` -> `BTreeSet<N>`
+/// - `SomeType<T, U>` -> `SomeType<N, U>` (only first generic)
+/// 
+/// This avoids creating recursive aliases like `pub type T = SomeType<T>;`
+fn substitute_generic_t(type_str: &str) -> String {
+    // Replace <T> with <N>
+    let result = type_str.replace("<T>", "<N>");
+    // Also handle <T, ...> patterns
+    let result = result.replace("<T,", "<N,");
+    result
+}
+
 fn main() -> Result<()> {
     let start = Instant::now();
     let args = StandardArgs::parse()?;
@@ -327,7 +343,9 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
                                         let type_part = param_text[colon_pos + 1..].trim();
                                         // Remove leading & if present
                                         let clean_type = type_part.trim_start_matches('&').trim();
-                                        proposed_type = Some(format!("pub type T = {};", clean_type));
+                                        // Substitute generic T to avoid recursive types
+                                        let concrete_type = substitute_generic_t(clean_type);
+                                        proposed_type = Some(format!("pub type T = {};", concrete_type));
                                         return Ok((proposed_type.unwrap(), has_unused_self));
                                     }
                                 }
@@ -340,7 +358,9 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
                                         let type_part = param_text[colon_pos + 1..].trim();
                                         // Remove leading & if present
                                         let clean_type = type_part.trim_start_matches('&').trim();
-                                        proposed_type = Some(format!("pub type T = {};", clean_type));
+                                        // Substitute generic T to avoid recursive types
+                                        let concrete_type = substitute_generic_t(clean_type);
+                                        proposed_type = Some(format!("pub type T = {};", concrete_type));
                                         return Ok((proposed_type.unwrap(), has_unused_self));
                                     }
                                 }
