@@ -64,14 +64,65 @@ fn clean_parameter_type(type_str: &str) -> String {
 /// - `SomeType<T, U>` -> `SomeType<N, U>` (only first generic)
 /// 
 /// This avoids creating recursive aliases like `pub type T = SomeType<T>;`
+/// 
+/// Uses AST parsing to properly handle generic substitution.
 fn substitute_generic_t(type_str: &str) -> String {
-    // Replace <T> with <N>
-    let result = type_str.replace("<T>", "<N>");
-    // Also handle <T, ...> patterns
-    let result = result.replace("<T,", "<N,");
-    // Also handle [T] patterns
-    let result = result.replace("[T]", "[N]");
-    result
+    // Parse the type as a Rust type expression
+    let wrapped = format!("type Dummy = {};", type_str);
+    let parsed = SourceFile::parse(&wrapped, Edition::Edition2021);
+    
+    if !parsed.errors().is_empty() {
+        // If parsing fails, return original (may not be valid Rust syntax)
+        return type_str.to_string();
+    }
+    
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    // Find all generic parameter references and build replacement list
+    let mut replacements: Vec<(usize, usize)> = Vec::new();
+    
+    for node in root.descendants() {
+        // Look for GENERIC_ARG nodes that are just "T"
+        if node.kind() == SyntaxKind::TYPE_ARG {
+            let text = node.to_string().trim().to_string();
+            if text == "T" {
+                let start: usize = node.text_range().start().into();
+                let end: usize = node.text_range().end().into();
+                replacements.push((start, end));
+            }
+        }
+        // Also handle PATH_TYPE that is just "T" (for slice types like [T])
+        else if node.kind() == SyntaxKind::PATH_TYPE {
+            if let Some(path_type) = ast::PathType::cast(node.clone()) {
+                if let Some(path) = path_type.path() {
+                    let path_text = path.to_string();
+                    if path_text.trim() == "T" && node.parent().map_or(false, |p| p.kind() == SyntaxKind::SLICE_TYPE) {
+                        let start: usize = node.text_range().start().into();
+                        let end: usize = node.text_range().end().into();
+                        replacements.push((start, end));
+                    }
+                }
+            }
+        }
+    }
+    
+    // Apply replacements in reverse order to maintain offsets
+    let mut result = wrapped.clone();
+    replacements.sort_by_key(|(start, _)| std::cmp::Reverse(*start));
+    
+    for (start, end) in replacements {
+        result.replace_range(start..end, "N");
+    }
+    
+    // Extract the type back out from "type Dummy = TYPE;"
+    let prefix = "type Dummy = ";
+    let suffix = ";";
+    if result.starts_with(prefix) && result.ends_with(suffix) {
+        result[prefix.len()..result.len() - suffix.len()].to_string()
+    } else {
+        type_str.to_string()
+    }
 }
 
 fn main() -> Result<()> {
