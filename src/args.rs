@@ -201,6 +201,13 @@ pub mod args {
         
         /// Recursively search for a file
         fn search_for_file(dir: &PathBuf, filename: &str, results: &mut Vec<PathBuf>) -> Result<()> {
+            // Skip directories that should be excluded
+            if let Some(dir_name) = dir.file_name().and_then(|n| n.to_str()) {
+                if dir_name == "attic" || dir_name == "target" || dir_name.starts_with('.') {
+                    return Ok(());
+                }
+            }
+            
             if let Ok(entries) = std::fs::read_dir(dir) {
                 for entry in entries.flatten() {
                     let path = entry.path();
@@ -325,6 +332,13 @@ pub mod args {
         fn search_dir(dir: &std::path::Path, files: &mut Vec<PathBuf>) {
             if !dir.exists() {
                 return;
+            }
+            
+            // Skip directories that should be excluded
+            if let Some(dir_name) = dir.file_name().and_then(|n| n.to_str()) {
+                if dir_name == "attic" || dir_name == "target" || dir_name.starts_with('.') {
+                    return;
+                }
             }
             
             if let Ok(entries) = std::fs::read_dir(dir) {
