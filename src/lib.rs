@@ -11,6 +11,7 @@ pub mod fixer;
 pub mod visitor;
 pub mod args;
 pub mod ast_utils;
+pub mod logging;
 
 use anyhow::Result;
 use std::path::Path;
