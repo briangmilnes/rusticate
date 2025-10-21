@@ -80,9 +80,9 @@ cat APAS-AI-copy/apas-ai/src/Chap21/Exercise21_6.rs
 
 # 3. Identify the pattern that's failing
 
-# 4. Decide: Fix tool OR mark as not-supported
+# 4. Decide: Fix tool OR mark as not-supported (if genuinely impossible)
 
-# IF FIX TOOL:
+# FIX TOOL (default approach):
 # 5. Modify fix_no_pub_type.rs
 # 6. Check for string hacking
 ./target/debug/rusticate-review-string-hacking -f src/bin/fix_no_pub_type.rs
@@ -124,23 +124,24 @@ git checkout -- .
 
 ## Success Criteria
 
-For each file, one of three outcomes:
-1. ✅ **Fixed**: Tool updated, file transforms, all tests pass
-2. ⚠️ **Not Supported**: Pattern documented as outside tool scope
-3. 🔄 **Deferred**: Complex fix needed, documented for later
+For each file, one of two outcomes:
+1. ✅ **Fix Transform**: Update tool to handle pattern, file transforms, all tests pass
+2. ⚠️ **Not Supported**: Pattern documented as genuinely outside tool scope (e.g., proof-only modules)
+
+**No "Defer" option** - we either fix the tool or document why it's not supported.
 
 ## Tracking Progress
 
 | File | Chapter | Error Type | Status | Action Taken |
 |------|---------|------------|--------|--------------|
-| 1 | Chap21/Exercise21_9.rs | Proof-only | ⏳ | TBD |
-| 2 | Chap21/Exercise21_6.rs | Unknown | ⏳ | TBD |
-| 3 | Chap21/Problem21_4.rs | Incomplete trait | ⏳ | TBD |
-| 4 | Chap41/??? | Unknown | ⏳ | TBD |
-| 5 | Chap42/??? | Unknown | ⏳ | TBD |
-| 6 | Chap43/??? | Unknown | ⏳ | TBD |
-| 7 | Chap56/??? | Unknown | ⏳ | TBD |
-| 8 | Chap56/??? | Unknown | ⏳ | TBD |
+| 1 | Chap21/Exercise21_9.rs | Proof-only | ⏳ | Not Supported (expected) |
+| 2 | Chap21/Exercise21_6.rs | Unknown | ⏳ | Fix Transform |
+| 3 | Chap21/Problem21_4.rs | Incomplete trait | ⏳ | Fix Transform |
+| 4 | Chap41/??? | Unknown | ⏳ | Fix Transform |
+| 5 | Chap42/??? | Unknown | ⏳ | Fix Transform |
+| 6 | Chap43/??? | Unknown | ⏳ | Fix Transform |
+| 7 | Chap56/??? | Unknown | ⏳ | Fix Transform |
+| 8 | Chap56/??? | Unknown | ⏳ | Fix Transform |
 
 ## Guard Rails
 
