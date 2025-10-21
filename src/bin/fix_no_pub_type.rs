@@ -35,6 +35,27 @@ use std::path::{Path, PathBuf};
 use std::time::Instant;
 use rusticate::StandardArgs;
 
+/// Clean parameter type for use in type alias
+/// 
+/// Removes:
+/// - Leading `&` references
+/// - Leading `mut` keywords
+/// - Substitutes generic `T` with `N` to avoid recursive types
+/// 
+/// Transforms:
+/// - `&mut [T]` -> `[N]`
+/// - `&ArraySeqStPerS<T>` -> `ArraySeqStPerS<N>`
+/// - `&mut SomeType<T>` -> `SomeType<N>`
+fn clean_parameter_type(type_str: &str) -> String {
+    let cleaned = type_str
+        .trim_start_matches('&')
+        .trim()
+        .trim_start_matches("mut")
+        .trim();
+    
+    substitute_generic_t(cleaned)
+}
+
 /// Substitute generic T with concrete N to avoid recursive type aliases
 /// 
 /// Transforms:
@@ -48,6 +69,8 @@ fn substitute_generic_t(type_str: &str) -> String {
     let result = type_str.replace("<T>", "<N>");
     // Also handle <T, ...> patterns
     let result = result.replace("<T,", "<N,");
+    // Also handle [T] patterns
+    let result = result.replace("[T]", "[N]");
     result
 }
 
@@ -338,13 +361,11 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
                                 // Single parameter: use that parameter's type
                                 if let Some(first_param) = params.first() {
                                     let param_text = first_param.to_string();
-                                    // Extract type from "name: Type" or "name: &Type"
+                                    // Extract type from "name: Type" or "name: &Type" or "name: &mut Type"
                                     if let Some(colon_pos) = param_text.find(':') {
                                         let type_part = param_text[colon_pos + 1..].trim();
-                                        // Remove leading & if present
-                                        let clean_type = type_part.trim_start_matches('&').trim();
-                                        // Substitute generic T to avoid recursive types
-                                        let concrete_type = substitute_generic_t(clean_type);
+                                        // Clean the type (remove &, mut, substitute generics)
+                                        let concrete_type = clean_parameter_type(type_part);
                                         proposed_type = Some(format!("pub type T = {};", concrete_type));
                                         return Ok((proposed_type.unwrap(), has_unused_self));
                                     }
@@ -353,13 +374,11 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
                                 // Multi-parameter: use first parameter's type
                                 if let Some(first_param) = params.first() {
                                     let param_text = first_param.to_string();
-                                    // Extract type from "name: Type" or "name: &Type"
+                                    // Extract type from "name: Type" or "name: &Type" or "name: &mut Type"
                                     if let Some(colon_pos) = param_text.find(':') {
                                         let type_part = param_text[colon_pos + 1..].trim();
-                                        // Remove leading & if present
-                                        let clean_type = type_part.trim_start_matches('&').trim();
-                                        // Substitute generic T to avoid recursive types
-                                        let concrete_type = substitute_generic_t(clean_type);
+                                        // Clean the type (remove &, mut, substitute generics)
+                                        let concrete_type = clean_parameter_type(type_part);
                                         proposed_type = Some(format!("pub type T = {};", concrete_type));
                                         return Ok((proposed_type.unwrap(), has_unused_self));
                                     }
