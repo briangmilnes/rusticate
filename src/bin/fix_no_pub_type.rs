@@ -611,20 +611,87 @@ fn find_bench_file(src_file: &Path) -> Result<Option<PathBuf>> {
 fn fix_call_sites(file_path: &Path, analysis: &ModuleAnalysis) -> Result<()> {
     let source = fs::read_to_string(file_path)?;
     
-    let new_source = if analysis.has_unused_self {
+    // Step 1: Fix the imports - replace function imports with wildcard imports
+    let mut new_source = fix_imports_to_wildcard(&source, &analysis.module_name)?;
+    
+    // Step 2: Fix the call sites
+    new_source = if analysis.has_unused_self {
         // InsertionSortSt pattern: change receiver.method(&mut data) to data.method()
-        fix_unused_self_calls(&source)?
+        fix_unused_self_calls(&new_source)?
     } else if analysis.recommended_type.contains("pub type T =") {
         // All module patterns: change Module::method(arg1, ...) to arg1.method(...)
-        fix_algorithm_call_sites(&source, analysis)?
+        fix_algorithm_call_sites(&new_source, analysis)?
     } else {
-        // No transformation needed
-        return Ok(());
+        // No transformation needed for call sites
+        new_source
     };
     
     fs::write(file_path, new_source)?;
     
     Ok(())
+}
+
+/// Replace `use Module::function_name;` with `use Module::*;` using AST
+fn fix_imports_to_wildcard(source: &str, module_name: &str) -> Result<String> {
+    let parsed = SourceFile::parse(source, Edition::Edition2021);
+    if !parsed.errors().is_empty() {
+        return Ok(source.to_string()); // If parse fails, return unchanged
+    }
+    
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    let mut replacements: Vec<(usize, usize, String)> = Vec::new();
+    
+    // Find all USE items that import from our module
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::USE {
+            if let Some(use_item) = ast::Use::cast(node.clone()) {
+                if let Some(use_tree) = use_item.use_tree() {
+                    let use_text = use_tree.to_string();
+                    
+                    // Check if this is importing from our module (e.g., "Chap55::DFSStEph::DFSStEph::dfs")
+                    if use_text.contains(&format!("::{}::{}", module_name, module_name)) && !use_text.ends_with("::*") {
+                        // Extract the module path up to the second module name
+                        if let Some(path) = use_tree.path() {
+                            let segments: Vec<_> = path.segments().map(|s| s.to_string()).collect();
+                            
+                            // Find where the module name appears twice in sequence
+                            let mut module_path_parts = Vec::new();
+                            let mut found_double = false;
+                            for (i, segment) in segments.iter().enumerate() {
+                                module_path_parts.push(segment.clone());
+                                if i > 0 && segments[i - 1] == *module_name && segment == module_name {
+                                    found_double = true;
+                                    break;
+                                }
+                            }
+                            
+                            if found_double {
+                                // Build new import: path::to::Module::Module::*
+                                let new_import = format!("{}::*", module_path_parts.join("::"));
+                                
+                                // Replace the entire use_tree
+                                let start: usize = use_tree.syntax().text_range().start().into();
+                                let end: usize = use_tree.syntax().text_range().end().into();
+                                replacements.push((start, end, new_import));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Apply replacements from end to start
+    let mut result = source.to_string();
+    replacements.sort_by_key(|(start, _, _)| std::cmp::Reverse(*start));
+    
+    for (start, end, new_text) in replacements {
+        result.replace_range(start..end, &new_text);
+    }
+    
+    Ok(result)
 }
 
 fn fix_algorithm_call_sites(source: &str, analysis: &ModuleAnalysis) -> Result<String> {

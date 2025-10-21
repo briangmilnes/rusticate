@@ -59,6 +59,10 @@ name = "rusticate-fix-import-order"
 path = "src/bin/fix_import_order.rs"
 
 [[bin]]
+name = "rusticate-fix-our-uses-to-wildcards"
+path = "src/bin/fix_our_uses_to_wildcards.rs"
+
+[[bin]]
 name = "rusticate-review-doctests"
 path = "src/bin/review_doctests.rs"
 
