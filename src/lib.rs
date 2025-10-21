@@ -12,6 +12,7 @@ pub mod visitor;
 pub mod args;
 pub mod ast_utils;
 pub mod logging;
+pub mod tool_runner;
 
 use anyhow::Result;
 use std::path::Path;

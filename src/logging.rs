@@ -24,6 +24,18 @@ pub mod logging {
     }
 
     impl ToolLogger {
+        /// Create a disabled logger (no file output)
+        /// 
+        /// Used when logging is not desired but ToolLogger interface is needed
+        pub fn new_disabled() -> Self {
+            ToolLogger {
+                log_file: None,
+                log_path: None,
+                _tool_name: String::new(),
+                start_time: Local::now(),
+            }
+        }
+
         /// Create a new logger for a tool
         /// 
         /// Creates log directory structure: logs/<tool-name>/<YYYY-MM-DD>/run-<HH-MM-SS>.log
