@@ -26,17 +26,17 @@ fn fix_file(file_path: &PathBuf) -> Result<usize, Box<dyn std::error::Error>> {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
-                let use_text = use_item.to_string().trim().to_string();
-                if use_text.contains("Lit") && use_text.contains("apas_ai::") {
-                    // Extract macro name from use statement
-                    // e.g., "use apas_ai::AVLTreeSetStEphLit;" -> "AVLTreeSetStEphLit"
-                    if let Some(macro_name) = use_text
-                        .trim_start_matches("use apas_ai::")
-                        .trim_end_matches(';')
-                        .trim()
-                        .split("::")
-                        .last() {
-                        macros_already_imported.insert(macro_name.to_string());
+                if let Some(use_tree) = use_item.use_tree() {
+                    if let Some(path) = use_tree.path() {
+                        let path_str = path.to_string();
+                        // Check if this is an apas_ai macro import (ends with "Lit")
+                        if path_str.starts_with("apas_ai::") && path_str.ends_with("Lit") {
+                            // Extract the last segment (macro name)
+                            if let Some(last_segment) = path.segment() {
+                                let macro_name = last_segment.to_string();
+                                macros_already_imported.insert(macro_name);
+                            }
+                        }
                     }
                 }
             }
@@ -98,6 +98,24 @@ fn fix_file(file_path: &PathBuf) -> Result<usize, Box<dyn std::error::Error>> {
     };
     let root = parse.syntax_node();
     
+    // First, find all existing wildcard imports to avoid conflicts
+    let mut existing_wildcards: HashSet<String> = HashSet::new();
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::USE {
+            if let Some(use_item) = ast::Use::cast(node.clone()) {
+                if let Some(use_tree) = use_item.use_tree() {
+                    if use_tree.star_token().is_some() {
+                        if let Some(path) = use_tree.path() {
+                            let path_str = path.to_string();
+                            // Store the full wildcard path
+                            existing_wildcards.insert(path_str);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     // Find all non-wildcard imports from apas_ai modules
     let mut imports_to_replace: Vec<(String, String)> = Vec::new(); // (old_import, module_path)
     let mut module_to_imports: HashMap<String, Vec<String>> = HashMap::new();
@@ -105,43 +123,56 @@ fn fix_file(file_path: &PathBuf) -> Result<usize, Box<dyn std::error::Error>> {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
-                let use_text = use_item.to_string().trim().to_string();
-                
-                // Check if it's importing from apas_ai and NOT a wildcard
-                if use_text.contains("apas_ai::") && !use_text.trim_end_matches(';').trim_end().ends_with("::*") {
+                if let Some(use_tree) = use_item.use_tree() {
+                    let use_text = use_item.to_string().trim().to_string();
+                    
                     // Skip grouped imports like use apas_ai::{Foo, Bar};
-                    // These are typically macro imports and should be left alone
-                    if use_text.contains('{') {
+                    if use_tree.use_tree_list().is_some() {
                         continue;
                     }
                     
-                    // Skip macro imports
-                    if use_text.contains("Lit") {
-                        let parts: Vec<&str> = use_text.split("::").collect();
-                        if let Some(last) = parts.last() {
-                            if last.trim_end_matches(';').trim().ends_with("Lit") {
-                                continue; // Skip macro imports
+                    // Check if it has a star (wildcard)
+                    let has_star = use_tree.star_token().is_some();
+                    
+                    if let Some(path) = use_tree.path() {
+                        let path_str = path.to_string();
+                        
+                        // Check if it's importing from apas_ai and NOT a wildcard
+                        if path_str.starts_with("apas_ai::") && !has_star {
+                            // Skip macro imports (path contains "Lit")
+                            if path_str.contains("Lit") {
+                                continue;
+                            }
+                            
+                            // Skip imports with "as" renames
+                            if use_tree.rename().is_some() {
+                                continue;
+                            }
+                            
+                            // Extract module path using AST
+                            if let Some(module_path) = extract_module_path_from_path(&path) {
+                                // Skip imports from top-level apas_ai (typically macros)
+                                if module_path == "apas_ai" {
+                                    continue;
+                                }
+                                
+                                // APAS-specific: Skip Chap18 imports if there's already a Chap19 wildcard
+                                // e.g., skip "use apas_ai::Chap18::ArraySeqMtEph::ArraySeqMtEph::SomeTrait" 
+                                // if "apas_ai::Chap19::ArraySeqMtEph::ArraySeqMtEph" wildcard exists
+                                if module_path.contains("::Chap18::") {
+                                    let chap19_equivalent = module_path.replace("::Chap18::", "::Chap19::");
+                                    if existing_wildcards.contains(&chap19_equivalent) {
+                                        // Skip this import - it's covered by Chap19 wildcard
+                                        continue;
+                                    }
+                                }
+                                
+                                module_to_imports.entry(module_path.clone())
+                                    .or_insert_with(Vec::new)
+                                    .push(use_text.clone());
+                                imports_to_replace.push((use_text, module_path));
                             }
                         }
-                    }
-                    
-                    // Skip imports with "as" renames - these are legitimate type aliases
-                    if use_text.contains(" as ") {
-                        continue;
-                    }
-                    
-                    // Extract module path (everything up to the second-to-last ::)
-                    if let Some(module_path) = extract_module_path(&use_text) {
-                        // Skip imports from top-level apas_ai (typically macros)
-                        // e.g., use apas_ai::prob; -> module_path would be "apas_ai"
-                        if module_path == "apas_ai" {
-                            continue;
-                        }
-                        
-                        module_to_imports.entry(module_path.clone())
-                            .or_insert_with(Vec::new)
-                            .push(use_text.clone());
-                        imports_to_replace.push((use_text, module_path));
                     }
                 }
             }
@@ -195,13 +226,19 @@ fn fix_file(file_path: &PathBuf) -> Result<usize, Box<dyn std::error::Error>> {
     for node in root_final.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
-                let use_text = use_item.to_string().trim().to_string();
-                
-                // Track Chap19 wildcard imports (e.g., "use apas_ai::Chap19::ArraySeqMtEph::ArraySeqMtEph::*;")
-                if use_text.contains("apas_ai::Chap19::") && use_text.ends_with("::*;") {
-                    // Extract module name (e.g., "ArraySeqMtEph")
-                    if let Some(module_name) = extract_chap_module_name(&use_text) {
-                        chap19_wildcards.insert(module_name);
+                if let Some(use_tree) = use_item.use_tree() {
+                    // Check if this is a wildcard import
+                    if use_tree.star_token().is_some() {
+                        if let Some(path) = use_tree.path() {
+                            let path_str = path.to_string();
+                            // Track Chap19 wildcard imports (e.g., "apas_ai::Chap19::ArraySeqMtEph::ArraySeqMtEph")
+                            if path_str.starts_with("apas_ai::Chap19::") {
+                                // Extract module name using AST
+                                if let Some(module_name) = extract_chap_module_name_from_path(&path) {
+                                    chap19_wildcards.insert(module_name);
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -212,14 +249,21 @@ fn fix_file(file_path: &PathBuf) -> Result<usize, Box<dyn std::error::Error>> {
     for node in root_final.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
-                let use_text = use_item.to_string().trim().to_string();
-                
-                // Check for Chap18 wildcard imports
-                if use_text.contains("apas_ai::Chap18::") && use_text.ends_with("::*;") {
-                    if let Some(module_name) = extract_chap_module_name(&use_text) {
-                        // If Chap19 has this module, mark Chap18 import for removal
-                        if chap19_wildcards.contains(&module_name) {
-                            chap18_to_remove.push(use_text);
+                if let Some(use_tree) = use_item.use_tree() {
+                    // Check if this is a wildcard import
+                    if use_tree.star_token().is_some() {
+                        if let Some(path) = use_tree.path() {
+                            let path_str = path.to_string();
+                            // Check for Chap18 wildcard imports
+                            if path_str.starts_with("apas_ai::Chap18::") {
+                                if let Some(module_name) = extract_chap_module_name_from_path(&path) {
+                                    // If Chap19 has this module, mark Chap18 import for removal
+                                    if chap19_wildcards.contains(&module_name) {
+                                        let use_text = use_item.to_string().trim().to_string();
+                                        chap18_to_remove.push(use_text);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -243,53 +287,53 @@ fn fix_file(file_path: &PathBuf) -> Result<usize, Box<dyn std::error::Error>> {
     }
 }
 
-fn extract_chap_module_name(use_text: &str) -> Option<String> {
-    // Extract module name from "use apas_ai::ChapXX::ModuleName::ModuleName::*;"
+fn extract_chap_module_name_from_path(path: &ast::Path) -> Option<String> {
+    // Extract module name from path like "apas_ai::ChapXX::ModuleName::ModuleName"
     // Returns "ModuleName"
-    let parts: Vec<&str> = use_text
-        .trim_start_matches("use ")
-        .trim_end_matches("::*;")
-        .trim()
-        .split("::")
-        .collect();
+    
+    // Collect all path segments
+    let mut segments = Vec::new();
+    let mut current_path = Some(path.clone());
+    
+    while let Some(p) = current_path {
+        if let Some(segment) = p.segment() {
+            segments.push(segment.to_string());
+        }
+        current_path = p.qualifier();
+    }
+    
+    // Reverse to get segments in order: [apas_ai, ChapXX, ModuleName, ModuleName]
+    segments.reverse();
     
     // Pattern: apas_ai :: ChapXX :: ModuleName :: ModuleName
-    if parts.len() >= 4 && (parts[1].starts_with("Chap18") || parts[1].starts_with("Chap19")) {
-        Some(parts[2].to_string())
+    if segments.len() >= 4 && segments[0] == "apas_ai" && (segments[1].starts_with("Chap18") || segments[1].starts_with("Chap19")) {
+        Some(segments[2].clone())
     } else {
         None
     }
 }
 
-fn extract_module_path(use_text: &str) -> Option<String> {
-    // Extract module path from use statement
-    // e.g., "use apas_ai::Chap37::Foo::Foo::Bar;" -> "apas_ai::Chap37::Foo::Foo"
-    
-    let cleaned = use_text
-        .trim_start_matches("use ")
-        .trim_end_matches(';')
-        .trim();
-    
-    // Handle braces: use apas_ai::Foo::Foo::{Bar, Baz};
-    let cleaned = if let Some(pos) = cleaned.find('{') {
-        &cleaned[..pos]
-    } else {
-        cleaned
-    };
-    
-    // Handle "as" renames: use apas_ai::Foo::Foo::Bar as Baz;
-    let cleaned = if let Some(pos) = cleaned.find(" as ") {
-        &cleaned[..pos]
-    } else {
-        cleaned
-    };
-    
-    let parts: Vec<&str> = cleaned.split("::").collect();
-    
-    // We want everything except the last component
+fn extract_module_path_from_path(path: &ast::Path) -> Option<String> {
+    // Extract module path from AST path, excluding the last segment
     // e.g., apas_ai::Chap37::Foo::Foo::Bar -> apas_ai::Chap37::Foo::Foo
-    if parts.len() > 1 {
-        let module_parts = &parts[..parts.len() - 1];
+    
+    // Collect all path segments
+    let mut segments = Vec::new();
+    let mut current_path = Some(path.clone());
+    
+    while let Some(p) = current_path {
+        if let Some(segment) = p.segment() {
+            segments.push(segment.to_string());
+        }
+        current_path = p.qualifier();
+    }
+    
+    // Reverse to get segments in order
+    segments.reverse();
+    
+    // We want everything except the last segment
+    if segments.len() > 1 {
+        let module_parts = &segments[..segments.len() - 1];
         Some(module_parts.join("::"))
     } else {
         None
