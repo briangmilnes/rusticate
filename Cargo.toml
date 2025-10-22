@@ -141,6 +141,10 @@ name = "rusticate-review-no-trait-method-duplication"
 path = "src/bin/review_no_trait_method_duplication.rs"
 
 [[bin]]
+name = "rusticate-review-qualified-paths"
+path = "src/bin/review_qualified_paths.rs"
+
+[[bin]]
 name = "rusticate-review-string-hacking"
 path = "src/bin/review_string_hacking.rs"
 
