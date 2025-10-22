@@ -19,10 +19,6 @@ struct ImplInfo {
     is_trait_impl: bool,
 }
 
-fn normalize_whitespace(s: &str) -> String {
-    s.chars().filter(|c| !c.is_whitespace()).collect()
-}
-
 fn extract_methods(impl_node: &SyntaxNode) -> HashMap<String, MethodInfo> {
     let mut methods = HashMap::new();
     
@@ -55,26 +51,6 @@ fn is_trait_impl(impl_node: &SyntaxNode) -> bool {
     } else {
         false
     }
-}
-
-fn find_identical_methods(
-    inherent_methods: &HashMap<String, MethodInfo>,
-    trait_methods: &HashMap<String, MethodInfo>,
-) -> HashSet<String> {
-    let mut identical = HashSet::new();
-    
-    for (name, inherent_method) in inherent_methods {
-        if let Some(trait_method) = trait_methods.get(name) {
-            let inherent_normalized = normalize_whitespace(&inherent_method.body);
-            let trait_normalized = normalize_whitespace(&trait_method.body);
-            
-            if inherent_normalized == trait_normalized {
-                identical.insert(name.clone());
-            }
-        }
-    }
-    
-    identical
 }
 
 fn extract_type_name(impl_node: &SyntaxNode) -> Option<String> {
@@ -135,14 +111,59 @@ fn remove_methods_from_inherent_impl(
     Some(impl_node.to_string())
 }
 
+fn extract_trait_method_names(trait_node: &SyntaxNode) -> HashSet<String> {
+    let mut method_names = HashSet::new();
+    
+    if let Some(trait_ast) = ast::Trait::cast(trait_node.clone()) {
+        if let Some(assoc_item_list) = trait_ast.assoc_item_list() {
+            for item in assoc_item_list.assoc_items() {
+                if let ast::AssocItem::Fn(func) = item {
+                    if let Some(name) = func.name() {
+                        method_names.insert(name.to_string());
+                    }
+                }
+            }
+        }
+    }
+    
+    method_names
+}
+
+fn extract_trait_name_from_impl(impl_node: &SyntaxNode) -> Option<String> {
+    if let Some(impl_ast) = ast::Impl::cast(impl_node.clone()) {
+        if let Some(trait_ref) = impl_ast.trait_() {
+            // Get the trait name from the path
+            let trait_text = trait_ref.to_string();
+            // Extract base name (before any generic params)
+            let base_name = trait_text.split('<').next().unwrap_or(&trait_text);
+            return Some(base_name.trim().to_string());
+        }
+    }
+    None
+}
+
 fn process_file(file_path: &Path) -> Result<(usize, usize), Box<dyn std::error::Error>> {
     let content = fs::read_to_string(file_path)?;
     let parse = ra_ap_syntax::SourceFile::parse(&content, Edition::Edition2021);
     let root = parse.syntax_node();
     
+    // Find all trait definitions and extract their method names
+    let mut trait_methods: HashMap<String, HashSet<String>> = HashMap::new();
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::TRAIT {
+            if let Some(trait_ast) = ast::Trait::cast(node.clone()) {
+                if let Some(name) = trait_ast.name() {
+                    let trait_name = name.to_string();
+                    let methods = extract_trait_method_names(&node);
+                    trait_methods.insert(trait_name, methods);
+                }
+            }
+        }
+    }
+    
     // Find all impl blocks
     let mut inherent_impls: HashMap<String, ImplInfo> = HashMap::new();
-    let mut trait_impls: HashMap<String, Vec<ImplInfo>> = HashMap::new();
+    let mut type_to_trait: HashMap<String, String> = HashMap::new(); // type -> trait name
     
     for node in root.descendants() {
         if node.kind() == SyntaxKind::IMPL {
@@ -151,11 +172,10 @@ fn process_file(file_path: &Path) -> Result<(usize, usize), Box<dyn std::error::
             
             if let Some(type_name) = extract_type_name(&node) {
                 if is_trait {
-                    trait_impls.entry(type_name).or_insert_with(Vec::new).push(ImplInfo {
-                        node: node.clone(),
-                        methods,
-                        is_trait_impl: true,
-                    });
+                    // Track which trait this type implements
+                    if let Some(trait_name) = extract_trait_name_from_impl(&node) {
+                        type_to_trait.insert(type_name, trait_name);
+                    }
                 } else {
                     inherent_impls.insert(type_name, ImplInfo {
                         node: node.clone(),
@@ -171,29 +191,31 @@ fn process_file(file_path: &Path) -> Result<(usize, usize), Box<dyn std::error::
     let mut impls_removed = 0;
     let mut new_content = content.clone();
     
-    // For each type with both inherent and trait impl
+    // For each type with an inherent impl
     for (type_name, inherent) in &inherent_impls {
-        if let Some(trait_impl_list) = trait_impls.get(type_name) {
-            // Combine all trait impl methods
-            let mut all_trait_methods = HashMap::new();
-            for trait_impl in trait_impl_list {
-                all_trait_methods.extend(trait_impl.methods.clone());
-            }
-            
-            let identical = find_identical_methods(&inherent.methods, &all_trait_methods);
-            
-            if !identical.is_empty() {
-                let old_impl = inherent.node.to_string();
+        // Check if this type has a trait impl
+        if let Some(trait_name) = type_to_trait.get(type_name) {
+            // Get the methods declared in the trait definition
+            if let Some(trait_method_set) = trait_methods.get(trait_name) {
+                // Find which methods in the inherent impl are also in the trait
+                let methods_to_remove: HashSet<String> = inherent.methods.keys()
+                    .filter(|name| trait_method_set.contains(*name))
+                    .cloned()
+                    .collect();
                 
-                if let Some(new_impl) = remove_methods_from_inherent_impl(&inherent.node, &identical) {
-                    // Replace with modified impl
-                    new_content = new_content.replace(&old_impl, &new_impl);
-                    total_removed += identical.len();
-                } else {
-                    // Remove entire impl block
-                    new_content = new_content.replace(&old_impl, "");
-                    total_removed += identical.len();
-                    impls_removed += 1;
+                if !methods_to_remove.is_empty() {
+                    let old_impl = inherent.node.to_string();
+                    
+                    if let Some(new_impl) = remove_methods_from_inherent_impl(&inherent.node, &methods_to_remove) {
+                        // Replace with modified impl (keeping private helper methods)
+                        new_content = new_content.replace(&old_impl, &new_impl);
+                        total_removed += methods_to_remove.len();
+                    } else {
+                        // Remove entire impl block (all methods were in trait)
+                        new_content = new_content.replace(&old_impl, "");
+                        total_removed += methods_to_remove.len();
+                        impls_removed += 1;
+                    }
                 }
             }
         }
@@ -207,19 +229,16 @@ fn process_file(file_path: &Path) -> Result<(usize, usize), Box<dyn std::error::
 }
 
 fn main() {
-    let args: Vec<String> = std::env::args().collect();
-    if args.len() < 3 || args[1] != "-d" {
-        eprintln!("Usage: {} -d <directory>", args[0]);
-        std::process::exit(1);
-    }
+    let args = match rusticate::StandardArgs::parse() {
+        Ok(args) => args,
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            std::process::exit(1);
+        }
+    };
     
-    let target_dir = &args[2];
     let start = std::time::Instant::now();
-    
-    println!("Fixing IDENTICAL stub delegation in directory: {}", target_dir);
-    println!();
-    
-    let files = rusticate::find_rust_files(&[PathBuf::from(target_dir)]);
+    let files = rusticate::find_rust_files(&args.paths);
     
     let mut total_files_processed = 0;
     let mut total_files_modified = 0;
@@ -235,7 +254,7 @@ fn main() {
                     total_files_modified += 1;
                     total_methods_removed += methods_removed;
                     total_impls_removed += impls_removed;
-                    println!("{}: removed {} identical methods{}", 
+                    println!("{}: removed {} methods from inherent impl{}", 
                         path.display(),
                         methods_removed,
                         if impls_removed > 0 { 
@@ -256,8 +275,12 @@ fn main() {
     println!("Summary:");
     println!("  Files processed: {}", total_files_processed);
     println!("  Files modified: {}", total_files_modified);
-    println!("  Methods removed: {}", total_methods_removed);
+    println!("  Methods removed from inherent impls: {}", total_methods_removed);
     println!("  Inherent impl blocks removed: {}", total_impls_removed);
     println!("Completed in {}ms", start.elapsed().as_millis());
+    
+    if total_files_modified > 0 {
+        std::process::exit(1);
+    }
 }
 
