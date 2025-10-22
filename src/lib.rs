@@ -14,6 +14,7 @@ pub mod ast_utils;
 pub mod logging;
 pub mod tool_runner;
 pub mod count_helper;
+pub mod duplicate_methods;
 
 use anyhow::Result;
 use std::path::Path;

@@ -160,13 +160,23 @@ pub mod args {
             // 2. Look for test file in tests/
             let tests_dir = current_dir.join("tests");
             if tests_dir.exists() {
-                let test_file = format!("test_{}.rs", module_name);
                 let mut test_files = Vec::new();
-                Self::search_for_file(&tests_dir, &test_file, &mut test_files)?;
                 
-                // Also search for the module name directly (some tests might not have test_ prefix)
-                if test_files.is_empty() {
-                    Self::search_for_file(&tests_dir, &module_file, &mut test_files)?;
+                // Try multiple naming patterns:
+                // - test_{module}.rs (lowercase test_)
+                // - Test{Module}.rs (capital Test)
+                // - {Module}.rs (no prefix)
+                let test_patterns = vec![
+                    format!("test_{}.rs", module_name),
+                    format!("Test{}.rs", module_name),
+                    module_file.clone(),
+                ];
+                
+                for pattern in test_patterns {
+                    Self::search_for_file(&tests_dir, &pattern, &mut test_files)?;
+                    if !test_files.is_empty() {
+                        break;
+                    }
                 }
                 
                 if !test_files.is_empty() {
@@ -178,13 +188,23 @@ pub mod args {
             // 3. Look for bench file in benches/
             let benches_dir = current_dir.join("benches");
             if benches_dir.exists() {
-                let bench_file = format!("bench_{}.rs", module_name);
                 let mut bench_files = Vec::new();
-                Self::search_for_file(&benches_dir, &bench_file, &mut bench_files)?;
                 
-                // Also search for the module name directly
-                if bench_files.is_empty() {
-                    Self::search_for_file(&benches_dir, &module_file, &mut bench_files)?;
+                // Try multiple naming patterns:
+                // - bench_{module}.rs (lowercase bench_)
+                // - Bench{Module}.rs (capital Bench)
+                // - {Module}.rs (no prefix)
+                let bench_patterns = vec![
+                    format!("bench_{}.rs", module_name),
+                    format!("Bench{}.rs", module_name),
+                    module_file.clone(),
+                ];
+                
+                for pattern in bench_patterns {
+                    Self::search_for_file(&benches_dir, &pattern, &mut bench_files)?;
+                    if !bench_files.is_empty() {
+                        break;
+                    }
                 }
                 
                 if !bench_files.is_empty() {

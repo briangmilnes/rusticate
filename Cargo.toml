@@ -16,6 +16,7 @@ clap = { version = "4.5", features = ["derive"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 chrono = "0.4"
+regex = "1.10"
 
 [dev-dependencies]
 serial_test = "3.0"
@@ -136,8 +137,40 @@ name = "rusticate-review-stub-delegation"
 path = "src/bin/review_stub_delegation.rs"
 
 [[bin]]
+name = "rusticate-fix-stub-delegation"
+path = "src/bin/fix_stub_delegation.rs"
+
+[[bin]]
+name = "rusticate-fix-test-trait-imports"
+path = "src/bin/fix_test_trait_imports.rs"
+
+[[bin]]
 name = "rusticate-review-typeclasses"
 path = "src/bin/review_typeclasses.rs"
+
+[[bin]]
+name = "rusticate-review-comment-placement"
+path = "src/bin/review_comment_placement.rs"
+
+[[bin]]
+name = "rusticate-review-duplicate-methods"
+path = "src/bin/review_duplicate_methods.rs"
+
+[[bin]]
+name = "rusticate-review-non-wildcard-uses"
+path = "src/bin/review_non_wildcard_uses.rs"
+
+[[bin]]
+name = "rusticate-fix-non-wildcard-uses"
+path = "src/bin/fix_non_wildcard_uses.rs"
+
+[[bin]]
+name = "rusticate-fix-duplicate-methods"
+path = "src/bin/fix_duplicate_methods.rs"
+
+[[bin]]
+name = "rusticate-fix-duplicate-method-call-sites"
+path = "src/bin/fix_duplicate_method_call_sites.rs"
 
 [[bin]]
 name = "rusticate-analyze-review-typeclasses"

@@ -33,7 +33,74 @@ use ra_ap_syntax::{
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
+use std::collections::{HashMap, HashSet};
 use rusticate::StandardArgs;
+
+/// Extract generic parameter names from a type string
+/// 
+/// Examples:
+/// - `[N]` -> vec!["N"]
+/// - `PQEntry<V>` -> vec!["V"]
+/// - `HashMap<K, V>` -> vec!["K", "V"]
+/// - `AtomicUsize` -> vec![]
+fn extract_generic_params(type_str: &str) -> Vec<String> {
+    let mut params = Vec::new();
+    
+    // Parse the type to extract generic parameters
+    let wrapped = format!("type Dummy = {};", type_str);
+    let parsed = SourceFile::parse(&wrapped, Edition::Edition2021);
+    
+    if !parsed.errors().is_empty() {
+        return params;
+    }
+    
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    // Collect all TYPE_ARG nodes (generic parameters)
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::TYPE_ARG {
+            let param_name = node.to_string().trim().to_string();
+            if param_name.len() == 1 && param_name.chars().next().unwrap().is_uppercase() {
+                if !params.contains(&param_name) {
+                    params.push(param_name);
+                }
+            }
+        } else if node.kind() == SyntaxKind::PATH_TYPE {
+            // Check for slice types like [T]
+            if let Some(path_type) = ast::PathType::cast(node.clone()) {
+                if let Some(path) = path_type.path() {
+                    let path_text = path.to_string().trim().to_string();
+                    if path_text.len() == 1 && path_text.chars().next().unwrap().is_uppercase() {
+                        if node.parent().map_or(false, |p| p.kind() == SyntaxKind::SLICE_TYPE) {
+                            if !params.contains(&path_text) {
+                                params.push(path_text);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    params
+}
+
+/// Format type alias with or without generic parameter
+/// 
+/// Returns `pub type T<N> = [N];` for generic types
+/// Returns `pub type T<V> = PQEntry<V>;` for generic types with V
+/// Returns `pub type T = AtomicUsize;` for concrete types
+fn format_type_alias(type_str: &str) -> String {
+    let params = extract_generic_params(type_str);
+    
+    if params.is_empty() {
+        format!("pub type T = {};", type_str)
+    } else {
+        let param_list = params.join(", ");
+        format!("pub type T<{}> = {};", param_list, type_str)
+    }
+}
 
 /// Clean parameter type for use in type alias
 /// 
@@ -112,7 +179,7 @@ fn substitute_generic_t(type_str: &str) -> String {
     replacements.sort_by_key(|(start, _)| std::cmp::Reverse(*start));
     
     for (start, end) in replacements {
-        result.replace_range(start..end, "N");
+        result.replace_range(start..end, "S");
     }
     
     // Extract the type back out from "type Dummy = TYPE;"
@@ -123,6 +190,115 @@ fn substitute_generic_t(type_str: &str) -> String {
     } else {
         type_str.to_string()
     }
+}
+
+/// Build a map of (module_name, function_name) -> set of files that import it
+/// 
+/// This is used to detect cross-module dependencies so we don't transform
+/// functions that are imported and used by other modules.
+fn build_import_map(files: &[PathBuf]) -> HashMap<(String, String), HashSet<PathBuf>> {
+    let mut import_map: HashMap<(String, String), HashSet<PathBuf>> = HashMap::new();
+    
+    for file_path in files {
+        // Only scan src/ files for imports
+        if !file_path.to_string_lossy().contains("/src/") {
+            continue;
+        }
+        
+        if let Ok(source) = fs::read_to_string(file_path) {
+            if let Ok(parsed) = SourceFile::parse(&source, Edition::Edition2021).ok() {
+                let root = parsed.syntax();
+                
+                // Find all USE statements
+                for node in root.descendants() {
+                    if node.kind() == SyntaxKind::USE {
+                        if let Some(use_ast) = ast::Use::cast(node.clone()) {
+                            if let Some(use_tree) = use_ast.use_tree() {
+                                extract_imports_from_use_tree(&use_tree, file_path, &mut import_map);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    import_map
+}
+
+/// Extract imported items from a use tree and add them to the import map
+/// 
+/// Handles:
+/// - `use Module::Module::function;`
+/// - `use Module::Module::{fn1, fn2};`
+/// - `use Module::Module::*;`
+fn extract_imports_from_use_tree(
+    use_tree: &ast::UseTree,
+    importing_file: &Path,
+    import_map: &mut HashMap<(String, String), HashSet<PathBuf>>
+) {
+    if let Some(path) = use_tree.path() {
+        let segments: Vec<String> = path.segments()
+            .map(|s| s.to_string())
+            .collect();
+        
+        // Pattern: crate::ChapXX::ModuleName::ModuleName::function
+        // We want: ModuleName and function
+        if segments.len() >= 4 && segments[0] == "crate" {
+            let module_name = segments[2].clone(); // ChapXX/ModuleName
+            
+            // Check if there's a use_tree_list (multiple imports) or a single import
+            if let Some(use_tree_list) = use_tree.use_tree_list() {
+                // Multiple imports: use Module::{fn1, fn2};
+                for nested_tree in use_tree_list.use_trees() {
+                    if let Some(nested_path) = nested_tree.path() {
+                        let nested_segments: Vec<String> = nested_path.segments()
+                            .map(|s| s.to_string())
+                            .collect();
+                        if let Some(function_name) = nested_segments.last() {
+                            import_map.entry((module_name.clone(), function_name.clone()))
+                                .or_insert_with(HashSet::new)
+                                .insert(importing_file.to_path_buf());
+                        }
+                    }
+                }
+            } else if segments.len() >= 5 {
+                // Single import: use Module::Module::function;
+                let function_name = segments.last().unwrap().clone();
+                
+                // Handle star imports specially
+                if function_name == "*" {
+                    // Mark this module as having wildcard imports
+                    import_map.entry((module_name.clone(), "*".to_string()))
+                        .or_insert_with(HashSet::new)
+                        .insert(importing_file.to_path_buf());
+                } else {
+                    import_map.entry((module_name, function_name))
+                        .or_insert_with(HashSet::new)
+                        .insert(importing_file.to_path_buf());
+                }
+            }
+        }
+    }
+}
+
+/// Check if a function is imported by other modules
+fn is_function_imported(
+    module_name: &str,
+    function_name: &str,
+    import_map: &HashMap<(String, String), HashSet<PathBuf>>
+) -> bool {
+    // Check for explicit import
+    if import_map.contains_key(&(module_name.to_string(), function_name.to_string())) {
+        return true;
+    }
+    
+    // Check for wildcard import of this module
+    if import_map.contains_key(&(module_name.to_string(), "*".to_string())) {
+        return true;
+    }
+    
+    false
 }
 
 fn main() -> Result<()> {
@@ -136,6 +312,18 @@ fn main() -> Result<()> {
     // Get all Rust files to process
     let files = rusticate::find_rust_files(&args.paths);
     
+    // Build import map by scanning ALL src files in the project
+    // (not just the files being processed)
+    let project_root = base_dir.ancestors().find(|p| p.join("Cargo.toml").exists())
+        .unwrap_or(&base_dir);
+    let src_dir = project_root.join("src");
+    let all_src_files = if src_dir.exists() {
+        rusticate::find_rust_files(&[src_dir])
+    } else {
+        vec![]
+    };
+    let import_map = build_import_map(&all_src_files);
+    
     let mut success_count = 0;
     let mut skip_count = 0;
     let mut error_count = 0;
@@ -146,7 +334,7 @@ fn main() -> Result<()> {
             continue;
         }
         
-        match process_file(&file_path) {
+        match process_file(&file_path, &import_map) {
             Ok(did_work) => {
                 if did_work {
                     success_count += 1;
@@ -176,7 +364,7 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn process_file(file_path: &Path) -> Result<bool> {
+fn process_file(file_path: &Path, import_map: &HashMap<(String, String), HashSet<PathBuf>>) -> Result<bool> {
     // Step 1: Analyze the module to determine the transformation
     let source = fs::read_to_string(file_path)?;
     
@@ -220,48 +408,58 @@ fn process_file(file_path: &Path) -> Result<bool> {
     
     // Steps B-D: For modules with trait+pub fn pattern, transform if needed
     let current_source = fs::read_to_string(file_path)?;
-    if analysis.recommended_type.contains("pub type T =") && has_standalone_pub_fn(&current_source, &analysis)? {
-        let impl_exists = has_trait_impl(&current_source, &analysis)?;
+    if analysis.recommended_type.contains("pub type T =") && has_standalone_pub_fn(&current_source, &analysis, import_map)? {
         
-        if !impl_exists {
-            // Step B: Transform trait signatures
-            println!("{}:{}:\tTransforming trait signatures to use &self", file_path.display(), analysis.module_line);
-            let mut new_source = transform_algorithm_trait(&current_source, &analysis)?;
-            fs::write(file_path, &new_source)?;
-            println!("{}:{}:\tTransformed trait signatures", file_path.display(), analysis.module_line);
+        if analysis.is_functional_trait {
+            // Functional trait pattern: All functions, no &self parameters
+            // Just add pub type T, keep standalone pub fn for direct calling
+            // No impl transformation needed
+            println!("{}:{}:\tFunctional trait pattern - keeping standalone pub fn", file_path.display(), analysis.module_line);
+            // did_work already set to true from adding pub type
+        } else {
+            // Complex algorithm pattern: create trait impl
+            let impl_exists = has_trait_impl(&current_source, &analysis)?;
             
-            // Step C: Create impl Trait for T block
-            println!("{}:{}:\tCreating impl Trait for T block", file_path.display(), analysis.module_line);
-            new_source = fs::read_to_string(file_path)?;
-            new_source = create_trait_impl(&new_source, &analysis)?;
-            fs::write(file_path, &new_source)?;
-            println!("{}:{}:\tCreated impl block", file_path.display(), analysis.module_line);
-        }
-        
-        // Step D: Remove redundant standalone pub fn (always run if standalone fn exists)
-        println!("{}:{}:\tRemoving redundant standalone pub fn", file_path.display(), analysis.module_line);
-        let mut new_source = fs::read_to_string(file_path)?;
-        new_source = remove_standalone_pub_fn(&new_source, &analysis)?;
-        fs::write(file_path, &new_source)?;
-        println!("{}:{}:\tRemoved standalone pub fn", file_path.display(), analysis.module_line);
-        
-        // Step F: Fix call sites in test and bench files
-        match find_test_file(file_path)? {
-            Some(test_file) => {
-                println!("{}:1:\tFixing test call sites", test_file.display());
-                fix_call_sites(&test_file, &analysis)?;
-                println!("{}:1:\tFixed test call sites", test_file.display());
+            if !impl_exists {
+                // Step B: Transform trait signatures
+                println!("{}:{}:\tTransforming trait signatures to use &self", file_path.display(), analysis.module_line);
+                let mut new_source = transform_algorithm_trait(&current_source, &analysis)?;
+                fs::write(file_path, &new_source)?;
+                println!("{}:{}:\tTransformed trait signatures", file_path.display(), analysis.module_line);
+                
+                // Step C: Create impl Trait for T block
+                println!("{}:{}:\tCreating impl Trait for T block", file_path.display(), analysis.module_line);
+                new_source = fs::read_to_string(file_path)?;
+                new_source = create_trait_impl(&new_source, &analysis)?;
+                fs::write(file_path, &new_source)?;
+                println!("{}:{}:\tCreated impl block", file_path.display(), analysis.module_line);
             }
-            None => {}
+            
+            // Step D: Remove redundant standalone pub fn (always run if standalone fn exists)
+            println!("{}:{}:\tRemoving redundant standalone pub fn", file_path.display(), analysis.module_line);
+            let mut new_source = fs::read_to_string(file_path)?;
+            new_source = remove_standalone_pub_fn(&new_source, &analysis)?;
+            fs::write(file_path, &new_source)?;
+            println!("{}:{}:\tRemoved standalone pub fn", file_path.display(), analysis.module_line);
+            
+            // Step F: Fix call sites in test and bench files
+            match find_test_file(file_path)? {
+                Some(test_file) => {
+                    println!("{}:1:\tFixing test call sites", test_file.display());
+                    fix_call_sites(&test_file, &analysis)?;
+                    println!("{}:1:\tFixed test call sites", test_file.display());
+                }
+                None => {}
+            }
+            
+            if let Some(bench_file) = find_bench_file(file_path)? {
+                println!("{}:1:\tFixing bench call sites", bench_file.display());
+                fix_call_sites(&bench_file, &analysis)?;
+                println!("{}:1:\tFixed bench call sites", bench_file.display());
+            }
+            
+            did_work = true;
         }
-        
-        if let Some(bench_file) = find_bench_file(file_path)? {
-            println!("{}:1:\tFixing bench call sites", bench_file.display());
-            fix_call_sites(&bench_file, &analysis)?;
-            println!("{}:1:\tFixed bench call sites", bench_file.display());
-        }
-        
-        did_work = true;
     }
     
     // Step 4: Fix unused self if needed (InsertionSortSt pattern)
@@ -307,6 +505,7 @@ struct ModuleAnalysis {
     has_unused_self: bool,
     _unused_self_method: Option<String>,
     source_file: PathBuf,
+    is_functional_trait: bool,  // Single pub fn with n: N parameter
 }
 
 fn analyze_module(source: &str, source_file: &Path) -> Result<ModuleAnalysis> {
@@ -359,11 +558,12 @@ fn analyze_module(source: &str, source_file: &Path) -> Result<ModuleAnalysis> {
             has_unused_self: false,
             _unused_self_method: None,
             source_file: source_file.to_path_buf(),
+            is_functional_trait: false,
         });
     }
     
     // Compute recommended type by analyzing the module
-    let (recommended_type, has_unused_self) = compute_recommended_type(&root)?;
+    let (recommended_type, has_unused_self, is_functional_trait) = compute_recommended_type(&root)?;
     
     Ok(ModuleAnalysis {
         module_name,
@@ -373,10 +573,11 @@ fn analyze_module(source: &str, source_file: &Path) -> Result<ModuleAnalysis> {
         has_unused_self,
         _unused_self_method: None,
         source_file: source_file.to_path_buf(),
+        is_functional_trait,
     })
 }
 
-fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, bool)> {
+fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, bool, bool)> {
     // First check: if module already has pub struct, pub enum, or pub type, no type alias needed
     for node in root.descendants() {
         if node.kind() == SyntaxKind::STRUCT {
@@ -405,40 +606,60 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
     // Look for trait methods first - if multi-parameter, use first param type
     let mut has_unused_self = false;
     let mut proposed_type: Option<String> = None;
+    let mut is_functional_trait = false;
     
     // Check trait methods for parameter patterns
+    // Also check for functional trait pattern:
+    // Trait with NO &self parameters (all functions, no methods)
+    let mut trait_method_count = 0;
+    let mut has_self_param_in_trait = false;
     for node in root.descendants() {
         if node.kind() == SyntaxKind::TRAIT {
             for child in node.descendants() {
                 if child.kind() == SyntaxKind::FN {
+                    trait_method_count += 1;
                     if let Some(fn_ast) = ast::Fn::cast(child.clone()) {
+                        // Check if this trait method has a self parameter
                         if let Some(param_list) = fn_ast.param_list() {
+                            for param in param_list.params() {
+                                if ast::SelfParam::cast(param.syntax().clone()).is_some() {
+                                    has_self_param_in_trait = true;
+                                    break;
+                                }
+                            }
+                            
                             let params: Vec<_> = param_list.params().collect();
                             
                             if params.len() == 1 {
-                                // Single parameter: use that parameter's type
+                                // Check for simple algorithm: single param n: N
                                 if let Some(first_param) = params.first() {
                                     let param_text = first_param.to_string();
-                                    // Extract type from "name: Type" or "name: &Type" or "name: &mut Type"
-                                    if let Some(colon_pos) = param_text.find(':') {
-                                        let type_part = param_text[colon_pos + 1..].trim();
-                                        // Clean the type (remove &, mut, substitute generics)
-                                        let concrete_type = clean_parameter_type(type_part);
-                                        proposed_type = Some(format!("pub type T = {};", concrete_type));
-                                        return Ok((proposed_type.unwrap(), has_unused_self));
+                                    if (param_text.contains("n: N") || param_text.contains("n:N")) && trait_method_count == 1 {
+                                        is_functional_trait = true;
+                                    }
+                                    
+                                    // Extract type from "name: Type" or "name: &Type" or "name: &mut Type" (only for first method)
+                                    if proposed_type.is_none() {
+                                        if let Some(colon_pos) = param_text.find(':') {
+                                            let type_part = param_text[colon_pos + 1..].trim();
+                                            // Clean the type (remove &, mut, substitute generics)
+                                            let concrete_type = clean_parameter_type(type_part);
+                                            proposed_type = Some(format_type_alias(&concrete_type));
+                                        }
                                     }
                                 }
                             } else if params.len() >= 2 {
-                                // Multi-parameter: use first parameter's type
-                                if let Some(first_param) = params.first() {
-                                    let param_text = first_param.to_string();
-                                    // Extract type from "name: Type" or "name: &Type" or "name: &mut Type"
-                                    if let Some(colon_pos) = param_text.find(':') {
-                                        let type_part = param_text[colon_pos + 1..].trim();
-                                        // Clean the type (remove &, mut, substitute generics)
-                                        let concrete_type = clean_parameter_type(type_part);
-                                        proposed_type = Some(format!("pub type T = {};", concrete_type));
-                                        return Ok((proposed_type.unwrap(), has_unused_self));
+                                // Multi-parameter: use first parameter's type (only for first method)
+                                if proposed_type.is_none() {
+                                    if let Some(first_param) = params.first() {
+                                        let param_text = first_param.to_string();
+                                        // Extract type from "name: Type" or "name: &Type" or "name: &mut Type"
+                                        if let Some(colon_pos) = param_text.find(':') {
+                                            let type_part = param_text[colon_pos + 1..].trim();
+                                            // Clean the type (remove &, mut, substitute generics)
+                                            let concrete_type = clean_parameter_type(type_part);
+                                            proposed_type = Some(format_type_alias(&concrete_type));
+                                        }
                                     }
                                 }
                             }
@@ -447,6 +668,11 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
                 }
             }
         }
+    }
+    
+    // Check if this is a functional trait (all functions, no &self parameters in trait definition)
+    if trait_method_count > 0 && !has_self_param_in_trait {
+        is_functional_trait = true;
     }
     
     // If no multi-param traits found, check impl blocks
@@ -462,7 +688,7 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
                         if type_name != "T" {
                             // Check if it's a concrete type (starts with uppercase, or contains ::)
                             if type_name.chars().next().map_or(false, |c| c.is_uppercase()) || type_name.contains("::") {
-                                proposed_type = Some(format!("pub type T = {};", type_name));
+                                proposed_type = Some(format_type_alias(&type_name));
                                 break;
                             }
                         }
@@ -494,17 +720,9 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
                                             // Extract type from parameter using AST
                                             if let Some(ty) = param.ty() {
                                                 let type_str = ty.to_string();
-                                                
-                                                // Extract the base type
-                                                if type_str.starts_with("&mut ") {
-                                                    let base = &type_str[5..];
-                                                    proposed_type = Some(format!("pub type T<S> = {};", base));
-                                                } else if type_str.starts_with("&") {
-                                                    let base = &type_str[1..].trim();
-                                                    proposed_type = Some(format!("pub type T<S> = {};", base));
-                                                } else {
-                                                    proposed_type = Some(format!("pub type T<S> = {};", type_str));
-                                                }
+                                                // Use clean_parameter_type to properly substitute generics
+                                                let concrete_type = clean_parameter_type(&type_str);
+                                                proposed_type = Some(format_type_alias(&concrete_type));
                                                 break;
                                             }
                                         }
@@ -558,16 +776,47 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
         
         // Only recommend T = N if Types is imported
         if has_types_import {
+            // Collect all standalone pub fn (not in impl blocks)
+            let mut standalone_pub_fns: Vec<ast::Fn> = Vec::new();
             for node in root.descendants() {
                 if node.kind() == SyntaxKind::FN {
-                    if let Some(fn_ast) = ast::Fn::cast(node.clone()) {
-                        if fn_ast.visibility().map_or(false, |v| v.to_string() == "pub") {
-                            // Found a pub fn and Types is imported - use N
-                            proposed_type = Some("pub type T = N;".to_string());
+                    // Check if NOT inside an impl block
+                    let mut in_impl = false;
+                    let mut parent = node.parent();
+                    while let Some(p) = parent {
+                        if p.kind() == SyntaxKind::IMPL {
+                            in_impl = true;
                             break;
+                        }
+                        parent = p.parent();
+                    }
+                    
+                    if !in_impl {
+                        if let Some(fn_ast) = ast::Fn::cast(node.clone()) {
+                            if fn_ast.visibility().map_or(false, |v| v.to_string() == "pub") {
+                                standalone_pub_fns.push(fn_ast);
+                            }
                         }
                     }
                 }
+            }
+            
+            // Check for simple algorithm pattern: exactly 1 pub fn with 1 parameter n: N
+            if standalone_pub_fns.len() == 1 {
+                if let Some(param_list) = standalone_pub_fns[0].param_list() {
+                    let params: Vec<_> = param_list.params().collect();
+                    if params.len() == 1 {
+                        let param_text = params[0].to_string();
+                        if param_text.contains("n: N") || param_text.contains("n:N") {
+                            is_functional_trait = true;
+                        }
+                    }
+                }
+            }
+            
+            if !standalone_pub_fns.is_empty() {
+                // Found a pub fn and Types is imported - use N
+                proposed_type = Some("pub type T = N;".to_string());
             }
         }
     }
@@ -577,59 +826,70 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
         anyhow::anyhow!("Cannot determine meaningful pub type for this module")
     })?;
     
-    Ok((recommended, has_unused_self))
+    Ok((recommended, has_unused_self, is_functional_trait))
 }
 
 fn add_pub_type(source: &str, analysis: &ModuleAnalysis) -> Result<String> {
-    // Find the position after "pub mod Name {"
-    let mod_start = source.find(&format!("pub mod {} {{", analysis.module_name))
-        .ok_or_else(|| anyhow::anyhow!("Could not find module declaration"))?;
+    // Use AST to find proper insertion point after all use statements
+    let parsed = SourceFile::parse(source, Edition::Edition2021);
+    if !parsed.errors().is_empty() {
+        return Err(anyhow::anyhow!("Failed to parse source file"));
+    }
     
-    let brace_pos = source[mod_start..].find('{')
-        .ok_or_else(|| anyhow::anyhow!("Could not find opening brace"))?;
+    let tree = parsed.tree();
+    let root = tree.syntax();
     
-    let after_brace_pos = mod_start + brace_pos + 1;
-    let after_brace = &source[after_brace_pos..];
-    
-    // Find the position after all use statements
-    let mut insert_pos = after_brace_pos;
-    let mut last_use_pos = after_brace_pos;
-    
-    for line in after_brace.lines() {
-        let trimmed = line.trim();
-        if trimmed.starts_with("use ") {
-            last_use_pos = insert_pos + line.len() + 1; // +1 for newline
-        }
-        insert_pos += line.len() + 1;
-        
-        // Stop if we hit non-blank, non-use line
-        if !trimmed.is_empty() && !trimmed.starts_with("use ") {
-            break;
+    // Find the module
+    let mut module_node: Option<ra_ap_syntax::SyntaxNode> = None;
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::MODULE {
+            if let Some(module) = ast::Module::cast(node.clone()) {
+                if let Some(name) = module.name() {
+                    if name.text() == analysis.module_name {
+                        module_node = Some(node);
+                        break;
+                    }
+                }
+            }
         }
     }
     
-    // Use position after last use statement
-    insert_pos = last_use_pos;
+    let module_node = module_node.ok_or_else(|| anyhow::anyhow!("Could not find module in AST"))?;
     
-    // Skip any existing blank lines after use statements
-    let remaining = &source[insert_pos..];
-    for line in remaining.lines() {
-        if line.trim().is_empty() {
-            insert_pos += line.len() + 1;
+    // Find all USE nodes in the module
+    let mut last_use_end: Option<usize> = None;
+    for node in module_node.descendants() {
+        if node.kind() == SyntaxKind::USE {
+            let end: usize = node.text_range().end().into();
+            if last_use_end.is_none() || end > last_use_end.unwrap() {
+                last_use_end = Some(end);
+            }
+        }
+    }
+    
+    // Determine insertion point
+    let insert_pos = if let Some(use_end) = last_use_end {
+        // Insert after last use statement
+        use_end
     } else {
-            break;
-        }
-    }
+        // No use statements - insert after module opening brace
+        let mod_start = source.find(&format!("pub mod {} {{", analysis.module_name))
+            .ok_or_else(|| anyhow::anyhow!("Could not find module declaration"))?;
+        let brace_pos = source[mod_start..].find('{')
+            .ok_or_else(|| anyhow::anyhow!("Could not find opening brace"))?;
+        mod_start + brace_pos + 1
+    };
     
-    // Get indentation from the next non-empty line
-    let indent = if let Some(first_line) = remaining.lines().find(|l| !l.trim().is_empty()) {
+    // Get indentation by finding the first non-whitespace content after insert point
+    let remaining = &source[insert_pos..];
+    let indent = if let Some(first_line) = remaining.lines().skip_while(|l| l.trim().is_empty()).next() {
         first_line.chars().take_while(|c| c.is_whitespace()).collect::<String>()
     } else {
         "    ".to_string()
     };
     
-    // Build the insertion: indent + type + blank line (one blank line already exists before insert_pos)
-    let insertion = format!("{}{}\n", indent, analysis.recommended_type);
+    // Build the insertion with proper formatting
+    let insertion = format!("\n{}{}\n", indent, analysis.recommended_type);
     
     // Insert the type
     let before = &source[..insert_pos];
@@ -926,8 +1186,8 @@ fn has_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<bool> {
     Ok(false)
 }
 
-fn has_standalone_pub_fn(source: &str, _analysis: &ModuleAnalysis) -> Result<bool> {
-    // Check if there are any standalone pub fn declarations that match trait methods
+fn has_inherent_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<bool> {
+    // Check if there's already an inherent impl T block
     
     let parsed = SourceFile::parse(source, Edition::Edition2021);
     if !parsed.errors().is_empty() {
@@ -937,6 +1197,150 @@ fn has_standalone_pub_fn(source: &str, _analysis: &ModuleAnalysis) -> Result<boo
     let tree = parsed.tree();
     let root = tree.syntax();
     
+    // Look for impl blocks without a trait (inherent impl)
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::IMPL {
+            if let Some(impl_ast) = ast::Impl::cast(node.clone()) {
+                // Check if it's impl T (no trait)
+                if impl_ast.trait_().is_none() {
+                    if let Some(self_ty) = impl_ast.self_ty() {
+                        if self_ty.to_string().trim() == "T" {
+                            return Ok(true);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    Ok(false)
+}
+
+fn create_inherent_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String> {
+    // Create impl T block by converting standalone pub fn to method
+    // For simple algorithm pattern: pub fn name(n: N) -> ... becomes impl T { pub fn name(&self) -> ... }
+    
+    let parsed = SourceFile::parse(source, Edition::Edition2021);
+    if !parsed.errors().is_empty() {
+        return Err(anyhow::anyhow!("Parse errors"));
+    }
+    
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    // Find the standalone pub fn
+    let mut pub_fn_node: Option<ra_ap_syntax::SyntaxNode> = None;
+    let mut fn_name = String::new();
+    let mut fn_body_text = String::new();
+    let mut fn_ret_type = String::new();
+    
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::FN {
+            // Check if NOT inside an impl block
+            let mut in_impl = false;
+            let mut parent = node.parent();
+            while let Some(p) = parent {
+                if p.kind() == SyntaxKind::IMPL {
+                    in_impl = true;
+                    break;
+                }
+                parent = p.parent();
+            }
+            
+            if !in_impl {
+                if let Some(fn_ast) = ast::Fn::cast(node.clone()) {
+                    if fn_ast.visibility().map_or(false, |v| v.to_string() == "pub") {
+                        if let Some(name) = fn_ast.name() {
+                            fn_name = name.text().to_string();
+                            
+                            // Get body
+                            if let Some(body) = fn_ast.body() {
+                                fn_body_text = if let Some(stmt_list) = body.stmt_list() {
+                                    stmt_list.to_string()
+                                } else {
+                                    body.to_string()
+                                };
+                            }
+                            
+                            // Get return type
+                            if let Some(ret) = fn_ast.ret_type() {
+                                fn_ret_type = ret.to_string();
+                            }
+                            
+                            pub_fn_node = Some(node.clone());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    let pub_fn_node = pub_fn_node.ok_or_else(|| anyhow::anyhow!("No standalone pub fn found"))?;
+    
+    // Build the inherent impl
+    let impl_block = format!(
+        "\n\n    impl T {{\n        pub fn {}(&self){} {{\n            let n = *self;\n            {}\n        }}\n    }}",
+        fn_name,
+        fn_ret_type,
+        fn_body_text.trim()
+    );
+    
+    // Insert after the pub fn
+    let fn_end: usize = pub_fn_node.text_range().end().into();
+    let mut result = source.to_string();
+    result.insert_str(fn_end, &impl_block);
+    
+    Ok(result)
+}
+
+fn has_standalone_pub_fn(source: &str, analysis: &ModuleAnalysis, import_map: &HashMap<(String, String), HashSet<PathBuf>>) -> Result<bool> {
+    // Check if there are any standalone pub fn declarations that match trait methods
+    // AND operate on primitive/slice types (not external types like AtomicUsize)
+    // AND are NOT imported by other modules
+    //
+    // IMPORTANT: If ANY function in this module is imported elsewhere, we skip
+    // transformation of the ENTIRE module to avoid breaking cross-module dependencies.
+    //
+    // For simple algorithms (single pub fn with n: N), we just check if there's
+    // any standalone pub fn, without requiring trait method name matching.
+    
+    let parsed = SourceFile::parse(source, Edition::Edition2021);
+    if !parsed.errors().is_empty() {
+        return Ok(false);
+    }
+    
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    // Short circuit for simple algorithms - just check if there's any standalone pub fn
+    if analysis.is_functional_trait {
+        for node in root.descendants() {
+            if node.kind() == SyntaxKind::FN {
+                // Check if NOT inside an impl block
+                let mut in_impl = false;
+                let mut parent = node.parent();
+                while let Some(p) = parent {
+                    if p.kind() == SyntaxKind::IMPL {
+                        in_impl = true;
+                        break;
+                    }
+                    parent = p.parent();
+                }
+                
+                if !in_impl {
+                    if let Some(fn_ast) = ast::Fn::cast(node.clone()) {
+                        if fn_ast.visibility().map_or(false, |v| v.to_string() == "pub") {
+                            return Ok(true);  // Found standalone pub fn, done!
+                        }
+                    }
+                }
+            }
+        }
+        return Ok(false);
+    }
+    
+    // For complex algorithms, check trait method name matching
     // Find trait and collect method names
     let mut method_names: Vec<String> = Vec::new();
     
@@ -958,7 +1362,8 @@ fn has_standalone_pub_fn(source: &str, _analysis: &ModuleAnalysis) -> Result<boo
         }
     }
     
-    // Check if there are any standalone pub fn matching trait method names
+    // FIRST PASS: Check if ANY function in this module is imported elsewhere
+    // If so, skip transformation entirely
     for node in root.descendants() {
         if node.kind() == SyntaxKind::FN {
             // Check if this function is NOT inside an impl block
@@ -982,6 +1387,63 @@ fn has_standalone_pub_fn(source: &str, _analysis: &ModuleAnalysis) -> Result<boo
                         if method_names.contains(&name) {
                             if let Some(vis) = fn_ast.visibility() {
                                 if vis.to_string() == "pub" {
+                                    // Check if this function is imported by other modules
+                                    if is_function_imported(&analysis.module_name, &name, import_map) {
+                                        // Function is imported elsewhere - skip ENTIRE module transformation
+                                        return Ok(false);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // SECOND PASS: Now check if there are transformable functions
+    // (non-imported, non-external-type functions)
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::FN {
+            // Check if this function is NOT inside an impl block
+            let mut in_impl = false;
+            let mut parent = node.parent();
+            while let Some(p) = parent {
+                if p.kind() == SyntaxKind::IMPL {
+                    in_impl = true;
+                    break;
+                }
+                parent = p.parent();
+            }
+            
+            // Only check standalone functions (not in impl blocks)
+            if !in_impl {
+                if let Some(fn_ast) = ast::Fn::cast(node.clone()) {
+                    if let Some(fn_name) = fn_ast.name() {
+                        let name = fn_name.text().to_string();
+                        
+                        // Check if this is a pub fn matching a trait method
+                        if method_names.contains(&name) {
+                            if let Some(vis) = fn_ast.visibility() {
+                                if vis.to_string() == "pub" {
+                                    // Check first parameter type - must be primitive/slice, not external type
+                                    if let Some(param_list) = fn_ast.param_list() {
+                                        let params: Vec<_> = param_list.params().collect();
+                                        if let Some(first_param) = params.first() {
+                                            let param_text = first_param.to_string();
+                                            // Extract type after colon
+                                            if let Some(colon_pos) = param_text.find(':') {
+                                                let type_part = param_text[colon_pos + 1..].trim();
+                                                // Skip if first param is an external type (not in analysis.recommended_type)
+                                                // e.g., if type is "&AtomicUsize" but recommended_type doesn't contain "AtomicUsize"
+                                                if type_part.contains("AtomicUsize") || type_part.contains("Atomic") {
+                                                    if !analysis.recommended_type.contains("AtomicUsize") && !analysis.recommended_type.contains("Atomic") {
+                                                        continue; // Skip this function - it operates on external type
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                     return Ok(true);
                                 }
                             }
@@ -1610,12 +2072,12 @@ fn fix_method_body(source: &str) -> Result<String> {
                             if let Some(segment) = path.segment() {
                                 if let Some(name_ref) = segment.name_ref() {
                                     if name_ref.text() == "InsertionSortStTrait" {
-                                    // Find fn insSort inside this impl
-                                    for child in node.descendants() {
-                                        if child.kind() == SyntaxKind::FN {
-                                            if let Some(fn_ast) = ast::Fn::cast(child.clone()) {
-                                                if let Some(name) = fn_ast.name() {
-                                                    if name.text() == "insSort" {
+                // Find fn insSort inside this impl
+                for child in node.descendants() {
+                    if child.kind() == SyntaxKind::FN {
+                        if let Some(fn_ast) = ast::Fn::cast(child.clone()) {
+                            if let Some(name) = fn_ast.name() {
+                                if name.text() == "insSort" {
                                                         // Found it - replace slice with self in body using AST
                                                         
                                                         // Use AST-based replacement for slice -> self
@@ -1628,13 +2090,13 @@ fn fix_method_body(source: &str) -> Result<String> {
                                                                 // Reconstruct the function with the new body
                                                                 let body_start: usize = stmt_list.syntax().text_range().start().into();
                                                                 let body_end: usize = stmt_list.syntax().text_range().end().into();
-                                                                
-                                                                let mut result = String::new();
+                                    
+                                    let mut result = String::new();
                                                                 result.push_str(&source[..body_start]);
                                                                 result.push_str(&modified_body);
                                                                 result.push_str(&source[body_end..]);
-                                                                
-                                                                return Ok(result);
+                                    
+                                    return Ok(result);
                                                             }
                                                         }
                                                     }
@@ -1643,9 +2105,9 @@ fn fix_method_body(source: &str) -> Result<String> {
                                         }
                                     }
                                 }
+                                }
                             }
                         }
-                    }
                     }
                 }
             }
@@ -1695,7 +2157,7 @@ fn fix_unused_self_calls(source: &str) -> Result<String> {
                                         arg_text.trim_start_matches("&mut ").trim()
                                     } else if arg_text.starts_with("&") {
                                         arg_text.trim_start_matches("&").trim()
-                                    } else {
+                } else {
                                         arg_text.trim()
                                     };
                                     

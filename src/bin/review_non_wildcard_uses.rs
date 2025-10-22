@@ -1,0 +1,283 @@
+use ra_ap_syntax::{ast::{self, AstNode}, Edition, SyntaxKind};
+use std::collections::HashMap;
+use std::path::PathBuf;
+use std::fs;
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
+enum ViolationType {
+    ToplevelWildcard, // (!) BOGUS
+    Trait,            // (a)
+    Function,         // (b)
+    Type,             // (c)
+}
+
+impl ViolationType {
+    fn letter(&self) -> &'static str {
+        match self {
+            ViolationType::ToplevelWildcard => "(!)",
+            ViolationType::Trait => "(a)",
+            ViolationType::Function => "(b)",
+            ViolationType::Type => "(c)",
+        }
+    }
+    
+    fn description(&self) -> &'static str {
+        match self {
+            ViolationType::ToplevelWildcard => "(!) BOGUS top-level wildcard",
+            ViolationType::Trait => "(a) single trait import",
+            ViolationType::Function => "(b) single function import",
+            ViolationType::Type => "(c) single type import",
+        }
+    }
+}
+
+fn categorize_import(use_text: &str) -> Option<ViolationType> {
+    // Skip macro imports (end with Lit)
+    if use_text.contains("Lit") {
+        let parts: Vec<&str> = use_text.split("::").collect();
+        if let Some(last) = parts.last() {
+            if last.trim_end_matches(';').trim().ends_with("Lit") {
+                return None; // Macro import, OK
+            }
+        }
+    }
+    
+    // Skip imports with "as" renames - these are legitimate type aliases
+    if use_text.contains(" as ") {
+        return None;
+    }
+    
+    // Check what's being imported
+    if use_text.contains("Trait;") || use_text.contains("Trait,") || use_text.ends_with("Trait }") {
+        Some(ViolationType::Trait)
+    } else {
+        // Check if it's a function (lowercase) or Type (PascalCase)
+        let parts: Vec<&str> = use_text.split("::").collect();
+        if let Some(last) = parts.last() {
+            let item = last.trim_end_matches(';').trim();
+            // Remove any braces/commas
+            let item = item.trim_end_matches('}').trim_end_matches(',').trim();
+            
+            if !item.is_empty() {
+                let first_char = item.chars().next()?;
+                if first_char.is_lowercase() {
+                    Some(ViolationType::Function)
+                } else if first_char.is_uppercase() {
+                    Some(ViolationType::Type)
+                } else {
+                    None
+                }
+            } else {
+                None
+            }
+        } else {
+            None
+        }
+    }
+}
+
+fn check_file(file_path: &PathBuf) -> Vec<(usize, String, ViolationType)> {
+    let mut violations = Vec::new();
+    
+    let content = match fs::read_to_string(file_path) {
+        Ok(c) => c,
+        Err(_) => return violations,
+    };
+    
+    let parse = ra_ap_syntax::SourceFile::parse(&content, Edition::Edition2021);
+    let root = parse.syntax_node();
+    
+    // Find all use statements
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::USE {
+            if let Some(use_item) = ast::Use::cast(node.clone()) {
+                let use_text = use_item.to_string().trim().to_string();
+                
+                // Check if it's importing from apas_ai
+                if use_text.contains("apas_ai::") {
+                    // First check for BOGUS top-level wildcard "use apas_ai::*;"
+                    if use_text == "use apas_ai::*;" {
+                        let line = rusticate::line_number(&node, &content);
+                        violations.push((line, use_text, ViolationType::ToplevelWildcard));
+                        continue;
+                    }
+                    
+                    // Check if it's NOT a wildcard import
+                    // Wildcard imports end with ::*; or ::* ;
+                    let is_wildcard = use_text.trim_end_matches(';').trim_end().ends_with("::*");
+                    
+                    if !is_wildcard {
+                        if let Some(vtype) = categorize_import(&use_text) {
+                            // Get line number
+                            let line = rusticate::line_number(&node, &content);
+                            violations.push((line, use_text, vtype));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    violations
+}
+
+fn main() {
+    let standard_args = match rusticate::StandardArgs::parse() {
+        Ok(args) => args,
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            std::process::exit(1);
+        }
+    };
+    
+    let start = std::time::Instant::now();
+    
+    let files = rusticate::find_rust_files(&standard_args.paths);
+    
+    let mut total_violations = 0;
+    let mut files_with_violations = 0;
+    let mut all_violations: Vec<(PathBuf, usize, String, ViolationType)> = Vec::new();
+    
+    let mut type_counts: HashMap<ViolationType, usize> = HashMap::new();
+    type_counts.insert(ViolationType::ToplevelWildcard, 0);
+    type_counts.insert(ViolationType::Trait, 0);
+    type_counts.insert(ViolationType::Function, 0);
+    type_counts.insert(ViolationType::Type, 0);
+    
+    for file_path in &files {
+        let violations = check_file(file_path);
+        
+        if !violations.is_empty() {
+            files_with_violations += 1;
+            total_violations += violations.len();
+            
+            for (line, use_stmt, vtype) in violations {
+                *type_counts.entry(vtype.clone()).or_insert(0) += 1;
+                all_violations.push((file_path.clone(), line, use_stmt, vtype));
+            }
+        }
+    }
+    
+    // Always print all violations with type letter (Emacs-clickable)
+    let cwd = std::env::current_dir().ok();
+    for (file_path, line, use_stmt, vtype) in &all_violations {
+        // Make path relative to CWD if possible
+        let display_path = if let Some(ref cwd) = cwd {
+            file_path.strip_prefix(cwd)
+                .unwrap_or(file_path)
+                .display()
+                .to_string()
+        } else {
+            file_path.display().to_string()
+        };
+        
+        println!("{}:{}: {} {}", display_path, line, vtype.letter(), use_stmt);
+    }
+    
+    if !all_violations.is_empty() {
+        println!();
+    }
+    println!("{}", "=".repeat(80));
+    println!("PARETO: BY VIOLATION TYPE");
+    println!("{}", "=".repeat(80));
+    
+    let mut sorted_types: Vec<_> = type_counts.iter().collect();
+    sorted_types.sort_by(|a, b| b.1.cmp(a.1));
+    
+    let mut cumulative = 0;
+    for (vtype, count) in &sorted_types {
+        cumulative += **count;
+        let (percentage, cumulative_pct) = if total_violations > 0 {
+            ((**count as f64 / total_violations as f64) * 100.0,
+             (cumulative as f64 / total_violations as f64) * 100.0)
+        } else {
+            (0.0, 0.0)
+        };
+        println!("{:6} ({:5.1}%, cumulative {:5.1}%): {}",
+            rusticate::format_number(**count), percentage, cumulative_pct, vtype.description());
+    }
+    
+    println!();
+    println!("{}", "=".repeat(80));
+    println!("PARETO: BY DIRECTORY");
+    println!("{}", "=".repeat(80));
+    
+    // Group by directory - initialize all standard directories to 0
+    let mut dir_counts: HashMap<String, usize> = HashMap::new();
+    let mut dir_type_counts: HashMap<String, HashMap<ViolationType, usize>> = HashMap::new();
+    
+    // Initialize all standard directories to 0
+    for dir in &["src", "tests", "benches"] {
+        dir_counts.insert(dir.to_string(), 0);
+        let mut type_map = HashMap::new();
+        type_map.insert(ViolationType::ToplevelWildcard, 0);
+        type_map.insert(ViolationType::Trait, 0);
+        type_map.insert(ViolationType::Function, 0);
+        type_map.insert(ViolationType::Type, 0);
+        dir_type_counts.insert(dir.to_string(), type_map);
+    }
+    
+    for (file_path, _, _, vtype) in &all_violations {
+        let dir = if file_path.to_string_lossy().contains("/src/") {
+            "src"
+        } else if file_path.to_string_lossy().contains("/tests/") {
+            "tests"
+        } else if file_path.to_string_lossy().contains("/benches/") {
+            "benches"
+        } else {
+            "other"
+        };
+        
+        *dir_counts.entry(dir.to_string()).or_insert(0) += 1;
+        *dir_type_counts.entry(dir.to_string())
+            .or_insert_with(HashMap::new)
+            .entry(vtype.clone())
+            .or_insert(0) += 1;
+    }
+    
+    let mut sorted_dirs: Vec<_> = dir_counts.iter().collect();
+    // Sort by count descending, then by name for consistent ordering
+    sorted_dirs.sort_by(|a, b| b.1.cmp(a.1).then(a.0.cmp(b.0)));
+    
+    let mut cumulative = 0;
+    for (dir, count) in &sorted_dirs {
+        cumulative += **count;
+        let (percentage, cumulative_pct) = if total_violations > 0 {
+            ((**count as f64 / total_violations as f64) * 100.0,
+             (cumulative as f64 / total_violations as f64) * 100.0)
+        } else {
+            (0.0, 0.0)
+        };
+        
+        let type_breakdown = dir_type_counts.get(*dir).unwrap();
+        let toplevel_count = type_breakdown.get(&ViolationType::ToplevelWildcard).unwrap_or(&0);
+        let trait_count = type_breakdown.get(&ViolationType::Trait).unwrap_or(&0);
+        let func_count = type_breakdown.get(&ViolationType::Function).unwrap_or(&0);
+        let type_count = type_breakdown.get(&ViolationType::Type).unwrap_or(&0);
+        
+        println!("{:6} ({:5.1}%, cumulative {:5.1}%): {} [!:{}, a:{}, b:{}, c:{}]",
+            rusticate::format_number(**count), percentage, cumulative_pct, dir,
+            toplevel_count, trait_count, func_count, type_count);
+    }
+    
+    println!();
+    println!("{}", "-".repeat(80));
+    println!("Total non-wildcard uses: {}", rusticate::format_number(total_violations));
+    println!("Files affected: {}/{}", 
+        rusticate::format_number(files_with_violations),
+        rusticate::format_number(files.len()));
+    println!();
+    
+    if total_violations > 0 {
+        println!("✗ Found {} non-wildcard use statements in {} file(s)",
+            rusticate::format_number(total_violations),
+            rusticate::format_number(files_with_violations));
+    } else {
+        println!("✓ All apas_ai imports use wildcard imports");
+    }
+    
+    println!("Completed in {}ms", start.elapsed().as_millis());
+    
+    std::process::exit(if total_violations > 0 { 1 } else { 0 });
+}
+

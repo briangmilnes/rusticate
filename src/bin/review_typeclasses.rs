@@ -5,12 +5,12 @@
 //! Provides detailed classification of types, traits, and implementations:
 //! 
 //! For each module:
-//! - Lists all structs (classified as internal/external based on pub visibility)
-//! - Lists all traits (classified as internal/external)
+//! - Lists all structs (classified as private/pub based on pub visibility)
+//! - Lists all traits (classified as private/pub)
 //! - Lists all impl blocks with detailed classification:
 //!   * Inherent vs trait impl
-//!   * For internal vs external types
-//!   * Method visibility (pub/internal)
+//!   * For private vs pub types
+//!   * Method visibility (pub/private)
 //!   * Stub delegation detection
 //! 
 //! Output sorted by filename for chapter ordering
@@ -57,6 +57,7 @@ struct TraitInfo {
 struct FunctionInfo {
     name: String,
     line: usize,
+    params: Vec<String>,  // Parameter signatures
 }
 
 #[derive(Debug)]
@@ -251,15 +252,14 @@ fn analyze_file(file_path: &Path, source: &str) -> Result<Option<ModuleAnalysis>
     let trait_nodes = find_nodes(root, SyntaxKind::TRAIT);
     let mut traits = Vec::new();
     for node in trait_nodes {
-        if let Some(_trait_ast) = ast::Trait::cast(node.clone()) {
+        if let Some(trait_ast) = ast::Trait::cast(node.clone()) {
             let trait_name = node.children()
                 .find(|n| n.kind() == SyntaxKind::NAME)
                 .and_then(|name_node| name_node.first_token())
                 .map(|t| t.text().to_string());
             
             if let Some(name) = trait_name {
-                let text = node.to_string();
-                let is_public = text.trim_start().starts_with("pub ");
+                let is_public = trait_ast.visibility().is_some();
                 let line = line_number(&node, source);
                 traits.push(TraitInfo { name, line, is_public });
             }
@@ -292,7 +292,15 @@ fn analyze_file(file_path: &Path, source: &str) -> Result<Option<ModuleAnalysis>
                     if let Some(name_token) = fn_ast.name() {
                         let name = name_token.text().to_string();
                         let line = line_number(&node, source);
-                        functions.push(FunctionInfo { name, line });
+                        
+                        // Collect parameter signatures
+                        let params: Vec<String> = if let Some(param_list) = fn_ast.param_list() {
+                            param_list.params().map(|p| p.to_string()).collect()
+                        } else {
+                            Vec::new()
+                        };
+                        
+                        functions.push(FunctionInfo { name, line, params });
                     }
                 }
             }
@@ -390,7 +398,7 @@ fn analyze_file(file_path: &Path, source: &str) -> Result<Option<ModuleAnalysis>
                         } else {
                             if has_self {
                                 internal_methods.push(method_name);
-                            } else {
+            } else {
                                 internal_functions.push(method_name);
                             }
                         }
@@ -518,7 +526,17 @@ fn main() -> Result<()> {
     let mut modules_with_no_fixes = 0;
     
     // Track issue types for Pareto analysis
+    // Initialize all known bug categories to 0 so we can see which are cleared
     let mut bug_counts: HashMap<String, usize> = HashMap::new();
+    bug_counts.insert("missing module".to_string(), 0);
+    bug_counts.insert("no pub data type (struct, enum, or type alias)".to_string(), 0);
+    bug_counts.insert("no pub trait".to_string(), 0);
+    bug_counts.insert("inherent impl with only internal methods/functions".to_string(), 0);
+    bug_counts.insert("inherent impl with pub methods".to_string(), 0);
+    bug_counts.insert("method with unused self parameter".to_string(), 0);
+    bug_counts.insert("no Trait impl".to_string(), 0);
+    bug_counts.insert("duplicate method".to_string(), 0);
+    
     let warn_counts: HashMap<String, usize> = HashMap::new();  // Reserved for future WARNING tracking
     
     for analysis in &all_analyses {
@@ -658,30 +676,54 @@ fn main() -> Result<()> {
             for t in &analysis.type_aliases {
                 let is_main = Some(&t.name) == main_type_alias;
                 let visibility = if is_main {
-                    "external"
+                    "pub"
                 } else if t._is_public {
-                    "external"
+                    "pub"
                 } else {
-                    "internal"
+                    "private"
                 };
                 println!("{}:{}:\ttype {} ({}) - OK", analysis.file.display(), t.line, t.name, visibility);
             }
         }
         
-        // Check for external trait
-        let has_external_trait = analysis.traits.iter().any(|t| t.is_public);
-        if !has_external_trait {
-            println!("{}:{}:\tno external trait - BUG", 
-                analysis.file.display(), analysis.module_line);
-            has_issues = true;
-            module_bugs += 1;
-            *bug_counts.entry("no external trait".to_string()).or_insert(0) += 1;
+        // Check for "simple algorithm" pattern: single pub fn with n: N parameter
+        let is_simple_algorithm = analysis.functions.len() == 1 && 
+            !analysis.functions.is_empty() &&
+            analysis.functions[0].params.len() == 1 &&
+            (analysis.functions[0].params[0].contains("n: N") || 
+             analysis.functions[0].params[0].contains("n:N"));
+        
+        // Check if this is a functional trait (all functions, no &self parameters)
+        let is_functional_trait = if !analysis.traits.is_empty() {
+            let has_self_param = analysis.impls.iter().any(|impl_info| {
+                !impl_info.pub_methods.is_empty() || !impl_info.internal_methods.is_empty()
+            });
+            !has_self_param && !analysis.functions.is_empty()
+        } else {
+            false
+        };
+        
+        // Check for pub trait
+        let has_pub_trait = analysis.traits.iter().any(|t| t.is_public);
+        if !has_pub_trait {
+            if is_simple_algorithm || is_functional_trait {
+                // Functional trait or simple algorithm - trait is for documentation only
+                println!("{}:{}:\tno pub trait (functional trait pattern) - OK", 
+                    analysis.file.display(), analysis.module_line);
+                module_oks += 1;
+            } else {
+                println!("{}:{}:\tno pub trait - BUG", 
+                    analysis.file.display(), analysis.module_line);
+                has_issues = true;
+                module_bugs += 1;
+                *bug_counts.entry("no pub trait".to_string()).or_insert(0) += 1;
+            }
         }
         
         // List traits
         if !analysis.traits.is_empty() {
             for t in &analysis.traits {
-                let visibility = if t.is_public { "external" } else { "internal" };
+                let visibility = if t.is_public { "pub" } else { "private" };
                 let label = if t.is_public { "OK" } else { "WARNING" };
                 println!("{}:{}:\ttrait {} ({}) - {}", analysis.file.display(), t.line, t.name, visibility, label);
             }
@@ -742,34 +784,41 @@ fn main() -> Result<()> {
         
         // List custom impls with classification
         for impl_info in &custom_impls {
-            let type_vis = if impl_info.is_type_internal { "internal" } else { "external" };
+            let type_vis = if impl_info.is_type_internal { "private" } else { "pub" };
             
-            // Determine severity label for this impl
-            let impl_label = if !impl_info.is_trait_impl {
+            // Determine severity label and error type for this impl
+            let (impl_label, error_type) = if !impl_info.is_trait_impl {
                 // Inherent impl
                 if impl_info.pub_methods.is_empty() && impl_info.pub_functions.is_empty() {
                     // Only internal methods/functions - BUG
-                    "BUG"
+                    ("BUG", Some("inherent impl with only internal methods/functions"))
                 } else if !impl_info.pub_methods.is_empty() {
                     // Has pub methods - BUG (should be in trait)
-                    "BUG"
+                    ("BUG", Some("inherent impl with pub methods"))
                 } else {
                     // Only pub functions (constructors) - OK
-                    "OK"
+                    ("OK", None)
                 }
             } else {
                 // Trait impl - OK
-                "OK"
+                ("OK", None)
             };
             
-            // Print impl header with type visibility on same line
-            println!("{}:{}:\t{} (for {} type) - {}", 
-                analysis.file.display(), impl_info.line, impl_info.header, type_vis, impl_label);
+            // Print impl header with type visibility and specific error type on same line
+            if let Some(err_type) = error_type {
+                println!("{}:{}:\t{} (for {} type) - {} ({})", 
+                    analysis.file.display(), impl_info.line, impl_info.header, type_vis, impl_label, err_type);
+            } else {
+                println!("{}:{}:\t{} (for {} type) - {}", 
+                    analysis.file.display(), impl_info.line, impl_info.header, type_vis, impl_label);
+            }
             
             if impl_label == "BUG" {
                 has_issues = true;
                 module_bugs += 1;
-                *bug_counts.entry("inherent impl with pub methods or only internal".to_string()).or_insert(0) += 1;
+                if let Some(err_type) = error_type {
+                    *bug_counts.entry(err_type.to_string()).or_insert(0) += 1;
+                }
             }
             
             // Show pub methods if any
@@ -836,12 +885,20 @@ fn main() -> Result<()> {
         
         // Check if there's at least one trait impl
         let has_trait_impl = analysis.impls.iter().any(|impl_info| impl_info.is_trait_impl);
+        
         if !has_trait_impl {
-            println!("{}:{}:\tno Trait impl - BUG", 
-                analysis.file.display(), analysis.module_line);
-            has_issues = true;
-            module_bugs += 1;
-            *bug_counts.entry("no Trait impl".to_string()).or_insert(0) += 1;
+            if is_functional_trait {
+                // Functional trait pattern - trait with all functions (no &self), OK to have no impl
+                println!("{}:{}:\tfunctional trait pattern (no impl needed) - OK", 
+                    analysis.file.display(), analysis.module_line);
+                module_oks += 1;
+            } else {
+                println!("{}:{}:\tno Trait impl - BUG", 
+                    analysis.file.display(), analysis.module_line);
+                has_issues = true;
+                module_bugs += 1;
+                *bug_counts.entry("no Trait impl".to_string()).or_insert(0) += 1;
+            }
         }
         
         // Check for duplicate method names across all impls in this file
@@ -851,6 +908,8 @@ fn main() -> Result<()> {
             type_name: String,
             is_trait_impl: bool,
             is_pub: bool,
+            trait_name: Option<String>,
+            impl_header: String,
         }
         
         let mut method_occurrences: std::collections::HashMap<String, Vec<MethodOccurrence>> = std::collections::HashMap::new();
@@ -861,6 +920,8 @@ fn main() -> Result<()> {
                     type_name: impl_info.type_name.clone(),
                     is_trait_impl: impl_info.is_trait_impl,
                     is_pub: true,
+                    trait_name: impl_info._trait_name.clone(),
+                    impl_header: impl_info.header.clone(),
                 });
             }
             for func in &impl_info.pub_functions {
@@ -869,6 +930,8 @@ fn main() -> Result<()> {
                     type_name: impl_info.type_name.clone(),
                     is_trait_impl: impl_info.is_trait_impl,
                     is_pub: true,
+                    trait_name: impl_info._trait_name.clone(),
+                    impl_header: impl_info.header.clone(),
                 });
             }
             for method in &impl_info.internal_methods {
@@ -877,6 +940,8 @@ fn main() -> Result<()> {
                     type_name: impl_info.type_name.clone(),
                     is_trait_impl: impl_info.is_trait_impl,
                     is_pub: false,
+                    trait_name: impl_info._trait_name.clone(),
+                    impl_header: impl_info.header.clone(),
                 });
             }
             for func in &impl_info.internal_functions {
@@ -885,6 +950,8 @@ fn main() -> Result<()> {
                     type_name: impl_info.type_name.clone(),
                     is_trait_impl: impl_info.is_trait_impl,
                     is_pub: false,
+                    trait_name: impl_info._trait_name.clone(),
+                    impl_header: impl_info.header.clone(),
                 });
             }
         }
@@ -896,13 +963,46 @@ fn main() -> Result<()> {
                 type_name: "module".to_string(),
                 is_trait_impl: false,
                 is_pub: true,
+                trait_name: None,
+                impl_header: String::new(),
             });
         }
+        
+        let standard_traits = ["Debug", "Display", "Clone", "Copy", "PartialEq", "Eq", "Hash", "Default"];
         
         let mut duplicates: Vec<(String, Vec<MethodOccurrence>)> = method_occurrences.iter()
             .filter(|(_, occurrences)| occurrences.len() > 1)
             .map(|(name, occurrences)| (name.clone(), occurrences.clone()))
             .collect();
+        
+        // Filter out expected patterns
+        duplicates.retain(|(_method_name, occurrences)| {
+            // Check if all occurrences are for standard traits
+            let all_standard_traits = occurrences.iter().all(|occ| {
+                occ.is_trait_impl && occ.trait_name.as_ref()
+                    .map(|t| standard_traits.iter().any(|st| t.contains(st)))
+                    .unwrap_or(false)
+            });
+            
+            if all_standard_traits {
+                // If all are standard traits, don't flag as duplicate
+                return false;
+            }
+            
+            // Check if all impl headers are different (e.g., IntoIterator for &T, &mut T, T)
+            let impl_headers: Vec<_> = occurrences.iter()
+                .filter(|occ| occ.is_trait_impl)
+                .map(|occ| &occ.impl_header)
+                .collect();
+            let unique_headers: HashSet<_> = impl_headers.iter().collect();
+            
+            if !impl_headers.is_empty() && unique_headers.len() == impl_headers.len() {
+                // All impl headers are different - not a real duplicate
+                return false;
+            }
+            
+            true
+        });
         
         if duplicates.is_empty() {
             println!("{}:{}:\tno duplicate method names", analysis.file.display(), analysis.module_line);
@@ -994,7 +1094,7 @@ fn main() -> Result<()> {
                 println!("{}:{}:\t  {} -> {}", 
                     analysis.file.display(), fix.line, fix.description, fix.recommendation);
             }
-        } else {
+    } else {
             println!("{}:{}:\tno fixes known", analysis.file.display(), analysis.module_line);
         }
         
