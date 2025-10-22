@@ -15,47 +15,54 @@ fn process_file(file_path: &Path) -> Result<bool, Box<dyn std::error::Error>> {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node) {
-                let use_text = use_item.to_string();
-                
-                // Parse use statements like:
-                // use apas_ai::Chap37::BSTSetPlainMtEph::BSTSetPlainMtEph::BSTSetPlainMt as PlainSet;
-                // Extract module path: apas_ai::Chap37::BSTSetPlainMtEph::BSTSetPlainMtEph
-                
-                if use_text.contains("::*") {
-                    // Extract module from wildcard import
-                    let module = use_text
-                        .trim_start_matches("use ")
-                        .trim_end_matches(";")
-                        .trim_end_matches("::*")
-                        .trim();
-                    has_wildcard.insert(module.to_string());
-                } else if use_text.contains("Chap") && !use_text.contains("{") {
-                    // Type-specific import like: use apas_ai::Chap37::Foo::Foo::Bar as X;
-                    let parts: Vec<&str> = use_text
-                        .trim_start_matches("use ")
-                        .split("::")
-                        .collect();
+                if let Some(use_tree) = use_item.use_tree() {
+                    let use_text = use_item.to_string();
                     
-                    // Find module path (everything before the last item or "as")
-                    if parts.len() >= 4 {
-                        // Look for pattern: apas_ai::ChapXX::ModuleName::ModuleName::TypeName
-                        let mut module_parts = Vec::new();
-                        for (i, part) in parts.iter().enumerate() {
-                            if part.contains(" as ") || part.contains(";") {
-                                break;
-                            }
-                            module_parts.push(*part);
-                            
-                            // Stop before the type name (after the doubled module name)
-                            if i >= 3 && parts.get(i-1) == parts.get(i-2) {
-                                module_parts.pop(); // Remove the type name
-                                break;
-                            }
-                        }
+                    // Check if this is a grouped import (use foo::{a, b})
+                    if use_tree.use_tree_list().is_some() {
+                        continue;
+                    }
+                    
+                    if let Some(path) = use_tree.path() {
+                        let path_str = path.to_string();
                         
-                        if module_parts.len() >= 3 {
-                            let module = module_parts.join("::");
-                            module_imports.entry(module.clone()).or_insert_with(Vec::new).push(use_text.clone());
+                        // Check if this is a wildcard import
+                        if use_tree.star_token().is_some() {
+                            // Wildcard import - store the module path
+                            has_wildcard.insert(path_str);
+                        } else if path_str.contains("Chap") {
+                            // Type-specific import like: apas_ai::Chap37::Foo::Foo::Bar
+                            // Extract module path (everything before the last segment)
+                            
+                            // Collect all path segments
+                            let mut segments = Vec::new();
+                            let mut current_path = Some(path.clone());
+                            
+                            while let Some(p) = current_path {
+                                if let Some(segment) = p.segment() {
+                                    segments.push(segment.to_string());
+                                }
+                                current_path = p.qualifier();
+                            }
+                            
+                            // Reverse to get segments in order
+                            segments.reverse();
+                            
+                            // Pattern: apas_ai::ChapXX::ModuleName::ModuleName::TypeName
+                            // We want: apas_ai::ChapXX::ModuleName::ModuleName
+                            if segments.len() >= 4 {
+                                // Check if we have the doubled module name pattern
+                                let mut module_segments = segments.clone();
+                                if segments.len() >= 5 && segments[2] == segments[3] {
+                                    // Pattern with doubled module name - remove the last (TypeName)
+                                    module_segments = segments[..segments.len()-1].to_vec();
+                                }
+                                
+                                if module_segments.len() >= 3 {
+                                    let module = module_segments.join("::");
+                                    module_imports.entry(module.clone()).or_insert_with(Vec::new).push(use_text.clone());
+                                }
+                            }
                         }
                     }
                 }
