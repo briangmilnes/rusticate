@@ -1,5 +1,5 @@
 use ra_ap_syntax::{ast::{self, HasName, AstNode}, SyntaxKind, SyntaxNode, Edition};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::fs;
 
@@ -34,6 +34,37 @@ fn extract_type_name(impl_node: &SyntaxNode) -> Option<String> {
     None
 }
 
+/// Extract trait name from a trait impl
+fn extract_trait_name_from_impl(impl_node: &SyntaxNode) -> Option<String> {
+    if let Some(impl_ast) = ast::Impl::cast(impl_node.clone()) {
+        if let Some(trait_ref) = impl_ast.trait_() {
+            let trait_text = trait_ref.to_string();
+            let base_name = trait_text.split('<').next().unwrap_or(&trait_text);
+            return Some(base_name.trim().to_string());
+        }
+    }
+    None
+}
+
+/// Extract method names from a trait definition
+fn extract_trait_method_names(trait_node: &SyntaxNode) -> HashSet<String> {
+    let mut method_names = HashSet::new();
+    
+    if let Some(trait_ast) = ast::Trait::cast(trait_node.clone()) {
+        if let Some(assoc_item_list) = trait_ast.assoc_item_list() {
+            for item in assoc_item_list.assoc_items() {
+                if let ast::AssocItem::Fn(func) = item {
+                    if let Some(name) = func.name() {
+                        method_names.insert(name.to_string());
+                    }
+                }
+            }
+        }
+    }
+    
+    method_names
+}
+
 /// Extract parameter list from a function, preserving mut and other attributes
 fn extract_param_list(func: &ast::Fn) -> String {
     if let Some(param_list) = func.param_list() {
@@ -47,6 +78,20 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
     let content = fs::read_to_string(file_path)?;
     let parse = ra_ap_syntax::SourceFile::parse(&content, Edition::Edition2021);
     let root = parse.syntax_node();
+    
+    // Find all trait definitions and their methods
+    let mut trait_methods: HashMap<String, HashSet<String>> = HashMap::new();
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::TRAIT {
+            if let Some(trait_ast) = ast::Trait::cast(node.clone()) {
+                if let Some(name) = trait_ast.name() {
+                    let trait_name = name.to_string();
+                    let methods = extract_trait_method_names(&node);
+                    trait_methods.insert(trait_name, methods);
+                }
+            }
+        }
+    }
     
     // Find all impl blocks for each type
     let mut type_impls: HashMap<String, Vec<SyntaxNode>> = HashMap::new();
@@ -71,12 +116,12 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
         
         // Separate inherent and trait impls
         let mut inherent_impl: Option<&SyntaxNode> = None;
-        let mut trait_impls: Vec<&SyntaxNode> = Vec::new();
+        let mut trait_impls: Vec<(&SyntaxNode, String)> = Vec::new();
         
         for impl_node in impls {
             if let Some(impl_ast) = ast::Impl::cast(impl_node.clone()) {
-                if impl_ast.trait_().is_some() {
-                    trait_impls.push(impl_node);
+                if let Some(trait_name) = extract_trait_name_from_impl(impl_node) {
+                    trait_impls.push((impl_node, trait_name));
                 } else {
                     inherent_impl = Some(impl_node);
                 }
@@ -106,7 +151,10 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
         }
         
         // Process each trait impl
-        for trait_impl in &trait_impls {
+        for (trait_impl, trait_name) in &trait_impls {
+            // Get the trait definition's methods
+            let trait_def_methods = trait_methods.get(trait_name).cloned().unwrap_or_default();
+            
             let trait_impl_text = trait_impl.to_string();
             let mut modified_trait_impl = trait_impl_text.clone();
             let mut methods_to_remove_from_inherent: Vec<String> = Vec::new();
@@ -118,6 +166,11 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
                         if let ast::AssocItem::Fn(func) = item {
                             if let Some(name) = func.name() {
                                 let method_name = name.to_string();
+                                
+                                // Only process if this method is declared in the trait definition
+                                if !trait_def_methods.contains(&method_name) {
+                                    continue;
+                                }
                                 
                                 // Get the body
                                 if let Some(body) = func.body() {
@@ -152,7 +205,7 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
                                             }
                                         }
                                     } else {
-                                        // Not a stub - check if there's a duplicate in inherent impl
+                                        // Not a stub - but it's in the trait, so remove duplicate from inherent impl
                                         if inherent_methods.contains_key(&method_name) {
                                             methods_to_remove_from_inherent.push(method_name.clone());
                                             total_removed += 1;
@@ -170,7 +223,7 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
                 new_content = new_content.replace(&trait_impl_text, &modified_trait_impl);
             }
             
-            // Remove methods from inherent impl
+            // Remove methods from inherent impl (only those that are in the trait)
             if !methods_to_remove_from_inherent.is_empty() {
                 let inherent_text = inherent.to_string();
                 let mut modified_inherent = inherent_text.clone();
@@ -178,18 +231,28 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
                 for method_name in &methods_to_remove_from_inherent {
                     if let Some((_, method_text)) = inherent_methods.get(method_name) {
                         // Find and remove the entire method
-                        // We need to be careful to remove the method cleanly
                         let lines: Vec<&str> = modified_inherent.lines().collect();
                         let mut new_lines = Vec::new();
                         let mut skip_until_brace_count = 0;
                         let mut in_method = false;
                         let method_sig_start = format!("pub fn {}(", method_name);
                         let method_sig_start2 = format!("fn {}(", method_name);
+                        let mut skip_doc_comments = false;
                         
-                        for line in lines {
+                        for (i, line) in lines.iter().enumerate() {
+                            // Check if we're about to hit the method
                             if (line.contains(&method_sig_start) || line.contains(&method_sig_start2)) && !in_method {
                                 in_method = true;
                                 skip_until_brace_count = 0;
+                                // Also remove doc comments immediately before
+                                while !new_lines.is_empty() {
+                                    let last: &&str = new_lines.last().unwrap();
+                                    if last.trim().starts_with("///") || last.trim().is_empty() {
+                                        new_lines.pop();
+                                    } else {
+                                        break;
+                                    }
+                                }
                             }
                             
                             if in_method {
@@ -206,9 +269,8 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
                                     }
                                 }
                                 // Skip this line (it's part of the method to remove)
-                                // But keep any blank lines after for formatting
                             } else {
-                                new_lines.push(line);
+                                new_lines.push(*line);
                             }
                         }
                         
