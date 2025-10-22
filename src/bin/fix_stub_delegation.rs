@@ -115,7 +115,7 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
         }
         
         // Separate inherent and trait impls
-        let mut inherent_impl: Option<&SyntaxNode> = None;
+        let mut inherent_impls: Vec<&SyntaxNode> = Vec::new();
         let mut trait_impls: Vec<(&SyntaxNode, String)> = Vec::new();
         
         for impl_node in impls {
@@ -123,27 +123,28 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
                 if let Some(trait_name) = extract_trait_name_from_impl(impl_node) {
                     trait_impls.push((impl_node, trait_name));
                 } else {
-                    inherent_impl = Some(impl_node);
+                    inherent_impls.push(impl_node);
                 }
             }
         }
         
-        if inherent_impl.is_none() || trait_impls.is_empty() {
+        if inherent_impls.is_empty() || trait_impls.is_empty() {
             continue;
         }
         
-        let inherent = inherent_impl.unwrap();
-        
-        // Extract methods from inherent impl with full signatures
-        let mut inherent_methods: HashMap<String, (ast::Fn, String)> = HashMap::new();
-        if let Some(impl_ast) = ast::Impl::cast(inherent.clone()) {
-            if let Some(assoc_list) = impl_ast.assoc_item_list() {
-                for item in assoc_list.assoc_items() {
-                    if let ast::AssocItem::Fn(func) = item {
-                        if let Some(name) = func.name() {
-                            let method_name = name.to_string();
-                            let full_method = func.syntax().to_string();
-                            inherent_methods.insert(method_name, (func, full_method));
+        // Extract methods from ALL inherent impls with full signatures
+        // Store which inherent impl each method comes from
+        let mut inherent_methods: HashMap<String, (ast::Fn, String, &SyntaxNode)> = HashMap::new();
+        for inherent in &inherent_impls {
+            if let Some(impl_ast) = ast::Impl::cast((*inherent).clone()) {
+                if let Some(assoc_list) = impl_ast.assoc_item_list() {
+                    for item in assoc_list.assoc_items() {
+                        if let ast::AssocItem::Fn(func) = item {
+                            if let Some(name) = func.name() {
+                                let method_name = name.to_string();
+                                let full_method = func.syntax().to_string();
+                                inherent_methods.insert(method_name, (func, full_method, inherent));
+                            }
                         }
                     }
                 }
@@ -157,7 +158,8 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
             
             let trait_impl_text = trait_impl.to_string();
             let mut modified_trait_impl = trait_impl_text.clone();
-            let mut methods_to_remove_from_inherent: Vec<String> = Vec::new();
+            // Track methods to remove, grouped by which inherent impl node they're in
+            let mut methods_to_remove_by_inherent: HashMap<usize, Vec<String>> = HashMap::new();
             
             // Check each method in trait impl
             if let Some(impl_ast) = ast::Impl::cast((*trait_impl).clone()) {
@@ -179,7 +181,7 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
                                     // Check if it's a stub delegation
                                     if is_stub_delegation(&body_str, &method_name, type_name) {
                                         // Find the real implementation in inherent impl
-                                        if let Some((inherent_func, _)) = inherent_methods.get(&method_name) {
+                                        if let Some((inherent_func, _, inherent_node)) = inherent_methods.get(&method_name) {
                                             if let Some(inherent_body) = inherent_func.body() {
                                                 let inherent_body_str = inherent_body.to_string();
                                                 let inherent_params = extract_param_list(inherent_func);
@@ -199,15 +201,17 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
                                                 
                                                 modified_trait_impl = modified_trait_impl.replace(&trait_method_text, &updated_method);
                                                 
-                                                // Mark this method for removal from inherent impl
-                                                methods_to_remove_from_inherent.push(method_name.clone());
+                                                // Mark this method for removal from its inherent impl
+                                                let inherent_key = (*inherent_node) as *const SyntaxNode as usize;
+                                                methods_to_remove_by_inherent.entry(inherent_key).or_insert_with(Vec::new).push(method_name.clone());
                                                 total_moved += 1;
                                             }
                                         }
                                     } else {
                                         // Not a stub - but it's in the trait, so remove duplicate from inherent impl
-                                        if inherent_methods.contains_key(&method_name) {
-                                            methods_to_remove_from_inherent.push(method_name.clone());
+                                        if let Some((_, _, inherent_node)) = inherent_methods.get(&method_name) {
+                                            let inherent_key = (*inherent_node) as *const SyntaxNode as usize;
+                                            methods_to_remove_by_inherent.entry(inherent_key).or_insert_with(Vec::new).push(method_name.clone());
                                             total_removed += 1;
                                         }
                                     }
@@ -219,74 +223,67 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
             }
             
             // Replace trait impl in content
-            if !methods_to_remove_from_inherent.is_empty() {
+            if !methods_to_remove_by_inherent.is_empty() {
                 new_content = new_content.replace(&trait_impl_text, &modified_trait_impl);
             }
             
-            // Remove methods from inherent impl (only those that are in the trait)
-            if !methods_to_remove_from_inherent.is_empty() {
-                let inherent_text = inherent.to_string();
-                let mut modified_inherent = inherent_text.clone();
+            // Process each inherent impl that has methods to remove
+            for (inherent_key, methods_list) in &methods_to_remove_by_inherent {
+                // Find the corresponding inherent impl node
+                let inherent = inherent_impls.iter()
+                    .find(|node| (**node as *const SyntaxNode) as usize == *inherent_key)
+                    .expect("Inherent impl not found");
                 
-                for method_name in &methods_to_remove_from_inherent {
-                    if let Some((_, method_text)) = inherent_methods.get(method_name) {
-                        // Find and remove the entire method
-                        let lines: Vec<&str> = modified_inherent.lines().collect();
-                        let mut new_lines = Vec::new();
-                        let mut skip_until_brace_count = 0;
-                        let mut in_method = false;
-                        let method_sig_start = format!("pub fn {}(", method_name);
-                        let method_sig_start2 = format!("fn {}(", method_name);
-                        let mut skip_doc_comments = false;
+                let inherent_text = inherent.to_string();
+                
+                // Build a set of methods to remove for fast lookup
+                let methods_to_remove_set: HashSet<String> = methods_list.iter().cloned().collect();
+                
+                // Parse inherent impl and rebuild without the methods to remove
+                if let Some(impl_ast) = ast::Impl::cast((*inherent).clone()) {
+                    if let Some(assoc_list) = impl_ast.assoc_item_list() {
+                        let mut methods_to_keep = Vec::new();
                         
-                        for (i, line) in lines.iter().enumerate() {
-                            // Check if we're about to hit the method
-                            if (line.contains(&method_sig_start) || line.contains(&method_sig_start2)) && !in_method {
-                                in_method = true;
-                                skip_until_brace_count = 0;
-                                // Also remove doc comments immediately before
-                                while !new_lines.is_empty() {
-                                    let last: &&str = new_lines.last().unwrap();
-                                    if last.trim().starts_with("///") || last.trim().is_empty() {
-                                        new_lines.pop();
-                                    } else {
-                                        break;
+                        for item in assoc_list.assoc_items() {
+                            if let ast::AssocItem::Fn(func) = item {
+                                if let Some(name) = func.name() {
+                                    let method_name = name.to_string();
+                                    if !methods_to_remove_set.contains(&method_name) {
+                                        // Keep this method
+                                        methods_to_keep.push(func.syntax().to_string());
                                     }
                                 }
-                            }
-                            
-                            if in_method {
-                                // Count braces to know when method ends
-                                for c in line.chars() {
-                                    if c == '{' {
-                                        skip_until_brace_count += 1;
-                                    } else if c == '}' {
-                                        skip_until_brace_count -= 1;
-                                        if skip_until_brace_count == 0 {
-                                            in_method = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                                // Skip this line (it's part of the method to remove)
                             } else {
-                                new_lines.push(*line);
+                                // Keep non-function items (constants, types, etc.)
+                                methods_to_keep.push(item.syntax().to_string());
                             }
                         }
                         
-                        modified_inherent = new_lines.join("\n");
+                        // Check if any methods remain
+                        if methods_to_keep.is_empty() {
+                            // Remove entire inherent impl
+                            new_content = new_content.replace(&inherent_text, "");
+                        } else {
+                            // Rebuild inherent impl with remaining methods
+                            // Extract the impl header (everything before the {)
+                            let impl_header = if let Some(pos) = inherent_text.find('{') {
+                                &inherent_text[..pos+1]
+                            } else {
+                                continue;
+                            };
+                            
+                            let mut rebuilt = String::from(impl_header);
+                            rebuilt.push_str("\n");
+                            for method in methods_to_keep {
+                                rebuilt.push_str("        ");
+                                rebuilt.push_str(&method);
+                                rebuilt.push_str("\n");
+                            }
+                            rebuilt.push_str("    }");
+                            
+                            new_content = new_content.replace(&inherent_text, &rebuilt);
+                        }
                     }
-                }
-                
-                // Check if inherent impl is now empty (only has whitespace between braces)
-                let is_empty = check_if_impl_empty(&modified_inherent);
-                
-                if is_empty {
-                    // Remove entire inherent impl
-                    new_content = new_content.replace(&inherent_text, "");
-                } else {
-                    // Replace with modified inherent impl
-                    new_content = new_content.replace(&inherent_text, &modified_inherent);
                 }
             }
         }
@@ -297,17 +294,6 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
     }
     
     Ok((total_moved + total_removed, if total_moved > 0 || total_removed > 0 { 1 } else { 0 }))
-}
-
-fn check_if_impl_empty(impl_text: &str) -> bool {
-    // Check if impl only has whitespace between the braces
-    if let Some(start) = impl_text.find('{') {
-        if let Some(end) = impl_text.rfind('}') {
-            let between = &impl_text[start+1..end];
-            return between.trim().is_empty();
-        }
-    }
-    false
 }
 
 fn main() {
