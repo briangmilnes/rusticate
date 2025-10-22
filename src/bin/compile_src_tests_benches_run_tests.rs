@@ -4,15 +4,16 @@ use std::path::PathBuf;
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     
-    if args.len() < 2 {
-        print_usage(&args[0]);
-        exit(1);
-    }
-    
     let start = std::time::Instant::now();
     let mut all_success = true;
     
-    match args[1].as_str() {
+    let arg = if args.len() < 2 {
+        "-c" // Default to codebase
+    } else {
+        args[1].as_str()
+    };
+    
+    match arg {
         "-c" | "--codebase" => {
             println!("=== Grinding entire codebase ===\n");
             all_success = grind_codebase();
@@ -262,10 +263,14 @@ fn grind_directory(dir: &str) -> bool {
 }
 
 fn run_command(program: &str, args: &[&str]) -> bool {
-    let output = Command::new(program)
+    use std::process::Stdio;
+    
+    let status = Command::new(program)
         .args(args)
-        .output()
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit())
+        .status()
         .expect("Failed to execute command");
     
-    output.status.success()
+    status.success()
 }
