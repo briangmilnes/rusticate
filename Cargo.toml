@@ -145,6 +145,10 @@ name = "rusticate-review-qualified-paths"
 path = "src/bin/review_qualified_paths.rs"
 
 [[bin]]
+name = "rusticate-review-trait-definition-order"
+path = "src/bin/review_trait_definition_order.rs"
+
+[[bin]]
 name = "rusticate-review-string-hacking"
 path = "src/bin/review_string_hacking.rs"
 
