@@ -254,22 +254,33 @@ Benchmark-specific and utility scripts.
 ### Standard Workflow
 
 ```bash
-# 1. Setup
+# 1. Setup rusticate repo
 cd /home/milnes/projects/rusticate
 git checkout main
 git pull
 
-# 2. Check out APAS-AI-copy for testing
+# 2. Find the git commit the Python script was tested on
+# Check script comments, git log, or ask user for the target commit
+cat scripts/<path>/review_<name>.py | head -20
+# Look for: "Tested on commit: <sha>" or similar
+
+# 3. Checkout APAS-AI-copy to the correct commit
 cd APAS-AI-copy/apas-ai
-git checkout main
-git pull
+git log --oneline -20  # Review recent history
+git checkout <commit-sha>  # The commit the Python script was designed for
 cd ../..
 
-# 3. Analyze Python script
+# 4. Run Python script to get expected output
+cd APAS-AI-copy/apas-ai
+python3 ~/projects/rusticate/scripts/<path>/review_<name>.py > /tmp/python_output.txt
+# Save this as the "gold standard" output
+
+# 5. Analyze Python script logic
+cd ~/projects/rusticate
 cat scripts/<path>/review_<name>.py
 # Understand: What patterns does it detect? What's the output format?
 
-# 4. Create Rust tool
+# 6. Create Rust tool
 # File: src/bin/review_<name>.rs
 # - Use ra_ap_syntax for AST traversal
 # - Use StandardArgs for argument parsing
@@ -277,22 +288,23 @@ cat scripts/<path>/review_<name>.py
 # - Emacs-clickable output: file:line: message
 # - Include Pareto analysis if useful
 
-# 5. Build and test
+# 7. Build
 cargo build --release --bin rusticate-review-<name>
 
-# 6. Run string hacking review
+# 8. Test on APAS-AI-copy (SAME commit as Python script)
+cd APAS-AI-copy/apas-ai
+~/projects/rusticate/target/release/rusticate-review-<name> -c > /tmp/rust_output.txt
+
+# 9. Compare outputs
+diff /tmp/python_output.txt /tmp/rust_output.txt
+# Outputs should match (or Rust should be superset with improvements)
+
+# 10. Run string hacking review
+cd ~/projects/rusticate
 ./target/release/rusticate-review-string-hacking -f src/bin/review_<name>.rs
 # Target: 0 violations (or document acceptable ones)
 
-# 7. Test on APAS-AI-copy
-cd APAS-AI-copy/apas-ai
-~/projects/rusticate/target/release/rusticate-review-<name> -c
-
-# 8. Compare with Python output (if available)
-python3 ~/projects/rusticate/scripts/<path>/review_<name>.py
-
-# 9. Commit
-cd ~/projects/rusticate
+# 11. Commit Rust tool
 git add src/bin/review_<name>.rs
 git commit -m "Add review-<name>: [description]
 
@@ -300,10 +312,16 @@ git commit -m "Add review-<name>: [description]
 - Emacs-clickable output
 - Pareto analysis [if applicable]
 - Passes review-string-hacking with 0 violations
-- Replaces scripts/<path>/review_<name>.py"
+- Replaces scripts/<path>/review_<name>.py
+- Tested against APAS-AI commit: <sha>"
 
-# 10. Update Cargo.toml
+# 12. Update Cargo.toml
 # Add [[bin]] entry for new tool
+
+# 13. Return APAS-AI-copy to main (if needed)
+cd APAS-AI-copy/apas-ai
+git checkout main
+cd ../..
 ```
 
 ---
