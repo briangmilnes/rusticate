@@ -89,11 +89,30 @@ fn infer_missing_imports(code: &str) -> Vec<String> {
         }
     }
     
-    // Check for common APAS patterns (heuristics for unparseable code fragments)
-    // Note: These string checks are appropriate here because we're analyzing
-    // doctest fragments that may not parse, looking for syntax patterns
-    let has_triple_pattern = (code.contains("[(") || code.contains("(\"")) 
-        && !code.contains("use") && !code.contains("Triple");
+    // Check for common APAS patterns
+    // Try AST-based detection first for parseable fragments
+    let mut has_triple_pattern = false;
+    if !has_errors {
+        // If code parses, check for tuple/array patterns using AST
+        let tree = parsed.tree();
+        let root = tree.syntax();
+        for node in root.descendants() {
+            let kind = node.kind();
+            if kind == SyntaxKind::TUPLE_EXPR || kind == SyntaxKind::ARRAY_EXPR {
+                // Check if it looks like APAS triple usage without explicit import
+                if !code.contains("use") && !code.contains("Triple") {
+                    has_triple_pattern = true;
+                    break;
+                }
+            }
+        }
+    } else {
+        // Fallback to heuristics for unparseable fragments
+        // Note: String checks here because doctest fragment may not be valid Rust
+        has_triple_pattern = (code.contains("[(") || code.contains("(\"")) 
+            && !code.contains("use") && !code.contains("Triple");
+    }
+    
     let has_graph_macro = code.contains("GraphStEph") && code.contains("Lit!");
     
     if has_triple_pattern || has_graph_macro {
