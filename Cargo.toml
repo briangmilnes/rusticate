@@ -133,6 +133,10 @@ name = "rusticate-review-redundant-inherent-impls"
 path = "src/bin/review_redundant_inherent_impls.rs"
 
 [[bin]]
+name = "rusticate-review-trait-method-conflicts"
+path = "src/bin/review_trait_method_conflicts.rs"
+
+[[bin]]
 name = "rusticate-review-string-hacking"
 path = "src/bin/review_string_hacking.rs"
 
