@@ -153,6 +153,10 @@ name = "rusticate-review-stt-compliance"
 path = "src/bin/review_stt_compliance.rs"
 
 [[bin]]
+name = "rusticate-review-inherent-plus-trait-impl"
+path = "src/bin/review_inherent_plus_trait_impl.rs"
+
+[[bin]]
 name = "rusticate-review-string-hacking"
 path = "src/bin/review_string_hacking.rs"
 
