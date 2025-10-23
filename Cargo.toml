@@ -149,6 +149,10 @@ name = "rusticate-review-trait-definition-order"
 path = "src/bin/review_trait_definition_order.rs"
 
 [[bin]]
+name = "rusticate-review-stt-compliance"
+path = "src/bin/review_stt_compliance.rs"
+
+[[bin]]
 name = "rusticate-review-string-hacking"
 path = "src/bin/review_string_hacking.rs"
 
