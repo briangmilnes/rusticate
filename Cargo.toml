@@ -185,6 +185,10 @@ name = "rusticate-review-typeclasses"
 path = "src/bin/review_typeclasses.rs"
 
 [[bin]]
+name = "rusticate"
+path = "src/bin/rusticate.rs"
+
+[[bin]]
 name = "rusticate-review-comment-placement"
 path = "src/bin/review_comment_placement.rs"
 
