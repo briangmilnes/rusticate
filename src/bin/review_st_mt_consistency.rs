@@ -18,7 +18,7 @@
 //! Binary: rusticate-review-st-mt-consistency
 
 use anyhow::Result;
-use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SourceFile, Edition};
+use ra_ap_syntax::{ast::{self, AstNode, HasName}, SyntaxKind, SourceFile, Edition};
 use rusticate::{StandardArgs, find_rust_files};
 use std::path::Path;
 use std::time::Instant;
@@ -115,6 +115,8 @@ fn has_threading_imports(content: &str) -> bool {
         ".join(",
         "thread::spawn",
         "scope(",
+        "ParaPair",  // APAS parallel primitive
+        "ParaPair!",
     ];
     
     for indicator in &threading_indicators {
@@ -137,6 +139,8 @@ fn has_parallel_usage(content: &str) -> bool {
         "scope(",
         "rayon::join",
         "rayon::scope",
+        "ParaPair!(",  // APAS parallel primitive usage
+        "ParaPair(",
     ];
     
     for op in &parallel_ops {
@@ -229,81 +233,109 @@ fn find_threshold_checks(content: &str) -> Vec<(usize, String)> {
 }
 
 fn analyze_thread_explosion(content: &str) -> Vec<(usize, String, usize)> {
+    let parsed = SourceFile::parse(content, Edition::Edition2021);
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
     let mut explosions = Vec::new();
     
-    // Look for functions that spawn threads
-    let lines: Vec<&str> = content.lines().collect();
-    
-    for (i, line) in lines.iter().enumerate() {
-        let line_num = i + 1;
-        let trimmed = line.trim();
-        
-        // Skip comments
-        if trimmed.starts_with("//") {
-            continue;
-        }
-        
-        // Look for function definitions (including indented ones in impl blocks)
-        if (trimmed.starts_with("fn ") || trimmed.starts_with("pub fn ")) && trimmed.contains('(') {
-            // Check if this function spawns multiple threads
-            let mut spawn_count = 0;
-            let mut is_recursive = false;
-            
-            // Get function name
-            let fn_name = if let Some(start) = trimmed.find("fn ") {
-                let after_fn = &trimmed[start + 3..];
-                if let Some(paren) = after_fn.find('(') {
-                    after_fn[..paren].trim()
+    // Find all function definitions
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::FN {
+            if let Some(func) = ast::Fn::cast(node.clone()) {
+                let fn_name = if let Some(name) = func.name() {
+                    name.to_string()
                 } else {
-                    ""
-                }
-            } else {
-                ""
-            };
-            
-            // Scan function body (next ~100 lines)
-            for j in i..std::cmp::min(i + 100, lines.len()) {
-                let body_line = lines[j];
+                    continue;
+                };
                 
-                // Count thread spawns
-                if body_line.contains("spawn(") || 
-                   body_line.contains("par_iter") ||
-                   body_line.contains("scope(|s| {") ||
-                   body_line.contains(".join(") {
-                    spawn_count += 1;
-                }
+                let line_num = content[..node.text_range().start().into()]
+                    .chars()
+                    .filter(|&c| c == '\n')
+                    .count() + 1;
                 
-                // Check for multiple spawns in one statement (e.g., let (a, b) = rayon::join(...))
-                if body_line.contains("rayon::join") || body_line.contains("join!(") {
-                    spawn_count += 1; // rayon::join spawns 2 tasks
-                }
+                let first_line = node.text().to_string().lines().next().unwrap_or("").to_string();
                 
-                // Check if function calls itself (recursion)
-                if !fn_name.is_empty() && body_line.contains('(') {
-                    // Check for direct recursion or Self::function_name recursion
-                    let has_direct_call = body_line.contains(fn_name);
-                    let has_self_call = body_line.contains(&format!("Self::{}", fn_name)) ||
-                                       body_line.contains(&format!("self.{}", fn_name));
+                // Count parallel operations in this function
+                let mut spawn_count = 0;
+                let mut is_recursive = false;
+                
+                // Check function body
+                if let Some(body) = func.body() {
+                    let body_syntax = body.syntax();
                     
-                    if (has_direct_call || has_self_call) && j != i && !body_line.trim().starts_with("//") {
-                        is_recursive = true;
+                    // Count spawns via AST
+                    for child in body_syntax.descendants() {
+                        match child.kind() {
+                            // Function calls: spawn(), rayon::join()
+                            SyntaxKind::CALL_EXPR => {
+                                if let Some(call) = ast::CallExpr::cast(child.clone()) {
+                                    if let Some(expr) = call.expr() {
+                                        // Check if it's a path expression
+                                        if let Some(path_expr) = ast::PathExpr::cast(expr.syntax().clone()) {
+                                            if let Some(path) = path_expr.path() {
+                                                let path_str = path.to_string();
+                                                // Check for spawn or rayon::join
+                                                if path_str.ends_with("spawn") || 
+                                                   path_str == "rayon::join" {
+                                                    spawn_count += 1;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            // Macro calls: ParaPair!(), join!()
+                            SyntaxKind::MACRO_CALL => {
+                                if let Some(macro_call) = ast::MacroCall::cast(child.clone()) {
+                                    if let Some(path) = macro_call.path() {
+                                        let macro_name = path.to_string();
+                                        if macro_name == "ParaPair" {
+                                            spawn_count += 2; // ParaPair spawns 2 tasks
+                                        } else if macro_name == "join" {
+                                            spawn_count += 1;
+                                        }
+                                    }
+                                }
+                            }
+                            // Method calls: .par_iter(), .join()
+                            SyntaxKind::METHOD_CALL_EXPR => {
+                                if let Some(method) = ast::MethodCallExpr::cast(child.clone()) {
+                                    if let Some(name) = method.name_ref() {
+                                        let method_name = name.to_string();
+                                        if method_name == "par_iter" || 
+                                           method_name == "par_bridge" ||
+                                           method_name == "join" {
+                                            spawn_count += 1;
+                                        }
+                                    }
+                                }
+                            }
+                            // Check for recursion - function calls to self
+                            SyntaxKind::PATH_EXPR => {
+                                if let Some(path_expr) = ast::PathExpr::cast(child.clone()) {
+                                    if let Some(path) = path_expr.path() {
+                                        let path_str = path.to_string();
+                                        if path_str == fn_name || 
+                                           path_str == format!("Self::{}", fn_name) {
+                                            is_recursive = true;
+                                        }
+                                    }
+                                }
+                            }
+                            _ => {}
+                        }
                     }
                 }
                 
-                // Stop at next function definition
-                if j > i && (lines[j].trim().starts_with("fn ") || lines[j].trim().starts_with("pub fn ")) {
-                    break;
+                // Flag if recursive and spawns any threads (exponential explosion)
+                if is_recursive && spawn_count >= 1 {
+                    explosions.push((line_num, first_line, spawn_count));
                 }
-            }
-            
-            // Flag if recursive and spawns any threads (exponential explosion)
-            // Even spawning 1 thread per recursive call leads to exponential growth
-            if is_recursive && spawn_count >= 1 {
-                explosions.push((line_num, trimmed.to_string(), spawn_count));
-            }
-            // Also flag non-recursive with many spawns
-            else if spawn_count >= 4 {
-                explosions.push((line_num, trimmed.to_string(), spawn_count));
+                // Also flag non-recursive with many spawns
+                else if spawn_count >= 4 {
+                    explosions.push((line_num, first_line, spawn_count));
+                }
             }
         }
     }
