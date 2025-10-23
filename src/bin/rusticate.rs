@@ -51,6 +51,7 @@ fn main() {
         eprintln!("  qualified-paths                - Find long qualified paths");
         eprintln!("  redundant-inherent-impls       - Find redundant inherent impls");
         eprintln!("  single-trait-impl              - Check single trait impl pattern");
+        eprintln!("  st-mt-consistency              - Check St/Mt threading consistency");
         eprintln!("  stt-compliance                 - Check StT trait requirements");
         eprintln!("  string-hacking                 - Find string manipulation code");
         eprintln!("  stub-delegation                - Find stub delegation patterns");

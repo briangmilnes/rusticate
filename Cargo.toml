@@ -165,6 +165,10 @@ name = "rusticate-review-impl-trait-bounds"
 path = "src/bin/review_impl_trait_bounds.rs"
 
 [[bin]]
+name = "rusticate-review-st-mt-consistency"
+path = "src/bin/review_st_mt_consistency.rs"
+
+[[bin]]
 name = "rusticate-review-string-hacking"
 path = "src/bin/review_string_hacking.rs"
 
