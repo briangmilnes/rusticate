@@ -161,6 +161,10 @@ name = "rusticate-review-trait-self-usage"
 path = "src/bin/review_trait_self_usage.rs"
 
 [[bin]]
+name = "rusticate-review-impl-trait-bounds"
+path = "src/bin/review_impl_trait_bounds.rs"
+
+[[bin]]
 name = "rusticate-review-string-hacking"
 path = "src/bin/review_string_hacking.rs"
 
