@@ -44,16 +44,63 @@ enum Violation {
         content: String,
         spawn_count: usize,
     },
+    TestMtNotImportingMt {
+        file: String,
+    },
 }
 
 fn is_st_file(path: &Path) -> bool {
     let path_str = path.to_str().unwrap_or("");
+    
+    // Skip test files - they just test St modules
+    if path_str.contains("/tests/") || path_str.contains("/benches/") {
+        return false;
+    }
+    
     path_str.contains("St") && !path_str.contains("Mt")
 }
 
 fn is_mt_file(path: &Path) -> bool {
     let path_str = path.to_str().unwrap_or("");
+    
+    // Skip test files - they just call Mt modules, don't need to implement parallelism
+    if path_str.contains("/tests/") || path_str.contains("/benches/") {
+        return false;
+    }
+    
     path_str.contains("Mt")
+}
+
+fn test_file_imports_mt_module(content: &str) -> bool {
+    // Check if test file imports an Mt module
+    // Look for patterns like:
+    // - use apas_ai::SomethingMt::...
+    // - Chap06::UnDirGraphMtEph::...
+    // - Any module name containing Mt
+    
+    let mut in_use_block = false;
+    
+    for line in content.lines() {
+        let trimmed = line.trim();
+        
+        // Check if we're entering a use statement
+        if trimmed.starts_with("use ") {
+            in_use_block = true;
+        }
+        
+        // If we're in a use block or on a use line, check for Mt
+        if in_use_block || trimmed.starts_with("use ") {
+            if trimmed.contains("Mt") {
+                return true;
+            }
+            
+            // End of use block
+            if trimmed.ends_with(';') {
+                in_use_block = false;
+            }
+        }
+    }
+    false
 }
 
 fn has_threading_imports(content: &str) -> bool {
@@ -273,6 +320,18 @@ fn analyze_file(file_path: &Path, base_dir: &Path) -> Vec<Violation> {
     let mut violations = Vec::new();
     let rel_path = file_path.strip_prefix(base_dir).unwrap_or(file_path);
     let rel_path_str = rel_path.display().to_string();
+    let path_str = file_path.to_str().unwrap_or("");
+    
+    // Check test files named TestXxxMt
+    if (path_str.contains("/tests/") || path_str.contains("/benches/")) && 
+       path_str.contains("Mt") {
+        // Verify they actually import an Mt module
+        if !test_file_imports_mt_module(&content) {
+            violations.push(Violation::TestMtNotImportingMt {
+                file: rel_path_str.clone(),
+            });
+        }
+    }
 
     // Check St files
     if is_st_file(file_path) {
@@ -346,6 +405,7 @@ fn main() -> Result<()> {
     let mut mt_no_threading: Vec<_> = Vec::new();
     let mut mt_thresholds: Vec<_> = Vec::new();
     let mut thread_explosions: Vec<_> = Vec::new();
+    let mut test_mt_no_import: Vec<_> = Vec::new();
 
     for v in &all_violations {
         match v {
@@ -353,6 +413,7 @@ fn main() -> Result<()> {
             Violation::MtWithoutThreading { .. } => mt_no_threading.push(v),
             Violation::MtWithThreshold { .. } => mt_thresholds.push(v),
             Violation::ThreadExplosion { .. } => thread_explosions.push(v),
+            Violation::TestMtNotImportingMt { .. } => test_mt_no_import.push(v),
         }
     }
 
@@ -424,12 +485,26 @@ fn main() -> Result<()> {
         println!();
     }
 
+    if !test_mt_no_import.is_empty() {
+        println!("{}", "=".repeat(80));
+        println!("Test files named TestXxxMt not importing Mt modules:");
+        println!("(These files should import and test the Mt implementation)");
+        println!("{}", "=".repeat(80));
+        for v in &test_mt_no_import {
+            if let Violation::TestMtNotImportingMt { file } = v {
+                println!("{}: No Mt module imported", file);
+            }
+        }
+        println!();
+    }
+
     println!("{}", "=".repeat(80));
     println!("SUMMARY:");
     println!("  St files with threading: {}", st_threading.len());
     println!("  Mt files without threading: {}", mt_no_threading.len());
     println!("  Mt files with thresholds: {}", mt_thresholds.len());
     println!("  Mt files with thread explosion risk: {}", thread_explosions.len());
+    println!("  Test Mt files not importing Mt: {}", test_mt_no_import.len());
     println!("  Total violations: {}", all_violations.len());
 
     let elapsed = start_time.elapsed();
