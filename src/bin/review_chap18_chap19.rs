@@ -443,10 +443,10 @@ fn main() -> Result<()> {
         }
     }
     
-    // Report files with UFCS calls
+    // Report files with UFCS calls (only in files with Chap18/19 imports)
     println!();
     log!("{}", "=".repeat(80));
-    log!("Files with UFCS calls that can be simplified:");
+    log!("Files with UFCS calls that can be simplified (in Chap18/19 files):");
     log!("{}", "=".repeat(80));
     println!();
     
@@ -454,7 +454,12 @@ fn main() -> Result<()> {
     let mut files_with_ufcs = 0;
     
     for report in &reports {
-        if !report.ufcs_calls.is_empty() {
+        // Only show UFCS calls in files that import Chap18 or Chap19
+        let has_chap18_or_19 = report.chap18_eph_imports > 0 
+            || report.chap18_per_imports > 0 
+            || report.chap19_imports > 0;
+        
+        if !report.ufcs_calls.is_empty() && has_chap18_or_19 {
             log!("{}:1:", report.file);
             log!("  Chap18 Eph imports: {}, Chap18 Per imports: {}, Chap19 imports: {}", 
                  report.chap18_eph_imports, report.chap18_per_imports, report.chap19_imports);
