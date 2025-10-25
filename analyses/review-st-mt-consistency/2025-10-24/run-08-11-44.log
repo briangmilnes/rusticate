@@ -1,0 +1,33 @@
+Entering directory: APAS-AI-copy/apas-ai
+
+================================================================================
+PARALLEL OPERATIONS TABLE
+================================================================================
+Module                                   Function/Method                Parallelism
+--------------------------------------------------------------------------------
+AVLTreeSetMtEph                          difference                     Transitive
+AVLTreeSetMtEph                          filter                         Direct
+AVLTreeSetMtEph                          intersection                   Direct
+AVLTreeSetMtEph                          parallel_filter                Direct
+AVLTreeSetMtEph                          parallel_intersect             Direct
+AVLTreeSetMtPer                          delete                         Transitive
+AVLTreeSetMtPer                          difference                     Transitive
+AVLTreeSetMtPer                          filter                         Direct
+AVLTreeSetMtPer                          from_seq                       Direct
+AVLTreeSetMtPer                          intersection                   Direct
+AVLTreeSetMtPer                          parallel_sort                  Direct
+AVLTreeSetMtPer                          union                          Direct
+ArraySeqMtEph                            map                            Direct
+ArraySeqMtEph                            reduce                         Direct
+ArraySeqMtEphSlice                       filter                         Direct
+ArraySeqMtEphSlice                       flatten                        Transitive
+ArraySeqMtEphSlice                       map                            Direct
+ArraySeqMtEphSlice                       reduce                         Direct
+ArraySeqMtPer                            collect                        Transitive
+ArraySeqMtPer                            filter                         Direct
+ArraySeqMtPer                            map                            Direct
+ArraySeqMtPer                            reduce                         Direct
+ArraySetEnumMtEph                        filter                         Direct
+AugOrderedTableMtEph                     reduce_range_parallel          Direct
+AugOrderedTableMtEph                     tabulate                       Transitive
+BoruvkaMtEph                             boruvka_mst_mt                 Transitive

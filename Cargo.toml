@@ -17,6 +17,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 chrono = "0.4"
 regex = "1.10"
+walkdir = "2.5"
 
 [dev-dependencies]
 serial_test = "3.0"
@@ -35,6 +36,14 @@ path = "src/bin/fix.rs"
 [[bin]]
 name = "rusticate-parse"
 path = "src/bin/parse.rs"
+
+[[bin]]
+name = "compile"
+path = "src/bin/compile.rs"
+
+[[bin]]
+name = "compile-and-test"
+path = "src/bin/compile_and_test.rs"
 
 [[bin]]
 name = "rusticate-review-module-encapsulation"
@@ -167,6 +176,18 @@ path = "src/bin/review_impl_trait_bounds.rs"
 [[bin]]
 name = "rusticate-review-st-mt-consistency"
 path = "src/bin/review_st_mt_consistency.rs"
+
+[[bin]]
+name = "review-min-typing"
+path = "src/bin/review_min_typing.rs"
+
+[[bin]]
+name = "fix-min-typing"
+path = "src/bin/fix_min_typing.rs"
+
+[[bin]]
+name = "review-mt-per"
+path = "src/bin/review_mt_per.rs"
 
 [[bin]]
 name = "rusticate-review-string-hacking"

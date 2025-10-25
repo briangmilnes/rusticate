@@ -1,0 +1,57 @@
+Entering directory '/home/milnes/projects/rusticate'
+================================================================================
+Files using ArraySeqMtPer (marked for deletion)
+================================================================================
+================================================================================
+src/ files using ArraySeqMtPer: 10
+================================================================================
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/src/Chap26/DivConReduceMt.rs:1: 72 lines [NO_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/src/Chap26/MergeSortMt.rs:1: 192 lines [NO_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/src/Chap35/OrderStatSelectMtPer.rs:1: 85 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/src/Chap49/MinEditDistMtPer.rs:1: 179 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/src/Chap49/SubsetSumMtPer.rs:1: 170 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/src/Chap51/BottomUpDPMtPer.rs:1: 183 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/src/Chap51/TopDownDPMtPer.rs:1: 252 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/src/Chap52/AdjMatrixGraphMtPer.rs:1: 125 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/src/Chap52/AdjSeqGraphMtPer.rs:1: 98 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/src/Chap54/BFSMtPer.rs:1: 62 lines [HAS_EPH]
+src/ subtotal: 1418 lines
+================================================================================
+tests/ files using ArraySeqMtPer: 11
+================================================================================
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/tests/Chap18/TestArraySeqMtPerChap18.rs:1: 514 lines [NO_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/tests/Chap26/TestDivConReduceMt.rs:1: 62 lines [NO_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/tests/Chap26/TestMergeSortMt.rs:1: 52 lines [NO_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/tests/Chap35/TestOrderStatSelectMtPer.rs:1: 73 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/tests/Chap49/TestMinEditDistMtPer.rs:1: 135 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/tests/Chap49/TestSubsetSumMtPer.rs:1: 93 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/tests/Chap51/TestBottomUpDPMtPer.rs:1: 110 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/tests/Chap51/TestTopDownDPMtPer.rs:1: 131 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/tests/Chap52/TestAdjMatrixGraphMtPer.rs:1: 181 lines [NO_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/tests/Chap52/TestAdjSeqGraphMtPer.rs:1: 160 lines [NO_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/tests/Chap54/TestBFSMtPer.rs:1: 91 lines [HAS_EPH]
+tests/ subtotal: 1602 lines
+================================================================================
+benches/ files using ArraySeqMtPer: 8
+================================================================================
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/benches/Chap26/BenchChapter26Mt.rs:1: 49 lines [NO_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/benches/Chap26/BenchDivConReduceMt.rs:1: 33 lines [NO_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/benches/Chap26/BenchMergeSortMt.rs:1: 33 lines [NO_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/benches/Chap35/BenchOrderStatSelectMtPer.rs:1: 32 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/benches/Chap49/BenchMinEditDistMtPer.rs:1: 37 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/benches/Chap51/BenchBottomUpDPMtPer.rs:1: 26 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/benches/Chap51/BenchTopDownDPMtPer.rs:1: 26 lines [HAS_EPH]
+/home/milnes/projects/rusticate/APAS-AI-copy/apas-ai/benches/Chap54/BenchBFSMtPer.rs:1: 45 lines [HAS_EPH]
+benches/ subtotal: 281 lines
+================================================================================
+SUMMARY:
+  src/ files: 10 (1418 lines)
+  tests/ files: 11 (1602 lines)
+  benches/ files: 8 (281 lines)
+  TOTAL: 29 files (3301 lines to delete)
+Eph equivalents exist:
+  src/: 8/10
+  tests/: 6/11
+  benches/: 5/8
+  TOTAL: 19/29
+Completed in 346ms

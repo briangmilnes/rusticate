@@ -1,0 +1,16 @@
+INHERENT IMPL BLOCKS WITH TRAIT BOUNDS COMPARISON
+================================================================================
+
+src/bin/review_typeclasses.rs:96
+  trait:         NONE
+  trait impl:    NONE
+  inherent impl: <ImplInfo>
+
+================================================================================
+SUMMARY
+================================================================================
+Total impl blocks with generics: 1
+  With trait definitions: 0
+  Without trait definitions: 1
+
+Log written to: /home/milnes/projects/rusticate/analyses/code_review/review_impl_trait_bounds.txt

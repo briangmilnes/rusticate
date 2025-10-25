@@ -1,0 +1,192 @@
+Entering directory '/home/milnes/projects/rusticate'
+UFCS Calls That Could Potentially Be Simplified
+(These use <Type as Trait>::method syntax)
+Chap05/MappingStEph.rs:1:
+  3 UFCS calls
+    Line 68: <RelationStEph<X, Y> as RelationStEphTrait<X, Y>>::empty
+    Line 75: <RelationStEph<X, Y> as RelationStEphTrait<X, Y>>::FromSet
+    Line 82: <RelationStEph<X, Y> as RelationStEphTrait<X, Y>>::FromSet
+Chap12/Exercise12_1.rs:1:
+  2 UFCS calls
+    Line 59: <SpinLock as SpinLockTrait>::new
+    Line 67: <SpinLock as SpinLockTrait>::new
+Chap18/ArraySeqMtEph.rs:1:
+  1 UFCS call
+    Line 248: <ArraySeqMtEphS<U> as ArraySeqMtEphRedefinableTrait<U>>::append
+Chap18/LinkedListStEph.rs:1:
+  4 UFCS calls
+    Line 322: <LinkedListStEphS<T> as LinkedListStEphTrait<T>>::reduce
+    Line 323: <LinkedListStEphS<T> as LinkedListStEphTrait<T>>::reduce
+    Line 335: <LinkedListStEphS<T> as LinkedListStEphTrait<T>>::reduce
+    Line 338: <LinkedListStEphS<T> as LinkedListStEphTrait<T>>::reduce
+Chap18/LinkedListStPer.rs:1:
+  4 UFCS calls
+    Line 285: <LinkedListStPerS<T> as LinkedListStPerTrait<T>>::reduce
+    Line 286: <LinkedListStPerS<T> as LinkedListStPerTrait<T>>::reduce
+    Line 298: <LinkedListStPerS<T> as LinkedListStPerTrait<T>>::reduce
+    Line 301: <LinkedListStPerS<T> as LinkedListStPerTrait<T>>::reduce
+Chap19/ArraySeqMtEph.rs:1:
+  8 UFCS calls
+    Line 64: <ArraySeqMtEphS<T> as ArraySeqMtEphRedefinableTrait<T>>::tabulate
+      (File uses Chap19 - may be simplifiable)
+    Line 74: <ArraySeqMtEphS<T> as ArraySeqMtEphRedefinableTrait<T>>::map
+      (File uses Chap19 - may be simplifiable)
+    Line 114: <ArraySeqMtEphS<T> as ArraySeqMtEphRedefinableTrait<T>>::tabulate
+      (File uses Chap19 - may be simplifiable)
+    Line 115: <ArraySeqMtEphS<T> as ArraySeqMtEphTrait<T>>::select
+      (File uses Chap19 - may be simplifiable)
+    Line 122: <ArraySeqMtEphS<T> as ArraySeqMtEphRedefinableTrait<T>>::singleton
+      (File uses Chap19 - may be simplifiable)
+    Line 124: <ArraySeqMtEphS<T> as ArraySeqMtEphRedefinableTrait<T>>::empty
+      (File uses Chap19 - may be simplifiable)
+    Line 163: <ArraySeqMtEphS<T> as ArraySeqMtEphRedefinableTrait<T>>::empty
+      (File uses Chap19 - may be simplifiable)
+    Line 180: <ArraySeqMtEphS<T> as ArraySeqMtEphRedefinableTrait<T>>::append
+      (File uses Chap19 - may be simplifiable)
+Chap19/ArraySeqMtEphSlice.rs:1:
+  2 UFCS calls
+    Line 308: <ArraySeqMtEphSliceS<T> as ArraySeqMtEphSliceTrait<T>>::empty
+    Line 311: <ArraySeqMtEphSliceS<T> as ArraySeqMtEphSliceTrait<T>>::tabulate
+Chap19/ArraySeqStEph.rs:1:
+  21 UFCS calls
+    Line 69: <ArraySeqStEphS<T> as ArraySeqStEphTrait<T>>::tabulate
+    Line 77: <ArraySeqStEphS<T> as ArraySeqStEphTrait<T>>::tabulate
+    Line 84: <ArraySeqStEphS<T> as Chap18RedefinableTrait<T>>::empty
+    Line 86: <ArraySeqStEphS<T> as BaseTrait<T>>::new
+    Line 95: <ArraySeqStEphS<U> as ArraySeqStEphTrait<U>>::tabulate
+    Line 116: <ArraySeqStEphS<T> as ArraySeqStEphTrait<T>>::empty
+    Line 123: <ArraySeqStEphS<T> as BaseTrait<T>>::new
+    Line 135: <ArraySeqStEphS<T> as ArraySeqStEphTrait<T>>::tabulate
+    Line 136: <ArraySeqStEphS<T> as ArraySeqStEphTrait<T>>::select
+    Line 143: <ArraySeqStEphS<T> as ArraySeqStEphTrait<T>>::singleton
+    Line 145: <ArraySeqStEphS<T> as ArraySeqStEphTrait<T>>::empty
+    Line 151: <ArraySeqStEphS<T> as ArraySeqStEphTrait<T>>::map
+    Line 152: <ArraySeqStEphS<T> as ArraySeqStEphTrait<T>>::deflate
+    Line 154: <ArraySeqStEphS<T> as BaseTrait<T>>::flatten
+    Line 174: <ArraySeqStEphS<T> as BaseTrait<T>>::subseq
+    Line 175: <ArraySeqStEphS<T> as BaseTrait<T>>::subseq
+    Line 176: <ArraySeqStEphS<T> as ArraySeqStEphTrait<T>>::reduce
+    Line 177: <ArraySeqStEphS<T> as ArraySeqStEphTrait<T>>::reduce
+    Line 185: <ArraySeqStEphS<T> as ArraySeqStEphTrait<T>>::empty
+    Line 189: <ArraySeqStEphS<T> as BaseTrait<T>>::new
+    Line 209: <ArraySeqStEphS<T> as ArraySeqStEphTrait<T>>::tabulate
+Chap19/ArraySeqStPer.rs:1:
+  15 UFCS calls
+    Line 64: <ArraySeqStPerS<T> as ArraySeqStPerTrait<T>>::tabulate
+    Line 72: <ArraySeqStPerS<T> as ArraySeqStPerTrait<T>>::tabulate
+    Line 87: <ArraySeqStPerS<U> as ArraySeqStPerTrait<U>>::tabulate
+    Line 92: <ArraySeqStPerS<ArraySeqStPerS<T>> as ArraySeqStPerTrait<ArraySeqStPerS<T>>>::tabulate
+    Line 96: <ArraySeqStPerS<T> as BaseTrait<T>>::flatten
+    Line 101: <ArraySeqStPerS<T> as ArraySeqStPerTrait<T>>::map
+    Line 102: <ArraySeqStPerS<T> as ArraySeqStPerTrait<T>>::deflate
+    Line 104: <ArraySeqStPerS<T> as BaseTrait<T>>::flatten
+    Line 126: <ArraySeqStPerS<T> as ArraySeqStPerTrait<T>>::reduce
+    Line 127: <ArraySeqStPerS<T> as ArraySeqStPerTrait<T>>::reduce
+    Line 156: <ArraySeqStPerS<T> as ArraySeqStPerTrait<T>>::tabulate
+    Line 174: <ArraySeqStPerS<T> as ArraySeqStPerTrait<T>>::tabulate
+    Line 176: <ArraySeqStPerS<T> as ArraySeqStPerTrait<T>>::select
+    Line 186: <ArraySeqStPerS<T> as ArraySeqStPerTrait<T>>::singleton
+    Line 188: <ArraySeqStPerS<T> as ArraySeqStPerTrait<T>>::empty
+Chap21/Algorithm21_1.rs:1:
+  3 UFCS calls
+    Line 27: <ArraySeqStPerS<ArraySeqStPerS<Pair<N, N>>> as ArraySeqStPerRedefinableTrait<ArraySeqStPerS<Pair<N, N>>>>::tabulate
+    Line 29: <ArraySeqStPerS<Pair<N, N>> as ArraySeqStPerRedefinableTrait<Pair<N, N>>>::tabulate
+    Line 33: <ArraySeqStPerS<Pair<N, N>> as ArraySeqStPerBaseTrait<Pair<N, N>>>::flatten
+Chap21/Algorithm21_2.rs:1:
+  5 UFCS calls
+    Line 27: <ArraySeqStPerS<
+            ArraySeqStPerS<Pair<N, Pair<N, N>>>,
+        > as ArraySeqStPerRedefinableTrait<
+            ArraySeqStPerS<Pair<N, Pair<N, N>>>,
+        >>::tabulate
+    Line 33: <ArraySeqStPerS<
+                    ArraySeqStPerS<Pair<N, Pair<N, N>>>,
+                > as ArraySeqStPerRedefinableTrait<
+                    ArraySeqStPerS<Pair<N, Pair<N, N>>>,
+                >>::tabulate
+    Line 39: <ArraySeqStPerS<Pair<N, Pair<N, N>>> as ArraySeqStPerRedefinableTrait<Pair<N, Pair<N, N>>>>::tabulate
+    Line 46: <ArraySeqStPerS<Pair<N, Pair<N, N>>> as ArraySeqStPerBaseTrait<Pair<N, Pair<N, N>>>>::flatten
+    Line 50: <ArraySeqStPerS<Pair<N, Pair<N, N>>> as ArraySeqStPerBaseTrait<Pair<N, Pair<N, N>>>>::flatten
+Chap21/Algorithm21_5.rs:1:
+  2 UFCS calls
+    Line 29: <ArraySeqStPerS<N> as ArraySeqStPerRedefinableTrait<N>>::tabulate
+    Line 31: <ArraySeqStPerS<N> as ArraySeqStPerRedefinableTrait<N>>::filter
+Chap21/Algorithm21_6.rs:1:
+  5 UFCS calls
+    Line 29: <ArraySeqStPerS<ArraySeqStPerS<N>> as ArraySeqStPerRedefinableTrait<ArraySeqStPerS<N>>>::tabulate
+    Line 34: <ArraySeqStPerS<N> as ArraySeqStPerRedefinableTrait<N>>::tabulate
+    Line 38: <ArraySeqStPerS<N> as ArraySeqStPerBaseTrait<N>>::flatten
+    Line 42: <ArraySeqStPerS<N> as ArraySeqStPerRedefinableTrait<N>>::tabulate
+    Line 46: <ArraySeqStPerS<N> as ArraySeqStPerRedefinableTrait<N>>::filter
+Chap21/Exercise21_5.rs:1:
+  3 UFCS calls
+    Line 23: <ArraySeqStPerS<ArraySeqStPerS<ArraySeqStPerS<T>>> as ArraySeqStPerRedefinableTrait<
+                ArraySeqStPerS<ArraySeqStPerS<T>>,
+            >>::tabulate
+    Line 27: <ArraySeqStPerS<ArraySeqStPerS<T>> as ArraySeqStPerRedefinableTrait<ArraySeqStPerS<T>>>::tabulate
+    Line 36: <ArraySeqStPerS<ArraySeqStPerS<T>> as ArraySeqStPerBaseTrait<ArraySeqStPerS<T>>>::flatten
+Chap21/Exercise21_7.rs:1:
+  5 UFCS calls
+    Line 42: <ArraySeqStPerS<N> as ArraySeqStPerRedefinableTrait<N>>::filter
+    Line 43: <ArraySeqStPerS<char> as ArraySeqStPerRedefinableTrait<char>>::filter
+    Line 45: <ArraySeqStPerS<ArraySeqStPerS<Pair<N, char>>> as ArraySeqStPerRedefinableTrait<
+            ArraySeqStPerS<Pair<N, char>>,
+        >>::tabulate
+    Line 50: <ArraySeqStPerS<Pair<N, char>> as ArraySeqStPerRedefinableTrait<Pair<N, char>>>::tabulate
+    Line 57: <ArraySeqStPerS<Pair<N, char>> as ArraySeqStPerBaseTrait<Pair<N, char>>>::flatten
+Chap21/Exercise21_8.rs:1:
+  2 UFCS calls
+    Line 35: <ArraySeqStPerS<B> as ArraySeqStPerRedefinableTrait<B>>::tabulate
+    Line 36: <ArraySeqStPerS<B> as ArraySeqStPerRedefinableTrait<B>>::filter
+Chap21/Problem21_4.rs:1:
+  3 UFCS calls
+    Line 55: <ArraySeqStPerS<
+            ArraySeqStPerS<Pair<N, &'static str>>,
+        > as ArraySeqStPerRedefinableTrait<
+            ArraySeqStPerS<Pair<N, &'static str>>,
+        >>::tabulate
+    Line 62: <ArraySeqStPerS<Pair<N, &'static str>> as ArraySeqStPerRedefinableTrait<Pair<N, &'static str>>>::tabulate
+    Line 69: <ArraySeqStPerS<Pair<N, &'static str>> as ArraySeqStPerBaseTrait<Pair<N, &'static str>>>::flatten
+Chap35/OrderStatSelectMtEph.rs:1:
+  2 UFCS calls
+    Line 45: <ArraySeqMtEphS<T> as crate::Chap18::ArraySeqMtEph::ArraySeqMtEph::ArraySeqMtEphRedefinableTrait<
+                        T,
+                    >>::tabulate
+      (File uses Chap19 - may be simplifiable)
+    Line 68: <ArraySeqMtEphS<T> as crate::Chap18::ArraySeqMtEph::ArraySeqMtEph::ArraySeqMtEphRedefinableTrait<
+                        T,
+                    >>::tabulate
+      (File uses Chap19 - may be simplifiable)
+Chap37/AVLTreeSeq.rs:1:
+  4 UFCS calls
+    Line 151: <AVLTreeS<T> as AVLTreeSeq<T>>::empty
+    Line 168: <AVLTreeS<T> as AVLTreeSeq<T>>::set
+    Line 191: <ArraySeqS<T> as ArraySeq<T>>::empty
+    Line 195: <ArraySeqS<T> as ArraySeq<T>>::new
+Chap61/EdgeContractionMtEph.rs:1:
+  1 UFCS call
+    Line 102: <UnDirGraphMtEph<V> as UnDirGraphMtEphTrait<V>>::FromSets
+Chap61/EdgeContractionStEph.rs:1:
+  1 UFCS call
+    Line 98: <UnDirGraphStEph<V> as UnDirGraphStEphTrait<V>>::FromSets
+Chap62/StarContractionMtEph.rs:1:
+  1 UFCS call
+    Line 102: <UnDirGraphMtEph<V> as UnDirGraphMtEphTrait<V>>::FromSets
+Chap62/StarContractionStEph.rs:1:
+  1 UFCS call
+    Line 106: <UnDirGraphStEph<V> as UnDirGraphStEphTrait<V>>::FromSets
+Chap63/ConnectivityMtEph.rs:1:
+  2 UFCS calls
+    Line 73: <UnDirGraphMtEph<V> as UnDirGraphMtEphTrait<V>>::FromSets
+    Line 111: <UnDirGraphMtEph<V> as UnDirGraphMtEphTrait<V>>::FromSets
+Chap63/ConnectivityStEph.rs:1:
+  2 UFCS calls
+    Line 66: <UnDirGraphStEph<V> as UnDirGraphStEphTrait<V>>::FromSets
+    Line 101: <UnDirGraphStEph<V> as UnDirGraphStEphTrait<V>>::FromSets
+================================================================================
+SUMMARY:
+  Total UFCS calls: 102
+  Files with UFCS calls: 25
+  UFCS calls in Chap19 files: 10 (potentially simplifiable)
+  UFCS calls in Chap18 files: 92
+Completed in 148ms

@@ -1,0 +1,868 @@
+Entering directory '/home/milnes/projects/rusticate'
+================================================================================
+FILES IMPORTING BOTH Chap18 AND Chap19 (WRONG - CAUSES AMBIGUITY):
+================================================================================
+None (good!)
+================================================================================
+Files with UFCS calls that can be simplified:
+================================================================================
+APAS-AI-copy/apas-ai/benches/Chap06/BenchUnDirGraphStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 28: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+APAS-AI-copy/apas-ai/benches/Chap37/BenchAVLTreeSeqStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 22: <AVLTreeSeqStEphS<N> as AVLTreeSeqStEphTrait<N>>::nth -> AVLTreeSeqStEphS<N>::nth
+    Line 23: <AVLTreeSeqStEphS<N> as AVLTreeSeqStEphTrait<N>>::length -> AVLTreeSeqStEphS<N>::length
+APAS-AI-copy/apas-ai/benches/Chap37/BenchAVLTreeSeqStEphChap37Build.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 3
+    Line 24: <AVLTreeSeqStEphS<N> as AVLTreeSeqStEphTrait<N>>::nth -> AVLTreeSeqStEphS<N>::nth
+    Line 27: <AVLTreeSeqStEphS<N> as AVLTreeSeqStEphTrait<N>>::length -> AVLTreeSeqStEphS<N>::length
+    Line 28: <AVLTreeSeqStEphS<N> as AVLTreeSeqStEphTrait<N>>::length -> AVLTreeSeqStEphS<N>::length
+APAS-AI-copy/apas-ai/benches/Chap37/BenchAVLTreeSeqStEphChap37Ops.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 22: <AVLTreeSeqStEphS<N> as AVLTreeSeqStEphTrait<N>>::nth -> AVLTreeSeqStEphS<N>::nth
+    Line 23: <AVLTreeSeqStEphS<N> as AVLTreeSeqStEphTrait<N>>::length -> AVLTreeSeqStEphS<N>::length
+APAS-AI-copy/apas-ai/benches/Chap37/BenchAVLTreeSeqStPer.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 3
+    Line 22: <AVLTreeSeqStPerS<N> as AVLTreeSeqStPerTrait<N>>::singleton -> AVLTreeSeqStPerS<N>::singleton
+    Line 23: <AVLTreeSeqStPerS<N> as AVLTreeSeqStPerTrait<N>>::singleton -> AVLTreeSeqStPerS<N>::singleton
+    Line 24: <AVLTreeSeqStPerS<N> as AVLTreeSeqStPerTrait<N>>::singleton -> AVLTreeSeqStPerS<N>::singleton
+APAS-AI-copy/apas-ai/benches/Chap37/BenchAVLTreeSeqStPerChap37Build.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 3
+    Line 22: <AVLTreeSeqStPerS<N> as AVLTreeSeqStPerTrait<N>>::empty -> AVLTreeSeqStPerS<N>::empty
+    Line 24: <AVLTreeSeqStPerS<N> as AVLTreeSeqStPerTrait<N>>::set -> AVLTreeSeqStPerS<N>::set
+    Line 26: <AVLTreeSeqStPerS<N> as AVLTreeSeqStPerTrait<N>>::nth -> AVLTreeSeqStPerS<N>::nth
+APAS-AI-copy/apas-ai/benches/Chap37/BenchAVLTreeSeqStPerChap37Ops.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 19: <AVLTreeSeqStPerS<N> as AVLTreeSeqStPerTrait<N>>::empty -> AVLTreeSeqStPerS<N>::empty
+    Line 22: <AVLTreeSeqStPerS<N> as AVLTreeSeqStPerTrait<N>>::set -> AVLTreeSeqStPerS<N>::set
+APAS-AI-copy/apas-ai/benches/Chap61/BenchEdgeContractionMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 25: <UnDirGraphMtEph<usize> as UnDirGraphMtEphTrait<usize>>::Fro... -> UnDirGraphMtEph<usize>::FromSets
+APAS-AI-copy/apas-ai/benches/Chap61/BenchEdgeContractionStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 25: <UnDirGraphStEph<usize> as UnDirGraphStEphTrait<usize>>::Fro... -> UnDirGraphStEph<usize>::FromSets
+APAS-AI-copy/apas-ai/benches/Chap61/BenchVertexMatchingMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 25: <UnDirGraphMtEph<usize> as UnDirGraphMtEphTrait<usize>>::Fro... -> UnDirGraphMtEph<usize>::FromSets
+    Line 38: <UnDirGraphMtEph<usize> as UnDirGraphMtEphTrait<usize>>::Fro... -> UnDirGraphMtEph<usize>::FromSets
+APAS-AI-copy/apas-ai/benches/Chap61/BenchVertexMatchingStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 25: <UnDirGraphStEph<usize> as UnDirGraphStEphTrait<usize>>::Fro... -> UnDirGraphStEph<usize>::FromSets
+APAS-AI-copy/apas-ai/benches/Chap62/BenchStarContractionMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 20: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::FromSets -> UnDirGraphMtEph<N>::FromSets
+APAS-AI-copy/apas-ai/benches/Chap62/BenchStarContractionStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 20: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+APAS-AI-copy/apas-ai/benches/Chap62/BenchStarPartitionMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 20: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::FromSets -> UnDirGraphMtEph<N>::FromSets
+    Line 36: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::FromSets -> UnDirGraphMtEph<N>::FromSets
+APAS-AI-copy/apas-ai/benches/Chap62/BenchStarPartitionStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 22: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+    Line 39: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+APAS-AI-copy/apas-ai/benches/Chap63/BenchConnectivityMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 20: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::FromSets -> UnDirGraphMtEph<N>::FromSets
+    Line 36: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::FromSets -> UnDirGraphMtEph<N>::FromSets
+APAS-AI-copy/apas-ai/benches/Chap63/BenchConnectivityStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 20: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+    Line 36: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+APAS-AI-copy/apas-ai/benches/Chap64/BenchSpanTreeMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 20: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::FromSets -> UnDirGraphMtEph<N>::FromSets
+APAS-AI-copy/apas-ai/benches/Chap64/BenchSpanTreeStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 20: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+APAS-AI-copy/apas-ai/benches/Chap64/BenchTSPApproxMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 31: <LabUnDirGraphMtEph<N, OrderedFloat<f64>> as LabUnDirGraphMt... -> LabUnDirGraphMtEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+APAS-AI-copy/apas-ai/benches/Chap64/BenchTSPApproxStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 31: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+APAS-AI-copy/apas-ai/benches/Chap65/BenchKruskalStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 27: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+    Line 43: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+APAS-AI-copy/apas-ai/benches/Chap65/BenchPrimStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 27: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+    Line 43: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+APAS-AI-copy/apas-ai/src/Chap05/MappingStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 5
+    Line 68: <RelationStEph<X, Y> as RelationStEphTrait<X, Y>>::empty -> RelationStEph<X, Y>::empty
+    Line 75: <RelationStEph<X, Y> as RelationStEphTrait<X, Y>>::FromSet -> RelationStEph<X, Y>::FromSet
+    Line 82: <RelationStEph<X, Y> as RelationStEphTrait<X, Y>>::FromSet -> RelationStEph<X, Y>::FromSet
+    Line 114:             < $crate::Chap05::MappingStEph::MappingStEph::Ma... -> $crate::Chap05::MappingStEph::MappingStEph::MappingStEph<_, _>::FromRelation
+    Line 126:             < $crate::Chap05::MappingStEph::MappingStEph::Ma... -> $crate::Chap05::MappingStEph::MappingStEph::MappingStEph<_, _>::FromVec
+APAS-AI-copy/apas-ai/src/Chap05/RelationStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 121:             < $crate::Chap05::RelationStEph::RelationStEph::... -> $crate::Chap05::RelationStEph::RelationStEph::RelationStEph<_, _>::FromSet
+    Line 129:             < $crate::Chap05::RelationStEph::RelationStEph::... -> $crate::Chap05::RelationStEph::RelationStEph::RelationStEph<_, _>::FromSet
+APAS-AI-copy/apas-ai/src/Chap06/DirGraphMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 314:             < $crate::Chap06::DirGraphMtEph::DirGraphMtEph::... -> $crate::Chap06::DirGraphMtEph::DirGraphMtEph::DirGraphMtEph<_>::FromSets
+    Line 323:             < $crate::Chap06::DirGraphMtEph::DirGraphMtEph::... -> $crate::Chap06::DirGraphMtEph::DirGraphMtEph::DirGraphMtEph<_>::FromSets
+APAS-AI-copy/apas-ai/src/Chap06/DirGraphStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 171:             < $crate::Chap06::DirGraphStEph::DirGraphStEph::... -> $crate::Chap06::DirGraphStEph::DirGraphStEph::DirGraphStEph<_>::FromSets
+    Line 180:             < $crate::Chap06::DirGraphStEph::DirGraphStEph::... -> $crate::Chap06::DirGraphStEph::DirGraphStEph::DirGraphStEph<_>::FromSets
+APAS-AI-copy/apas-ai/src/Chap06/LabDirGraphMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 213:             < $crate::Chap06::LabDirGraphMtEph::LabDirGraphM... -> $crate::Chap06::LabDirGraphMtEph::LabDirGraphMtEph::LabDirGraphMtEph<_, _>::empty
+    Line 218:             < $crate::Chap06::LabDirGraphMtEph::LabDirGraphM... -> $crate::Chap06::LabDirGraphMtEph::LabDirGraphMtEph::LabDirGraphMtEph<_, _>::from_vertices_and_labeled_arcs
+APAS-AI-copy/apas-ai/src/Chap06/LabDirGraphStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 145:             < $crate::Chap06::LabDirGraphStEph::LabDirGraphS... -> $crate::Chap06::LabDirGraphStEph::LabDirGraphStEph::LabDirGraphStEph<_, _>::empty
+    Line 150:             < $crate::Chap06::LabDirGraphStEph::LabDirGraphS... -> $crate::Chap06::LabDirGraphStEph::LabDirGraphStEph::LabDirGraphStEph<_, _>::from_vertices_and_labeled_arcs
+APAS-AI-copy/apas-ai/src/Chap06/LabUnDirGraphMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 193:             < $crate::Chap06::LabUnDirGraphMtEph::LabUnDirGr... -> $crate::Chap06::LabUnDirGraphMtEph::LabUnDirGraphMtEph::LabUnDirGraphMtEph<_, _>::empty
+    Line 209:             < $crate::Chap06::LabUnDirGraphMtEph::LabUnDirGr... -> $crate::Chap06::LabUnDirGraphMtEph::LabUnDirGraphMtEph::LabUnDirGraphMtEph<_, _>::from_vertices_and_labeled_edges
+APAS-AI-copy/apas-ai/src/Chap06/LabUnDirGraphStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 156:             < $crate::Chap06::LabUnDirGraphStEph::LabUnDirGr... -> $crate::Chap06::LabUnDirGraphStEph::LabUnDirGraphStEph::LabUnDirGraphStEph<_, _>::empty
+    Line 172:             < $crate::Chap06::LabUnDirGraphStEph::LabUnDirGr... -> $crate::Chap06::LabUnDirGraphStEph::LabUnDirGraphStEph::LabUnDirGraphStEph<_, _>::from_vertices_and_labeled_edges
+APAS-AI-copy/apas-ai/src/Chap06/UnDirGraphMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 186:             < $crate::Chap06::UnDirGraphMtEph::UnDirGraphMtE... -> $crate::Chap06::UnDirGraphMtEph::UnDirGraphMtEph::UnDirGraphMtEph<_>::FromSets
+    Line 195:             < $crate::Chap06::UnDirGraphMtEph::UnDirGraphMtE... -> $crate::Chap06::UnDirGraphMtEph::UnDirGraphMtEph::UnDirGraphMtEph<_>::FromSets
+APAS-AI-copy/apas-ai/src/Chap06/UnDirGraphStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 122:             < $crate::Chap06::UnDirGraphStEph::UnDirGraphStE... -> $crate::Chap06::UnDirGraphStEph::UnDirGraphStEph::UnDirGraphStEph<_>::FromSets
+    Line 131:             < $crate::Chap06::UnDirGraphStEph::UnDirGraphStE... -> $crate::Chap06::UnDirGraphStEph::UnDirGraphStEph::UnDirGraphStEph<_>::FromSets
+APAS-AI-copy/apas-ai/src/Chap12/Exercise12_1.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 59: <SpinLock as SpinLockTrait>::new -> SpinLock::new
+    Line 67: <SpinLock as SpinLockTrait>::new -> SpinLock::new
+APAS-AI-copy/apas-ai/src/Chap21/Algorithm21_1.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 3
+    Line 27: <ArraySeqStPerS<ArraySeqStPerS<Pair<N, N>>> as ArraySeqStPer... -> ArraySeqStPerS<ArraySeqStPerS<Pair<N, N>>>::tabulate
+    Line 29: <ArraySeqStPerS<Pair<N, N>> as ArraySeqStPerRedefinableTrait... -> ArraySeqStPerS<Pair<N, N>>::tabulate
+    Line 33: <ArraySeqStPerS<Pair<N, N>> as ArraySeqStPerBaseTrait<Pair<N... -> ArraySeqStPerS<Pair<N, N>>::flatten
+APAS-AI-copy/apas-ai/src/Chap21/Algorithm21_2.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 5
+    Line 27: <ArraySeqStPerS<
+            ArraySeqStPerS<Pair<N, Pair<N, ... -> ArraySeqStPerS<
+            ArraySeqStPerS<Pair<N, Pair<N, N>>>,
+        >::tabulate
+    Line 33: <ArraySeqStPerS<
+                    ArraySeqStPerS<Pair<N, ... -> ArraySeqStPerS<
+                    ArraySeqStPerS<Pair<N, Pair<N, N>>>,
+                >::tabulate
+    Line 39: <ArraySeqStPerS<Pair<N, Pair<N, N>>> as ArraySeqStPerRedefin... -> ArraySeqStPerS<Pair<N, Pair<N, N>>>::tabulate
+    Line 46: <ArraySeqStPerS<Pair<N, Pair<N, N>>> as ArraySeqStPerBaseTra... -> ArraySeqStPerS<Pair<N, Pair<N, N>>>::flatten
+    Line 50: <ArraySeqStPerS<Pair<N, Pair<N, N>>> as ArraySeqStPerBaseTra... -> ArraySeqStPerS<Pair<N, Pair<N, N>>>::flatten
+APAS-AI-copy/apas-ai/src/Chap21/Algorithm21_5.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 29: <ArraySeqStPerS<N> as ArraySeqStPerRedefinableTrait<N>>::tab... -> ArraySeqStPerS<N>::tabulate
+    Line 31: <ArraySeqStPerS<N> as ArraySeqStPerRedefinableTrait<N>>::fil... -> ArraySeqStPerS<N>::filter
+APAS-AI-copy/apas-ai/src/Chap21/Algorithm21_6.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 5
+    Line 29: <ArraySeqStPerS<ArraySeqStPerS<N>> as ArraySeqStPerRedefinab... -> ArraySeqStPerS<ArraySeqStPerS<N>>::tabulate
+    Line 34: <ArraySeqStPerS<N> as ArraySeqStPerRedefinableTrait<N>>::tab... -> ArraySeqStPerS<N>::tabulate
+    Line 38: <ArraySeqStPerS<N> as ArraySeqStPerBaseTrait<N>>::flatten -> ArraySeqStPerS<N>::flatten
+    Line 42: <ArraySeqStPerS<N> as ArraySeqStPerRedefinableTrait<N>>::tab... -> ArraySeqStPerS<N>::tabulate
+    Line 46: <ArraySeqStPerS<N> as ArraySeqStPerRedefinableTrait<N>>::fil... -> ArraySeqStPerS<N>::filter
+APAS-AI-copy/apas-ai/src/Chap21/Exercise21_5.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 3
+    Line 23: <ArraySeqStPerS<ArraySeqStPerS<ArraySeqStPerS<T>>> as ArrayS... -> ArraySeqStPerS<ArraySeqStPerS<ArraySeqStPerS<T>>>::tabulate
+    Line 27: <ArraySeqStPerS<ArraySeqStPerS<T>> as ArraySeqStPerRedefinab... -> ArraySeqStPerS<ArraySeqStPerS<T>>::tabulate
+    Line 36: <ArraySeqStPerS<ArraySeqStPerS<T>> as ArraySeqStPerBaseTrait... -> ArraySeqStPerS<ArraySeqStPerS<T>>::flatten
+APAS-AI-copy/apas-ai/src/Chap21/Exercise21_7.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 5
+    Line 42: <ArraySeqStPerS<N> as ArraySeqStPerRedefinableTrait<N>>::fil... -> ArraySeqStPerS<N>::filter
+    Line 43: <ArraySeqStPerS<char> as ArraySeqStPerRedefinableTrait<char>... -> ArraySeqStPerS<char>::filter
+    Line 45: <ArraySeqStPerS<ArraySeqStPerS<Pair<N, char>>> as ArraySeqSt... -> ArraySeqStPerS<ArraySeqStPerS<Pair<N, char>>>::tabulate
+    Line 50: <ArraySeqStPerS<Pair<N, char>> as ArraySeqStPerRedefinableTr... -> ArraySeqStPerS<Pair<N, char>>::tabulate
+    Line 57: <ArraySeqStPerS<Pair<N, char>> as ArraySeqStPerBaseTrait<Pai... -> ArraySeqStPerS<Pair<N, char>>::flatten
+APAS-AI-copy/apas-ai/src/Chap21/Exercise21_8.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 35: <ArraySeqStPerS<B> as ArraySeqStPerRedefinableTrait<B>>::tab... -> ArraySeqStPerS<B>::tabulate
+    Line 36: <ArraySeqStPerS<B> as ArraySeqStPerRedefinableTrait<B>>::fil... -> ArraySeqStPerS<B>::filter
+APAS-AI-copy/apas-ai/src/Chap21/Problem21_4.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 3
+    Line 55: <ArraySeqStPerS<
+            ArraySeqStPerS<Pair<N, &'static... -> ArraySeqStPerS<
+            ArraySeqStPerS<Pair<N, &'static str>>,
+        >::tabulate
+    Line 62: <ArraySeqStPerS<Pair<N, &'static str>> as ArraySeqStPerRedef... -> ArraySeqStPerS<Pair<N, &'static str>>::tabulate
+    Line 69: <ArraySeqStPerS<Pair<N, &'static str>> as ArraySeqStPerBaseT... -> ArraySeqStPerS<Pair<N, &'static str>>::flatten
+APAS-AI-copy/apas-ai/src/Chap35/OrderStatSelectMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 1
+  UFCS calls: 2
+    Line 45: <ArraySeqMtEphS<T> as crate::Chap18::ArraySeqMtEph::ArraySeq... -> ArraySeqMtEphS<T>::tabulate
+    Line 68: <ArraySeqMtEphS<T> as crate::Chap18::ArraySeqMtEph::ArraySeq... -> ArraySeqMtEphS<T>::tabulate
+APAS-AI-copy/apas-ai/src/Chap37/AVLTreeSeq.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 4
+    Line 151: <AVLTreeS<T> as AVLTreeSeq<T>>::empty -> AVLTreeS<T>::empty
+    Line 168: <AVLTreeS<T> as AVLTreeSeq<T>>::set -> AVLTreeS<T>::set
+    Line 191: <ArraySeqS<T> as ArraySeq<T>>::empty -> ArraySeqS<T>::empty
+    Line 195: <ArraySeqS<T> as ArraySeq<T>>::new -> ArraySeqS<T>::new
+APAS-AI-copy/apas-ai/src/Chap37/BSTAVLMtEph.rs:1:
+  Chap18 imports: 2, Chap19 imports: 0
+  UFCS calls: 2
+    Line 258:             < $crate::Chap37::BSTAVLMtEph::BSTAVLMtEph::BSTA... -> $crate::Chap37::BSTAVLMtEph::BSTAVLMtEph::BSTAVLMtEph<_>::new
+    Line 261:             let __tree = < $crate::Chap37::BSTAVLMtEph::BSTA... -> $crate::Chap37::BSTAVLMtEph::BSTAVLMtEph::BSTAVLMtEph<_>::new
+APAS-AI-copy/apas-ai/src/Chap37/BSTAVLStEph.rs:1:
+  Chap18 imports: 2, Chap19 imports: 0
+  UFCS calls: 2
+    Line 242:             < $crate::Chap37::BSTAVLStEph::BSTAVLStEph::BSTA... -> $crate::Chap37::BSTAVLStEph::BSTAVLStEph::BSTAVLStEph<_>::new
+    Line 245:             let mut __tree = < $crate::Chap37::BSTAVLStEph::... -> $crate::Chap37::BSTAVLStEph::BSTAVLStEph::BSTAVLStEph<_>::new
+APAS-AI-copy/apas-ai/src/Chap37/BSTBBAlphaMtEph.rs:1:
+  Chap18 imports: 2, Chap19 imports: 0
+  UFCS calls: 2
+    Line 251:             < $crate::Chap37::BSTBBAlphaMtEph::BSTBBAlphaMtE... -> $crate::Chap37::BSTBBAlphaMtEph::BSTBBAlphaMtEph::BSTBBAlphaMtEph<_>::new
+    Line 254:             let __tree = < $crate::Chap37::BSTBBAlphaMtEph::... -> $crate::Chap37::BSTBBAlphaMtEph::BSTBBAlphaMtEph::BSTBBAlphaMtEph<_>::new
+APAS-AI-copy/apas-ai/src/Chap37/BSTBBAlphaStEph.rs:1:
+  Chap18 imports: 2, Chap19 imports: 0
+  UFCS calls: 2
+    Line 230:             < $crate::Chap37::BSTBBAlphaStEph::BSTBBAlphaStE... -> $crate::Chap37::BSTBBAlphaStEph::BSTBBAlphaStEph::BSTBBAlphaStEph<_>::new
+    Line 233:             let mut __tree = < $crate::Chap37::BSTBBAlphaStE... -> $crate::Chap37::BSTBBAlphaStEph::BSTBBAlphaStEph::BSTBBAlphaStEph<_>::new
+APAS-AI-copy/apas-ai/src/Chap37/BSTRBStEph.rs:1:
+  Chap18 imports: 2, Chap19 imports: 0
+  UFCS calls: 2
+    Line 264:             < $crate::Chap37::BSTRBStEph::BSTRBStEph::BSTRBS... -> $crate::Chap37::BSTRBStEph::BSTRBStEph::BSTRBStEph<_>::new
+    Line 267:             let mut __tree = < $crate::Chap37::BSTRBStEph::B... -> $crate::Chap37::BSTRBStEph::BSTRBStEph::BSTRBStEph<_>::new
+APAS-AI-copy/apas-ai/src/Chap37/BSTSetAVLMtEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 220:             < $crate::Chap37::BSTSetAVLMtEph::BSTSetAVLMtEph... -> $crate::Chap37::BSTSetAVLMtEph::BSTSetAVLMtEph::BSTSetAVLMtEph<_>::empty
+    Line 223:             let mut __set = < $crate::Chap37::BSTSetAVLMtEph... -> $crate::Chap37::BSTSetAVLMtEph::BSTSetAVLMtEph::BSTSetAVLMtEph<_>::empty
+APAS-AI-copy/apas-ai/src/Chap37/BSTSetBBAlphaMtEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 218:             < $crate::Chap37::BSTSetBBAlphaMtEph::BSTSetBBAl... -> $crate::Chap37::BSTSetBBAlphaMtEph::BSTSetBBAlphaMtEph::BSTSetBBAlphaMtEph<_>::empty
+    Line 221:             let mut __set = < $crate::Chap37::BSTSetBBAlphaM... -> $crate::Chap37::BSTSetBBAlphaMtEph::BSTSetBBAlphaMtEph::BSTSetBBAlphaMtEph<_>::empty
+APAS-AI-copy/apas-ai/src/Chap37/BSTSetPlainMtEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 224:             < $crate::Chap37::BSTSetPlainMtEph::BSTSetPlainM... -> $crate::Chap37::BSTSetPlainMtEph::BSTSetPlainMtEph::BSTSetPlainMtEph<_>::empty
+    Line 227:             let mut __set = < $crate::Chap37::BSTSetPlainMtE... -> $crate::Chap37::BSTSetPlainMtEph::BSTSetPlainMtEph::BSTSetPlainMtEph<_>::empty
+APAS-AI-copy/apas-ai/src/Chap37/BSTSetRBMtEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 218:             < $crate::Chap37::BSTSetRBMtEph::BSTSetRBMtEph::... -> $crate::Chap37::BSTSetRBMtEph::BSTSetRBMtEph::BSTSetRBMtEph<_>::empty
+    Line 221:             let mut __set = < $crate::Chap37::BSTSetRBMtEph:... -> $crate::Chap37::BSTSetRBMtEph::BSTSetRBMtEph::BSTSetRBMtEph<_>::empty
+APAS-AI-copy/apas-ai/src/Chap37/BSTSetSplayMtEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 218:             < $crate::Chap37::BSTSetSplayMtEph::BSTSetSplayM... -> $crate::Chap37::BSTSetSplayMtEph::BSTSetSplayMtEph::BSTSetSplayMtEph<_>::empty
+    Line 221:             let mut __set = < $crate::Chap37::BSTSetSplayMtE... -> $crate::Chap37::BSTSetSplayMtEph::BSTSetSplayMtEph::BSTSetSplayMtEph<_>::empty
+APAS-AI-copy/apas-ai/src/Chap37/BSTSplayMtEph.rs:1:
+  Chap18 imports: 2, Chap19 imports: 0
+  UFCS calls: 2
+    Line 209:             < $crate::Chap37::BSTSplayMtEph::BSTSplayMtEph::... -> $crate::Chap37::BSTSplayMtEph::BSTSplayMtEph::BSTSplayMtEph<_>::new
+    Line 212:             let __tree = < $crate::Chap37::BSTSplayMtEph::BS... -> $crate::Chap37::BSTSplayMtEph::BSTSplayMtEph::BSTSplayMtEph<_>::new
+APAS-AI-copy/apas-ai/src/Chap37/BSTSplayStEph.rs:1:
+  Chap18 imports: 2, Chap19 imports: 0
+  UFCS calls: 2
+    Line 185:             < $crate::Chap37::BSTSplayStEph::BSTSplayStEph::... -> $crate::Chap37::BSTSplayStEph::BSTSplayStEph::BSTSplayStEph<_>::new
+    Line 188:             let mut __tree = < $crate::Chap37::BSTSplayStEph... -> $crate::Chap37::BSTSplayStEph::BSTSplayStEph::BSTSplayStEph<_>::new
+APAS-AI-copy/apas-ai/src/Chap38/BSTParaStEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 1
+    Line 215:             < $crate::Chap38::BSTParaStEph::BSTParaStEph::Pa... -> $crate::Chap38::BSTParaStEph::BSTParaStEph::ParamBST<_>::new
+APAS-AI-copy/apas-ai/src/Chap39/BSTParaTreapMtEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 445:             < $crate::Chap39::BSTParaTreapMtEph::BSTParaTrea... -> $crate::Chap39::BSTParaTreapMtEph::BSTParaTreapMtEph::ParamTreap<_>::new
+    Line 448:             let __tree = < $crate::Chap39::BSTParaTreapMtEph... -> $crate::Chap39::BSTParaTreapMtEph::BSTParaTreapMtEph::ParamTreap<_>::new
+APAS-AI-copy/apas-ai/src/Chap39/BSTSetTreapMtEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 218:             < $crate::Chap39::BSTSetTreapMtEph::BSTSetTreapM... -> $crate::Chap39::BSTSetTreapMtEph::BSTSetTreapMtEph::BSTSetTreapMtEph<_>::empty
+    Line 221:             let mut __set = < $crate::Chap39::BSTSetTreapMtE... -> $crate::Chap39::BSTSetTreapMtEph::BSTSetTreapMtEph::BSTSetTreapMtEph<_>::empty
+APAS-AI-copy/apas-ai/src/Chap39/BSTTreapMtEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 239:             < $crate::Chap39::BSTTreapMtEph::BSTTreapMtEph::... -> $crate::Chap39::BSTTreapMtEph::BSTTreapMtEph::BSTTreapMtEph<_>::new
+    Line 242:             let __tree = < $crate::Chap39::BSTTreapMtEph::BS... -> $crate::Chap39::BSTTreapMtEph::BSTTreapMtEph::BSTTreapMtEph<_>::new
+APAS-AI-copy/apas-ai/src/Chap39/BSTTreapStEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 217:             < $crate::Chap39::BSTTreapStEph::BSTTreapStEph::... -> $crate::Chap39::BSTTreapStEph::BSTTreapStEph::BSTTreapStEph<_>::new
+    Line 220:             let mut __tree = < $crate::Chap39::BSTTreapStEph... -> $crate::Chap39::BSTTreapStEph::BSTTreapStEph::BSTTreapStEph<_>::new
+APAS-AI-copy/apas-ai/src/Chap40/BSTKeyValueStEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 220:             < $crate::Chap40::BSTKeyValueStEph::BSTKeyValueS... -> $crate::Chap40::BSTKeyValueStEph::BSTKeyValueStEph::BSTKeyValueStEph<_, _>::new
+    Line 223:             let mut __tree = < $crate::Chap40::BSTKeyValueSt... -> $crate::Chap40::BSTKeyValueStEph::BSTKeyValueStEph::BSTKeyValueStEph<_, _>::new
+APAS-AI-copy/apas-ai/src/Chap40/BSTReducedStEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 335:             < $crate::Chap40::BSTReducedStEph::BSTReducedStE... -> $crate::Chap40::BSTReducedStEph::BSTReducedStEph::BSTReducedStEph<_, _, _, _>::new
+    Line 338:             let mut __tree = < $crate::Chap40::BSTReducedStE... -> $crate::Chap40::BSTReducedStEph::BSTReducedStEph::BSTReducedStEph<_, _, _, _>::new
+APAS-AI-copy/apas-ai/src/Chap40/BSTSizeStEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 291:             < $crate::Chap40::BSTSizeStEph::BSTSizeStEph::BS... -> $crate::Chap40::BSTSizeStEph::BSTSizeStEph::BSTSizeStEph<_>::new
+    Line 294:             let mut __tree = < $crate::Chap40::BSTSizeStEph:... -> $crate::Chap40::BSTSizeStEph::BSTSizeStEph::BSTSizeStEph<_>::new
+APAS-AI-copy/apas-ai/src/Chap41/AVLTreeSetMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 289:             < $crate::Chap41::AVLTreeSetMtEph::AVLTreeSetMtE... -> $crate::Chap41::AVLTreeSetMtEph::AVLTreeSetMtEph::AVLTreeSetMtEph<_>::empty
+    Line 292:             let mut __set = < $crate::Chap41::AVLTreeSetMtEp... -> $crate::Chap41::AVLTreeSetMtEph::AVLTreeSetMtEph::AVLTreeSetMtEph<_>::empty
+APAS-AI-copy/apas-ai/src/Chap41/AVLTreeSetMtPer.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 321:             < $crate::Chap41::AVLTreeSetMtPer::AVLTreeSetMtP... -> $crate::Chap41::AVLTreeSetMtPer::AVLTreeSetMtPer::AVLTreeSetMtPer<_>::empty
+    Line 324:             let mut __set = < $crate::Chap41::AVLTreeSetMtPe... -> $crate::Chap41::AVLTreeSetMtPer::AVLTreeSetMtPer::AVLTreeSetMtPer<_>::empty
+APAS-AI-copy/apas-ai/src/Chap41/AVLTreeSetStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 218:             < $crate::Chap41::AVLTreeSetStEph::AVLTreeSetStE... -> $crate::Chap41::AVLTreeSetStEph::AVLTreeSetStEph::AVLTreeSetStEph<_>::empty
+    Line 221:             let mut __set = < $crate::Chap41::AVLTreeSetStEp... -> $crate::Chap41::AVLTreeSetStEph::AVLTreeSetStEph::AVLTreeSetStEph<_>::empty
+APAS-AI-copy/apas-ai/src/Chap41/AVLTreeSetStPer.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 216:             < $crate::Chap41::AVLTreeSetStPer::AVLTreeSetStP... -> $crate::Chap41::AVLTreeSetStPer::AVLTreeSetStPer::AVLTreeSetStPer<_>::empty
+    Line 219:             let mut __set = < $crate::Chap41::AVLTreeSetStPe... -> $crate::Chap41::AVLTreeSetStPer::AVLTreeSetStPer::AVLTreeSetStPer<_>::empty
+APAS-AI-copy/apas-ai/src/Chap41/ArraySetEnumMtEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 174:             < $crate::Chap41::ArraySetEnumMtEph::ArraySetEnu... -> $crate::Chap41::ArraySetEnumMtEph::ArraySetEnumMtEph::ArraySetEnumMtEph::empty
+    Line 177:             let mut __set = < $crate::Chap41::ArraySetEnumMt... -> $crate::Chap41::ArraySetEnumMtEph::ArraySetEnumMtEph::ArraySetEnumMtEph::empty
+APAS-AI-copy/apas-ai/src/Chap41/ArraySetStEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 152:             < $crate::Chap41::ArraySetStEph::ArraySetStEph::... -> $crate::Chap41::ArraySetStEph::ArraySetStEph::ArraySetStEph<_>::empty
+    Line 155:             let mut __set = < $crate::Chap41::ArraySetStEph:... -> $crate::Chap41::ArraySetStEph::ArraySetStEph::ArraySetStEph<_>::empty
+APAS-AI-copy/apas-ai/src/Chap49/MinEditDistMtPer.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 171:             <$crate::Chap18::ArraySeqMtPer::ArraySeqMtPer::A... -> $crate::Chap18::ArraySeqMtPer::ArraySeqMtPer::ArraySeqMtPerS<_>::from_vec
+    Line 172:             <$crate::Chap18::ArraySeqMtPer::ArraySeqMtPer::A... -> $crate::Chap18::ArraySeqMtPer::ArraySeqMtPer::ArraySeqMtPerS<_>::from_vec
+APAS-AI-copy/apas-ai/src/Chap49/SubsetSumMtPer.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 1
+    Line 163:             <$crate::Chap18::ArraySeqMtPer::ArraySeqMtPer::A... -> $crate::Chap18::ArraySeqMtPer::ArraySeqMtPer::ArraySeqMtPerS<_>::from_vec
+APAS-AI-copy/apas-ai/src/Chap61/EdgeContractionMtEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 1
+    Line 102: <UnDirGraphMtEph<V> as UnDirGraphMtEphTrait<V>>::FromSets -> UnDirGraphMtEph<V>::FromSets
+APAS-AI-copy/apas-ai/src/Chap61/EdgeContractionStEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 1
+    Line 98: <UnDirGraphStEph<V> as UnDirGraphStEphTrait<V>>::FromSets -> UnDirGraphStEph<V>::FromSets
+APAS-AI-copy/apas-ai/src/Chap62/StarContractionMtEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 1
+    Line 102: <UnDirGraphMtEph<V> as UnDirGraphMtEphTrait<V>>::FromSets -> UnDirGraphMtEph<V>::FromSets
+APAS-AI-copy/apas-ai/src/Chap62/StarContractionStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 106: <UnDirGraphStEph<V> as UnDirGraphStEphTrait<V>>::FromSets -> UnDirGraphStEph<V>::FromSets
+APAS-AI-copy/apas-ai/src/Chap63/ConnectivityMtEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 73: <UnDirGraphMtEph<V> as UnDirGraphMtEphTrait<V>>::FromSets -> UnDirGraphMtEph<V>::FromSets
+    Line 111: <UnDirGraphMtEph<V> as UnDirGraphMtEphTrait<V>>::FromSets -> UnDirGraphMtEph<V>::FromSets
+APAS-AI-copy/apas-ai/src/Chap63/ConnectivityStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 66: <UnDirGraphStEph<V> as UnDirGraphStEphTrait<V>>::FromSets -> UnDirGraphStEph<V>::FromSets
+    Line 101: <UnDirGraphStEph<V> as UnDirGraphStEphTrait<V>>::FromSets -> UnDirGraphStEph<V>::FromSets
+APAS-AI-copy/apas-ai/tests/Chap05/TestMappingStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 5
+    Line 35: <MappingStEph<N, &str> as MappingStEphTrait<N, &str>>::empty -> MappingStEph<N, &str>::empty
+    Line 62: <RelationStEph<N, &str> as RelationStEphTrait<N, &str>>::Fro... -> RelationStEph<N, &str>::FromSet
+    Line 63: <MappingStEph<N, &str> as MappingStEphTrait<N, &str>>::FromR... -> MappingStEph<N, &str>::FromRelation
+    Line 137: <MappingStEph<i32, String> as MappingStEphTrait<i32, String>... -> MappingStEph<i32, String>::FromRelation
+    Line 181: <MappingStEph<i32, String> as MappingStEphTrait<i32, String>... -> MappingStEph<i32, String>::FromVec
+APAS-AI-copy/apas-ai/tests/Chap05/TestSetStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 7
+    Line 473: <SetStEph<i32> as SetStEphTrait<i32>>::empty -> SetStEph<i32>::empty
+    Line 479: <SetStEph<i32> as SetStEphTrait<i32>>::singleton -> SetStEph<i32>::singleton
+    Line 488: <SetStEph<i32> as SetStEphTrait<i32>>::union -> SetStEph<i32>::union
+    Line 496: <SetStEph<i32> as SetStEphTrait<i32>>::intersection -> SetStEph<i32>::intersection
+    Line 513: <SetStEph<i32> as SetStEphTrait<i32>>::CartesianProduct -> SetStEph<i32>::CartesianProduct
+    Line 520: <SetStEph<i32> as SetStEphTrait<i32>>::insert -> SetStEph<i32>::insert
+    Line 526: <SetStEph<i32> as SetStEphTrait<i32>>::FromVec -> SetStEph<i32>::FromVec
+APAS-AI-copy/apas-ai/tests/Chap06/TestLabUnDirGraphStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 267: <LabUnDirGraphStEph<i32, &str> as LabUnDirGraphStEphTrait<i3... -> LabUnDirGraphStEph<i32, &str>::from_vertices_and_labeled_edges
+APAS-AI-copy/apas-ai/tests/Chap21/TestAlgorithm_21_6.rs:1:
+  Chap18 imports: 0, Chap19 imports: 2
+  UFCS calls: 8
+    Line 17: <ArraySeqStPerS<ArraySeqStPerS<N>> as ArraySeqStPerTrait<Arr... -> ArraySeqStPerS<ArraySeqStPerS<N>>::tabulate
+    Line 22: <ArraySeqStPerS<N> as ArraySeqStPerTrait<N>>::tabulate -> ArraySeqStPerS<N>::tabulate
+    Line 26: <ArraySeqStPerS<N> as ArraySeqStPerBaseTrait<N>>::flatten -> ArraySeqStPerS<N>::flatten
+    Line 30: <ArraySeqStPerS<Pair<N, B>> as ArraySeqStPerTrait<Pair<N, B>... -> ArraySeqStPerS<Pair<N, B>>::tabulate
+    Line 36: <ArraySeqStPerS<B> as ArraySeqStPerTrait<B>>::tabulate -> ArraySeqStPerS<B>::tabulate
+    Line 39: <ArraySeqStPerS<B> as ArraySeqStPerBaseTrait<B>>::ninject -> ArraySeqStPerS<B>::ninject
+    Line 42: <ArraySeqStPerS<N> as ArraySeqStPerTrait<N>>::tabulate -> ArraySeqStPerS<N>::tabulate
+    Line 43: <ArraySeqStPerS<N> as ArraySeqStPerTrait<N>>::filter -> ArraySeqStPerS<N>::filter
+APAS-AI-copy/apas-ai/tests/Chap23/TestBalBinTreeStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 1
+  UFCS calls: 4
+    Line 496: <BalBinTree<N> as BalBinTreeStEphTrait<N>>::leaf -> BalBinTree<N>::leaf
+    Line 499: <BalBinTree<N> as BalBinTreeStEphTrait<N>>::node -> BalBinTree<N>::node
+    Line 500: <BalBinTree<N> as BalBinTreeStEphTrait<N>>::leaf -> BalBinTree<N>::leaf
+    Line 502: <BalBinTree<N> as BalBinTreeStEphTrait<N>>::leaf -> BalBinTree<N>::leaf
+APAS-AI-copy/apas-ai/tests/Chap23/TestPrimTreeSeqSt.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 13
+    Line 263: <PrimTreeSeqStS<i32> as PrimTreeSeqStTrait<i32>>::empty -> PrimTreeSeqStS<i32>::empty
+    Line 269: <PrimTreeSeqStS<i32> as PrimTreeSeqStTrait<i32>>::singleton -> PrimTreeSeqStS<i32>::singleton
+    Line 277: <PrimTreeSeqStS<i32> as PrimTreeSeqStTrait<i32>>::from_vec -> PrimTreeSeqStS<i32>::from_vec
+    Line 283: <PrimTreeSeqStS<i32> as PrimTreeSeqStTrait<i32>>::from_vec -> PrimTreeSeqStS<i32>::from_vec
+    Line 284: <PrimTreeSeqStS<i32> as PrimTreeSeqStTrait<i32>>::into_vec -> PrimTreeSeqStS<i32>::into_vec
+    Line 290: <PrimTreeSeqStS<i32> as PrimTreeSeqStTrait<i32>>::from_vec -> PrimTreeSeqStS<i32>::from_vec
+    Line 296: <PrimTreeSeqStS<i32> as PrimTreeSeqStTrait<i32>>::from_vec -> PrimTreeSeqStS<i32>::from_vec
+    Line 302: <PrimTreeSeqStS<i32> as PrimTreeSeqStTrait<i32>>::empty -> PrimTreeSeqStS<i32>::empty
+    Line 308: <PrimTreeSeqStS<i32> as PrimTreeSeqStTrait<i32>>::singleton -> PrimTreeSeqStS<i32>::singleton
+    Line 317: <PrimTreeSeqStS<i32> as PrimTreeSeqStTrait<i32>>::from_vec -> PrimTreeSeqStS<i32>::from_vec
+    Line 330: <PrimTreeSeqStS<i32> as PrimTreeSeqStTrait<i32>>::join -> PrimTreeSeqStS<i32>::join
+    Line 336: <PrimTreeSeqStS<i32> as PrimTreeSeqStTrait<i32>>::join -> PrimTreeSeqStS<i32>::join
+    Line 345: <PrimTreeSeqStS<i32> as PrimTreeSeqStTrait<i32>>::join -> PrimTreeSeqStS<i32>::join
+APAS-AI-copy/apas-ai/tests/Chap36/TestQuickSortMt.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 18
+    Line 20: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_first
+    Line 24: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_median3
+    Line 28: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_random
+    Line 35: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_first
+    Line 39: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_median3
+    Line 43: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_random
+    Line 47: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_first
+    Line 51: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_median3
+    Line 79: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_first
+    Line 85: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_random
+    Line 93: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_first
+    Line 98: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_median3
+    Line 120: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_first
+    Line 130: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_median3
+    Line 140: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_random
+    Line 178: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_first
+    Line 179: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_median3
+    Line 180: <ArraySeqMtEphS<i32> as Chapter36MtTrait<i32>>::quick_sort_m... -> ArraySeqMtEphS<i32>::quick_sort_mt_random
+APAS-AI-copy/apas-ai/tests/Chap36/TestQuickSortMtSlice.rs:1:
+  Chap18 imports: 0, Chap19 imports: 1
+  UFCS calls: 16
+    Line 22: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_first
+    Line 26: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_median3
+    Line 30: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_random
+    Line 37: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_first
+    Line 41: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_median3
+    Line 45: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_random
+    Line 49: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_first
+    Line 53: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_median3
+    Line 60: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_first
+    Line 66: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_random
+    Line 94: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_first
+    Line 99: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_median3
+    Line 220: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_first
+    Line 221: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_median3
+    Line 222: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_random
+    Line 291: <ArraySeqMtEphSliceS<i32> as Chapter36MtSliceTrait<i32>>::qu... -> ArraySeqMtEphSliceS<i32>::quick_sort_mt_median3
+APAS-AI-copy/apas-ai/tests/Chap37/TestAVLTreeSeq.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 22
+    Line 10: <AVLTreeS<N> as AVLTreeSeq<N>>::empty -> AVLTreeS<N>::empty
+    Line 18: <AVLTreeS<N> as AVLTreeSeq<N>>::new -> AVLTreeS<N>::new
+    Line 26: <AVLTreeS<N> as AVLTreeSeq<N>>::singleton -> AVLTreeS<N>::singleton
+    Line 35: <AVLTreeS<N> as AVLTreeSeq<N>>::empty -> AVLTreeS<N>::empty
+    Line 38: <AVLTreeS<N> as AVLTreeSeq<N>>::singleton -> AVLTreeS<N>::singleton
+    Line 44: <AVLTreeS<N> as AVLTreeSeq<N>>::singleton -> AVLTreeS<N>::singleton
+    Line 51: <AVLTreeS<N> as AVLTreeSeq<N>>::singleton -> AVLTreeS<N>::singleton
+    Line 58: <AVLTreeS<N> as AVLTreeSeq<N>>::empty -> AVLTreeS<N>::empty
+    Line 64: <AVLTreeS<N> as AVLTreeSeq<N>>::singleton -> AVLTreeS<N>::singleton
+    Line 72: <AVLTreeS<N> as AVLTreeSeq<N>>::singleton -> AVLTreeS<N>::singleton
+    Line 83: <AVLTreeS<N> as AVLTreeSeq<N>>::empty -> AVLTreeS<N>::empty
+    Line 87: <AVLTreeS<N> as AVLTreeSeq<N>>::singleton -> AVLTreeS<N>::singleton
+    Line 94: <AVLTreeS<N> as AVLTreeSeq<N>>::singleton -> AVLTreeS<N>::singleton
+    Line 114: <AVLTreeS<N> as AVLTreeSeq<N>>::empty -> AVLTreeS<N>::empty
+    Line 133: <AVLTreeS<N> as AVLTreeSeq<N>>::singleton -> AVLTreeS<N>::singleton
+    Line 168: <AVLTreeS<N> as AVLTreeSeq<N>>::singleton -> AVLTreeS<N>::singleton
+    Line 186: <AVLTreeS<N> as AVLTreeSeq<N>>::empty -> AVLTreeS<N>::empty
+    Line 200: <AVLTreeS<N> as AVLTreeSeq<N>>::singleton -> AVLTreeS<N>::singleton
+    Line 201: <AVLTreeS<N> as AVLTreeSeq<N>>::singleton -> AVLTreeS<N>::singleton
+    Line 202: <AVLTreeS<N> as AVLTreeSeq<N>>::singleton -> AVLTreeS<N>::singleton
+    Line 211: <AVLTreeS<N> as AVLTreeSeq<N>>::empty -> AVLTreeS<N>::empty
+    Line 212: <AVLTreeS<N> as AVLTreeSeq<N>>::empty -> AVLTreeS<N>::empty
+APAS-AI-copy/apas-ai/tests/Chap37/TestBSTSetAVLMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 1
+  UFCS calls: 14
+    Line 302: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::empty -> BSTSetAVLMtEph<i32>::empty
+    Line 308: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::singleton -> BSTSetAVLMtEph<i32>::singleton
+    Line 357: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::insert -> BSTSetAVLMtEph<i32>::insert
+    Line 366: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::delete -> BSTSetAVLMtEph<i32>::delete
+    Line 378: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::union -> BSTSetAVLMtEph<i32>::union
+    Line 391: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::intersect... -> BSTSetAVLMtEph<i32>::intersection
+    Line 404: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::differenc... -> BSTSetAVLMtEph<i32>::difference
+    Line 416: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::split -> BSTSetAVLMtEph<i32>::split
+    Line 429: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::join_pair -> BSTSetAVLMtEph<i32>::join_pair
+    Line 440: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::join_m -> BSTSetAVLMtEph<i32>::join_m
+    Line 452: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::filter -> BSTSetAVLMtEph<i32>::filter
+    Line 463: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::reduce -> BSTSetAVLMtEph<i32>::reduce
+    Line 474: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::iter_in_o... -> BSTSetAVLMtEph<i32>::iter_in_order
+    Line 483: <BSTSetAVLMtEph<i32> as BSTSetAVLMtEphTrait<i32>>::as_tree -> BSTSetAVLMtEph<i32>::as_tree
+APAS-AI-copy/apas-ai/tests/Chap37/TestBSTSetBBAlphaMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 1
+  UFCS calls: 14
+    Line 302: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::e... -> BSTSetBBAlphaMtEph<i32>::empty
+    Line 308: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::s... -> BSTSetBBAlphaMtEph<i32>::singleton
+    Line 359: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::i... -> BSTSetBBAlphaMtEph<i32>::insert
+    Line 368: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::d... -> BSTSetBBAlphaMtEph<i32>::delete
+    Line 380: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::u... -> BSTSetBBAlphaMtEph<i32>::union
+    Line 393: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::i... -> BSTSetBBAlphaMtEph<i32>::intersection
+    Line 406: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::d... -> BSTSetBBAlphaMtEph<i32>::difference
+    Line 418: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::s... -> BSTSetBBAlphaMtEph<i32>::split
+    Line 431: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::j... -> BSTSetBBAlphaMtEph<i32>::join_pair
+    Line 442: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::j... -> BSTSetBBAlphaMtEph<i32>::join_m
+    Line 454: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::f... -> BSTSetBBAlphaMtEph<i32>::filter
+    Line 465: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::r... -> BSTSetBBAlphaMtEph<i32>::reduce
+    Line 476: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::i... -> BSTSetBBAlphaMtEph<i32>::iter_in_order
+    Line 485: <BSTSetBBAlphaMtEph<i32> as BSTSetBBAlphaMtEphTrait<i32>>::a... -> BSTSetBBAlphaMtEph<i32>::as_tree
+APAS-AI-copy/apas-ai/tests/Chap37/TestBSTSetPlainMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 1
+  UFCS calls: 14
+    Line 367: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::empty -> BSTSetPlainMtEph<i32>::empty
+    Line 373: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::singl... -> BSTSetPlainMtEph<i32>::singleton
+    Line 424: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::inser... -> BSTSetPlainMtEph<i32>::insert
+    Line 433: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::delet... -> BSTSetPlainMtEph<i32>::delete
+    Line 445: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::union -> BSTSetPlainMtEph<i32>::union
+    Line 458: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::inter... -> BSTSetPlainMtEph<i32>::intersection
+    Line 471: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::diffe... -> BSTSetPlainMtEph<i32>::difference
+    Line 483: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::split -> BSTSetPlainMtEph<i32>::split
+    Line 496: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::join_... -> BSTSetPlainMtEph<i32>::join_pair
+    Line 507: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::join_... -> BSTSetPlainMtEph<i32>::join_m
+    Line 519: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::filte... -> BSTSetPlainMtEph<i32>::filter
+    Line 530: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::reduc... -> BSTSetPlainMtEph<i32>::reduce
+    Line 541: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::iter_... -> BSTSetPlainMtEph<i32>::iter_in_order
+    Line 550: <BSTSetPlainMtEph<i32> as BSTSetPlainMtEphTrait<i32>>::as_tr... -> BSTSetPlainMtEph<i32>::as_tree
+APAS-AI-copy/apas-ai/tests/Chap37/TestBSTSetRBMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 1
+  UFCS calls: 14
+    Line 302: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::empty -> BSTSetRBMtEph<i32>::empty
+    Line 308: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::singleton -> BSTSetRBMtEph<i32>::singleton
+    Line 351: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::insert -> BSTSetRBMtEph<i32>::insert
+    Line 360: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::delete -> BSTSetRBMtEph<i32>::delete
+    Line 372: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::union -> BSTSetRBMtEph<i32>::union
+    Line 385: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::intersectio... -> BSTSetRBMtEph<i32>::intersection
+    Line 398: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::difference -> BSTSetRBMtEph<i32>::difference
+    Line 410: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::split -> BSTSetRBMtEph<i32>::split
+    Line 423: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::join_pair -> BSTSetRBMtEph<i32>::join_pair
+    Line 434: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::join_m -> BSTSetRBMtEph<i32>::join_m
+    Line 446: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::filter -> BSTSetRBMtEph<i32>::filter
+    Line 457: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::reduce -> BSTSetRBMtEph<i32>::reduce
+    Line 468: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::iter_in_ord... -> BSTSetRBMtEph<i32>::iter_in_order
+    Line 477: <BSTSetRBMtEph<i32> as BSTSetRBMtEphTrait<i32>>::as_tree -> BSTSetRBMtEph<i32>::as_tree
+APAS-AI-copy/apas-ai/tests/Chap37/TestBSTSetSplayMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 1
+  UFCS calls: 14
+    Line 302: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::empty -> BSTSetSplayMtEph<i32>::empty
+    Line 308: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::singl... -> BSTSetSplayMtEph<i32>::singleton
+    Line 359: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::inser... -> BSTSetSplayMtEph<i32>::insert
+    Line 368: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::delet... -> BSTSetSplayMtEph<i32>::delete
+    Line 380: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::union -> BSTSetSplayMtEph<i32>::union
+    Line 393: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::inter... -> BSTSetSplayMtEph<i32>::intersection
+    Line 406: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::diffe... -> BSTSetSplayMtEph<i32>::difference
+    Line 418: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::split -> BSTSetSplayMtEph<i32>::split
+    Line 431: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::join_... -> BSTSetSplayMtEph<i32>::join_pair
+    Line 442: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::join_... -> BSTSetSplayMtEph<i32>::join_m
+    Line 454: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::filte... -> BSTSetSplayMtEph<i32>::filter
+    Line 465: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::reduc... -> BSTSetSplayMtEph<i32>::reduce
+    Line 476: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::iter_... -> BSTSetSplayMtEph<i32>::iter_in_order
+    Line 485: <BSTSetSplayMtEph<i32> as BSTSetSplayMtEphTrait<i32>>::as_tr... -> BSTSetSplayMtEph<i32>::as_tree
+APAS-AI-copy/apas-ai/tests/Chap39/TestBSTSetTreapMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 1
+  UFCS calls: 14
+    Line 302: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::empty -> BSTSetTreapMtEph<i32>::empty
+    Line 308: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::singl... -> BSTSetTreapMtEph<i32>::singleton
+    Line 359: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::inser... -> BSTSetTreapMtEph<i32>::insert
+    Line 368: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::delet... -> BSTSetTreapMtEph<i32>::delete
+    Line 380: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::union -> BSTSetTreapMtEph<i32>::union
+    Line 393: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::inter... -> BSTSetTreapMtEph<i32>::intersection
+    Line 406: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::diffe... -> BSTSetTreapMtEph<i32>::difference
+    Line 418: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::split -> BSTSetTreapMtEph<i32>::split
+    Line 431: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::join_... -> BSTSetTreapMtEph<i32>::join_pair
+    Line 442: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::join_... -> BSTSetTreapMtEph<i32>::join_m
+    Line 454: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::filte... -> BSTSetTreapMtEph<i32>::filter
+    Line 465: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::reduc... -> BSTSetTreapMtEph<i32>::reduce
+    Line 476: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::iter_... -> BSTSetTreapMtEph<i32>::iter_in_order
+    Line 485: <BSTSetTreapMtEph<i32> as BSTSetTreapMtEphTrait<i32>>::as_tr... -> BSTSetTreapMtEph<i32>::as_tree
+APAS-AI-copy/apas-ai/tests/Chap45/TestBalancedTreePQ.rs:1:
+  Chap18 imports: 0, Chap19 imports: 2
+  UFCS calls: 2
+    Line 157: <ArraySeqStPerS<i32> as ArraySeqStPerTrait<i32>>::append -> ArraySeqStPerS<i32>::append
+    Line 206: <ArraySeqStPerS<i32> as ArraySeqStPerTrait<i32>>::tabulate -> ArraySeqStPerS<i32>::tabulate
+APAS-AI-copy/apas-ai/tests/Chap45/TestSortedListPQ.rs:1:
+  Chap18 imports: 0, Chap19 imports: 1
+  UFCS calls: 1
+    Line 151: <ArraySeqStPerS<i32> as ArraySeqStPerTrait<i32>>::empty -> ArraySeqStPerS<i32>::empty
+APAS-AI-copy/apas-ai/tests/Chap47/TestDoubleHashFlatHashTable.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 12
+    Line 13: <DoubleHashFlatHashTableStEph as ParaHashTableStEphTrait<
+  ... -> DoubleHashFlatHashTableStEph::createTable
+    Line 46: <DoubleHashFlatHashTableStEph as ParaHashTableStEphTrait<
+  ... -> DoubleHashFlatHashTableStEph::createTable
+    Line 85: <DoubleHashFlatHashTableStEph as ParaHashTableStEphTrait<
+  ... -> DoubleHashFlatHashTableStEph::createTable
+    Line 111: <DoubleHashFlatHashTableStEph as ParaHashTableStEphTrait<
+  ... -> DoubleHashFlatHashTableStEph::createTable
+    Line 136: <DoubleHashFlatHashTableStEph as ParaHashTableStEphTrait<
+  ... -> DoubleHashFlatHashTableStEph::createTable
+    Line 154: <DoubleHashFlatHashTableStEph as ParaHashTableStEphTrait<
+  ... -> DoubleHashFlatHashTableStEph::createTable
+    Line 178: <DoubleHashFlatHashTableStEph as ParaHashTableStEphTrait<
+  ... -> DoubleHashFlatHashTableStEph::createTable
+    Line 206: <DoubleHashFlatHashTableStEph as ParaHashTableStEphTrait<
+  ... -> DoubleHashFlatHashTableStEph::createTable
+    Line 239: <DoubleHashFlatHashTableStEph as ParaHashTableStEphTrait<
+  ... -> DoubleHashFlatHashTableStEph::createTable
+    Line 273: <DoubleHashFlatHashTableStEph as ParaHashTableStEphTrait<
+  ... -> DoubleHashFlatHashTableStEph::createTable
+    Line 288: <DoubleHashFlatHashTableStEph as ParaHashTableStEphTrait<
+  ... -> DoubleHashFlatHashTableStEph::createTable
+    Line 311: <DoubleHashFlatHashTableStEph as ParaHashTableStEphTrait<
+  ... -> DoubleHashFlatHashTableStEph::createTable
+APAS-AI-copy/apas-ai/tests/Chap47/TestLinProbFlatHashTable.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 22
+    Line 14: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 33: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 51: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 67: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 132: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 142: <LinProbFlatHashTableStEph as FlatHashTable<i32, String, Fla... -> LinProbFlatHashTableStEph::insert_with_probe
+    Line 157: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 170: <LinProbFlatHashTableStEph as FlatHashTable<i32, String, Fla... -> LinProbFlatHashTableStEph::lookup_with_probe
+    Line 176: <LinProbFlatHashTableStEph as FlatHashTable<i32, String, Fla... -> LinProbFlatHashTableStEph::lookup_with_probe
+    Line 214: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 236: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 257: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 284: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 302: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 324: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 346: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 360: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 386: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 409: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 431: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 459: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+    Line 478: <LinProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, S... -> LinProbFlatHashTableStEph::createTable
+APAS-AI-copy/apas-ai/tests/Chap47/TestLinkedListChainedHashTable.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 8
+    Line 14: <LinkedList<(i32, String)> as EntryTrait<i32, String>>::new -> LinkedList<(i32, String)>::new
+    Line 48: <LinkedListChainedHashTableStEph as ParaHashTableStEphTrait<... -> LinkedListChainedHashTableStEph::createTable
+    Line 72: <LinkedListChainedHashTableStEph as ParaHashTableStEphTrait<... -> LinkedListChainedHashTableStEph::createTable
+    Line 89: <LinkedListChainedHashTableStEph as ParaHashTableStEphTrait<... -> LinkedListChainedHashTableStEph::createTable
+    Line 142: <LinkedListChainedHashTableStEph as ParaHashTableStEphTrait<... -> LinkedListChainedHashTableStEph::createTable
+    Line 157: <LinkedListChainedHashTableStEph as ParaHashTableStEphTrait<... -> LinkedListChainedHashTableStEph::createTable
+    Line 180: <LinkedListChainedHashTableStEph as ParaHashTableStEphTrait<... -> LinkedListChainedHashTableStEph::createTable
+    Line 203: <LinkedListChainedHashTableStEph as ParaHashTableStEphTrait<... -> LinkedListChainedHashTableStEph::createTable
+APAS-AI-copy/apas-ai/tests/Chap47/TestParaHashTableStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 4
+    Line 13: <VecChainedHashTableStEph as ParaHashTableStEphTrait<i32, St... -> VecChainedHashTableStEph::createTable
+    Line 37: <VecChainedHashTableStEph as ParaHashTableStEphTrait<i32, St... -> VecChainedHashTableStEph::loadAndSize
+    Line 57: <VecChainedHashTableStEph as ParaHashTableStEphTrait<i32, St... -> VecChainedHashTableStEph::metrics
+    Line 75: <VecChainedHashTableStEph as ParaHashTableStEphTrait<i32, St... -> VecChainedHashTableStEph::loadAndSize
+APAS-AI-copy/apas-ai/tests/Chap47/TestQuadProbFlatHashTable.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 12
+    Line 14: <QuadProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, ... -> QuadProbFlatHashTableStEph::createTable
+    Line 37: <QuadProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, ... -> QuadProbFlatHashTableStEph::createTable
+    Line 56: <QuadProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, ... -> QuadProbFlatHashTableStEph::createTable
+    Line 83: <QuadProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, ... -> QuadProbFlatHashTableStEph::createTable
+    Line 100: <QuadProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, ... -> QuadProbFlatHashTableStEph::createTable
+    Line 120: <QuadProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, ... -> QuadProbFlatHashTableStEph::createTable
+    Line 149: <QuadProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, ... -> QuadProbFlatHashTableStEph::createTable
+    Line 171: <QuadProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, ... -> QuadProbFlatHashTableStEph::createTable
+    Line 200: <QuadProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, ... -> QuadProbFlatHashTableStEph::createTable
+    Line 223: <QuadProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, ... -> QuadProbFlatHashTableStEph::createTable
+    Line 237: <QuadProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, ... -> QuadProbFlatHashTableStEph::createTable
+    Line 259: <QuadProbFlatHashTableStEph as ParaHashTableStEphTrait<i32, ... -> QuadProbFlatHashTableStEph::createTable
+APAS-AI-copy/apas-ai/tests/Chap47/TestStructChainedHashTable.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 63: <StructChainedHashTableStEph as ParaHashTableStEphTrait<i32,... -> StructChainedHashTableStEph::createTable
+    Line 86: <StructChainedHashTableStEph as ParaHashTableStEphTrait<i32,... -> StructChainedHashTableStEph::createTable
+APAS-AI-copy/apas-ai/tests/Chap47/TestVecChainedHashTable.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 3
+    Line 12: <Vec<(i32, String)> as EntryTrait<i32, String>>::new -> Vec<(i32, String)>::new
+    Line 47: <VecChainedHashTableStEph as ParaHashTableStEphTrait<i32, St... -> VecChainedHashTableStEph::createTable
+    Line 70: <VecChainedHashTableStEph as ParaHashTableStEphTrait<i32, St... -> VecChainedHashTableStEph::createTable
+APAS-AI-copy/apas-ai/tests/Chap49/TestMinEditDistMtPer.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 2
+    Line 42: <ArraySeqMtPerS<char> as ArraySeqMtPerBaseTrait<char>>::from... -> ArraySeqMtPerS<char>::from_vec
+    Line 43: <ArraySeqMtPerS<char> as ArraySeqMtPerBaseTrait<char>>::from... -> ArraySeqMtPerS<char>::from_vec
+APAS-AI-copy/apas-ai/tests/Chap49/TestSubsetSumMtEph.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 1
+    Line 47: <ArraySeqMtEphS<i32> as ArraySeqMtEphBaseTrait<i32>>::from_v... -> ArraySeqMtEphS<i32>::from_vec
+APAS-AI-copy/apas-ai/tests/Chap49/TestSubsetSumMtPer.rs:1:
+  Chap18 imports: 1, Chap19 imports: 0
+  UFCS calls: 1
+    Line 43: <ArraySeqMtPerS<i32> as ArraySeqMtPerBaseTrait<i32>>::from_v... -> ArraySeqMtPerS<i32>::from_vec
+APAS-AI-copy/apas-ai/tests/Chap61/TestEdgeContractionMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 23: <UnDirGraphMtEph<usize> as UnDirGraphMtEphTrait<usize>>::Fro... -> UnDirGraphMtEph<usize>::FromSets
+    Line 36: <UnDirGraphMtEph<usize> as UnDirGraphMtEphTrait<usize>>::Fro... -> UnDirGraphMtEph<usize>::FromSets
+APAS-AI-copy/apas-ai/tests/Chap61/TestEdgeContractionStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 23: <UnDirGraphStEph<usize> as UnDirGraphStEphTrait<usize>>::Fro... -> UnDirGraphStEph<usize>::FromSets
+    Line 36: <UnDirGraphStEph<usize> as UnDirGraphStEphTrait<usize>>::Fro... -> UnDirGraphStEph<usize>::FromSets
+APAS-AI-copy/apas-ai/tests/Chap61/TestVertexMatchingMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 25: <UnDirGraphMtEph<usize> as UnDirGraphMtEphTrait<usize>>::Fro... -> UnDirGraphMtEph<usize>::FromSets
+    Line 38: <UnDirGraphMtEph<usize> as UnDirGraphMtEphTrait<usize>>::Fro... -> UnDirGraphMtEph<usize>::FromSets
+APAS-AI-copy/apas-ai/tests/Chap61/TestVertexMatchingStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 25: <UnDirGraphStEph<usize> as UnDirGraphStEphTrait<usize>>::Fro... -> UnDirGraphStEph<usize>::FromSets
+    Line 38: <UnDirGraphStEph<usize> as UnDirGraphStEphTrait<usize>>::Fro... -> UnDirGraphStEph<usize>::FromSets
+APAS-AI-copy/apas-ai/tests/Chap62/TestStarContractionMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 22: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::FromSets -> UnDirGraphMtEph<N>::FromSets
+    Line 64: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::empty -> UnDirGraphMtEph<N>::empty
+APAS-AI-copy/apas-ai/tests/Chap62/TestStarContractionStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 3
+    Line 22: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+    Line 53: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::empty -> UnDirGraphStEph<N>::empty
+    Line 63: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+APAS-AI-copy/apas-ai/tests/Chap62/TestStarPartitionMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 3
+    Line 20: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::FromSets -> UnDirGraphMtEph<N>::FromSets
+    Line 25: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::empty -> UnDirGraphMtEph<N>::empty
+    Line 35: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::FromSets -> UnDirGraphMtEph<N>::FromSets
+APAS-AI-copy/apas-ai/tests/Chap62/TestStarPartitionStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 5
+    Line 22: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+    Line 27: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::empty -> UnDirGraphStEph<N>::empty
+    Line 37: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+    Line 101: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::empty -> UnDirGraphStEph<N>::empty
+    Line 112: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+APAS-AI-copy/apas-ai/tests/Chap63/TestConnectivityMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 18: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::FromSets -> UnDirGraphMtEph<N>::FromSets
+    Line 32: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::FromSets -> UnDirGraphMtEph<N>::FromSets
+APAS-AI-copy/apas-ai/tests/Chap63/TestConnectivityStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 3
+    Line 19: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+    Line 36: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+    Line 57: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+APAS-AI-copy/apas-ai/tests/Chap64/TestSpanTreeMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 2
+    Line 19: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::FromSets -> UnDirGraphMtEph<N>::FromSets
+    Line 44: <UnDirGraphMtEph<N> as UnDirGraphMtEphTrait<N>>::FromSets -> UnDirGraphMtEph<N>::FromSets
+APAS-AI-copy/apas-ai/tests/Chap64/TestSpanTreeStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 4
+    Line 18: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+    Line 34: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+    Line 59: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+    Line 69: <UnDirGraphStEph<N> as UnDirGraphStEphTrait<N>>::FromSets -> UnDirGraphStEph<N>::FromSets
+APAS-AI-copy/apas-ai/tests/Chap64/TestTSPApproxMtEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 21: <LabUnDirGraphMtEph<N, OrderedFloat<f64>> as LabUnDirGraphMt... -> LabUnDirGraphMtEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+APAS-AI-copy/apas-ai/tests/Chap64/TestTSPApproxStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 1
+    Line 21: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+APAS-AI-copy/apas-ai/tests/Chap65/TestKruskalStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 6
+    Line 19: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+    Line 31: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+    Line 65: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+    Line 81: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+    Line 100: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+    Line 124: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+APAS-AI-copy/apas-ai/tests/Chap65/TestPrimStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 5
+    Line 19: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+    Line 31: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+    Line 65: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+    Line 92: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+    Line 110: <LabUnDirGraphStEph<N, OrderedFloat<f64>> as LabUnDirGraphSt... -> LabUnDirGraphStEph<N, OrderedFloat<f64>>::from_vertices_and_labeled_edges
+APAS-AI-copy/apas-ai/tests/Chap65/TestUnionFindStEph.rs:1:
+  Chap18 imports: 0, Chap19 imports: 0
+  UFCS calls: 11
+    Line 303: <UnionFindStEph<i32> as UnionFindStEphTrait<i32>>::new -> UnionFindStEph<i32>::new
+    Line 309: <UnionFindStEph<i32> as UnionFindStEphTrait<i32>>::new -> UnionFindStEph<i32>::new
+    Line 310: <UnionFindStEph<i32> as UnionFindStEphTrait<i32>>::insert -> UnionFindStEph<i32>::insert
+    Line 311: <UnionFindStEph<i32> as UnionFindStEphTrait<i32>>::insert -> UnionFindStEph<i32>::insert
+    Line 317: <UnionFindStEph<i32> as UnionFindStEphTrait<i32>>::new -> UnionFindStEph<i32>::new
+    Line 322: <UnionFindStEph<i32> as UnionFindStEphTrait<i32>>::find -> UnionFindStEph<i32>::find
+    Line 323: <UnionFindStEph<i32> as UnionFindStEphTrait<i32>>::find -> UnionFindStEph<i32>::find
+    Line 329: <UnionFindStEph<i32> as UnionFindStEphTrait<i32>>::new -> UnionFindStEph<i32>::new
+    Line 332: <UnionFindStEph<i32> as UnionFindStEphTrait<i32>>::union -> UnionFindStEph<i32>::union
+    Line 338: <UnionFindStEph<i32> as UnionFindStEphTrait<i32>>::new -> UnionFindStEph<i32>::new
+    Line 349: <UnionFindStEph<i32> as UnionFindStEphTrait<i32>>::new -> UnionFindStEph<i32>::new
+================================================================================
+SUMMARY:
+  Files analyzed: 376
+  Files with UFCS calls: 122
+  Total UFCS calls: 464
+  Files importing Chap18 only: 182 (Mt: 47, St: 135)
+  Files importing Chap19 only: 126 (Mt: 5, St: 121)
+  Files importing both: 0 (Mt: 0, St: 0)
+Completed in 727ms

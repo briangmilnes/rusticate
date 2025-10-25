@@ -1,0 +1,366 @@
+Entering directory: APAS-AI-copy/apas-ai
+
+================================================================================
+PARALLEL OPERATIONS TABLE
+================================================================================
+Module                                   Function/Method                Parallelism
+--------------------------------------------------------------------------------
+AVLTreeSetMtEph                          difference                     Transitive
+AVLTreeSetMtEph                          filter                         Direct
+AVLTreeSetMtEph                          intersection                   Direct
+AVLTreeSetMtEph                          parallel_filter                Direct
+AVLTreeSetMtEph                          parallel_intersect             Direct
+AVLTreeSetMtPer                          delete                         Transitive
+AVLTreeSetMtPer                          difference                     Transitive
+AVLTreeSetMtPer                          filter                         Direct
+AVLTreeSetMtPer                          from_seq                       Direct
+AVLTreeSetMtPer                          intersection                   Direct
+AVLTreeSetMtPer                          parallel_sort                  Direct
+AVLTreeSetMtPer                          union                          Direct
+ArraySeqMtEph                            map                            Direct
+ArraySeqMtEph                            reduce                         Direct
+ArraySeqMtEphSlice                       filter                         Direct
+ArraySeqMtEphSlice                       flatten                        Transitive
+ArraySeqMtEphSlice                       map                            Direct
+ArraySeqMtEphSlice                       reduce                         Direct
+ArraySeqMtPer                            collect                        Transitive
+ArraySeqMtPer                            filter                         Direct
+ArraySeqMtPer                            map                            Direct
+ArraySeqMtPer                            reduce                         Direct
+ArraySetEnumMtEph                        filter                         Direct
+AugOrderedTableMtEph                     reduce_range_parallel          Direct
+AugOrderedTableMtEph                     tabulate                       Transitive
+BoruvkaMtEph                             boruvka_mst_mt                 Transitive
+BoruvkaMtEph                             boruvka_mst_mt_with_seed       Transitive
+BoruvkaMtEph                             bridge_star_partition_mt       Transitive
+BoruvkaMtEph                             filter_tail_to_head_mt         Direct
+BoruvkaMtEph                             reroute_edges_mt               Direct
+BoruvkaMtEph                             vertex_bridges_mt              Direct
+BottomUpDPMtEph                          compute_diagonal_parallel      Direct
+BottomUpDPMtEph                          med_bottom_up_parallel         Transitive
+BottomUpDPMtPer                          compute_diagonal_parallel      Direct
+BottomUpDPMtPer                          med_bottom_up_parallel         Transitive
+ConnectivityMtEph                        build_quotient_edges_parallel  Transitive
+ConnectivityMtEph                        connected_components_mt        Transitive
+ConnectivityMtEph                        count_components_mt            Transitive
+ConnectivityMtEph                        route_edges_parallel           Direct
+DirGraphMtEph                            Degree                         Transitive
+DirGraphMtEph                            InDegree                       Transitive
+DirGraphMtEph                            NG                             Transitive
+DirGraphMtEph                            NGOfVertices                   Direct
+DirGraphMtEph                            NMinus                         Direct
+DirGraphMtEph                            NMinusOfVertices               Direct
+DirGraphMtEph                            NPlus                          Direct
+DirGraphMtEph                            NPlusOfVertices                Direct
+DirGraphMtEph                            OutDegree                      Transitive
+DirGraphMtEph                            parallel_ng_of_vertices        Direct
+DirGraphMtEph                            parallel_nminus                Direct
+DirGraphMtEph                            parallel_nminus_of_vertices    Direct
+DirGraphMtEph                            parallel_nplus                 Direct
+DirGraphMtEph                            parallel_nplus_of_vertices     Direct
+EdgeContractionMtEph                     build_edges_parallel           Direct
+EdgeContractionMtEph                     contract_round_mt              Transitive
+EdgeContractionMtEph                     edge_contract_mt               Transitive
+Example42_1                              example_42_1                   Transitive
+Exercise12_1                             parallel_increment             Direct
+FibonacciMt                              fib                            Direct
+LabDirGraphMtEph                         in_neighbors                   Direct
+LabDirGraphMtEph                         out_neighbors                  Direct
+LabDirGraphMtEph                         parallel_in                    Direct
+LabDirGraphMtEph                         parallel_out                   Direct
+LabUnDirGraphMtEph                       neighbors                      Direct
+LabUnDirGraphMtEph                       parallel_neighbors             Direct
+MatrixChainMtEph                         matrix_chain_rec               Direct
+MatrixChainMtEph                         optimal_cost                   Transitive
+MatrixChainMtEph                         parallel_min_reduction         Direct
+MatrixChainMtPer                         matrix_chain_rec               Direct
+MatrixChainMtPer                         optimal_cost                   Transitive
+MatrixChainMtPer                         parallel_min_reduction         Direct
+MaxContigSubSumDivConMtEph               max_contig_sub_sum_divcon_mt   Direct
+MaxContigSubSumDivConOptMtEph            max_contig_sub_sum_aux_mt      Direct
+MaxContigSubSumDivConOptMtEph            max_contig_sub_sum_divcon_o... Transitive
+MergeSortMt                              merge_parallel                 Direct
+MergeSortMt                              merge_sort_parallel            Direct
+MinEditDistMtEph                         min_edit_distance              Transitive
+MinEditDistMtEph                         min_edit_distance_rec          Direct
+MinEditDistMtPer                         min_edit_distance              Transitive
+MinEditDistMtPer                         min_edit_distance_rec          Direct
+OptBinSearchTreeMtEph                    obst_rec                       Transitive
+OptBinSearchTreeMtEph                    optimal_cost                   Transitive
+OptBinSearchTreeMtEph                    parallel_min_reduction         Direct
+OptBinSearchTreeMtPer                    obst_rec                       Transitive
+OptBinSearchTreeMtPer                    optimal_cost                   Transitive
+OptBinSearchTreeMtPer                    parallel_min_reduction         Direct
+OrderedTableMtEph                        tabulate                       Transitive
+QuickSortMt                              quick_sort                     Direct
+QuickSortMt                              quick_sort_mt_first            Direct
+QuickSortMt                              quick_sort_mt_median3          Direct
+QuickSortMt                              quick_sort_mt_random           Direct
+QuickSortMtSlice                         quick_sort_mt_first            Direct
+QuickSortMtSlice                         quick_sort_mt_median3          Direct
+QuickSortMtSlice                         quick_sort_mt_random           Direct
+QuickSortMtSlice                         sort                           Direct
+ReduceContractMtEph                      reduce_contract_parallel       Direct
+StarContractionMtEph                     build_quotient_graph_parallel  Transitive
+StarContractionMtEph                     contract_to_vertices_mt        Transitive
+StarContractionMtEph                     route_edges_parallel           Direct
+StarContractionMtEph                     star_contract_mt               Transitive
+SubsetSumMtEph                           subset_sum                     Transitive
+SubsetSumMtEph                           subset_sum_rec                 Direct
+SubsetSumMtPer                           subset_sum                     Transitive
+SubsetSumMtPer                           subset_sum_rec                 Direct
+TableMtEph                               delete                         Direct
+TableMtEph                               domain                         Direct
+TableMtEph                               filter                         Direct
+TableMtEph                               insert                         Direct
+TableMtEph                               map                            Direct
+TableMtEph                               restrict                       Direct
+TableMtEph                               subtract                       Direct
+TableMtEph                               tabulate                       Direct
+TopDownDPMtEph                           med_memoized_parallel          Transitive
+TopDownDPMtEph                           med_recursive_parallel         Direct
+TopDownDPMtPer                           med_memoized_parallel          Transitive
+TopDownDPMtPer                           med_recursive_parallel         Direct
+UnDirGraphMtEph                          Degree                         Transitive
+UnDirGraphMtEph                          NG                             Direct
+UnDirGraphMtEph                          NGOfVertices                   Direct
+UnDirGraphMtEph                          parallel_ng                    Direct
+UnDirGraphMtEph                          parallel_ng_of_vertices        Direct
+VertexMatchingMtEph                      parallel_matching_mt           Transitive
+VertexMatchingMtEph                      select_edges_parallel          Transitive
+VertexMatchingMtEph                      select_edges_recursive         Direct
+WeightedDirGraphMtEphFloat               in_neighbors_weighted          Direct
+WeightedDirGraphMtEphFloat               out_neighbors_weighted         Direct
+WeightedDirGraphMtEphFloat               parallel_in                    Direct
+WeightedDirGraphMtEphFloat               parallel_out                   Direct
+WeightedDirGraphMtEphInt                 in_neighbors_weighted          Direct
+WeightedDirGraphMtEphInt                 out_neighbors_weighted         Direct
+WeightedDirGraphMtEphInt                 parallel_in                    Direct
+WeightedDirGraphMtEphInt                 parallel_out                   Direct
+WeightedUnDirGraphMtEphFloat             neighbors_weighted             Direct
+WeightedUnDirGraphMtEphFloat             parallel_neighbors             Direct
+WeightedUnDirGraphMtEphInt               neighbors_weighted             Direct
+WeightedUnDirGraphMtEphInt               parallel_neighbors             Direct
+================================================================================
+Total: 136 parallel operations (95 direct, 41 transitive)
+
+✗ St/Mt Consistency violations found:
+
+================================================================================
+Mt files without parallelism (checked transitively via DFS):
+================================================================================
+src/Chap35/OrderStatSelectMtEph.rs: No parallel operations found (even transitively)
+src/Chap35/OrderStatSelectMtPer.rs: No parallel operations found (even transitively)
+src/Chap27/ScanContractMtEph.rs: No parallel operations found (even transitively)
+src/Chap38/BSTParaMtEph.rs: No parallel operations found (even transitively)
+src/Chap26/DivConReduceMt.rs: No parallel operations found (even transitively)
+src/Chap19/ArraySeqMtEph.rs: No parallel operations found (even transitively)
+src/Chap62/StarPartitionMtEph.rs: No parallel operations found (even transitively)
+src/Chap52/AdjMatrixGraphMtPer.rs: No parallel operations found (even transitively)
+src/Chap52/AdjTableGraphMtPer.rs: No parallel operations found (even transitively)
+src/Chap52/AdjSeqGraphMtPer.rs: No parallel operations found (even transitively)
+src/Chap52/AdjMatrixGraphMtEph.rs: No parallel operations found (even transitively)
+src/Chap52/EdgeSetGraphMtPer.rs: No parallel operations found (even transitively)
+src/Chap52/AdjSeqGraphMtEph.rs: No parallel operations found (even transitively)
+src/Chap39/BSTTreapMtEph.rs: No parallel operations found (even transitively)
+src/Chap39/BSTSetTreapMtEph.rs: No parallel operations found (even transitively)
+src/Chap39/BSTParaTreapMtEph.rs: No parallel operations found (even transitively)
+src/Chap54/BFSMtPer.rs: No parallel operations found (even transitively)
+src/Chap54/BFSMtEph.rs: No parallel operations found (even transitively)
+src/Chap28/MaxContigSubSumOptMtEph.rs: No parallel operations found (even transitively)
+src/Chap43/OrderedSetMtEph.rs: No parallel operations found (even transitively)
+src/Chap43/OrderedTableMtPer.rs: No parallel operations found (even transitively)
+src/Chap64/SpanTreeMtEph.rs: No parallel operations found (even transitively)
+src/Chap64/TSPApproxMtEph.rs: No parallel operations found (even transitively)
+src/Chap37/BSTSetAVLMtEph.rs: No parallel operations found (even transitively)
+src/Chap37/AVLTreeSeqMtPer.rs: No parallel operations found (even transitively)
+src/Chap37/BSTSetPlainMtEph.rs: No parallel operations found (even transitively)
+src/Chap37/BSTSetSplayMtEph.rs: No parallel operations found (even transitively)
+src/Chap37/BSTBBAlphaMtEph.rs: No parallel operations found (even transitively)
+src/Chap37/BSTPlainMtEph.rs: No parallel operations found (even transitively)
+src/Chap37/BSTSplayMtEph.rs: No parallel operations found (even transitively)
+src/Chap37/BSTSetRBMtEph.rs: No parallel operations found (even transitively)
+src/Chap37/BSTRBMtEph.rs: No parallel operations found (even transitively)
+src/Chap37/BSTAVLMtEph.rs: No parallel operations found (even transitively)
+src/Chap37/BSTSetBBAlphaMtEph.rs: No parallel operations found (even transitively)
+src/Chap53/GraphSearchMtPer.rs: No parallel operations found (even transitively)
+src/Chap53/PQMinMtPer.rs: No parallel operations found (even transitively)
+src/Chap53/PQMinMtEph.rs: No parallel operations found (even transitively)
+src/Chap59/JohnsonMtEphInt.rs: No parallel operations found (even transitively)
+src/Chap59/JohnsonMtEphFloat.rs: No parallel operations found (even transitively)
+
+================================================================================
+Mt files with threshold-based serial fallback:
+(APAS is a class example - should always demonstrate parallelism)
+================================================================================
+src/Chap41/AVLTreeSetMtPer.rs:76: if n <= 1 {
+src/Chap41/AVLTreeSetMtPer.rs:117: if n <= 8 {
+src/Chap41/AVLTreeSetMtPer.rs:158: if n <= 8 {
+src/Chap41/AVLTreeSetMtPer.rs:207: if n <= 8 {
+src/Chap26/MergeSortMt.rs:164: if n <= 1 {
+src/Chap06/WeightedUnDirGraphMtEphFloat.rs:83: if n <= 8 {
+src/Chap06/WeightedUnDirGraphMtEphInt.rs:81: if n <= 8 {
+src/Chap06/LabUnDirGraphMtEph.rs:127: if n <= 8 {
+src/Chap06/WeightedDirGraphMtEphFloat.rs:113: if n <= 8 {
+src/Chap06/WeightedDirGraphMtEphFloat.rs:168: if n <= 8 {
+src/Chap06/UnDirGraphMtEph.rs:85: if n <= 8 {
+src/Chap06/UnDirGraphMtEph.rs:141: if n <= 8 {
+src/Chap06/DirGraphMtEph.rs:105: if n <= 8 {
+src/Chap06/DirGraphMtEph.rs:150: if n <= 8 {
+src/Chap06/DirGraphMtEph.rs:200: if n <= 8 {
+src/Chap06/DirGraphMtEph.rs:250: if n <= 8 {
+src/Chap06/DirGraphMtEph.rs:295: if n <= 8 {
+src/Chap06/WeightedDirGraphMtEphInt.rs:81: if n <= 8 {
+src/Chap06/WeightedDirGraphMtEphInt.rs:133: if n <= 8 {
+src/Chap06/LabDirGraphMtEph.rs:116: if n <= 8 {
+src/Chap06/LabDirGraphMtEph.rs:168: if n <= 8 {
+src/Chap11/FibonacciMt.rs:27: if n <= 1 {
+
+================================================================================
+THREAD EXPLOSION RISK - Recursive functions spawning multiple threads:
+(Recommendation: Use a thread pool like rayon instead of raw spawning)
+================================================================================
+src/Chap27/ReduceContractMtEph.rs:26: 2 spawn(s) detected
+  fn reduce_contract_parallel<F: Fn(&T, &T) -> T + Send + Sync + 'static>(
+
+src/Chap26/MergeSortMt.rs:28: 6 spawn(s) detected
+  fn merge_parallel(left: &ArraySeqMtPerS<T>, right: &ArraySeqMtPerS<T>) -> ArraySeqMtPerS<T> {
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+src/Chap19/ArraySeqMtEphSlice.rs:248: 4 spawn(s) detected
+  fn reduce<F: Fn(&T, &T) -> T + Send + Sync + Clone + 'static>(a: &Self, f: F, id: T) -> T {
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+src/Chap06/LabUnDirGraphMtEph.rs:122: 2 spawn(s) detected
+  fn neighbors(&self, v: &V) -> SetStEph<V> {
+
+src/Chap49/SubsetSumMtEph.rs:53: 4 spawn(s) detected
+  /// Internal parallel recursive subset sum with shared memoization
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+src/Chap49/SubsetSumMtPer.rs:43: 4 spawn(s) detected
+  /// Internal parallel recursive subset sum with shared memoization
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+src/Chap49/MinEditDistMtEph.rs:64: 4 spawn(s) detected
+  /// Internal parallel recursive minimum edit distance with shared memoization
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+src/Chap49/MinEditDistMtPer.rs:47: 4 spawn(s) detected
+  /// Internal parallel recursive minimum edit distance with shared memoization
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+src/Chap51/TopDownDPMtEph.rs:109: 6 spawn(s) detected
+  /// Claude Work: O(1) per call with memoization, O(|S|*|T|) total
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+src/Chap51/TopDownDPMtPer.rs:111: 6 spawn(s) detected
+  /// Claude Work: O(1) per call with memoization, O(|S|*|T|) total
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+src/Chap50/OptBinSearchTreeMtEph.rs:64: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among root choices
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+src/Chap50/MatrixChainMtPer.rs:64: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among split choices
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+src/Chap50/OptBinSearchTreeMtPer.rs:57: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among root choices
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+src/Chap50/MatrixChainMtEph.rs:72: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among split choices
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+src/Chap36/QuickSortMtSlice.rs:63: 2 spawn(s) detected
+  fn sort<T: StTInMtT + Ord>(data: &mut [T]) {
+
+src/Chap36/QuickSortMtSlice.rs:101: 2 spawn(s) detected
+  fn sort<T: StTInMtT + Ord>(data: &mut [T]) {
+
+src/Chap36/QuickSortMtSlice.rs:152: 2 spawn(s) detected
+  fn sort<T: StTInMtT + Ord>(data: &mut [T]) {
+
+src/Chap36/QuickSortMt.rs:61: 2 spawn(s) detected
+  fn quick_sort<T: StTInMtT + Ord>(data: &mut [T]) {
+
+src/Chap36/QuickSortMt.rs:100: 2 spawn(s) detected
+  fn quick_sort<T: StTInMtT + Ord>(data: &mut [T]) {
+
+src/Chap36/QuickSortMt.rs:151: 2 spawn(s) detected
+  fn quick_sort<T: StTInMtT + Ord>(data: &mut [T]) {
+
+src/Chap28/MaxContigSubSumDivConMtEph.rs:72: 4 spawn(s) detected
+  fn max_contig_sub_sum_divcon_mt(a: &ArraySeqMtEphS<i32>) -> Option<i32> {
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+
+================================================================================
+Test files named TestXxxMt not importing Mt modules:
+(These files should import and test the Mt implementation)
+================================================================================
+tests/Chap52/TestEdgeSetGraphMtEph.rs: No Mt module imported
+
+================================================================================
+SUMMARY:
+  St files with direct threading: 0
+  St files calling parallel ops: 0
+  Mt files without parallelism: 39
+  Mt files with thresholds: 22
+  Mt files with thread explosion risk: 21
+  Test Mt files not importing Mt: 1
+  Total violations: 83
