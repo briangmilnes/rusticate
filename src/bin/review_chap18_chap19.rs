@@ -413,6 +413,36 @@ fn main() -> Result<()> {
         println!();
     }
     
+    // Report files with Chap18 Eph imports (should use Chap19)
+    println!();
+    log!("{}", "=".repeat(80));
+    log!("FILES WITH CHAP18 EPH IMPORTS (SHOULD USE CHAP19):");
+    log!("{}", "=".repeat(80));
+    println!();
+    
+    let mut chap18_eph_files = Vec::new();
+    for report in &reports {
+        if report.chap18_eph_imports > 0 {
+            chap18_eph_files.push(report);
+        }
+    }
+    
+    if chap18_eph_files.is_empty() {
+        log!("None (all Eph types correctly use Chap19!)");
+        println!();
+    } else {
+        for report in &chap18_eph_files {
+            log!("{}:1:", report.file);
+            log!("  Chap18 Eph imports: {}", report.chap18_eph_imports);
+            if report.is_mt {
+                log!("  Type: Mt file");
+            } else {
+                log!("  Type: St file");
+            }
+            println!();
+        }
+    }
+    
     // Report files with UFCS calls
     println!();
     log!("{}", "=".repeat(80));
