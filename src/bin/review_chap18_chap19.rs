@@ -36,7 +36,8 @@ struct UfcsCall {
 #[derive(Debug)]
 struct FileReport {
     file: String,
-    chap18_imports: usize,
+    chap18_eph_imports: usize,  // Eph types from Chap18 (should use Chap19)
+    chap18_per_imports: usize,  // Per types from Chap18 (correct)
     chap19_imports: usize,
     ufcs_calls: Vec<UfcsCall>,
     is_mt: bool,
@@ -47,7 +48,65 @@ fn is_mt_file(path: &Path) -> bool {
     path_str.contains("Mt") && !path_str.contains("/tests/") && !path_str.contains("/benches/")
 }
 
-fn find_chap_imports(content: &str, chap: &str) -> usize {
+fn has_eph_in_use_path(use_node: &ast::Use) -> bool {
+    // Check if any NAME_REF in the path ends with "Eph"
+    for node in use_node.syntax().descendants() {
+        if node.kind() == SyntaxKind::NAME_REF {
+            if let Some(name_ref) = ast::NameRef::cast(node) {
+                let text = name_ref.text();
+                if text.ends_with("Eph") {
+                    return true;
+                }
+            }
+        }
+    }
+    false
+}
+
+fn has_per_in_use_path(use_node: &ast::Use) -> bool {
+    // Check if any NAME_REF in the path ends with "Per"
+    for node in use_node.syntax().descendants() {
+        if node.kind() == SyntaxKind::NAME_REF {
+            if let Some(name_ref) = ast::NameRef::cast(node) {
+                let text = name_ref.text();
+                if text.ends_with("Per") {
+                    return true;
+                }
+            }
+        }
+    }
+    false
+}
+
+fn find_chap18_imports(content: &str) -> (usize, usize) {
+    // Returns (eph_count, per_count)
+    let parsed = SourceFile::parse(content, Edition::Edition2021);
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    let mut eph_count = 0;
+    let mut per_count = 0;
+    
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::USE {
+            if let Some(use_item) = ast::Use::cast(node.clone()) {
+                let use_text = use_item.to_string();
+                if use_text.contains("Chap18::") {
+                    if has_eph_in_use_path(&use_item) {
+                        eph_count += 1;
+                    } else if has_per_in_use_path(&use_item) {
+                        per_count += 1;
+                    }
+                    // Note: Base types (no Eph/Per) are not counted
+                }
+            }
+        }
+    }
+    
+    (eph_count, per_count)
+}
+
+fn find_chap19_imports(content: &str) -> usize {
     let parsed = SourceFile::parse(content, Edition::Edition2021);
     let tree = parsed.tree();
     let root = tree.syntax();
@@ -58,7 +117,7 @@ fn find_chap_imports(content: &str, chap: &str) -> usize {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
                 let use_text = use_item.to_string();
-                if use_text.contains(&format!("{}::", chap)) {
+                if use_text.contains("Chap19::") {
                     count += 1;
                 }
             }
@@ -303,18 +362,19 @@ fn main() -> Result<()> {
             Err(_) => continue,
         };
         
-        let chap18_imports = find_chap_imports(&content, "Chap18");
-        let chap19_imports = find_chap_imports(&content, "Chap19");
+        let (chap18_eph, chap18_per) = find_chap18_imports(&content);
+        let chap19_imports = find_chap19_imports(&content);
         let ufcs_calls = find_ufcs_calls(&content, file_path);
         
         // Only report files with imports or UFCS calls
-        if chap18_imports > 0 || chap19_imports > 0 || !ufcs_calls.is_empty() {
+        if chap18_eph > 0 || chap18_per > 0 || chap19_imports > 0 || !ufcs_calls.is_empty() {
             let rel_path = file_path.strip_prefix(&base_dir).unwrap_or(file_path);
             let is_mt = is_mt_file(file_path);
             
             reports.push(FileReport {
                 file: rel_path.display().to_string(),
-                chap18_imports,
+                chap18_eph_imports: chap18_eph,
+                chap18_per_imports: chap18_per,
                 chap19_imports,
                 ufcs_calls,
                 is_mt,
@@ -333,9 +393,11 @@ fn main() -> Result<()> {
     
     let mut both_count = 0;
     for report in &reports {
-        if report.chap18_imports > 0 && report.chap19_imports > 0 {
+        let has_chap18 = report.chap18_eph_imports > 0 || report.chap18_per_imports > 0;
+        if has_chap18 && report.chap19_imports > 0 {
             log!("{}:1:", report.file);
-            log!("  Chap18 imports: {}, Chap19 imports: {}", report.chap18_imports, report.chap19_imports);
+            log!("  Chap18 Eph imports: {}, Chap18 Per imports: {}, Chap19 imports: {}", 
+                 report.chap18_eph_imports, report.chap18_per_imports, report.chap19_imports);
             if report.is_mt {
                 log!("  Type: Mt file");
             } else {
@@ -364,7 +426,8 @@ fn main() -> Result<()> {
     for report in &reports {
         if !report.ufcs_calls.is_empty() {
             log!("{}:1:", report.file);
-            log!("  Chap18 imports: {}, Chap19 imports: {}", report.chap18_imports, report.chap19_imports);
+            log!("  Chap18 Eph imports: {}, Chap18 Per imports: {}, Chap19 imports: {}", 
+                 report.chap18_eph_imports, report.chap18_per_imports, report.chap19_imports);
             log!("  UFCS calls: {}", report.ufcs_calls.len());
             
             for call in &report.ufcs_calls {
@@ -394,32 +457,53 @@ fn main() -> Result<()> {
     log!("  Total UFCS calls: {}", total_ufcs);
     
     // Count by import pattern
-    let mut chap18_only = 0;
-    let mut chap18_only_mt = 0;
-    let mut chap18_only_st = 0;
-    let mut chap19_only = 0;
-    let mut chap19_only_mt = 0;
-    let mut chap19_only_st = 0;
+    let mut chap18_eph_count = 0;
+    let mut chap18_eph_mt = 0;
+    let mut chap18_eph_st = 0;
+    let mut chap18_per_count = 0;
+    let mut chap18_per_mt = 0;
+    let mut chap18_per_st = 0;
+    let mut chap19_count = 0;
+    let mut chap19_mt = 0;
+    let mut chap19_st = 0;
     let mut both = 0;
     let mut both_mt = 0;
     let mut both_st = 0;
     
     for report in &reports {
-        if report.chap18_imports > 0 && report.chap19_imports == 0 {
-            chap18_only += 1;
+        // Count Chap18 Eph imports (should move to Chap19)
+        if report.chap18_eph_imports > 0 {
+            chap18_eph_count += 1;
             if report.is_mt {
-                chap18_only_mt += 1;
+                chap18_eph_mt += 1;
             } else {
-                chap18_only_st += 1;
+                chap18_eph_st += 1;
             }
-        } else if report.chap18_imports == 0 && report.chap19_imports > 0 {
-            chap19_only += 1;
+        }
+        
+        // Count Chap18 Per imports (correct)
+        if report.chap18_per_imports > 0 {
+            chap18_per_count += 1;
             if report.is_mt {
-                chap19_only_mt += 1;
+                chap18_per_mt += 1;
             } else {
-                chap19_only_st += 1;
+                chap18_per_st += 1;
             }
-        } else if report.chap18_imports > 0 && report.chap19_imports > 0 {
+        }
+        
+        // Count Chap19 imports
+        if report.chap19_imports > 0 {
+            chap19_count += 1;
+            if report.is_mt {
+                chap19_mt += 1;
+            } else {
+                chap19_st += 1;
+            }
+        }
+        
+        // Count files with both
+        let has_chap18 = report.chap18_eph_imports > 0 || report.chap18_per_imports > 0;
+        if has_chap18 && report.chap19_imports > 0 {
             both += 1;
             if report.is_mt {
                 both_mt += 1;
@@ -429,9 +513,13 @@ fn main() -> Result<()> {
         }
     }
     
-    log!("  Files importing Chap18 only: {} (Mt: {}, St: {})", chap18_only, chap18_only_mt, chap18_only_st);
-    log!("  Files importing Chap19 only: {} (Mt: {}, St: {})", chap19_only, chap19_only_mt, chap19_only_st);
-    log!("  Files importing both: {} (Mt: {}, St: {})", both, both_mt, both_st);
+    log!("  Files with Chap18 Eph imports (should use Chap19): {} (Mt: {}, St: {})", 
+         chap18_eph_count, chap18_eph_mt, chap18_eph_st);
+    log!("  Files with Chap18 Per imports (correct): {} (Mt: {}, St: {})", 
+         chap18_per_count, chap18_per_mt, chap18_per_st);
+    log!("  Files with Chap19 imports: {} (Mt: {}, St: {})", 
+         chap19_count, chap19_mt, chap19_st);
+    log!("  Files importing both Chap18 and Chap19: {} (Mt: {}, St: {})", both, both_mt, both_st);
     
     let elapsed = start_time.elapsed();
     log!("Completed in {}ms", elapsed.as_millis());
