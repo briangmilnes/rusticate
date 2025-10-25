@@ -134,7 +134,7 @@ fn main() -> Result<()> {
                 log!("{}", "=".repeat(80));
                 log!("STEP {}: Run test {} with nextest", idx + 2, test_name);
                 log!("{}", "=".repeat(80));
-                let success = run_compile(&current_dir, &["nextest", "run", "--test", &test_name])?;
+                let success = run_compile(&current_dir, &["nextest", "run", "--no-fail-fast", "--test", &test_name])?;
                 if !success {
                     log!("\n✗ TEST FAILED: {}", test_name);
                     return Ok(());
@@ -237,7 +237,7 @@ fn main() -> Result<()> {
             log!("{}", "=".repeat(80));
             println!();
             
-            let success = run_compile(&current_dir, &["nextest", "run"])?;
+            let success = run_compile(&current_dir, &["nextest", "run", "--no-fail-fast"])?;
             if !success {
                 log!("\n✗ TESTS FAILED");
                 return Ok(());
