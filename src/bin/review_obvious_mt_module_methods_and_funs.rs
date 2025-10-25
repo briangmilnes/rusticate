@@ -29,10 +29,18 @@ struct ParallelMethod {
     line: usize,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct ModuleReport {
     file: PathBuf,
     parallel_methods: Vec<ParallelMethod>,
+    calls_mt_modules: Vec<String>,  // Which Mt modules this module imports/calls
+}
+
+#[derive(Debug)]
+struct TransitiveInfo {
+    direct_parallel: bool,
+    transitive_parallel: bool,
+    parallel_via: Vec<String>,  // Which modules make this transitively parallel
 }
 
 fn get_line_number(node: &SyntaxNode, content: &str) -> usize {
@@ -120,18 +128,81 @@ fn find_parallel_methods(root: &SyntaxNode, content: &str) -> Vec<ParallelMethod
     methods
 }
 
-fn analyze_file(file_path: &Path) -> Result<ModuleReport> {
+fn find_calls_to_methods(root: &SyntaxNode, parallel_methods_map: &HashMap<String, Vec<String>>) -> Vec<String> {
+    let mut called_modules = Vec::new();
+    
+    // Find all method calls and function calls
+    for node in root.descendants() {
+        match node.kind() {
+            SyntaxKind::METHOD_CALL_EXPR => {
+                if let Some(method_call) = ast::MethodCallExpr::cast(node) {
+                    if let Some(name_ref) = method_call.name_ref() {
+                        let method_name = name_ref.text().to_string();
+                        
+                        // Check if this method name exists in any Mt module's parallel methods
+                        for (module_name, methods) in parallel_methods_map {
+                            if methods.contains(&method_name) {
+                                if !called_modules.contains(module_name) {
+                                    called_modules.push(module_name.clone());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            SyntaxKind::CALL_EXPR => {
+                if let Some(call_expr) = ast::CallExpr::cast(node) {
+                    if let Some(expr) = call_expr.expr() {
+                        if let ast::Expr::PathExpr(path_expr) = expr {
+                            if let Some(path) = path_expr.path() {
+                                if let Some(segment) = path.segment() {
+                                    if let Some(name) = segment.name_ref() {
+                                        let fn_name = name.text().to_string();
+                                        
+                                        // Check if this function name exists in any Mt module's parallel methods
+                                        for (module_name, methods) in parallel_methods_map {
+                                            if methods.contains(&fn_name) {
+                                                if !called_modules.contains(module_name) {
+                                                    called_modules.push(module_name.clone());
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+    
+    called_modules
+}
+
+fn analyze_file(file_path: &Path, parallel_methods_map: &HashMap<String, Vec<String>>) -> Result<ModuleReport> {
     let content = fs::read_to_string(file_path)?;
     let parsed = SourceFile::parse(&content, Edition::Edition2021);
     let tree = parsed.tree();
     let root = tree.syntax();
     
     let parallel_methods = find_parallel_methods(root, &content);
+    let calls_mt_modules = find_calls_to_methods(root, parallel_methods_map);
     
     Ok(ModuleReport {
         file: file_path.to_path_buf(),
         parallel_methods,
+        calls_mt_modules,
     })
+}
+
+fn extract_module_name(path: &Path) -> String {
+    // Extract module name from path like src/Chap06/DirGraphMtEph.rs -> DirGraphMtEph
+    path.file_stem()
+        .and_then(|s| s.to_str())
+        .unwrap_or("")
+        .to_string()
 }
 
 fn main() -> Result<()> {
@@ -147,23 +218,89 @@ fn main() -> Result<()> {
     log!("Entering directory '{}'", base_dir.display());
     println!();
     
-    let mut mt_modules: Vec<(PathBuf, ModuleReport)> = Vec::new();
+    // First pass: collect all Mt modules and build parallel methods map
+    let mut mt_files = Vec::new();
+    let mut parallel_methods_map: HashMap<String, Vec<String>> = HashMap::new();
     
-    // Filter for Mt modules in src/
     for file_path in &all_files {
         let path_str = file_path.to_string_lossy();
         
-        // Check if it's in src/ and has Mt in the filename
+        // Check if it's in src/ and has Mt in the filename  
         if path_str.contains("/src/") && path_str.contains("Mt") && path_str.ends_with(".rs") {
-            if let Ok(report) = analyze_file(file_path) {
-                let rel_path = file_path.strip_prefix(&base_dir).unwrap_or(file_path);
-                mt_modules.push((rel_path.to_path_buf(), report));
+            mt_files.push(file_path.clone());
+            
+            // Quick parse to get parallel methods
+            if let Ok(content) = fs::read_to_string(file_path) {
+                let parsed = SourceFile::parse(&content, Edition::Edition2021);
+                let tree = parsed.tree();
+                let root = tree.syntax();
+                let methods = find_parallel_methods(root, &content);
+                
+                if !methods.is_empty() {
+                    let module_name = extract_module_name(file_path);
+                    let method_names: Vec<String> = methods.iter().map(|m| m.name.clone()).collect();
+                    parallel_methods_map.insert(module_name, method_names);
+                }
             }
+        }
+    }
+    
+    // Second pass: analyze all Mt modules with the parallel methods map
+    let mut mt_modules: Vec<(PathBuf, ModuleReport)> = Vec::new();
+    
+    for file_path in &mt_files {
+        if let Ok(report) = analyze_file(file_path, &parallel_methods_map) {
+            let rel_path = file_path.strip_prefix(&base_dir).unwrap_or(file_path);
+            mt_modules.push((rel_path.to_path_buf(), report));
         }
     }
     
     // Sort by file path
     mt_modules.sort_by(|a, b| a.0.cmp(&b.0));
+    
+    // Compute transitivity via fixed-point iteration
+    let mut transitive_info: HashMap<String, TransitiveInfo> = HashMap::new();
+    
+    // Initialize: modules with direct parallelism
+    for (path, report) in &mt_modules {
+        let module_name = extract_module_name(path.as_path());
+        transitive_info.insert(module_name.clone(), TransitiveInfo {
+            direct_parallel: !report.parallel_methods.is_empty(),
+            transitive_parallel: !report.parallel_methods.is_empty(),
+            parallel_via: Vec::new(),
+        });
+    }
+    
+    // Fixed-point iteration: propagate transitivity
+    let mut changed = true;
+    while changed {
+        changed = false;
+        
+        for (path, report) in &mt_modules {
+            let module_name = extract_module_name(path.as_path());
+            
+            // If already directly parallel, skip
+            if transitive_info[&module_name].direct_parallel {
+                continue;
+            }
+            
+            // Check if this module calls any parallel (or transitively parallel) modules
+            for called_module in &report.calls_mt_modules {
+                if let Some(called_info) = transitive_info.get(called_module) {
+                    if called_info.transitive_parallel {
+                        let info = transitive_info.get_mut(&module_name).unwrap();
+                        if !info.transitive_parallel {
+                            info.transitive_parallel = true;
+                            info.parallel_via.push(called_module.clone());
+                            changed = true;
+                        } else if !info.parallel_via.contains(called_module) {
+                            info.parallel_via.push(called_module.clone());
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     // Print results
     println!();
@@ -174,9 +311,12 @@ fn main() -> Result<()> {
     
     let mut total_parallel_methods = 0;
     let mut modules_with_parallelism = 0;
-    let mut modules_without_parallelism = Vec::new();
+    let mut modules_transitively_parallel = Vec::new();
+    let mut modules_not_parallel = Vec::new();
     
     for (file, report) in &mt_modules {
+        let module_name = extract_module_name(file.as_path());
+        
         if !report.parallel_methods.is_empty() {
             log!("{}:1:", file.display());
             log!("  Parallel methods/functions: {}", report.parallel_methods.len());
@@ -187,21 +327,47 @@ fn main() -> Result<()> {
             total_parallel_methods += report.parallel_methods.len();
             modules_with_parallelism += 1;
         } else {
-            modules_without_parallelism.push(file.clone());
+            // Check if transitively parallel
+            if let Some(info) = transitive_info.get(&module_name) {
+                if info.transitive_parallel {
+                    modules_transitively_parallel.push((file.clone(), info.parallel_via.clone()));
+                } else {
+                    modules_not_parallel.push(file.clone());
+                }
+            } else {
+                modules_not_parallel.push(file.clone());
+            }
         }
     }
     
     println!();
     log!("{}", "=".repeat(80));
-    log!("Mt MODULES WITHOUT DIRECT PARALLEL OPERATIONS:");
-    log!("(May be transitively parallel by calling other Mt modules)");
+    log!("Mt MODULES TRANSITIVELY PARALLEL:");
+    log!("(No direct parallel operations, but call parallel Mt modules)");
     log!("{}", "=".repeat(80));
     println!();
     
-    if modules_without_parallelism.is_empty() {
-        log!("None found - all Mt modules have direct parallelism!");
+    if modules_transitively_parallel.is_empty() {
+        log!("None found");
     } else {
-        for file in &modules_without_parallelism {
+        for (file, via_modules) in &modules_transitively_parallel {
+            log!("{}:1:", file.display());
+            log!("  Parallel via: {}", via_modules.join(", "));
+            println!();
+        }
+    }
+    
+    println!();
+    log!("{}", "=".repeat(80));
+    log!("Mt MODULES NOT PARALLEL:");
+    log!("(No direct or transitive parallel operations detected)");
+    log!("{}", "=".repeat(80));
+    println!();
+    
+    if modules_not_parallel.is_empty() {
+        log!("None found - all Mt modules are parallel!");
+    } else {
+        for file in &modules_not_parallel {
             log!("{}:1:", file.display());
         }
     }
@@ -211,7 +377,8 @@ fn main() -> Result<()> {
     log!("SUMMARY:");
     log!("  Total Mt modules analyzed: {}", mt_modules.len());
     log!("  Modules with direct parallelism: {}", modules_with_parallelism);
-    log!("  Modules without direct parallelism: {}", modules_without_parallelism.len());
+    log!("  Modules with transitive parallelism: {}", modules_transitively_parallel.len());
+    log!("  Modules not parallel: {}", modules_not_parallel.len());
     log!("  Total parallel methods/functions found: {}", total_parallel_methods);
     log!("{}", "=".repeat(80));
     
