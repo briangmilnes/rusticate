@@ -53,7 +53,7 @@ fn extract_base_path(use_tree: &ast::UseTree) -> String {
     parts.join("::")
 }
 
-fn expand_grouped_import(use_stmt: &ast::Use) -> Option<(TextRange, Vec<String>)> {
+fn expand_grouped_import(use_stmt: &ast::Use, content: &str) -> Option<(TextRange, Vec<String>, String)> {
     // Get the use tree
     let use_tree = use_stmt.use_tree()?;
     
@@ -93,7 +93,23 @@ fn expand_grouped_import(use_stmt: &ast::Use) -> Option<(TextRange, Vec<String>)
         return None;
     }
     
-    Some((use_stmt.syntax().text_range(), individual_imports))
+    // Extract any leading comments from the use statement's text range
+    let full_range = use_stmt.syntax().text_range();
+    let start: usize = full_range.start().into();
+    let end: usize = full_range.end().into();
+    let full_text = &content[start..end];
+    
+    // Find where "use" keyword actually starts (after any comments/whitespace)
+    let use_pos = if let Some(pos) = full_text.find("use ") {
+        pos
+    } else {
+        0
+    };
+    
+    // Everything before "use" is comments/whitespace
+    let leading = &full_text[..use_pos];
+    
+    Some((full_range, individual_imports, leading.to_string()))
 }
 
 fn get_indentation(content: &str, offset: usize) -> String {
@@ -116,21 +132,31 @@ fn fix_file(file_path: &Path, dry_run: bool) -> Result<usize> {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_stmt) = ast::Use::cast(node) {
-                if let Some((range, expanded)) = expand_grouped_import(&use_stmt) {
-                    // Get the indentation of the original use statement
+                if let Some((range, expanded, leading)) = expand_grouped_import(&use_stmt, &content) {
+                    // Get the indentation for subsequent imports (from the "use" keyword line)
                     let start: usize = range.start().into();
-                    let indent = get_indentation(&content, start);
+                    let use_start = start + leading.len(); // Position of "use" keyword
+                    let indent = get_indentation(&content, use_start);
                     
-                    // Join the expanded imports with newlines and indentation
+                    // Build the replacement with leading text + expanded imports
                     let replacement = if expanded.is_empty() {
                         String::new()
                     } else {
-                        let mut result = expanded[0].clone();
+                        let mut result = String::new();
+                        
+                        // Add leading comments/whitespace
+                        result.push_str(&leading);
+                        
+                        // Add first import
+                        result.push_str(&expanded[0]);
+                        
+                        // Add remaining imports with indentation
                         for import in &expanded[1..] {
                             result.push('\n');
                             result.push_str(&indent);
                             result.push_str(import);
                         }
+                        
                         result
                     };
                     
