@@ -15,7 +15,7 @@
 //! Binary: fix-grouped-imports
 
 use anyhow::Result;
-use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SourceFile, Edition, SyntaxNode, TextRange};
+use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SourceFile, Edition, TextRange};
 use rusticate::{find_rust_files, StandardArgs};
 use std::fs;
 use std::path::Path;
@@ -38,51 +38,55 @@ fn extract_use_trees(use_tree_list: &ast::UseTreeList) -> Vec<String> {
     trees
 }
 
-fn expand_grouped_import(use_stmt: &ast::Use) -> Option<(TextRange, Vec<String>)> {
-    // Check if this has a USE_TREE_LIST (grouped import)
-    let mut has_list = false;
-    for descendant in use_stmt.syntax().descendants() {
-        if descendant.kind() == SyntaxKind::USE_TREE_LIST {
-            has_list = true;
-            break;
+fn extract_base_path(use_tree: &ast::UseTree) -> String {
+    // Walk up to find the path before the USE_TREE_LIST
+    let mut parts = Vec::new();
+    
+    if let Some(path) = use_tree.path() {
+        // Get the path before the grouped imports
+        let path_str = path.to_string();
+        if !path_str.is_empty() {
+            parts.push(path_str);
         }
     }
     
-    if !has_list {
-        return None;
+    parts.join("::")
+}
+
+fn expand_grouped_import(use_stmt: &ast::Use) -> Option<(TextRange, Vec<String>)> {
+    // Get the use tree
+    let use_tree = use_stmt.use_tree()?;
+    
+    // Check if this has a USE_TREE_LIST (grouped import)
+    let mut use_tree_list = None;
+    for descendant in use_tree.syntax().descendants() {
+        if descendant.kind() == SyntaxKind::USE_TREE_LIST {
+            if let Some(list) = ast::UseTreeList::cast(descendant) {
+                use_tree_list = Some(list);
+                break;
+            }
+        }
     }
     
-    // Extract the base path (everything before the {})
-    let use_text = use_stmt.syntax().to_string();
+    let list = use_tree_list?;
     
-    // Find the base path
-    let base_path = if let Some(pos) = use_text.find('{') {
-        use_text[..pos].trim_start_matches("use ").trim()
-    } else {
-        return None;
-    };
+    // Extract the base path (everything before the {})
+    let base_path = extract_base_path(&use_tree);
     
     // Extract individual imports from the list
     let mut individual_imports = Vec::new();
     
-    for descendant in use_stmt.syntax().descendants() {
-        if descendant.kind() == SyntaxKind::USE_TREE_LIST {
-            if let Some(list) = ast::UseTreeList::cast(descendant) {
-                for tree in extract_use_trees(&list) {
-                    let tree = tree.trim();
-                    // Build the full import statement
-                    let full_import = if base_path.is_empty() {
-                        format!("use {};", tree)
-                    } else if base_path.ends_with("::") {
-                        format!("use {}{};", base_path, tree)
-                    } else {
-                        format!("use {}::{};", base_path, tree)
-                    };
-                    individual_imports.push(full_import);
-                }
-            }
-            break;
-        }
+    for tree in extract_use_trees(&list) {
+        let tree = tree.trim();
+        // Build the full import statement
+        let full_import = if base_path.is_empty() {
+            format!("use {};", tree)
+        } else if base_path.ends_with("::") {
+            format!("use {}{};", base_path, tree)
+        } else {
+            format!("use {}::{};", base_path, tree)
+        };
+        individual_imports.push(full_import);
     }
     
     if individual_imports.is_empty() {
@@ -90,6 +94,15 @@ fn expand_grouped_import(use_stmt: &ast::Use) -> Option<(TextRange, Vec<String>)
     }
     
     Some((use_stmt.syntax().text_range(), individual_imports))
+}
+
+fn get_indentation(content: &str, offset: usize) -> String {
+    // Find the start of the line containing this offset
+    let line_start = content[..offset].rfind('\n').map(|pos| pos + 1).unwrap_or(0);
+    
+    // Extract the indentation (spaces/tabs before the use keyword)
+    let line = &content[line_start..offset];
+    line.chars().take_while(|c| c.is_whitespace() && *c != '\n').collect()
 }
 
 fn fix_file(file_path: &Path, dry_run: bool) -> Result<usize> {
@@ -104,8 +117,23 @@ fn fix_file(file_path: &Path, dry_run: bool) -> Result<usize> {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_stmt) = ast::Use::cast(node) {
                 if let Some((range, expanded)) = expand_grouped_import(&use_stmt) {
-                    // Join the expanded imports with newlines
-                    let replacement = expanded.join("\n");
+                    // Get the indentation of the original use statement
+                    let start: usize = range.start().into();
+                    let indent = get_indentation(&content, start);
+                    
+                    // Join the expanded imports with newlines and indentation
+                    let replacement = if expanded.is_empty() {
+                        String::new()
+                    } else {
+                        let mut result = expanded[0].clone();
+                        for import in &expanded[1..] {
+                            result.push('\n');
+                            result.push_str(&indent);
+                            result.push_str(import);
+                        }
+                        result
+                    };
+                    
                     replacements.push((range, replacement));
                 }
             }
