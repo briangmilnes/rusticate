@@ -1,10 +1,14 @@
-//! Fix: Convert Chap18 imports to Chap19 for files in Chap20+
+//! Fix: Convert Chap18 Eph imports to Chap19 for files in Chap20+
 //!
-//! All files in Chap20+ should use Chap19 instead of Chap18.
-//! This tool converts Chap18 imports to Chap19 for:
-//! - src/ files
-//! - tests/ files  
-//! - benches/ files
+//! Files in Chap20+ should use Chap19 for ephemeral (Eph) types.
+//! Persistent (Per) types stay with Chap18.
+//! 
+//! This tool converts Chap18 imports to Chap19 ONLY for:
+//! - *Eph types (ArraySeqMtEph, ArraySeqStEph, etc.)
+//! 
+//! Leaves unchanged:
+//! - *Per types (stay with Chap18)
+//! - Base types without Eph/Per suffix (stay with Chap18)
 //!
 //! Uses AST parsing - NO STRING HACKING.
 //!
@@ -30,6 +34,21 @@ fn is_chap20_or_higher(file_path: &Path) -> bool {
     false
 }
 
+fn has_eph_in_use_path(use_node: &ast::Use) -> bool {
+    // Check if any NAME_REF in the path ends with "Eph"
+    for node in use_node.syntax().descendants() {
+        if node.kind() == SyntaxKind::NAME_REF {
+            if let Some(name_ref) = ast::NameRef::cast(node) {
+                let text = name_ref.text();
+                if text.ends_with("Eph") {
+                    return true;
+                }
+            }
+        }
+    }
+    false
+}
+
 fn convert_chap18_to_chap19(content: &str, file_path: &Path) -> Option<String> {
     // Only process files in Chap20+
     if !is_chap20_or_higher(file_path) {
@@ -45,13 +64,18 @@ fn convert_chap18_to_chap19(content: &str, file_path: &Path) -> Option<String> {
     // Find all NAME_REF nodes that are "Chap18" in the USE tree
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
-            // Within this USE statement, find all NAME_REF nodes
-            for use_descendant in node.descendants() {
-                if use_descendant.kind() == SyntaxKind::NAME_REF {
-                    if let Some(name_ref) = ast::NameRef::cast(use_descendant.clone()) {
-                        if name_ref.text() == "Chap18" {
-                            // Replace this specific NAME_REF with Chap19
-                            replacements.push((name_ref.syntax().text_range(), "Chap19".to_string()));
+            if let Some(use_stmt) = ast::Use::cast(node.clone()) {
+                // Only convert if this USE statement imports an Eph type
+                if has_eph_in_use_path(&use_stmt) {
+                    // Within this USE statement, find all NAME_REF nodes
+                    for use_descendant in use_stmt.syntax().descendants() {
+                        if use_descendant.kind() == SyntaxKind::NAME_REF {
+                            if let Some(name_ref) = ast::NameRef::cast(use_descendant.clone()) {
+                                if name_ref.text() == "Chap18" {
+                                    // Replace this specific NAME_REF with Chap19
+                                    replacements.push((name_ref.syntax().text_range(), "Chap19".to_string()));
+                                }
+                            }
                         }
                     }
                 }

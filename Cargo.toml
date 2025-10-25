@@ -190,6 +190,18 @@ name = "review-mt-per"
 path = "src/bin/review_mt_per.rs"
 
 [[bin]]
+name = "review-st-mt-consistency"
+path = "src/bin/review_st_mt_consistency.rs"
+
+[[bin]]
+name = "review-chap18-chap19"
+path = "src/bin/review_chap18_chap19.rs"
+
+[[bin]]
+name = "fix-chap18-to-chap19-all"
+path = "src/bin/fix_chap18_to_chap19_all.rs"
+
+[[bin]]
 name = "rusticate-review-string-hacking"
 path = "src/bin/review_string_hacking.rs"
 
