@@ -210,8 +210,8 @@ name = "fix-unnecessary-ufcs"
 path = "src/bin/fix_unnecessary_ufcs.rs"
 
 [[bin]]
-name = "review-inherent-mt-module-methods-and-funs"
-path = "src/bin/review_obvious_mt_module_methods_and_funs.rs"
+name = "review-inherent-and-transitive-mt"
+path = "src/bin/review_inherent_and_transitive_mt.rs"
 
 [[bin]]
 name = "review-grouped-imports"

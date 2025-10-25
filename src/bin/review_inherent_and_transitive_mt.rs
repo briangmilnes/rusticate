@@ -183,7 +183,7 @@ fn extract_module_name(path: &Path) -> String {
 
 fn main() -> Result<()> {
     let _ = fs::create_dir_all("analyses");
-    let mut _log_file = fs::File::create("analyses/review_inherent_mt_module_methods_and_funs.log").ok();
+    let mut _log_file = fs::File::create("analyses/review_inherent_and_transitive_mt.log").ok();
     
     let start_time = Instant::now();
     
