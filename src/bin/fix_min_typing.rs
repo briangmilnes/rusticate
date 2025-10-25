@@ -1,7 +1,7 @@
 use anyhow::Result;
 use ra_ap_syntax::{ast, AstNode, Edition, NodeOrToken, SourceFile, SyntaxKind, SyntaxNode};
 use rusticate::{find_rust_files, StandardArgs};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::Path;
 use std::time::Instant;
@@ -25,7 +25,6 @@ macro_rules! log {
 enum SimplificationCategory {
     TypeConstructor,
     Collect,
-    UfcsCall,
 }
 
 #[derive(Debug)]
