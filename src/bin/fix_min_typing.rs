@@ -25,6 +25,7 @@ macro_rules! log {
 enum SimplificationCategory {
     TypeConstructor,
     Collect,
+    UfcsCall,
 }
 
 #[derive(Debug)]
@@ -49,11 +50,43 @@ struct RewriteContext {
     collect_node_ptr: usize, // Pointer to the specific collect node to rewrite
 }
 
+fn collect_imports(root: &SyntaxNode) -> HashSet<String> {
+    let mut imports = HashSet::new();
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::USE {
+            // Check for glob imports (*)
+            if node.to_string().contains("::*") {
+                // Extract the module path before ::*
+                if let Some(use_stmt) = ast::Use::cast(node.clone()) {
+                    let use_text = use_stmt.syntax().to_string();
+                    // Mark that all traits from this module are imported
+                    imports.insert(use_text);
+                }
+            }
+            // Also collect specific trait imports
+            for descendant in node.descendants() {
+                if descendant.kind() == SyntaxKind::NAME_REF {
+                    if let Some(name_ref) = ast::NameRef::cast(descendant) {
+                        let text = name_ref.text();
+                        if text.to_string().contains("Trait") {
+                            imports.insert(text.to_string());
+                        }
+                    }
+                }
+            }
+        }
+    }
+    imports
+}
+
 fn rewrite_file(file_path: &Path, dry_run: bool) -> Result<Vec<SimplifiableCase>> {
     let content = fs::read_to_string(file_path)?;
     let parsed = SourceFile::parse(&content, Edition::Edition2021);
     let tree = parsed.tree();
     let root = tree.syntax();
+
+    // Collect imports to determine what can be simplified
+    let _imports = collect_imports(root);
 
     let mut cases = Vec::new();
     let mut output = String::new();

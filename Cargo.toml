@@ -198,6 +198,22 @@ name = "review-chap18-chap19"
 path = "src/bin/review_chap18_chap19.rs"
 
 [[bin]]
+name = "review-simplifiable-ufcs"
+path = "src/bin/review_simplifiable_ufcs.rs"
+
+[[bin]]
+name = "review-unnecessary-ufcs-and-qualified-paths"
+path = "src/bin/review_unnecessary_ufcs_and_qualified_paths.rs"
+
+[[bin]]
+name = "review-grouped-imports"
+path = "src/bin/review_grouped_imports.rs"
+
+[[bin]]
+name = "fix-grouped-imports"
+path = "src/bin/fix_grouped_imports.rs"
+
+[[bin]]
 name = "fix-chap18-to-chap19"
 path = "src/bin/fix_chap18_to_chap19.rs"
 
