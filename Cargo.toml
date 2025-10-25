@@ -206,6 +206,14 @@ name = "review-unnecessary-ufcs-and-qualified-paths"
 path = "src/bin/review_unnecessary_ufcs_and_qualified_paths.rs"
 
 [[bin]]
+name = "fix-unnecessary-ufcs"
+path = "src/bin/fix_unnecessary_ufcs.rs"
+
+[[bin]]
+name = "review-obvious-mt-module-methods-and-funs"
+path = "src/bin/review_obvious_mt_module_methods_and_funs.rs"
+
+[[bin]]
 name = "review-grouped-imports"
 path = "src/bin/review_grouped_imports.rs"
 
