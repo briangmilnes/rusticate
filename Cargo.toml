@@ -234,6 +234,10 @@ name = "fix-chap18-to-chap19"
 path = "src/bin/fix_chap18_to_chap19.rs"
 
 [[bin]]
+name = "fix-chap18-to-chap19-per"
+path = "src/bin/fix_chap18_to_chap19_per.rs"
+
+[[bin]]
 name = "rusticate-review-string-hacking"
 path = "src/bin/review_string_hacking.rs"
 
