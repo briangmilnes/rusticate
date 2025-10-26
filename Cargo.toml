@@ -218,6 +218,10 @@ name = "review-grouped-imports"
 path = "src/bin/review_grouped_imports.rs"
 
 [[bin]]
+name = "review-merge-imports"
+path = "src/bin/review_merge_imports.rs"
+
+[[bin]]
 name = "fix-grouped-imports"
 path = "src/bin/fix_grouped_imports.rs"
 
