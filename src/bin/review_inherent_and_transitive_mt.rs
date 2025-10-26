@@ -17,9 +17,13 @@ use std::path::{Path, PathBuf};
 use std::time::Instant;
 
 macro_rules! log {
-    ($($arg:tt)*) => {{
+    ($log_file:expr, $($arg:tt)*) => {{
         let msg = format!($($arg)*);
         println!("{}", msg);
+        if let Some(ref mut f) = $log_file {
+            use std::io::Write;
+            let _ = writeln!(f, "{}", msg);
+        }
     }};
 }
 
@@ -586,7 +590,7 @@ fn main() -> Result<()> {
     let base_dir = args.base_dir();
     let all_files = find_rust_files(&args.paths);
     
-    log!("Entering directory '{}'", base_dir.display());
+    log!(_log_file, "Entering directory '{}'", base_dir.display());
     println!();
     
     // First pass: collect all Mt module names and build parallel methods map
@@ -633,10 +637,10 @@ fn main() -> Result<()> {
     
     // Print results
     println!();
-    log!("{}", "=".repeat(80));
-    log!("Mt MODULES WITH INHERENT PARALLELISM:");
-    log!("(Methods with direct parallel operations: spawn, join, par_iter, ParaPair, etc.)");
-    log!("{}", "=".repeat(80));
+    log!(_log_file, "{}", "=".repeat(80));
+    log!(_log_file, "Mt MODULES WITH INHERENT PARALLELISM:");
+    log!(_log_file, "(Methods with direct parallel operations: spawn, join, par_iter, ParaPair, etc.)");
+    log!(_log_file, "{}", "=".repeat(80));
     println!();
     
     let mut total_inherent_parallel_methods = 0;
@@ -649,10 +653,10 @@ fn main() -> Result<()> {
         let rel_path = report.file.strip_prefix(&base_dir).unwrap_or(&report.file);
         
         if !report.inherent_parallel_methods.is_empty() {
-            log!("{}:1:", rel_path.display());
-            log!("  Inherent parallel methods: {}", report.inherent_parallel_methods.len());
+            log!(_log_file, "{}:1:", rel_path.display());
+            log!(_log_file, "  Inherent parallel methods: {}", report.inherent_parallel_methods.len());
             for method in &report.inherent_parallel_methods {
-                log!("    Line {}: {}", method.line, method.name);
+                log!(_log_file, "    Line {}: {}", method.line, method.name);
             }
             println!();
             total_inherent_parallel_methods += report.inherent_parallel_methods.len();
@@ -661,22 +665,22 @@ fn main() -> Result<()> {
     }
     
     println!();
-    log!("{}", "=".repeat(80));
-    log!("Mt MODULES WITH TRANSITIVE PARALLELISM:");
-    log!("(Methods that call parallel methods in other Mt modules)");
-    log!("{}", "=".repeat(80));
+    log!(_log_file, "{}", "=".repeat(80));
+    log!(_log_file, "Mt MODULES WITH TRANSITIVE PARALLELISM:");
+    log!(_log_file, "(Methods that call parallel methods in other Mt modules)");
+    log!(_log_file, "{}", "=".repeat(80));
     println!();
     
     for report in &mt_modules {
         let rel_path = report.file.strip_prefix(&base_dir).unwrap_or(&report.file);
         
         if !report.transitive_parallel_methods.is_empty() {
-            log!("{}:1:", rel_path.display());
-            log!("  Transitive parallel methods: {}", report.transitive_parallel_methods.len());
+            log!(_log_file, "{}:1:", rel_path.display());
+            log!(_log_file, "  Transitive parallel methods: {}", report.transitive_parallel_methods.len());
             for method_info in &report.transitive_parallel_methods {
-                log!("    Line {}: {} calls:", method_info.line, method_info.method_name);
+                log!(_log_file, "    Line {}: {} calls:", method_info.line, method_info.method_name);
                 for call in &method_info.calls_parallel_methods {
-                    log!("      Line {}: {}::{}", call.call_line, call.called_module, call.called_method);
+                    log!(_log_file, "      Line {}: {}::{}", call.call_line, call.called_module, call.called_method);
                 }
             }
             println!();
@@ -688,34 +692,34 @@ fn main() -> Result<()> {
     }
     
     println!();
-    log!("{}", "=".repeat(80));
-    log!("Mt MODULES NOT PARALLEL:");
-    log!("(No inherent or transitive parallel methods detected)");
-    log!("{}", "=".repeat(80));
+    log!(_log_file, "{}", "=".repeat(80));
+    log!(_log_file, "Mt MODULES NOT PARALLEL:");
+    log!(_log_file, "(No inherent or transitive parallel methods detected)");
+    log!(_log_file, "{}", "=".repeat(80));
     println!();
     
     for report in &mt_modules {
         let rel_path = report.file.strip_prefix(&base_dir).unwrap_or(&report.file);
         
         if report.inherent_parallel_methods.is_empty() && report.transitive_parallel_methods.is_empty() {
-            log!("{}:1:", rel_path.display());
+            log!(_log_file, "{}:1:", rel_path.display());
             modules_not_parallel += 1;
         }
     }
     
     println!();
-    log!("{}", "=".repeat(80));
-    log!("SUMMARY:");
-    log!("  Total Mt modules analyzed: {}", mt_modules.len());
-    log!("  Modules with inherent parallelism: {}", modules_with_inherent);
-    log!("  Modules with transitive parallelism only: {}", modules_with_transitive_only);
-    log!("  Modules not parallel: {}", modules_not_parallel);
-    log!("  Total inherent parallel methods: {}", total_inherent_parallel_methods);
-    log!("  Total transitive parallel methods: {}", total_transitive_parallel_methods);
-    log!("{}", "=".repeat(80));
+    log!(_log_file, "{}", "=".repeat(80));
+    log!(_log_file, "SUMMARY:");
+    log!(_log_file, "  Total Mt modules analyzed: {}", mt_modules.len());
+    log!(_log_file, "  Modules with inherent parallelism: {}", modules_with_inherent);
+    log!(_log_file, "  Modules with transitive parallelism only: {}", modules_with_transitive_only);
+    log!(_log_file, "  Modules not parallel: {}", modules_not_parallel);
+    log!(_log_file, "  Total inherent parallel methods: {}", total_inherent_parallel_methods);
+    log!(_log_file, "  Total transitive parallel methods: {}", total_transitive_parallel_methods);
+    log!(_log_file, "{}", "=".repeat(80));
     
     let elapsed = start_time.elapsed();
-    log!("Completed in {}ms", elapsed.as_millis());
+    log!(_log_file, "Completed in {}ms", elapsed.as_millis());
     
     Ok(())
 }
