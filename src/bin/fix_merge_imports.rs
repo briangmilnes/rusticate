@@ -1,9 +1,9 @@
 use anyhow::Result;
-use ra_ap_syntax::{ast, AstNode, SourceFile, SyntaxKind};
+use ra_ap_syntax::{ast, AstNode, Edition, SourceFile, SyntaxKind, TextRange};
 use rusticate::{find_rust_files, StandardArgs};
-use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
+use std::time::Instant;
 
 macro_rules! log {
     ($($arg:tt)*) => {{
@@ -13,7 +13,7 @@ macro_rules! log {
         if let Ok(mut file) = std::fs::OpenOptions::new()
             .create(true)
             .append(true)
-            .open("analyses/review_merge_imports.log")
+            .open("analyses/fix_merge_imports.log")
         {
             let _ = writeln!(file, "{}", msg);
         }
@@ -25,15 +25,11 @@ fn get_line_number(offset: usize, content: &str) -> usize {
 }
 
 /// Extract the base path from a use statement (everything except the final item)
-/// e.g., "std::fmt::Display" -> "std::fmt"
-///       "crate::module::Type" -> "crate::module"
 fn extract_base_path(use_stmt: &ast::Use) -> Option<String> {
     if let Some(use_tree) = use_stmt.use_tree() {
         if let Some(path) = use_tree.path() {
-            // Get all segments except the last one
             let segments: Vec<_> = path.segments().collect();
             if segments.len() >= 2 {
-                // Reconstruct path without the last segment
                 let base_segments: Vec<_> = segments.iter().take(segments.len() - 1).collect();
                 let base_path = base_segments.iter()
                     .map(|s| s.to_string())
@@ -57,7 +53,6 @@ fn has_alias(use_stmt: &ast::Use) -> bool {
 }
 
 /// Extract the final item from a use statement
-/// e.g., "std::fmt::Display" -> "Display"
 fn extract_final_item(use_stmt: &ast::Use) -> Option<String> {
     if let Some(use_tree) = use_stmt.use_tree() {
         if let Some(path) = use_tree.path() {
@@ -72,14 +67,22 @@ fn extract_final_item(use_stmt: &ast::Use) -> Option<String> {
 #[derive(Debug, Clone)]
 struct UseStatementInfo {
     line: usize,
+    range: TextRange,
     base_path: String,
     item: String,
-    full_text: String,
 }
 
-fn analyze_file(file_path: &Path) -> Result<Vec<Vec<UseStatementInfo>>> {
+/// Get the indentation of the line containing the given offset
+fn get_indentation(content: &str, offset: usize) -> String {
+    let line_start = content[..offset].rfind('\n').map(|p| p + 1).unwrap_or(0);
+    let line = &content[line_start..];
+    let indent_end = line.find(|c: char| !c.is_whitespace()).unwrap_or(0);
+    line[..indent_end].to_string()
+}
+
+fn fix_file(file_path: &Path, dry_run: bool) -> Result<usize> {
     let content = fs::read_to_string(file_path)?;
-    let parsed = SourceFile::parse(&content, ra_ap_syntax::Edition::Edition2021);
+    let parsed = SourceFile::parse(&content, Edition::Edition2021);
     let tree = parsed.tree();
     let root = tree.syntax();
 
@@ -104,9 +107,9 @@ fn analyze_file(file_path: &Path) -> Result<Vec<Vec<UseStatementInfo>>> {
                     let line = get_line_number(node.text_range().start().into(), &content);
                     use_statements.push(UseStatementInfo {
                         line,
+                        range: node.text_range(),
                         base_path,
                         item,
-                        full_text: use_text.trim().to_string(),
                     });
                 }
             }
@@ -114,7 +117,7 @@ fn analyze_file(file_path: &Path) -> Result<Vec<Vec<UseStatementInfo>>> {
     }
 
     // Group consecutive use statements by base path
-    let mut groupable: Vec<Vec<UseStatementInfo>> = Vec::new();
+    let mut groups: Vec<Vec<UseStatementInfo>> = Vec::new();
     let mut current_group: Vec<UseStatementInfo> = Vec::new();
     let mut last_base_path: Option<String> = None;
     let mut last_line: Option<usize> = None;
@@ -127,12 +130,10 @@ fn analyze_file(file_path: &Path) -> Result<Vec<Vec<UseStatementInfo>>> {
         };
 
         if Some(&use_info.base_path) == last_base_path.as_ref() && is_consecutive {
-            // Same base path and consecutive lines - add to current group
             current_group.push(use_info.clone());
         } else {
-            // Different base path or non-consecutive - start new group
             if current_group.len() >= 2 {
-                groupable.push(current_group.clone());
+                groups.push(current_group.clone());
             }
             current_group = vec![use_info.clone()];
             last_base_path = Some(use_info.base_path.clone());
@@ -140,23 +141,17 @@ fn analyze_file(file_path: &Path) -> Result<Vec<Vec<UseStatementInfo>>> {
         last_line = Some(use_info.line);
     }
 
-    // Don't forget the last group
     if current_group.len() >= 2 {
-        groupable.push(current_group);
+        groups.push(current_group);
     }
 
-    Ok(groupable)
-}
-
-fn review_file(file_path: &Path) -> Result<usize> {
-    let groups = analyze_file(file_path)?;
-    
     if groups.is_empty() {
         return Ok(0);
     }
 
-    log!("\n{}:", file_path.display());
-    let mut total_groupable = 0;
+    // Create replacements for each group
+    let mut replacements: Vec<(TextRange, String)> = Vec::new();
+    let mut total_merged = 0;
 
     for group in groups {
         if group.len() < 2 {
@@ -164,50 +159,88 @@ fn review_file(file_path: &Path) -> Result<usize> {
         }
 
         let base_path = &group[0].base_path;
-        let items: Vec<_> = group.iter().map(|u| u.item.as_str()).collect();
+        let items: Vec<_> = group.iter().map(|u| u.item.clone()).collect();
         
-        log!("  Line {}: {} imports from {}", 
+        // Get indentation from the first use statement
+        let first_offset: usize = group[0].range.start().into();
+        let indent = get_indentation(&content, first_offset);
+
+        // Create merged import
+        let merged = format!("{}use {}::{{{}}};", indent, base_path, items.join(", "));
+
+        // Calculate range spanning all imports in the group, including leading whitespace
+        let first_line_start = content[..first_offset].rfind('\n').map(|p| p + 1).unwrap_or(0);
+        let start = ra_ap_syntax::TextSize::from(first_line_start as u32);
+        let end = group[group.len() - 1].range.end();
+        let full_range = TextRange::new(start, end);
+
+        replacements.push((full_range, merged));
+        total_merged += group.len();
+
+        log!("  Line {}: Merging {} imports from {}", 
             group[0].line, 
-            group.len(),
+            group.len(), 
             base_path
         );
-        for use_info in &group {
-            log!("    Line {}: {}", use_info.line, use_info.full_text);
-        }
-        log!("  -> Suggested: use {}::{{{}}};", base_path, items.join(", "));
-        
-        total_groupable += group.len();
     }
 
-    Ok(total_groupable)
+    if dry_run {
+        log!("  [DRY RUN] Would merge {} imports", total_merged);
+        return Ok(total_merged);
+    }
+
+    // Apply replacements in reverse order to avoid offset issues
+    replacements.sort_by_key(|(range, _)| range.start());
+    replacements.reverse();
+
+    let mut new_content = content.clone();
+    for (range, replacement) in replacements {
+        let start: usize = range.start().into();
+        let end: usize = range.end().into();
+        new_content.replace_range(start..end, &replacement);
+    }
+
+    fs::write(file_path, new_content)?;
+    log!("  ✓ Merged {} imports", total_merged);
+
+    Ok(total_merged)
 }
 
 fn main() -> Result<()> {
     let _ = fs::create_dir_all("analyses");
-    let _ = fs::remove_file("analyses/review_merge_imports.log");
+    let _ = fs::remove_file("analyses/fix_merge_imports.log");
 
+    let start_time = Instant::now();
+    
     let args = StandardArgs::parse()?;
+    let dry_run = std::env::args().any(|arg| arg == "--dry-run");
+    
     let files = find_rust_files(&args.paths);
 
-    log!("Reviewing {} files for mergeable imports...\n", files.len());
+    log!("Processing {} files to merge imports...\n", files.len());
+    if dry_run {
+        log!("[DRY RUN MODE - No files will be modified]");
+    }
     log!("{}", "=".repeat(80));
 
-    let mut total_files_with_mergeable = 0;
-    let mut total_mergeable_imports = 0;
+    let mut total_files_modified = 0;
+    let mut total_imports_merged = 0;
 
     for file in &files {
-        let count = review_file(file)?;
+        let count = fix_file(file, dry_run)?;
         if count > 0 {
-            total_files_with_mergeable += 1;
-            total_mergeable_imports += count;
+            log!("{}:", file.display());
+            total_files_modified += 1;
+            total_imports_merged += count;
         }
     }
 
     log!("\n{}", "=".repeat(80));
     log!("SUMMARY:");
-    log!("  Files analyzed: {}", files.len());
-    log!("  Files with mergeable imports: {}", total_files_with_mergeable);
-    log!("  Total imports that can be merged: {}", total_mergeable_imports);
+    log!("  Files processed: {}", files.len());
+    log!("  Files modified: {}", total_files_modified);
+    log!("  Total imports merged: {}", total_imports_merged);
+    log!("  Completed in {}ms", start_time.elapsed().as_millis());
     log!("{}", "=".repeat(80));
 
     Ok(())
