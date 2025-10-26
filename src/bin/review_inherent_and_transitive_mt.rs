@@ -68,6 +68,7 @@ fn has_parallel_operation(node: &SyntaxNode) -> bool {
                         if method_name == "spawn" 
                             || method_name == "join" 
                             || method_name == "par_iter"
+                            || method_name == "into_par_iter"
                             || method_name == "par_chunks"
                             || method_name == "par_bridge" {
                             return true;
