@@ -77,15 +77,26 @@ fn find_public_functions(file_path: &Path) -> Result<Vec<PublicFunction>> {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::FN {
             if let Some(fn_def) = ast::Fn::cast(node.clone()) {
-                // Check if function is public by looking for PUB_KW in the function's syntax
-                let is_pub = node.children_with_tokens().any(|child| {
-                    child.kind() == SyntaxKind::VISIBILITY && 
-                    child.as_node().map_or(false, |n| {
-                        n.children_with_tokens().any(|t| t.kind() == SyntaxKind::PUB_KW)
-                    })
+                // Check if function is truly public (not pub(crate), pub(super), etc)
+                let visibility = node.children_with_tokens().find_map(|child| {
+                    if child.kind() == SyntaxKind::VISIBILITY {
+                        child.as_node().cloned()
+                    } else {
+                        None
+                    }
                 });
                 
-                if !is_pub {
+                let is_truly_public = if let Some(vis_node) = visibility {
+                    // Has pub keyword
+                    let has_pub = vis_node.children_with_tokens().any(|t| t.kind() == SyntaxKind::PUB_KW);
+                    // But no restrictions like (crate), (super), (in path)
+                    let has_restriction = vis_node.children_with_tokens().any(|t| t.kind() == SyntaxKind::L_PAREN);
+                    has_pub && !has_restriction
+                } else {
+                    false // No visibility = private
+                };
+                
+                if !is_truly_public {
                     continue;
                 }
                 
