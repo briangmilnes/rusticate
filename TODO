@@ -1,8 +1,13 @@
 
-  Separate APAS from Rust
-  Union review-X and fix-X
   Review all programs logging.
+
   Review all programs use the -d -f -m -c.
+  Review all programs for string hacking using the string hacking tool.
   Are all programs sorting output file names?
   Are all summaries matching the information listings?
+  Is maximal code sharing implemented?
+
+  Separate APAS from Rust
+  Union review-X and fix-X
+
   
