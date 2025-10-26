@@ -5,7 +5,6 @@
 use anyhow::Result;
 use ra_ap_syntax::ast::HasName;
 use ra_ap_syntax::{ast, AstNode, SyntaxKind, SyntaxNode};
-use regex::Regex;
 use std::collections::HashMap;
 use std::fs::{self, OpenOptions};
 use std::io::Write;
@@ -195,22 +194,46 @@ fn find_function_calls(test_file: &Path) -> Result<HashMap<String, usize>> {
                 }
                 SyntaxKind::MACRO_CALL => {
                     // Parse macro arguments to find function calls inside
+                    // Macros like assert_eq!(fn(), value) contain calls in their token trees
+                    // 
+                    // The token tree itself might contain nested CALL_EXPR nodes that we can detect
+                    // by looking at the token sequence: IDENT followed by L_PAREN
                     if let Some(macro_call) = ast::MacroCall::cast(node.clone()) {
                         if let Some(token_tree) = macro_call.token_tree() {
-                            let macro_content = token_tree.syntax().text().to_string();
+                            // Traverse ALL tokens (recursively) in the token tree looking for function call patterns
+                            // Pattern: IDENT token followed by L_PAREN token = function call
+                            let tokens: Vec<_> = token_tree.syntax().descendants_with_tokens()
+                                .filter_map(|e| e.as_token().map(|t| (t.kind(), t.text().to_string())))
+                                .collect();
                             
-                            // Simple heuristic: look for function_name( patterns in macro content
-                            // This is more robust than trying to parse as Rust
-                            for line in macro_content.lines() {
-                                // Match pattern: word characters followed by (
-                                let re_pattern = r"\b([a-zA-Z_][a-zA-Z0-9_]*)\s*\(";
-                                if let Ok(re) = regex::Regex::new(re_pattern) {
-                                    for cap in re.captures_iter(line) {
-                                        if let Some(fn_name) = cap.get(1) {
-                                            let name = fn_name.as_str().to_string();
-                                            // Skip common keywords and macros
-                                            if !["if", "match", "for", "while", "loop", "assert", "assert_eq", "println", "eprintln", "panic", "vec"].contains(&name.as_str()) {
-                                                *call_counts.entry(name).or_insert(0) += 1;
+                            for i in 0..tokens.len().saturating_sub(1) {
+                                let (current_kind, current_text) = &tokens[i];
+                                let (next_kind, _) = &tokens[i + 1];
+                                
+                                // Check if current is IDENT and next is L_PAREN
+                                if *current_kind == SyntaxKind::IDENT && *next_kind == SyntaxKind::L_PAREN {
+                                    // This is a function call pattern
+                                    // Skip common Rust keywords that might appear before parens
+                                    if !["if", "match", "for", "while", "loop", "return"].contains(&current_text.as_str()) {
+                                        *call_counts.entry(current_text.clone()).or_insert(0) += 1;
+                                    }
+                                }
+                            }
+                            
+                            // Also recursively check if there are any nested nodes with CALL_EXPR
+                            // (in case some macro expansions create partial AST)
+                            for descendant in token_tree.syntax().descendants() {
+                                if descendant.kind() == SyntaxKind::CALL_EXPR {
+                                    if let Some(call_expr) = ast::CallExpr::cast(descendant) {
+                                        if let Some(expr) = call_expr.expr() {
+                                            if let ast::Expr::PathExpr(path_expr) = expr {
+                                                if let Some(path) = path_expr.path() {
+                                                    if let Some(segment) = path.segments().last() {
+                                                        if let Some(name_ref) = segment.name_ref() {
+                                                            *call_counts.entry(name_ref.text().to_string()).or_insert(0) += 1;
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     }
