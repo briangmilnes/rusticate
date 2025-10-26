@@ -209,16 +209,35 @@ fn find_method_calls_in_function(
                                     if let Some(last_segment) = segments.last() {
                                         if let Some(method_name_ref) = last_segment.name_ref() {
                                             let method_name = method_name_ref.text().to_string();
-                                            // Check if this method is parallel in any glob-imported module
-                                            for module_name in glob_imported_modules {
-                                                if let Some(parallel_methods) = parallel_methods_map.get(module_name) {
-                                                    if parallel_methods.contains(&method_name) {
-                                                        calls.push(ParallelCall {
-                                                            called_module: module_name.clone(),
-                                                            called_method: method_name.clone(),
-                                                            call_line,
-                                                        });
-                                                        break;  // Only count once
+                                            
+                                            // Get the type/module name (second-to-last segment)
+                                            if let Some(type_segment) = segments.get(segments.len() - 2) {
+                                                if let Some(type_name_ref) = type_segment.name_ref() {
+                                                    let type_name = type_name_ref.text().to_string();
+                                                    
+                                                    // Check both the type name and type name without 'S' suffix (for type aliases like ArraySeqMtEphS)
+                                                    let candidates = if type_name.ends_with('S') && type_name.len() > 1 {
+                                                        vec![type_name.clone(), type_name[..type_name.len()-1].to_string()]
+                                                    } else {
+                                                        vec![type_name]
+                                                    };
+                                                    
+                                                    // Check if this method is parallel in any glob-imported module
+                                                    for candidate in &candidates {
+                                                        for module_name in glob_imported_modules {
+                                                            if candidate == module_name {
+                                                                if let Some(parallel_methods) = parallel_methods_map.get(module_name) {
+                                                                    if parallel_methods.contains(&method_name) {
+                                                                        calls.push(ParallelCall {
+                                                                            called_module: module_name.clone(),
+                                                                            called_method: method_name.clone(),
+                                                                            call_line,
+                                                                        });
+                                                                        break;  // Only count once
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
