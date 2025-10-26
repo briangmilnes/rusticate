@@ -169,8 +169,14 @@ fn find_glob_imported_mt_modules(root: &SyntaxNode, mt_module_names: &[String]) 
                             if desc.kind() == SyntaxKind::NAME_REF {
                                 if let Some(name_ref) = ast::NameRef::cast(desc) {
                                     let name = name_ref.text().to_string();
-                                    if mt_module_names.contains(&name) && !imported.contains(&name) {
-                                        imported.push(name);
+                                    // Check if this name matches any mt_module_name (either exact match or ends with "/name")
+                                    for mt_module in mt_module_names {
+                                        if mt_module == &name || mt_module.ends_with(&format!("/{}", name)) {
+                                            if !imported.contains(&name) {
+                                                imported.push(name.clone());
+                                            }
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -191,6 +197,8 @@ fn find_method_calls_in_function(
     parallel_methods_map: &HashMap<String, Vec<String>>,
 ) -> Vec<ParallelCall> {
     let mut calls = Vec::new();
+    
+    let debug = false; // Set to true to enable debug output
     
     // Find all calls within this function
     for node in fn_node.descendants() {
@@ -219,22 +227,43 @@ fn find_method_calls_in_function(
                                                     let candidates = if type_name.ends_with('S') && type_name.len() > 1 {
                                                         vec![type_name.clone(), type_name[..type_name.len()-1].to_string()]
                                                     } else {
-                                                        vec![type_name]
+                                                        vec![type_name.clone()]
                                                     };
+                                                    
+                                                    if debug {
+                                                        eprintln!("DEBUG: Call {}::{} at line {}", type_name, method_name, call_line);
+                                                        eprintln!("  Candidates: {:?}", candidates);
+                                                        eprintln!("  Glob imports: {:?}", glob_imported_modules);
+                                                    }
                                                     
                                                     // Check if this method is parallel in any glob-imported module
                                                     for candidate in &candidates {
                                                         for module_name in glob_imported_modules {
                                                             if candidate == module_name {
-                                                                if let Some(parallel_methods) = parallel_methods_map.get(module_name) {
-                                                                    if parallel_methods.contains(&method_name) {
-                                                                        calls.push(ParallelCall {
-                                                                            called_module: module_name.clone(),
-                                                                            called_method: method_name.clone(),
-                                                                            call_line,
-                                                                        });
-                                                                        break;  // Only count once
+                                                                if debug {
+                                                                    eprintln!("  MATCH: {} == {}", candidate, module_name);
+                                                                }
+                                                                // Try to find the parallel methods in the map, checking all chapter variants
+                                                                let mut found = false;
+                                                                for (map_key, parallel_methods) in parallel_methods_map {
+                                                                    // Check if map_key ends with "/module_name" (e.g., "Chap19/ArraySeqMtEph" ends with "/ArraySeqMtEph")
+                                                                    if map_key.ends_with(&format!("/{}", module_name)) || map_key == module_name {
+                                                                        if debug {
+                                                                            eprintln!("    Parallel methods in {}: {:?}", map_key, parallel_methods);
+                                                                        }
+                                                                        if parallel_methods.contains(&method_name) {
+                                                                            calls.push(ParallelCall {
+                                                                                called_module: map_key.clone(),
+                                                                                called_method: method_name.clone(),
+                                                                                call_line,
+                                                                            });
+                                                                            found = true;
+                                                                            break;
+                                                                        }
                                                                     }
+                                                                }
+                                                                if found {
+                                                                    break;
                                                                 }
                                                             }
                                                         }
@@ -332,7 +361,18 @@ fn analyze_file(
 }
 
 fn extract_module_name(path: &Path) -> String {
-    // Extract module name from path like src/Chap06/DirGraphMtEph.rs -> DirGraphMtEph
+    // Extract module name from path like src/Chap06/DirGraphMtEph.rs -> Chap06/DirGraphMtEph
+    // to handle duplicate names in different chapters (e.g., Chap18/ArraySeqMtEph vs Chap19/ArraySeqMtEph)
+    if let Some(parent) = path.parent() {
+        if let Some(parent_name) = parent.file_name().and_then(|s| s.to_str()) {
+            if parent_name.starts_with("Chap") {
+                if let Some(file_stem) = path.file_stem().and_then(|s| s.to_str()) {
+                    return format!("{}/{}", parent_name, file_stem);
+                }
+            }
+        }
+    }
+    // Fallback to just the filename
     path.file_stem()
         .and_then(|s| s.to_str())
         .unwrap_or("")
