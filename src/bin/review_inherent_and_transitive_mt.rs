@@ -99,7 +99,8 @@ fn has_parallel_operation(node: &SyntaxNode) -> bool {
                 // Check for ParaPair! macro
                 if let Some(macro_call) = ast::MacroCall::cast(descendant) {
                     if let Some(path) = macro_call.path() {
-                        if let Some(segment) = path.segment() {
+                        // Check all segments, not just the first one (handles crate::ParaPair)
+                        for segment in path.segments() {
                             if let Some(name) = segment.name_ref() {
                                 if name.text() == "ParaPair" {
                                     return true;
@@ -118,7 +119,7 @@ fn has_parallel_operation(node: &SyntaxNode) -> bool {
 fn find_parallel_methods(root: &SyntaxNode, content: &str) -> Vec<ParallelMethod> {
     let mut methods = Vec::new();
     
-    // Find all function definitions
+    // First pass: Find all functions with direct parallel operations (ParaPair!, spawn, etc.)
     for node in root.descendants() {
         if node.kind() == SyntaxKind::FN {
             if let Some(fn_def) = ast::Fn::cast(node.clone()) {
@@ -131,6 +132,57 @@ fn find_parallel_methods(root: &SyntaxNode, content: &str) -> Vec<ParallelMethod
                     }
                 }
             }
+        }
+    }
+    
+    // Fixed-point iteration: Find functions that call other parallel functions in the same module (intra-module transitivity)
+    let mut parallel_names: std::collections::HashSet<String> = methods.iter().map(|m| m.name.clone()).collect();
+    loop {
+        let mut added_any = false;
+        for node in root.descendants() {
+            if node.kind() == SyntaxKind::FN {
+                if let Some(fn_def) = ast::Fn::cast(node.clone()) {
+                    if let Some(name) = fn_def.name() {
+                        let fn_name = name.text().to_string();
+                        // Skip if already marked as parallel
+                        if !parallel_names.contains(&fn_name) {
+                            // Check if this function calls any parallel function
+                            let calls_parallel = node.descendants().any(|desc| {
+                                if desc.kind() == SyntaxKind::CALL_EXPR {
+                                    if let Some(call_expr) = ast::CallExpr::cast(desc) {
+                                        if let Some(expr) = call_expr.expr() {
+                                            if let ast::Expr::PathExpr(path_expr) = expr {
+                                                if let Some(path) = path_expr.path() {
+                                                    // Get the last segment (method/function name)
+                                                    if let Some(last_seg) = path.segments().last() {
+                                                        if let Some(name_ref) = last_seg.name_ref() {
+                                                            if parallel_names.contains(&name_ref.text().to_string()) {
+                                                                return true;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                false
+                            });
+                            if calls_parallel {
+                                methods.push(ParallelMethod {
+                                    name: fn_name.clone(),
+                                    line: get_line_number(&node, content),
+                                });
+                                parallel_names.insert(fn_name);
+                                added_any = true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if !added_any {
+            break;
         }
     }
     
@@ -293,6 +345,39 @@ fn find_method_calls_in_function(
                                                 }
                                             }
                                         }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            SyntaxKind::METHOD_CALL_EXPR => {
+                // Case 3: Method call on an instance (e.g., self.tree.filter(f))
+                let call_line = get_line_number(&node, content);
+                if let Some(method_call) = ast::MethodCallExpr::cast(node) {
+                    if let Some(name_ref) = method_call.name_ref() {
+                        let method_name = name_ref.text().to_string();
+                        
+                        if debug {
+                            eprintln!("DEBUG: Method call .{} at line {}", method_name, call_line);
+                        }
+                        
+                        // Check if this method is parallel in any glob-imported module
+                        for module_name in glob_imported_modules {
+                            for (map_key, parallel_methods) in parallel_methods_map {
+                                // Check if map_key ends with "/module_name"
+                                if map_key.ends_with(&format!("/{}", module_name)) || map_key == module_name {
+                                    if parallel_methods.contains(&method_name) {
+                                        if debug {
+                                            eprintln!("  MATCH: method {} found in module {}", method_name, map_key);
+                                        }
+                                        calls.push(ParallelCall {
+                                            called_module: map_key.clone(),
+                                            called_method: method_name.clone(),
+                                            call_line,
+                                        });
+                                        break;
                                     }
                                 }
                             }
