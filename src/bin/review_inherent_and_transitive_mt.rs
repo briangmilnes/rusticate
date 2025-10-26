@@ -263,9 +263,120 @@ fn find_method_calls_in_function(
                             if let Some(path) = path_expr.path() {
                                 let segments: Vec<_> = path.segments().collect();
                                 
-                                // Case 1: Explicit Type::method() or Module::method() call
+                                // Case 1a: UFCS call: <Type as Trait>::method()
+                                // Check if the path contains "as" keyword (UFCS syntax)
+                                let has_as = path.qualifier().map_or(false, |q| {
+                                    q.syntax().descendants_with_tokens().any(|t| t.kind() == SyntaxKind::AS_KW)
+                                });
+                                
+                                if debug && has_as {
+                                    eprintln!("DEBUG: Found UFCS call at line {}", call_line);
+                                }
+                                
+                                if has_as {
+                                    if debug {
+                                        eprintln!("DEBUG: Processing UFCS, segments.len() = {}", segments.len());
+                                        for (i, seg) in segments.iter().enumerate() {
+                                            if let Some(name) = seg.name_ref() {
+                                                eprintln!("  Segment[{}]: {}", i, name.text());
+                                            } else {
+                                                eprintln!("  Segment[{}]: <no name_ref>", i);
+                                            }
+                                        }
+                                    }
+                                    // Extract method name from the last segment
+                                    if let Some(last_segment) = segments.last() {
+                                        if debug {
+                                            eprintln!("DEBUG: Got last segment");
+                                        }
+                                        if let Some(method_name_ref) = last_segment.name_ref() {
+                                            let method_name = method_name_ref.text().to_string();
+                                            if debug {
+                                                eprintln!("DEBUG: Got method name: {}", method_name);
+                                            }
+                                            
+                                            // For UFCS, extract the type name from the path
+                                            // <ArraySeqMtEphS<i32> as Trait>::method
+                                            // We need to get the type before "as"
+                                            if let Some(qualifier) = path.qualifier() {
+                                                if debug {
+                                                    eprintln!("DEBUG: Got qualifier");
+                                                }
+                                                // For UFCS, the qualifier contains <Type as Trait>
+                                                // Extract all NAME_REF tokens from the qualifier's syntax tree
+                                                let mut type_name = None;
+                                                for token in qualifier.syntax().descendants_with_tokens() {
+                                                    if token.kind() == SyntaxKind::NAME_REF {
+                                                        if let Some(node) = token.as_node() {
+                                                            if let Some(name_ref) = ast::NameRef::cast(node.clone()) {
+                                                                // Take the first NAME_REF (the type name)
+                                                                type_name = Some(name_ref.text().to_string());
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                
+                                                if let Some(type_name) = type_name {
+                                                    if debug {
+                                                        eprintln!("DEBUG: Extracted type name: {}", type_name);
+                                                    }
+                                                    
+                                                    // Check both the type name and type name without 'S' suffix
+                                                    let candidates = if type_name.ends_with('S') && type_name.len() > 1 {
+                                                        vec![type_name.clone(), type_name[..type_name.len()-1].to_string()]
+                                                    } else {
+                                                        vec![type_name.clone()]
+                                                    };
+                                                    
+                                                    if debug {
+                                                        eprintln!("DEBUG: UFCS call <{} as _>::{} at line {}", type_name, method_name, call_line);
+                                                        eprintln!("  Candidates: {:?}", candidates);
+                                                    }
+                                                    
+                                                    // Check if this method is parallel in any glob-imported module
+                                                    for candidate in &candidates {
+                                                        if debug {
+                                                            eprintln!("  Checking candidate: {}", candidate);
+                                                            eprintln!("  Against glob imports: {:?}", glob_imported_modules);
+                                                        }
+                                                        for module_name in glob_imported_modules {
+                                                            if candidate == module_name {
+                                                                if debug {
+                                                                    eprintln!("    Candidate {} matches glob import {}", candidate, module_name);
+                                                                }
+                                                                let mut found = false;
+                                                                for (map_key, parallel_methods) in parallel_methods_map {
+                                                                    if map_key.ends_with(&format!("/{}", module_name)) || map_key == module_name {
+                                                                        if debug {
+                                                                            eprintln!("      Checking map_key: {}, methods: {:?}", map_key, parallel_methods);
+                                                                        }
+                                                                        if parallel_methods.contains(&method_name) {
+                                                                            calls.push(ParallelCall {
+                                                                                called_module: map_key.clone(),
+                                                                                called_method: method_name.clone(),
+                                                                                call_line,
+                                                                            });
+                                                                            found = true;
+                                                                            break;
+                                                                        }
+                                                                    }
+                                                                }
+                                                                if found {
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                                // Case 1b: Explicit Type::method() or Module::method() call
                                 // Check if the last segment is a method that's parallel in any glob-imported module
-                                if segments.len() >= 2 {
+                                else if segments.len() >= 2 {
                                     if let Some(last_segment) = segments.last() {
                                         if let Some(method_name_ref) = last_segment.name_ref() {
                                             let method_name = method_name_ref.text().to_string();
