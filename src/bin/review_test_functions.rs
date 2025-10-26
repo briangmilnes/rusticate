@@ -8,7 +8,15 @@ use ra_ap_syntax::{ast, AstNode, SyntaxKind, SyntaxNode};
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::time::Instant;
 use walkdir::WalkDir;
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+    }};
+}
 
 #[derive(Debug, Clone)]
 struct PublicFunction {
@@ -154,8 +162,10 @@ fn find_function_calls(test_file: &Path) -> Result<HashMap<String, usize>> {
 }
 
 fn main() -> Result<()> {
-    let args: Vec<String> = std::env::args().collect();
-    let _use_color = !args.contains(&"-c".to_string());
+    let start = Instant::now();
+    
+    // Parse standard arguments (-c, -d, -f, -m)
+    let _standard_args = rusticate::StandardArgs::parse()?;
     
     // Find project root (directory containing Cargo.toml)
     let current_dir = std::env::current_dir()?;
@@ -165,7 +175,7 @@ fn main() -> Result<()> {
     let tests_dir = project_root.join("tests");
     
     if !src_dir.exists() {
-        eprintln!("Error: src/ directory not found");
+        log!("Error: src/ directory not found");
         std::process::exit(1);
     }
     
@@ -176,7 +186,7 @@ fn main() -> Result<()> {
         if entry.file_type().is_file() && entry.path().extension().and_then(|s| s.to_str()) == Some("rs") {
             match find_public_functions(entry.path()) {
                 Ok(functions) => all_functions.extend(functions),
-                Err(e) => eprintln!("Warning: Failed to parse {}: {}", entry.path().display(), e),
+                Err(e) => log!("Warning: Failed to parse {}: {}", entry.path().display(), e),
             }
         }
     }
@@ -198,7 +208,7 @@ fn main() -> Result<()> {
                             }
                         }
                     }
-                    Err(e) => eprintln!("Warning: Failed to parse test file {}: {}", entry.path().display(), e),
+                    Err(e) => log!("Warning: Failed to parse test file {}: {}", entry.path().display(), e),
                 }
             }
         }
@@ -225,11 +235,11 @@ fn main() -> Result<()> {
     let untested: Vec<_> = coverage.iter().filter(|c| c.call_count == 0).collect();
     let tested: Vec<_> = coverage.iter().filter(|c| c.call_count > 0).collect();
     
-    println!();
-    println!("{}", "=".repeat(80));
-    println!("PUBLIC FUNCTIONS WITHOUT TEST COVERAGE:");
-    println!("{}", "=".repeat(80));
-    println!();
+    log!("");
+    log!("{}", "=".repeat(80));
+    log!("PUBLIC FUNCTIONS WITHOUT TEST COVERAGE:");
+    log!("{}", "=".repeat(80));
+    log!("");
     
     for cov in &untested {
         let func_desc = if let Some(ref impl_type) = cov.function.impl_type {
@@ -241,18 +251,18 @@ fn main() -> Result<()> {
         let rel_path = cov.function.file.strip_prefix(&project_root)
             .unwrap_or(&cov.function.file);
         
-        println!("{}:{}:  {} - NO TEST COVERAGE", 
+        log!("{}:{}:  {} - NO TEST COVERAGE", 
             rel_path.display(), 
             cov.function.line,
             func_desc
         );
     }
     
-    println!();
-    println!("{}", "=".repeat(80));
-    println!("PUBLIC FUNCTIONS WITH TEST COVERAGE:");
-    println!("{}", "=".repeat(80));
-    println!();
+    log!("");
+    log!("{}", "=".repeat(80));
+    log!("PUBLIC FUNCTIONS WITH TEST COVERAGE:");
+    log!("{}", "=".repeat(80));
+    log!("");
     
     for cov in &tested {
         let func_desc = if let Some(ref impl_type) = cov.function.impl_type {
@@ -264,7 +274,7 @@ fn main() -> Result<()> {
         let rel_path = cov.function.file.strip_prefix(&project_root)
             .unwrap_or(&cov.function.file);
         
-        println!("{}:{}:  {} - {} call(s) in {} test file(s)", 
+        log!("{}:{}:  {} - {} call(s) in {} test file(s)", 
             rel_path.display(), 
             cov.function.line,
             func_desc,
@@ -274,20 +284,22 @@ fn main() -> Result<()> {
     }
     
     // Summary
-    println!();
-    println!("{}", "=".repeat(80));
-    println!("SUMMARY:");
-    println!("  Total public functions: {}", coverage.len());
-    println!("  Functions with test coverage: {} ({:.1}%)", 
+    let elapsed = start.elapsed();
+    log!("");
+    log!("{}", "=".repeat(80));
+    log!("SUMMARY:");
+    log!("  Total public functions: {}", coverage.len());
+    log!("  Functions with test coverage: {} ({:.1}%)", 
         tested.len(), 
         if coverage.is_empty() { 0.0 } else { 100.0 * tested.len() as f64 / coverage.len() as f64 }
     );
-    println!("  Functions without test coverage: {} ({:.1}%)", 
+    log!("  Functions without test coverage: {} ({:.1}%)", 
         untested.len(),
         if coverage.is_empty() { 0.0 } else { 100.0 * untested.len() as f64 / coverage.len() as f64 }
     );
-    println!("  Total test calls: {}", tested.iter().map(|c| c.call_count).sum::<usize>());
-    println!("{}", "=".repeat(80));
+    log!("  Total test calls: {}", tested.iter().map(|c| c.call_count).sum::<usize>());
+    log!("{}", "=".repeat(80));
+    log!("Completed in {}ms", elapsed.as_millis());
     
     Ok(())
 }
