@@ -1,0 +1,55 @@
+
+================================================================================
+PUBLIC FUNCTIONS WITHOUT TEST COVERAGE:
+================================================================================
+
+src/args.rs:269:  paths - NO TEST COVERAGE
+src/args.rs:274:  base_dir - NO TEST COVERAGE
+src/args.rs:285:  get_search_dirs - NO TEST COVERAGE
+src/args.rs:325:  format_number - NO TEST COVERAGE
+src/args.rs:347:  find_rust_files - NO TEST COVERAGE
+src/args.rs:391:  get_search_dirs - NO TEST COVERAGE
+src/ast_utils.rs:11:  parse_source - NO TEST COVERAGE
+src/ast_utils.rs:22:  find_nodes - NO TEST COVERAGE
+src/ast_utils.rs:37:  find_nodes_where - NO TEST COVERAGE
+src/ast_utils.rs:55:  node_text - NO TEST COVERAGE
+src/ast_utils.rs:60:  find_token - NO TEST COVERAGE
+src/ast_utils.rs:67:  find_tokens - NO TEST COVERAGE
+src/ast_utils.rs:75:  is_inside_node_kind - NO TEST COVERAGE
+src/ast_utils.rs:87:  line_number - NO TEST COVERAGE
+src/ast_utils.rs:93:  children_of_kind - NO TEST COVERAGE
+src/ast_utils.rs:98:  has_parent_of_kind - NO TEST COVERAGE
+src/count_helper.rs:17:  run_count - NO TEST COVERAGE
+src/duplicate_methods.rs:74:  find_duplicate_methods - NO TEST COVERAGE
+src/lib.rs:29:  review - NO TEST COVERAGE
+src/lib.rs:56:  fix_file - NO TEST COVERAGE
+src/logging.rs:27:  new_disabled - NO TEST COVERAGE
+src/logging.rs:83:  log - NO TEST COVERAGE
+src/logging.rs:94:  log_silent - NO TEST COVERAGE
+src/logging.rs:101:  log_path - NO TEST COVERAGE
+src/logging.rs:106:  finalize - NO TEST COVERAGE
+src/tool_runner.rs:38:  run_tool - NO TEST COVERAGE
+src/tool_runner.rs:83:  run_simple - NO TEST COVERAGE
+
+================================================================================
+PUBLIC FUNCTIONS WITH TEST COVERAGE:
+================================================================================
+
+src/analyzer.rs:39:  analyze - 3 call(s) in 1 test file(s)
+src/args.rs:20:  parse - 3 call(s) in 3 test file(s)
+src/fixer.rs:9:  fix - 2 call(s) in 1 test file(s)
+src/lib.rs:73:  parse - 3 call(s) in 3 test file(s)
+src/logging.rs:39:  new - 34 call(s) in 28 test file(s)
+src/parser.rs:9:  parse_file - 12 call(s) in 4 test file(s)
+src/tool_runner.rs:28:  new - 34 call(s) in 28 test file(s)
+src/visitor.rs:14:  new - 34 call(s) in 28 test file(s)
+src/visitor.rs:20:  visit - 3 call(s) in 1 test file(s)
+
+================================================================================
+SUMMARY:
+  Total public functions: 36
+  Functions with test coverage: 9 (25.0%)
+  Functions without test coverage: 27 (75.0%)
+  Total test calls: 128
+================================================================================
+Completed in 46ms

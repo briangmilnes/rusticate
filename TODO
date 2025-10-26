@@ -1,3 +1,5 @@
 
   Separate APAS from Rust
   Union review-X and fix-X
+  Review all programs logging.
+  Review all programs use the -d -f -m -c.

@@ -6,16 +6,41 @@ use anyhow::Result;
 use ra_ap_syntax::ast::HasName;
 use ra_ap_syntax::{ast, AstNode, SyntaxKind, SyntaxNode};
 use std::collections::HashMap;
-use std::fs;
+use std::fs::{self, OpenOptions};
+use std::io::Write;
 use std::path::{Path, PathBuf};
+use std::sync::Mutex;
 use std::time::Instant;
 use walkdir::WalkDir;
 
-macro_rules! log {
-    ($($arg:tt)*) => {{
-        let msg = format!($($arg)*);
+struct Logger {
+    file: Mutex<fs::File>,
+}
+
+impl Logger {
+    fn new(path: &Path) -> Result<Self> {
+        // Create analyses/ directory if it doesn't exist
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        
+        let file = OpenOptions::new()
+            .create(true)
+            .write(true)
+            .truncate(true)
+            .open(path)?;
+        
+        Ok(Logger {
+            file: Mutex::new(file),
+        })
+    }
+    
+    fn log(&self, msg: &str) {
         println!("{}", msg);
-    }};
+        if let Ok(mut file) = self.file.lock() {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -171,11 +196,15 @@ fn main() -> Result<()> {
     let current_dir = std::env::current_dir()?;
     let project_root = find_project_root(&current_dir)?;
     
+    // Create logger for analyses/review_test_functions.txt
+    let log_path = project_root.join("analyses/review_test_functions.txt");
+    let logger = Logger::new(&log_path)?;
+    
     let src_dir = project_root.join("src");
     let tests_dir = project_root.join("tests");
     
     if !src_dir.exists() {
-        log!("Error: src/ directory not found");
+        logger.log("Error: src/ directory not found");
         std::process::exit(1);
     }
     
@@ -186,7 +215,7 @@ fn main() -> Result<()> {
         if entry.file_type().is_file() && entry.path().extension().and_then(|s| s.to_str()) == Some("rs") {
             match find_public_functions(entry.path()) {
                 Ok(functions) => all_functions.extend(functions),
-                Err(e) => log!("Warning: Failed to parse {}: {}", entry.path().display(), e),
+                Err(e) => logger.log(&format!("Warning: Failed to parse {}: {}", entry.path().display(), e)),
             }
         }
     }
@@ -208,7 +237,7 @@ fn main() -> Result<()> {
                             }
                         }
                     }
-                    Err(e) => log!("Warning: Failed to parse test file {}: {}", entry.path().display(), e),
+                    Err(e) => logger.log(&format!("Warning: Failed to parse test file {}: {}", entry.path().display(), e)),
                 }
             }
         }
@@ -235,11 +264,11 @@ fn main() -> Result<()> {
     let untested: Vec<_> = coverage.iter().filter(|c| c.call_count == 0).collect();
     let tested: Vec<_> = coverage.iter().filter(|c| c.call_count > 0).collect();
     
-    log!("");
-    log!("{}", "=".repeat(80));
-    log!("PUBLIC FUNCTIONS WITHOUT TEST COVERAGE:");
-    log!("{}", "=".repeat(80));
-    log!("");
+    logger.log("");
+    logger.log(&"=".repeat(80));
+    logger.log("PUBLIC FUNCTIONS WITHOUT TEST COVERAGE:");
+    logger.log(&"=".repeat(80));
+    logger.log("");
     
     for cov in &untested {
         let func_desc = if let Some(ref impl_type) = cov.function.impl_type {
@@ -251,18 +280,18 @@ fn main() -> Result<()> {
         let rel_path = cov.function.file.strip_prefix(&project_root)
             .unwrap_or(&cov.function.file);
         
-        log!("{}:{}:  {} - NO TEST COVERAGE", 
+        logger.log(&format!("{}:{}:  {} - NO TEST COVERAGE", 
             rel_path.display(), 
             cov.function.line,
             func_desc
-        );
+        ));
     }
     
-    log!("");
-    log!("{}", "=".repeat(80));
-    log!("PUBLIC FUNCTIONS WITH TEST COVERAGE:");
-    log!("{}", "=".repeat(80));
-    log!("");
+    logger.log("");
+    logger.log(&"=".repeat(80));
+    logger.log("PUBLIC FUNCTIONS WITH TEST COVERAGE:");
+    logger.log(&"=".repeat(80));
+    logger.log("");
     
     for cov in &tested {
         let func_desc = if let Some(ref impl_type) = cov.function.impl_type {
@@ -274,32 +303,32 @@ fn main() -> Result<()> {
         let rel_path = cov.function.file.strip_prefix(&project_root)
             .unwrap_or(&cov.function.file);
         
-        log!("{}:{}:  {} - {} call(s) in {} test file(s)", 
+        logger.log(&format!("{}:{}:  {} - {} call(s) in {} test file(s)", 
             rel_path.display(), 
             cov.function.line,
             func_desc,
             cov.call_count,
             cov.test_files.len()
-        );
+        ));
     }
     
     // Summary
     let elapsed = start.elapsed();
-    log!("");
-    log!("{}", "=".repeat(80));
-    log!("SUMMARY:");
-    log!("  Total public functions: {}", coverage.len());
-    log!("  Functions with test coverage: {} ({:.1}%)", 
+    logger.log("");
+    logger.log(&"=".repeat(80));
+    logger.log("SUMMARY:");
+    logger.log(&format!("  Total public functions: {}", coverage.len()));
+    logger.log(&format!("  Functions with test coverage: {} ({:.1}%)", 
         tested.len(), 
         if coverage.is_empty() { 0.0 } else { 100.0 * tested.len() as f64 / coverage.len() as f64 }
-    );
-    log!("  Functions without test coverage: {} ({:.1}%)", 
+    ));
+    logger.log(&format!("  Functions without test coverage: {} ({:.1}%)", 
         untested.len(),
         if coverage.is_empty() { 0.0 } else { 100.0 * untested.len() as f64 / coverage.len() as f64 }
-    );
-    log!("  Total test calls: {}", tested.iter().map(|c| c.call_count).sum::<usize>());
-    log!("{}", "=".repeat(80));
-    log!("Completed in {}ms", elapsed.as_millis());
+    ));
+    logger.log(&format!("  Total test calls: {}", tested.iter().map(|c| c.call_count).sum::<usize>()));
+    logger.log(&"=".repeat(80));
+    logger.log(&format!("Completed in {}ms", elapsed.as_millis()));
     
     Ok(())
 }
