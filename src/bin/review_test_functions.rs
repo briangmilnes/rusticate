@@ -5,6 +5,7 @@
 use anyhow::Result;
 use ra_ap_syntax::ast::HasName;
 use ra_ap_syntax::{ast, AstNode, SyntaxKind, SyntaxNode};
+use regex::Regex;
 use std::collections::HashMap;
 use std::fs::{self, OpenOptions};
 use std::io::Write;
@@ -142,44 +143,73 @@ fn find_function_calls(test_file: &Path) -> Result<HashMap<String, usize>> {
     
     let mut call_counts: HashMap<String, usize> = HashMap::new();
     
-    // Find all call expressions
-    for node in root.descendants() {
-        match node.kind() {
-            SyntaxKind::CALL_EXPR => {
-                if let Some(call_expr) = ast::CallExpr::cast(node) {
-                    if let Some(expr) = call_expr.expr() {
-                        // Extract function name from the call
-                        let fn_name = match expr {
-                            ast::Expr::PathExpr(path_expr) => {
-                                if let Some(path) = path_expr.path() {
-                                    // Get the last segment (the actual function name)
-                                    if let Some(segment) = path.segments().last() {
-                                        segment.name_ref().map(|n| n.text().to_string())
+    // Find all call expressions (including those inside macros)
+    for node in root.descendants_with_tokens() {
+        // Check if it's a node (not just a token)
+        if let Some(node) = node.as_node() {
+            match node.kind() {
+                SyntaxKind::CALL_EXPR => {
+                    if let Some(call_expr) = ast::CallExpr::cast(node.clone()) {
+                        if let Some(expr) = call_expr.expr() {
+                            // Extract function name from the call
+                            let fn_name = match expr {
+                                ast::Expr::PathExpr(path_expr) => {
+                                    if let Some(path) = path_expr.path() {
+                                        // Get the last segment (the actual function name)
+                                        if let Some(segment) = path.segments().last() {
+                                            segment.name_ref().map(|n| n.text().to_string())
+                                        } else {
+                                            None
+                                        }
                                     } else {
                                         None
                                     }
-                                } else {
-                                    None
                                 }
+                                _ => None,
+                            };
+                            
+                            if let Some(name) = fn_name {
+                                *call_counts.entry(name).or_insert(0) += 1;
                             }
-                            _ => None,
-                        };
-                        
-                        if let Some(name) = fn_name {
-                            *call_counts.entry(name).or_insert(0) += 1;
                         }
                     }
                 }
-            }
-            SyntaxKind::METHOD_CALL_EXPR => {
-                if let Some(method_call) = ast::MethodCallExpr::cast(node) {
-                    if let Some(name_ref) = method_call.name_ref() {
-                        let method_name = name_ref.text().to_string();
-                        *call_counts.entry(method_name).or_insert(0) += 1;
+                SyntaxKind::METHOD_CALL_EXPR => {
+                    if let Some(method_call) = ast::MethodCallExpr::cast(node.clone()) {
+                        if let Some(name_ref) = method_call.name_ref() {
+                            let method_name = name_ref.text().to_string();
+                            *call_counts.entry(method_name).or_insert(0) += 1;
+                        }
                     }
                 }
+                SyntaxKind::MACRO_CALL => {
+                    // Parse macro arguments to find function calls inside
+                    if let Some(macro_call) = ast::MacroCall::cast(node.clone()) {
+                        if let Some(token_tree) = macro_call.token_tree() {
+                            let macro_content = token_tree.syntax().text().to_string();
+                            
+                            // Simple heuristic: look for function_name( patterns in macro content
+                            // This is more robust than trying to parse as Rust
+                            for line in macro_content.lines() {
+                                // Match pattern: word characters followed by (
+                                let re_pattern = r"\b([a-zA-Z_][a-zA-Z0-9_]*)\s*\(";
+                                if let Ok(re) = regex::Regex::new(re_pattern) {
+                                    for cap in re.captures_iter(line) {
+                                        if let Some(fn_name) = cap.get(1) {
+                                            let name = fn_name.as_str().to_string();
+                                            // Skip common keywords and macros
+                                            if !["if", "match", "for", "while", "loop", "assert", "assert_eq", "println", "eprintln", "panic", "vec"].contains(&name.as_str()) {
+                                                *call_counts.entry(name).or_insert(0) += 1;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                _ => {}
             }
-            _ => {}
         }
     }
     
