@@ -73,6 +73,7 @@ enum CoverageSource {
     Direct,                  // Direct function call
     DisplayTrait,            // via format!(), println!(), etc.
     DebugTrait,              // via format!("{:?}"), println!("{:?}"), etc.
+    PartialEqTrait,          // via == operator, !=, assert_eq!(), assert_ne!()
 }
 
 fn get_line_number(node: &SyntaxNode, content: &str) -> usize {
@@ -494,6 +495,172 @@ fn find_format_macro_calls(test_file: &Path, trait_impls: &[TraitImpl]) -> Resul
     Ok(format_calls)
 }
 
+/// Find operator usage (==, !=) and assert_eq!/assert_ne! in test files
+/// Returns HashMap of type name -> (call_count, PartialEqTrait)
+fn find_operator_usage(test_file: &Path, trait_impls: &[TraitImpl]) -> Result<HashMap<String, (usize, CoverageSource)>> {
+    let content = fs::read_to_string(test_file)?;
+    let parsed = ra_ap_syntax::SourceFile::parse(&content, ra_ap_syntax::Edition::Edition2021);
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    let mut operator_calls: HashMap<String, (usize, CoverageSource)> = HashMap::new();
+    
+    // Build a mapping from type names to trait implementations
+    // Key: type_name, Value: Vec<(trait_name, method_name)>
+    let mut type_to_traits: HashMap<String, Vec<(String, String)>> = HashMap::new();
+    for trait_impl in trait_impls {
+        type_to_traits
+            .entry(trait_impl.type_name.clone())
+            .or_default()
+            .push((trait_impl.trait_name.clone(), trait_impl.method_name.clone()));
+    }
+    
+    // Find all binary expressions and macro calls
+    for node in root.descendants() {
+        match node.kind() {
+            // Pattern 1: Binary expressions (== and !=)
+            SyntaxKind::BIN_EXPR => {
+                if let Some(bin_expr) = ast::BinExpr::cast(node.clone()) {
+                    // Check if operator is == or !=
+                    let op_details = bin_expr.op_details();
+                    let op_token = op_details.and_then(|(token, _)| Some(token.kind()));
+                    
+                    if matches!(op_token, Some(SyntaxKind::EQ2) | Some(SyntaxKind::NEQ)) {
+                        // Extract identifiers from LHS and RHS
+                        let mut identifiers = Vec::new();
+                        
+                        // Extract from LHS
+                        if let Some(lhs) = bin_expr.lhs() {
+                            for token in lhs.syntax().descendants_with_tokens() {
+                                if token.kind() == SyntaxKind::IDENT {
+                                    if let Some(tok) = token.as_token() {
+                                        let text = tok.text().to_string();
+                                        if !["let", "mut", "ref", "self", "if", "else", "match"].contains(&text.as_str()) {
+                                            identifiers.push(text);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Extract from RHS
+                        if let Some(rhs) = bin_expr.rhs() {
+                            for token in rhs.syntax().descendants_with_tokens() {
+                                if token.kind() == SyntaxKind::IDENT {
+                                    if let Some(tok) = token.as_token() {
+                                        let text = tok.text().to_string();
+                                        if !["let", "mut", "ref", "self", "if", "else", "match"].contains(&text.as_str()) {
+                                            identifiers.push(text);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Match identifiers to types
+                        for ident in identifiers {
+                            for (type_name, traits) in &type_to_traits {
+                                let type_lower = type_name.to_lowercase();
+                                let ident_lower = ident.to_lowercase();
+                                
+                                // Check if this type implements PartialEq or Eq
+                                let has_eq = traits.iter().any(|(t, m)| {
+                                    (t.contains("PartialEq") || t.contains("Eq")) && m == "eq"
+                                });
+                                
+                                if !has_eq {
+                                    continue;
+                                }
+                                
+                                // Match heuristics (same as Display/Debug)
+                                let matches = type_lower.contains(&ident_lower) || 
+                                              ident_lower == type_lower ||
+                                              type_lower.starts_with(&ident_lower);
+                                
+                                if matches {
+                                    let key = format!("{}::eq", type_name);
+                                    let entry = operator_calls.entry(key).or_insert((0, CoverageSource::PartialEqTrait));
+                                    entry.0 += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Pattern 2: assert_eq! and assert_ne! macros
+            SyntaxKind::MACRO_CALL => {
+                if let Some(macro_call) = ast::MacroCall::cast(node.clone()) {
+                    // Check if it's assert_eq or assert_ne
+                    let macro_name = if let Some(path) = macro_call.path() {
+                        path.segments().last().and_then(|seg| seg.name_ref()).map(|n| n.text().to_string())
+                    } else {
+                        None
+                    };
+                    
+                    let is_assert_eq = macro_name.as_ref().map_or(false, |name| {
+                        matches!(name.as_str(), "assert_eq" | "assert_ne")
+                    });
+                    
+                    if !is_assert_eq {
+                        continue;
+                    }
+                    
+                    // Extract token tree and find identifiers
+                    if let Some(token_tree) = macro_call.token_tree() {
+                        let mut identifiers = Vec::new();
+                        
+                        // Collect all IDENT tokens from the macro arguments
+                        for token in token_tree.syntax().descendants_with_tokens() {
+                            if token.kind() == SyntaxKind::IDENT {
+                                if let Some(tok) = token.as_token() {
+                                    let text = tok.text().to_string();
+                                    // Skip keywords
+                                    if !["let", "mut", "ref", "self", "true", "false"].contains(&text.as_str()) {
+                                        identifiers.push(text);
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Match identifiers to types
+                        for ident in identifiers {
+                            for (type_name, traits) in &type_to_traits {
+                                let type_lower = type_name.to_lowercase();
+                                let ident_lower = ident.to_lowercase();
+                                
+                                // Check if this type implements PartialEq or Eq
+                                let has_eq = traits.iter().any(|(t, m)| {
+                                    (t.contains("PartialEq") || t.contains("Eq")) && m == "eq"
+                                });
+                                
+                                if !has_eq {
+                                    continue;
+                                }
+                                
+                                // Match heuristics
+                                let matches = type_lower.contains(&ident_lower) || 
+                                              ident_lower == type_lower ||
+                                              type_lower.starts_with(&ident_lower);
+                                
+                                if matches {
+                                    let key = format!("{}::eq", type_name);
+                                    let entry = operator_calls.entry(key).or_insert((0, CoverageSource::PartialEqTrait));
+                                    entry.0 += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            _ => {}
+        }
+    }
+    
+    Ok(operator_calls)
+}
+
 fn main() -> Result<()> {
     let start = Instant::now();
     
@@ -567,6 +734,20 @@ fn main() -> Result<()> {
                         }
                     }
                     Err(e) => logger.log(&format!("Warning: Failed to parse format macros in test file {}: {}", entry.path().display(), e)),
+                }
+                
+                // Find operator usage (PartialEq trait usage via ==, !=, assert_eq!, assert_ne!)
+                match find_operator_usage(entry.path(), &all_trait_impls) {
+                    Ok(operator_calls) => {
+                        for (method_key, (count, source)) in operator_calls {
+                            let entry_data = trait_method_calls.entry(method_key).or_insert((0, Vec::new(), source));
+                            entry_data.0 += count;
+                            if !entry_data.1.contains(&entry.path().to_path_buf()) {
+                                entry_data.1.push(entry.path().to_path_buf());
+                            }
+                        }
+                    }
+                    Err(e) => logger.log(&format!("Warning: Failed to parse operators in test file {}: {}", entry.path().display(), e)),
                 }
             }
         }
@@ -655,6 +836,7 @@ fn main() -> Result<()> {
         let coverage_annotation = match cov.coverage_source {
             CoverageSource::DisplayTrait => " (via Display trait)",
             CoverageSource::DebugTrait => " (via Debug trait)",
+            CoverageSource::PartialEqTrait => " (via PartialEq trait)",
             CoverageSource::Direct => "",
         };
         
