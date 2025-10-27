@@ -60,6 +60,13 @@ struct TraitImpl {
     _line: usize,         // For future use
 }
 
+#[derive(Debug, Clone)]
+struct CallGraphEdge {
+    caller_name: String,        // Function that makes the call
+    callee_name: String,        // Function being called
+    _caller_is_public: bool,    // Is caller a public function? (reserved for future filtering)
+}
+
 #[derive(Debug)]
 struct TestCoverage {
     function: PublicFunction,
@@ -70,10 +77,11 @@ struct TestCoverage {
 
 #[derive(Debug, Clone)]
 enum CoverageSource {
-    Direct,                  // Direct function call
-    DisplayTrait,            // via format!(), println!(), etc.
-    DebugTrait,              // via format!("{:?}"), println!("{:?}"), etc.
-    PartialEqTrait,          // via == operator, !=, assert_eq!(), assert_ne!()
+    Direct,                       // Direct function call
+    DisplayTrait,                 // via format!(), println!(), etc.
+    DebugTrait,                   // via format!("{:?}"), println!("{:?}"), etc.
+    PartialEqTrait,               // via == operator, !=, assert_eq!(), assert_ne!()
+    TransitiveCoverage(String),   // Tested via another function (String = caller name)
 }
 
 fn get_line_number(node: &SyntaxNode, content: &str) -> usize {
@@ -94,6 +102,13 @@ fn find_public_functions(file_path: &Path) -> Result<Vec<PublicFunction>> {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::FN {
             if let Some(fn_def) = ast::Fn::cast(node.clone()) {
+                // Skip nested functions (functions defined inside other functions)
+                // These are local helpers, not public API
+                let is_nested = node.ancestors().skip(1).any(|ancestor| ancestor.kind() == SyntaxKind::FN);
+                if is_nested {
+                    continue;
+                }
+                
                 // Check if function is truly public (not pub(crate), pub(super), etc)
                 let visibility = node.children_with_tokens().find_map(|child| {
                     if child.kind() == SyntaxKind::VISIBILITY {
@@ -661,6 +676,183 @@ fn find_operator_usage(test_file: &Path, trait_impls: &[TraitImpl]) -> Result<Ha
     Ok(operator_calls)
 }
 
+/// Build call graph for a module - detects which functions call which other functions
+/// Returns Vec<CallGraphEdge> with caller -> callee relationships
+fn build_call_graph(file: &Path) -> Result<Vec<CallGraphEdge>> {
+    let content = fs::read_to_string(file)?;
+    let parsed = ra_ap_syntax::SourceFile::parse(&content, ra_ap_syntax::Edition::Edition2021);
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    let mut edges = Vec::new();
+    
+    // Find all function definitions
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::FN {
+            if let Some(fn_def) = ast::Fn::cast(node.clone()) {
+                // Get function name
+                let caller_name = if let Some(name) = fn_def.name() {
+                    name.text().to_string()
+                } else {
+                    continue;
+                };
+                
+                // Check if function is public
+                let visibility = node.children_with_tokens().find_map(|child| {
+                    if child.kind() == SyntaxKind::VISIBILITY {
+                        child.as_node().cloned()
+                    } else {
+                        None
+                    }
+                });
+                
+                let _caller_is_public = if let Some(vis_node) = visibility {
+                    let has_pub = vis_node.children_with_tokens().any(|t| t.kind() == SyntaxKind::PUB_KW);
+                    let has_restriction = vis_node.children_with_tokens().any(|t| t.kind() == SyntaxKind::L_PAREN);
+                    has_pub && !has_restriction
+                } else {
+                    false
+                };
+                
+                // Find the impl type if this function is in an impl block
+                let impl_type = find_parent_impl_type(&node);
+                let qualified_caller = if let Some(ref type_name) = impl_type {
+                    format!("{}::{}", type_name, caller_name)
+                } else {
+                    caller_name.clone()
+                };
+                
+                // Traverse function body for calls
+                if let Some(body) = fn_def.body() {
+                    for body_node in body.syntax().descendants() {
+                        match body_node.kind() {
+                            // Pattern 1: Static calls (Type::method() or function())
+                            SyntaxKind::CALL_EXPR => {
+                                if let Some(call_expr) = ast::CallExpr::cast(body_node.clone()) {
+                                    if let Some(expr) = call_expr.expr() {
+                                        if let ast::Expr::PathExpr(path_expr) = expr {
+                                            if let Some(path) = path_expr.path() {
+                                                if let Some(segment) = path.segments().last() {
+                                                    if let Some(name_ref) = segment.name_ref() {
+                                                        let callee = name_ref.text().to_string();
+                                                        edges.push(CallGraphEdge {
+                                                            caller_name: qualified_caller.clone(),
+                                                            callee_name: callee,
+                                                            _caller_is_public,
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            // Pattern 2: Method calls (self.method() or obj.method())
+                            SyntaxKind::METHOD_CALL_EXPR => {
+                                if let Some(method_call) = ast::MethodCallExpr::cast(body_node.clone()) {
+                                    if let Some(name_ref) = method_call.name_ref() {
+                                        let callee = name_ref.text().to_string();
+                                        // For self.method(), qualify with impl type
+                                        let qualified_callee = if let Some(ref type_name) = impl_type {
+                                            format!("{}::{}", type_name, callee)
+                                        } else {
+                                            callee
+                                        };
+                                        edges.push(CallGraphEdge {
+                                            caller_name: qualified_caller.clone(),
+                                            callee_name: qualified_callee,
+                                            _caller_is_public,
+                                        });
+                                    }
+                                }
+                            }
+                            
+                            _ => {}
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    Ok(edges)
+}
+
+/// Propagate transitive coverage using fixed-point iteration
+/// If a caller is tested and calls a callee, mark callee as tested transitively
+fn propagate_transitive_coverage(
+    call_graphs: &HashMap<PathBuf, Vec<CallGraphEdge>>,
+    all_functions: &[PublicFunction],
+    test_call_counts: &HashMap<String, (usize, Vec<PathBuf>)>,
+) -> HashMap<String, (usize, String)> {
+    // Build a set of tested function names (directly tested)
+    let mut tested: std::collections::HashSet<String> = test_call_counts.keys().cloned().collect();
+    
+    // Also consider functions with impl_type
+    for func in all_functions {
+        let key = if let Some(ref impl_type) = func.impl_type {
+            format!("{}::{}", impl_type, func.name)
+        } else {
+            func.name.clone()
+        };
+        if test_call_counts.contains_key(&func.name) {
+            tested.insert(key);
+        }
+    }
+    
+    // Result: helper_name -> (call_count, caller_name)
+    let mut transitively_tested: HashMap<String, (usize, String)> = HashMap::new();
+    
+    // Collect all edges from all call graphs
+    let mut all_edges = Vec::new();
+    for edges in call_graphs.values() {
+        all_edges.extend(edges.clone());
+    }
+    
+    // Fixed-point iteration
+    let mut iteration = 0;
+    loop {
+        let mut added_any = false;
+        iteration += 1;
+        
+        if iteration > 100 {
+            eprintln!("Warning: Transitive coverage propagation didn't converge after 100 iterations");
+            break;
+        }
+        
+        for edge in &all_edges {
+            // Check if caller is tested (directly or transitively)
+            let caller_is_tested = tested.contains(&edge.caller_name) || 
+                                   transitively_tested.contains_key(&edge.caller_name);
+            
+            // Check if callee is not yet tested
+            let callee_not_tested = !tested.contains(&edge.callee_name) &&
+                                     !transitively_tested.contains_key(&edge.callee_name);
+            
+            if caller_is_tested && callee_not_tested {
+                // Get caller's call count
+                let caller_count = test_call_counts.get(&edge.caller_name)
+                    .map(|(count, _)| *count)
+                    .or_else(|| transitively_tested.get(&edge.caller_name).map(|(count, _)| *count))
+                    .unwrap_or(1);
+                
+                transitively_tested.insert(
+                    edge.callee_name.clone(),
+                    (caller_count, edge.caller_name.clone())
+                );
+                added_any = true;
+            }
+        }
+        
+        if !added_any {
+            break;
+        }
+    }
+    
+    transitively_tested
+}
+
 fn main() -> Result<()> {
     let start = Instant::now();
     
@@ -753,6 +945,34 @@ fn main() -> Result<()> {
         }
     }
     
+    // Step 2.5: Build call graphs for all source files
+    logger.log("");
+    logger.log("Building call graphs for transitive coverage detection...");
+    let mut call_graphs: HashMap<PathBuf, Vec<CallGraphEdge>> = HashMap::new();
+    
+    if src_dir.exists() {
+        for entry in WalkDir::new(&src_dir).follow_links(true) {
+            let entry = entry?;
+            if entry.file_type().is_file() && entry.path().extension().and_then(|s| s.to_str()) == Some("rs") {
+                match build_call_graph(entry.path()) {
+                    Ok(edges) => {
+                        if !edges.is_empty() {
+                            call_graphs.insert(entry.path().to_path_buf(), edges);
+                        }
+                    }
+                    Err(e) => logger.log(&format!("Warning: Failed to build call graph for {}: {}", entry.path().display(), e)),
+                }
+            }
+        }
+    }
+    
+    logger.log(&format!("Built call graphs for {} modules", call_graphs.len()));
+    
+    // Step 2.6: Propagate transitive coverage
+    logger.log("Propagating transitive coverage...");
+    let transitively_tested = propagate_transitive_coverage(&call_graphs, &all_functions, &test_call_counts);
+    logger.log(&format!("Found {} transitively tested functions", transitively_tested.len()));
+    
     // Step 3: Build coverage report
     let mut coverage: Vec<TestCoverage> = Vec::new();
     for func in all_functions {
@@ -772,6 +992,21 @@ fn main() -> Result<()> {
                     }
                 }
                 coverage_source = trait_source.clone();
+            }
+        }
+        
+        // Check for transitive coverage if not yet tested
+        if call_count == 0 {
+            let func_key = if let Some(ref impl_type) = func.impl_type {
+                format!("{}::{}", impl_type, func.name)
+            } else {
+                func.name.clone()
+            };
+            
+            if let Some((trans_count, caller_name)) = transitively_tested.get(&func_key) {
+                call_count = *trans_count;
+                coverage_source = CoverageSource::TransitiveCoverage(caller_name.clone());
+                // Note: test_files remains empty for transitive coverage (no direct test)
             }
         }
         
@@ -833,11 +1068,12 @@ fn main() -> Result<()> {
             .unwrap_or(&cov.function.file);
         
         // Add coverage source annotation for trait methods
-        let coverage_annotation = match cov.coverage_source {
-            CoverageSource::DisplayTrait => " (via Display trait)",
-            CoverageSource::DebugTrait => " (via Debug trait)",
-            CoverageSource::PartialEqTrait => " (via PartialEq trait)",
-            CoverageSource::Direct => "",
+        let coverage_annotation = match &cov.coverage_source {
+            CoverageSource::DisplayTrait => " (via Display trait)".to_string(),
+            CoverageSource::DebugTrait => " (via Debug trait)".to_string(),
+            CoverageSource::PartialEqTrait => " (via PartialEq trait)".to_string(),
+            CoverageSource::TransitiveCoverage(caller) => format!(" (tested transitively via {})", caller),
+            CoverageSource::Direct => "".to_string(),
         };
         
         logger.log(&format!("{}:{}:  {} - {} call(s) in {} test file(s){}", 
