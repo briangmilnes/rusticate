@@ -1,3 +1,4 @@
+use rusticate::StandardArgs;
 use std::process::{Command, exit};
 use std::path::PathBuf;
 
@@ -17,66 +18,51 @@ macro_rules! log {
     }};
 }
 fn main() {
-    let args: Vec<String> = std::env::args().collect();
+    let args = match StandardArgs::parse() {
+        Ok(a) => a,
+        Err(e) => {
+            eprintln!("Error: {}", e);
+            exit(1);
+        }
+    };
     
     let start = std::time::Instant::now();
     let mut all_success = true;
     
-    let arg = if args.len() < 2 {
-        "-c" // Default to codebase
-    } else {
-        args[1].as_str()
-    };
-    
-    match arg {
-        "-c" | "--codebase" => {
-            log!("=== Grinding entire codebase ===\n");
-            all_success = grind_codebase();
-        }
-        "-m" | "--module" => {
-            if args.len() < 3 {
-                eprintln!("Error: -m requires a module name");
-                exit(1);
-            }
-            let module = &args[2];
-            log!("=== Grinding module: {} ===\n", module);
-            all_success = grind_module(module);
-        }
-        "-d" | "--dir" => {
-            if args.len() < 3 {
-                eprintln!("Error: -d requires a directory");
-                exit(1);
-            }
-            let dir = &args[2];
-            log!("=== Grinding directory: {} ===\n", dir);
-            all_success = grind_directory(dir);
-        }
-        "-f" | "--file" => {
-            if args.len() < 3 {
-                eprintln!("Error: -f requires a file path");
-                exit(1);
-            }
-            let file = &args[2];
-            log!("=== Grinding file: {} ===\n", file);
-            // For a single file, try to infer the module name
-            if let Some(module) = extract_module_from_path(file) {
-                log!("Inferred module: {}\n", module);
-                all_success = grind_module(&module);
-            } else {
-                eprintln!("Error: Cannot infer module from file path: {}", file);
-                eprintln!("File path should contain Chap##/ModuleName.rs pattern");
-                exit(1);
-            }
-        }
-        "-h" | "--help" => {
-            print_usage(&args[0]);
-            exit(0);
-        }
-        _ => {
-            eprintln!("Error: Unknown option: {}", args[1]);
-            print_usage(&args[0]);
+    // Determine mode based on StandardArgs
+    if args.is_module_search {
+        // Module mode
+        if args.paths.is_empty() {
+            eprintln!("Error: No module files found");
             exit(1);
         }
+        let module_name = args.paths[0]
+            .file_stem()
+            .and_then(|s| s.to_str())
+            .unwrap_or("unknown");
+        log!("=== Grinding module: {} ===\n", module_name);
+        all_success = grind_module(module_name);
+    } else if args.paths.len() == 1 && args.paths[0].is_file() {
+        // File mode - try to infer module name
+        let file = args.paths[0].display().to_string();
+        log!("=== Grinding file: {} ===\n", file);
+        if let Some(module) = extract_module_from_path(&file) {
+            log!("Inferred module: {}\n", module);
+            all_success = grind_module(&module);
+        } else {
+            eprintln!("Error: Cannot infer module from file path: {}", file);
+            eprintln!("File path should contain Chap##/ModuleName.rs pattern");
+            exit(1);
+        }
+    } else if args.paths.len() == 1 && args.paths[0].is_dir() {
+        // Directory mode
+        let dir = args.paths[0].display().to_string();
+        log!("=== Grinding directory: {} ===\n", dir);
+        all_success = grind_directory(&dir);
+    } else {
+        // Codebase mode (default)
+        log!("=== Grinding entire codebase ===\n");
+        all_success = grind_codebase();
     }
     
     log!("\nCompleted in {}ms", start.elapsed().as_millis());

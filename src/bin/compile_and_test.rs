@@ -1,4 +1,5 @@
 use anyhow::Result;
+use rusticate::StandardArgs;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -22,54 +23,35 @@ fn main() -> Result<()> {
 
     let start_time = Instant::now();
 
-    let args: Vec<String> = std::env::args().collect();
-    
-    if args.len() < 2 || args.contains(&"-h".to_string()) || args.contains(&"--help".to_string()) {
-        log!("Usage: compile-and-test [OPTIONS]");
-        log!("");
-        log!("Options:");
-        log!("  -c, --codebase             Compile and test src/, tests/, benches/ (default)");
-        log!("  -d, --dir DIR              Compile and test specific directory");
-        log!("  -f, --file FILE            Compile checking single file");
-        log!("  -m, --module NAME          Compile and test module: src, tests, benches");
-        log!("  -h, --help                 Show this help message");
-        log!("");
-        log!("Examples:");
-        log!("  compile-and-test           # Compile and test entire codebase");
-        log!("  compile-and-test -c        # Same as above");
-        log!("  compile-and-test -m SetStEph  # Compile and RUN tests for SetStEph");
-        log!("  compile-and-test -f src/lib.rs  # Check single file compiles");
-        return Ok(());
-    }
+    let args = StandardArgs::parse()?;
 
     log!("Entering directory '{}'", std::env::current_dir()?.display());
     println!();
 
     let current_dir = std::env::current_dir()?;
     
-    // Parse arguments
-    let mode = if args.contains(&"-m".to_string()) || args.contains(&"--module".to_string()) {
-        let idx = args.iter().position(|a| a == "-m" || a == "--module").unwrap();
-        if idx + 1 >= args.len() {
-            eprintln!("Error: -m/--module requires a module name");
+    // Determine mode based on StandardArgs
+    let mode = if args.is_module_search {
+        // Module mode: StandardArgs already found the module files
+        if args.paths.is_empty() {
+            eprintln!("Error: No module files found");
             return Ok(());
         }
-        ("module", args[idx + 1].clone())
-    } else if args.contains(&"-f".to_string()) || args.contains(&"--file".to_string()) {
-        let idx = args.iter().position(|a| a == "-f" || a == "--file").unwrap();
-        if idx + 1 >= args.len() {
-            eprintln!("Error: -f/--file requires a file path");
-            return Ok(());
-        }
-        ("file", args[idx + 1].clone())
-    } else if args.contains(&"-d".to_string()) || args.contains(&"--dir".to_string()) {
-        let idx = args.iter().position(|a| a == "-d" || a == "--dir").unwrap();
-        if idx + 1 >= args.len() {
-            eprintln!("Error: -d/--dir requires a directory path");
-            return Ok(());
-        }
-        ("dir", args[idx + 1].clone())
+        // Extract module name from first path (src file)
+        let module_name = args.paths[0]
+            .file_stem()
+            .and_then(|s| s.to_str())
+            .unwrap_or("unknown")
+            .to_string();
+        ("module", module_name)
+    } else if args.paths.len() == 1 && args.paths[0].is_file() {
+        // Single file mode
+        ("file", args.paths[0].display().to_string())
+    } else if args.paths.len() == 1 && args.paths[0].is_dir() {
+        // Directory mode
+        ("dir", args.paths[0].display().to_string())
     } else {
+        // Codebase mode (default)
         ("codebase", String::new())
     };
 

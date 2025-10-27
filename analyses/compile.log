@@ -1,13 +1,4 @@
 Entering directory '/home/milnes/projects/rusticate'
 ================================================================================
-COMPILING MODULE: DirGraphMtEph
+CHECKING FILE: src/lib.rs
 ================================================================================
-Found module files:
-  src:   (not found)
-  tests: 0
-  bench: 0
-================================================================================
-✓ ALL COMPILATION COMPLETE for module 'DirGraphMtEph'
-================================================================================
-
-Completed in 0ms
