@@ -58,6 +58,29 @@ fn parse_ufcs_from_text(text: &str) -> Option<(String, String, String)> {
     Some((type_name, trait_name, method))
 }
 
+fn path_starts_with_chapter(use_item: &ast::Use, chap: &str) -> bool {
+    if let Some(use_tree) = use_item.use_tree() {
+        if let Some(path) = use_tree.path() {
+            if let Some(first_segment) = path.segments().next() {
+                return first_segment.to_string() == chap;
+            }
+        }
+    }
+    false
+}
+
+fn is_ufcs_pattern(node: &ra_ap_syntax::SyntaxNode) -> bool {
+    // Check if this is a PATH_EXPR with a PATH that contains an AS_KW (UFCS pattern)
+    if node.kind() == SyntaxKind::PATH_EXPR {
+        for descendant in node.descendants_with_tokens() {
+            if descendant.kind() == SyntaxKind::AS_KW {
+                return true;
+            }
+        }
+    }
+    false
+}
+
 fn find_ufcs_calls(content: &str, file_path: &Path) -> Vec<UfcsCall> {
     let parsed = SourceFile::parse(content, Edition::Edition2021);
     let tree = parsed.tree();
@@ -72,8 +95,7 @@ fn find_ufcs_calls(content: &str, file_path: &Path) -> Vec<UfcsCall> {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
-                let use_text = use_item.to_string();
-                if use_text.contains("Chap19::") {
+                if path_starts_with_chapter(&use_item, "Chap19") {
                     is_chap19 = true;
                     break;
                 }
@@ -84,10 +106,10 @@ fn find_ufcs_calls(content: &str, file_path: &Path) -> Vec<UfcsCall> {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::CALL_EXPR {
             if let Some(callee) = node.first_child() {
-                let callee_text = callee.to_string();
-                
-                // Check for UFCS pattern
-                if callee_text.contains('<') && callee_text.contains(" as ") && callee_text.contains(">::") {
+                // Check for UFCS pattern using AST
+                if is_ufcs_pattern(&callee) {
+                    let callee_text = callee.to_string();
+                    
                     if let Some((type_name, trait_name, method)) = parse_ufcs_from_text(&callee_text) {
                         if !type_name.starts_with("Self") && !type_name.is_empty() && !trait_name.is_empty() {
                             let offset = node.text_range().start();

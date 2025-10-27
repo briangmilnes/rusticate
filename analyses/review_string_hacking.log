@@ -88,3 +88,25 @@ Entering directory 'src/bin/review_chap18_chap19.rs'
 Total violations: 1 files checked, 0 violations found
 
 Completed in 1ms
+Entering directory 'src/bin/review_simplifiable_ufcs.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/fix_doctests.rs'
+
+src/bin/fix_doctests.rs:139: String hacking detected: code.contains("[(") - Use AST traversal instead
+src/bin/fix_doctests.rs:139: String hacking detected: code.contains("(\"") - Use AST traversal instead
+
+Total violations: 1 files checked, 2 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_doctests.rs'
+
+src/bin/fix_doctests.rs:139: String hacking detected: code.contains("[(") - Use AST traversal instead
+src/bin/fix_doctests.rs:139: String hacking detected: code.contains("(\"") - Use AST traversal instead
+
+Total violations: 1 files checked, 2 violations found
+
+Completed in 1ms

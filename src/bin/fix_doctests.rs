@@ -104,6 +104,18 @@ fn infer_missing_imports(code: &str) -> Vec<String> {
         }
     }
     
+    // Helper to check if AST contains USE statements
+    let has_use_stmt = |root: &ra_ap_syntax::SyntaxNode| -> bool {
+        root.descendants().any(|n| n.kind() == SyntaxKind::USE)
+    };
+    
+    // Helper to check if AST contains specific name (like "Triple")
+    let has_name_ref = |root: &ra_ap_syntax::SyntaxNode, name: &str| -> bool {
+        root.descendants().any(|n| {
+            n.kind() == SyntaxKind::NAME_REF && n.text().to_string() == name
+        })
+    };
+    
     // Check for common APAS patterns
     // Try AST-based detection first for parseable fragments
     let mut has_triple_pattern = false;
@@ -111,15 +123,15 @@ fn infer_missing_imports(code: &str) -> Vec<String> {
         // If code parses, check for tuple/array patterns using AST
         let tree = parsed.tree();
         let root = tree.syntax();
-        for node in root.descendants() {
-            let kind = node.kind();
-            if kind == SyntaxKind::TUPLE_EXPR || kind == SyntaxKind::ARRAY_EXPR {
-                // Check if it looks like APAS triple usage without explicit import
-                if !code.contains("use") && !code.contains("Triple") {
-                    has_triple_pattern = true;
-                    break;
-                }
-            }
+        
+        // Check for tuple/array expressions
+        let has_tuple_or_array = root.descendants().any(|n| {
+            n.kind() == SyntaxKind::TUPLE_EXPR || n.kind() == SyntaxKind::ARRAY_EXPR
+        });
+        
+        // Check if it looks like APAS triple usage without explicit import
+        if has_tuple_or_array && !has_use_stmt(&root) && !has_name_ref(&root, "Triple") {
+            has_triple_pattern = true;
         }
     } else {
         // Fallback to heuristics for unparseable fragments
@@ -141,15 +153,34 @@ fn infer_missing_imports(code: &str) -> Vec<String> {
         ("OrderedFloat", "use ordered_float::OrderedFloat;"),
     ];
     
-    for (name, import) in &type_patterns {
-        if code.contains(name) && !code.contains("use") {
-            imports.insert(import.to_string());
+    // For type patterns, use AST if parseable, otherwise fall back to string checks
+    if !has_errors {
+        let tree = parsed.tree();
+        let root = tree.syntax();
+        let has_use = has_use_stmt(&root);
+        
+        for (name, import) in &type_patterns {
+            if has_name_ref(&root, name) && !has_use {
+                imports.insert(import.to_string());
+            }
         }
-    }
-    
-    // If we found nothing specific but there are errors, suggest wildcard
-    if imports.is_empty() && has_errors && !code.contains("use") {
-        imports.insert("use apas_ai::Types::Types::*;".to_string());
+        
+        // If we found nothing specific but there are errors, suggest wildcard
+        if imports.is_empty() && !has_use {
+            imports.insert("use apas_ai::Types::Types::*;".to_string());
+        }
+    } else {
+        // Fallback for unparseable fragments
+        for (name, import) in &type_patterns {
+            if code.contains(name) && !code.contains("use") {
+                imports.insert(import.to_string());
+            }
+        }
+        
+        // If we found nothing specific but there are errors, suggest wildcard
+        if imports.is_empty() && !code.contains("use") {
+            imports.insert("use apas_ai::Types::Types::*;".to_string());
+        }
     }
     
     imports.into_iter().collect()
