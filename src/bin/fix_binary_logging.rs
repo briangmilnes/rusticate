@@ -109,6 +109,22 @@ fn find_use_statements_end(content: &str) -> Option<usize> {
     }
 }
 
+fn has_import_path(use_item: &ast::Use, target_path: &[&str]) -> bool {
+    // Check if use statement imports from target_path (e.g., ["std", "fs"])
+    if let Some(use_tree) = use_item.use_tree() {
+        if let Some(path) = use_tree.path() {
+            let segments: Vec<_> = path.segments().map(|s| s.to_string()).collect();
+            // Check if segments start with target_path
+            if segments.len() >= target_path.len() {
+                return segments.iter()
+                    .zip(target_path.iter())
+                    .all(|(seg, target)| seg == target);
+            }
+        }
+    }
+    false
+}
+
 fn needs_use_std_fs(content: &str) -> bool {
     // Use AST to check for std::fs imports
     let parsed = SourceFile::parse(content, Edition::Edition2021);
@@ -118,8 +134,7 @@ fn needs_use_std_fs(content: &str) -> bool {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
-                let use_text = use_item.to_string();
-                if use_text.contains("std::fs") {
+                if has_import_path(&use_item, &["std", "fs"]) {
                     return false;
                 }
             }
@@ -137,9 +152,16 @@ fn needs_use_std_io(content: &str) -> bool {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
-                let use_text = use_item.to_string();
-                if use_text.contains("std::io::Write") {
-                    return false;
+                // Check for std::io::Write
+                if has_import_path(&use_item, &["std", "io"]) {
+                    // Further check if "Write" is imported
+                    if let Some(use_tree) = use_item.use_tree() {
+                        let text = use_tree.syntax().text().to_string();
+                        // Check if Write appears in the import (could be use std::io::Write or use std::io::{Write, ...})
+                        if text.contains("Write") {
+                            return false;
+                        }
+                    }
                 }
             }
         }

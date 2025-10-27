@@ -110,3 +110,19 @@ src/bin/fix_doctests.rs:139: String hacking detected: code.contains("(\"") - Use
 Total violations: 1 files checked, 2 violations found
 
 Completed in 1ms
+Entering directory '/home/milnes/projects/rusticate/src'
+
+/home/milnes/projects/rusticate/src/bin/fix_doctests.rs:139: String hacking detected: code.contains("[(") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/fix_doctests.rs:139: String hacking detected: code.contains("(\"") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/fix_binary_logging.rs:64: String hacking detected: text.contains("::File::create") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/fix_binary_logging.rs:249: String hacking detected: new_content[start..].find("}\n") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/review_binary_logging.rs:71: String hacking detected: body_text.contains("File::create") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/review_binary_logging.rs:71: String hacking detected: body_text.contains("OpenOptions::new") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/review_binary_logging.rs:97: String hacking detected: body_text.contains("writeln!(log_file") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/review_binary_logging.rs:98: String hacking detected: body_text.contains("write!(log_file") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/review_binary_logging.rs:99: String hacking detected: body_text.contains("writeln!(file") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/review_binary_logging.rs:100: String hacking detected: body_text.contains("write!(file") - Use AST traversal instead
+
+Total violations: 791 files checked, 10 violations found
+
+Completed in 439ms
