@@ -325,3 +325,7 @@ path = "src/bin/compile_src_tests_benches_run_tests.rs"
 [[bin]]
 name = "review-test-functions"
 path = "src/bin/review_test_functions.rs"
+
+[[bin]]
+name = "review-summary-accuracy"
+path = "src/bin/review_summary_accuracy.rs"
