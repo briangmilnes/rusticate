@@ -77,6 +77,24 @@ struct UseStatementInfo {
     full_text: String,
 }
 
+fn is_glob_import(use_stmt: &ast::Use) -> bool {
+    if let Some(use_tree) = use_stmt.use_tree() {
+        use_tree.syntax().descendants_with_tokens()
+            .any(|n| n.kind() == SyntaxKind::STAR)
+    } else {
+        false
+    }
+}
+
+fn is_grouped_import(use_stmt: &ast::Use) -> bool {
+    if let Some(use_tree) = use_stmt.use_tree() {
+        use_tree.syntax().descendants()
+            .any(|n| n.kind() == SyntaxKind::USE_TREE_LIST)
+    } else {
+        false
+    }
+}
+
 fn analyze_file(file_path: &Path) -> Result<Vec<Vec<UseStatementInfo>>> {
     let content = fs::read_to_string(file_path)?;
     let parsed = SourceFile::parse(&content, ra_ap_syntax::Edition::Edition2021);
@@ -90,8 +108,7 @@ fn analyze_file(file_path: &Path) -> Result<Vec<Vec<UseStatementInfo>>> {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_stmt) = ast::Use::cast(node.clone()) {
                 // Skip glob imports, grouped imports, and aliased imports
-                let use_text = use_stmt.to_string();
-                if use_text.contains("::*") || use_text.contains('{') {
+                if is_glob_import(&use_stmt) || is_grouped_import(&use_stmt) {
                     continue;
                 }
                 
@@ -100,6 +117,7 @@ fn analyze_file(file_path: &Path) -> Result<Vec<Vec<UseStatementInfo>>> {
                     continue;
                 }
 
+                let use_text = use_stmt.to_string();
                 if let (Some(base_path), Some(item)) = (extract_base_path(&use_stmt), extract_final_item(&use_stmt)) {
                     let line = get_line_number(node.text_range().start().into(), &content);
                     use_statements.push(UseStatementInfo {

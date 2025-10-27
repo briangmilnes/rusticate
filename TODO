@@ -1,8 +1,9 @@
 
-  Review all programs logging.
+
+  Review all programs for string hacking using the string hacking tool.
 
   Review all programs use the -d -f -m -c.
-  Review all programs for string hacking using the string hacking tool.
+
   Are all programs sorting output file names?
   Are all summaries matching the information listings?
   Is maximal code sharing implemented?

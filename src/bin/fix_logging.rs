@@ -30,10 +30,18 @@ fn has_std_fs_import(root: &SyntaxNode) -> bool {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node) {
-                let text = use_item.syntax().text().to_string();
-                // Check for "use std::fs;"
-                if text.contains("std::fs") && !text.contains("::fs::") {
-                    return true;
+                if let Some(use_tree) = use_item.use_tree() {
+                    if let Some(path) = use_tree.path() {
+                        // Check if path is exactly "std::fs" (not std::fs::something)
+                        let segments: Vec<_> = path.segments().collect();
+                        if segments.len() == 2 {
+                            if let (Some(first), Some(second)) = (segments.get(0), segments.get(1)) {
+                                if first.to_string() == "std" && second.to_string() == "fs" {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -66,13 +74,12 @@ fn find_first_item_start(root: &SyntaxNode) -> Option<TextSize> {
 }
 
 fn build_log_macro(tool_name: &str) -> String {
-    // Use placeholder to prevent println! from being replaced during string replacements
     format!(r#"
 macro_rules! log {{
     ($($arg:tt)*) => {{{{
         use std::io::Write;
         let msg = format!($($arg)*);
-        <PRINTLN>!("{{}}", msg);
+        println!("{{}}", msg);
         if let Ok(mut file) = std::fs::OpenOptions::new()
             .create(true)
             .append(true)
@@ -85,22 +92,82 @@ macro_rules! log {{
 "#, tool_name)
 }
 
+fn should_replace_println(macro_call: &ast::MacroCall) -> bool {
+    // Check if this is a println! macro (not eprintln!)
+    if let Some(path) = macro_call.path() {
+        let path_text = path.syntax().text().to_string();
+        path_text == "println"
+    } else {
+        false
+    }
+}
 
-fn apply_replacements(content: &str, tool_name: &str, root: &SyntaxNode) -> String {
-    let mut result = content.to_string();
+fn rewrite_node(node: &SyntaxNode) -> String {
+    // Check if this node is a println! macro call that should be replaced
+    if node.kind() == SyntaxKind::MACRO_CALL {
+        if let Some(macro_call) = ast::MacroCall::cast(node.clone()) {
+            if should_replace_println(&macro_call) {
+                // Reconstruct the macro call with "log!" instead of "println!"
+                let mut result = String::new();
+                
+                for child in node.children_with_tokens() {
+                    match child {
+                        rowan::NodeOrToken::Node(child_node) => {
+                            // Recursively process child nodes (path, token_tree, etc.)
+                            if child_node.kind() == SyntaxKind::PATH {
+                                // Replace "println" with "log"
+                                result.push_str("log");
+                            } else {
+                                result.push_str(&rewrite_node(&child_node));
+                            }
+                        }
+                        rowan::NodeOrToken::Token(token) => {
+                            // Keep all tokens (!, parens, args, etc.)
+                            result.push_str(token.text());
+                        }
+                    }
+                }
+                return result;
+            }
+        }
+    }
     
-    // Collect all insertion points and content FIRST (before any modifications)
+    // Otherwise, recursively process children
+    let mut result = String::new();
+    for child in node.children_with_tokens() {
+        match child {
+            rowan::NodeOrToken::Node(child_node) => {
+                result.push_str(&rewrite_node(&child_node));
+            }
+            rowan::NodeOrToken::Token(token) => {
+                result.push_str(token.text());
+            }
+        }
+    }
+    result
+}
+
+fn apply_replacements(_content: &str, tool_name: &str, root: &SyntaxNode) -> String {
+    // First, rewrite the AST to replace println! with log!
+    let rewritten = rewrite_node(root);
+    
+    // Now apply insertions to the rewritten content
+    // Parse the rewritten content to get fresh AST positions
+    let parsed = SourceFile::parse(&rewritten, Edition::Edition2021);
+    let tree = parsed.tree();
+    let new_root = tree.syntax();
+    
     let macro_code = build_log_macro(tool_name);
-    let macro_insert_pos = if let Some(first_item) = find_first_item_start(root) {
+    let macro_insert_pos = if let Some(first_item) = find_first_item_start(new_root) {
         usize::from(first_item)
-    } else if let Some(last_use_end) = find_last_use_statement_end(root) {
+    } else if let Some(last_use_end) = find_last_use_statement_end(new_root) {
         usize::from(last_use_end)
     } else {
         0
     };
     
-    let std_fs_insert = if !has_std_fs_import(root) {
-        find_last_use_statement_end(root).map(|pos| usize::from(pos))
+    let std_fs_insert = if !has_std_fs_import(new_root) {
+        find_last_use_statement_end(new_root).map(|pos| usize::from(pos))
     } else {
         None
     };
@@ -113,21 +180,10 @@ fn apply_replacements(content: &str, tool_name: &str, root: &SyntaxNode) -> Stri
     insertions.sort_by_key(|(pos, _)| std::cmp::Reverse(*pos));
     
     // Apply insertions in descending order so earlier positions stay valid
+    let mut result = rewritten;
     for (pos, text) in insertions {
         result.insert_str(pos, &text);
     }
-    
-    // Replace println! with log! using simple string replacement AFTER all AST-based insertions
-    // Protect eprintln! from being replaced
-    result = result.replace("eprintln!", "<EPRINTLN>");
-    // First handle empty println!()
-    result = result.replace("println!()", "log!(\"\")");
-    // Then handle regular println!
-    result = result.replace("println!", "log!");
-    // Restore eprintln!
-    result = result.replace("<EPRINTLN>", "eprintln!");
-    // Restore println! in the log! macro
-    result = result.replace("<PRINTLN>!", "println!");
     
     result
 }

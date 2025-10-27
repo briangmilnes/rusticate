@@ -95,21 +95,23 @@ fn expand_grouped_import(use_stmt: &ast::Use, content: &str) -> Option<(TextRang
     
     // Extract any leading comments from the use statement's text range
     let full_range = use_stmt.syntax().text_range();
-    let start: usize = full_range.start().into();
-    let end: usize = full_range.end().into();
-    let full_text = &content[start..end];
     
-    // Find where "use" keyword actually starts (after any comments/whitespace)
-    let use_pos = if let Some(pos) = full_text.find("use ") {
-        pos
+    // Find the USE_KW token to determine where the "use" keyword actually starts
+    let use_kw_start = use_stmt.syntax().children_with_tokens()
+        .find(|child| child.kind() == SyntaxKind::USE_KW)
+        .map(|token| token.text_range().start())
+        .unwrap_or(full_range.start());
+    
+    // Everything before the USE_KW is comments/whitespace
+    let start: usize = full_range.start().into();
+    let use_start: usize = use_kw_start.into();
+    let leading = if use_start > start {
+        content[start..use_start].to_string()
     } else {
-        0
+        String::new()
     };
     
-    // Everything before "use" is comments/whitespace
-    let leading = &full_text[..use_pos];
-    
-    Some((full_range, individual_imports, leading.to_string()))
+    Some((full_range, individual_imports, leading))
 }
 
 fn get_indentation(content: &str, offset: usize) -> String {

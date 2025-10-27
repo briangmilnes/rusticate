@@ -80,6 +80,24 @@ fn get_indentation(content: &str, offset: usize) -> String {
     line[..indent_end].to_string()
 }
 
+fn is_glob_import(use_stmt: &ast::Use) -> bool {
+    if let Some(use_tree) = use_stmt.use_tree() {
+        use_tree.syntax().descendants_with_tokens()
+            .any(|n| n.kind() == SyntaxKind::STAR)
+    } else {
+        false
+    }
+}
+
+fn is_grouped_import(use_stmt: &ast::Use) -> bool {
+    if let Some(use_tree) = use_stmt.use_tree() {
+        use_tree.syntax().descendants()
+            .any(|n| n.kind() == SyntaxKind::USE_TREE_LIST)
+    } else {
+        false
+    }
+}
+
 fn fix_file(file_path: &Path, dry_run: bool) -> Result<usize> {
     let content = fs::read_to_string(file_path)?;
     let parsed = SourceFile::parse(&content, Edition::Edition2021);
@@ -93,8 +111,7 @@ fn fix_file(file_path: &Path, dry_run: bool) -> Result<usize> {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_stmt) = ast::Use::cast(node.clone()) {
                 // Skip glob imports, grouped imports, and aliased imports
-                let use_text = use_stmt.to_string();
-                if use_text.contains("::*") || use_text.contains('{') {
+                if is_glob_import(&use_stmt) || is_grouped_import(&use_stmt) {
                     continue;
                 }
                 
