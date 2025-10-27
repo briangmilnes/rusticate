@@ -85,15 +85,21 @@ fn find_public_functions(file_path: &Path) -> Result<Vec<PublicFunction>> {
                     }
                 });
                 
-                let is_truly_public = if let Some(vis_node) = visibility {
+                // Check if function is truly public
+                let has_explicit_pub = if let Some(vis_node) = visibility {
                     // Has pub keyword
                     let has_pub = vis_node.children_with_tokens().any(|t| t.kind() == SyntaxKind::PUB_KW);
                     // But no restrictions like (crate), (super), (in path)
                     let has_restriction = vis_node.children_with_tokens().any(|t| t.kind() == SyntaxKind::L_PAREN);
                     has_pub && !has_restriction
                 } else {
-                    false // No visibility = private
+                    false
                 };
+                
+                // Trait implementation methods are implicitly public (even without pub keyword)
+                let is_trait_impl_method = is_in_public_trait_impl(&node);
+                
+                let is_truly_public = has_explicit_pub || is_trait_impl_method;
                 
                 if !is_truly_public {
                     continue;
@@ -118,6 +124,27 @@ fn find_public_functions(file_path: &Path) -> Result<Vec<PublicFunction>> {
     }
     
     Ok(functions)
+}
+
+/// Check if a function is inside a public trait implementation
+/// Trait implementation methods are implicitly public (if the trait is public)
+fn is_in_public_trait_impl(node: &SyntaxNode) -> bool {
+    let mut current = node.parent();
+    while let Some(parent) = current {
+        if parent.kind() == SyntaxKind::IMPL {
+            if let Some(impl_def) = ast::Impl::cast(parent.clone()) {
+                // Check if this is a trait implementation (impl Trait for Type)
+                // vs inherent implementation (impl Type)
+                if impl_def.trait_().is_some() {
+                    // This is a trait implementation
+                    // Methods in trait implementations are implicitly public
+                    return true;
+                }
+            }
+        }
+        current = parent.parent();
+    }
+    false
 }
 
 /// Find the impl type if this function is inside an impl block
