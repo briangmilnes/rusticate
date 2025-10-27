@@ -22,6 +22,17 @@ fn extract_binary_name_from_path(path: &Path) -> String {
         .to_string()
 }
 
+fn path_starts_with_chapter(use_item: &ast::Use, chap: &str) -> bool {
+    if let Some(use_tree) = use_item.use_tree() {
+        if let Some(path) = use_tree.path() {
+            if let Some(first_segment) = path.segments().next() {
+                return first_segment.to_string() == chap;
+            }
+        }
+    }
+    false
+}
+
 fn has_chap_import(content: &str, chap: &str) -> bool {
     let parsed = SourceFile::parse(content, Edition::Edition2021);
     let tree = parsed.tree();
@@ -30,14 +41,35 @@ fn has_chap_import(content: &str, chap: &str) -> bool {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
-                let use_text = use_item.to_string();
-                if use_text.contains(&format!("{}::", chap)) {
+                if path_starts_with_chapter(&use_item, chap) {
                     return true;
                 }
             }
         }
     }
     
+    false
+}
+
+fn path_contains_name(use_item: &ast::Use, name: &str) -> bool {
+    if let Some(use_tree) = use_item.use_tree() {
+        // Check the path segments
+        if let Some(path) = use_tree.path() {
+            for segment in path.segments() {
+                if segment.to_string() == name {
+                    return true;
+                }
+            }
+        }
+        // Also check the use tree list if it's a grouped import
+        for child in use_tree.syntax().descendants() {
+            if child.kind() == SyntaxKind::NAME_REF {
+                if child.text().to_string() == name {
+                    return true;
+                }
+            }
+        }
+    }
     false
 }
 
@@ -49,8 +81,8 @@ fn has_chap18_redefinable_trait_import(content: &str) -> bool {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
-                let use_text = use_item.to_string();
-                if use_text.contains("Chap18::") && use_text.contains("RedefinableTrait") {
+                if path_starts_with_chapter(&use_item, "Chap18") && 
+                   path_contains_name(&use_item, "RedefinableTrait") {
                     return true;
                 }
             }
@@ -58,6 +90,23 @@ fn has_chap18_redefinable_trait_import(content: &str) -> bool {
     }
     
     false
+}
+
+fn extract_module_name_after_chapter(use_item: &ast::Use, chap: &str) -> Option<String> {
+    if let Some(use_tree) = use_item.use_tree() {
+        if let Some(path) = use_tree.path() {
+            let segments: Vec<_> = path.segments().collect();
+            // Look for the chapter segment and return the next one
+            for (i, segment) in segments.iter().enumerate() {
+                if segment.to_string() == chap {
+                    if let Some(next_segment) = segments.get(i + 1) {
+                        return Some(next_segment.to_string());
+                    }
+                }
+            }
+        }
+    }
+    None
 }
 
 fn imports_different_modules(content: &str) -> bool {
@@ -71,21 +120,13 @@ fn imports_different_modules(content: &str) -> bool {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
-                let use_text = use_item.to_string();
-                
                 // Extract module name after Chap18:: or Chap19::
-                if let Some(start) = use_text.find("Chap18::") {
-                    let after = &use_text[start + 8..];
-                    if let Some(end) = after.find("::") {
-                        chap18_modules.push(after[..end].to_string());
-                    }
+                if let Some(module) = extract_module_name_after_chapter(&use_item, "Chap18") {
+                    chap18_modules.push(module);
                 }
                 
-                if let Some(start) = use_text.find("Chap19::") {
-                    let after = &use_text[start + 8..];
-                    if let Some(end) = after.find("::") {
-                        chap19_modules.push(after[..end].to_string());
-                    }
+                if let Some(module) = extract_module_name_after_chapter(&use_item, "Chap19") {
+                    chap19_modules.push(module);
                 }
             }
         }
@@ -218,9 +259,7 @@ fn remove_chap18_imports_and_simplify_ufcs(content: &str) -> Option<String> {
         for node in root.descendants() {
             if node.kind() == SyntaxKind::USE {
                 if let Some(use_item) = ast::Use::cast(node.clone()) {
-                    let use_text = use_item.to_string();
-                    
-                    if use_text.contains("Chap18::") {
+                    if path_starts_with_chapter(&use_item, "Chap18") {
                         replacements.push(Replacement {
                             range: use_item.syntax().text_range(),
                             new_text: String::new(),  // Delete

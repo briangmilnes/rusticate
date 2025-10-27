@@ -63,3 +63,28 @@ Entering directory 'src/bin/fix_grouped_imports.rs'
 Total violations: 1 files checked, 0 violations found
 
 Completed in 1ms
+Entering directory 'src/bin/review_non_wildcard_uses.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_chap18_chap19_both.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_chap18_chap19.rs'
+
+src/bin/review_chap18_chap19.rs:213: String hacking detected: line_text.contains(">::") - Use AST traversal instead
+
+Total violations: 1 files checked, 1 violations found
+
+Completed in 2ms
+Entering directory 'src/bin/review_chap18_chap19.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms

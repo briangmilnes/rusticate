@@ -78,6 +78,17 @@ fn has_per_in_use_path(use_node: &ast::Use) -> bool {
     false
 }
 
+fn path_starts_with_chapter(use_item: &ast::Use, chap: &str) -> bool {
+    if let Some(use_tree) = use_item.use_tree() {
+        if let Some(path) = use_tree.path() {
+            if let Some(first_segment) = path.segments().next() {
+                return first_segment.to_string() == chap;
+            }
+        }
+    }
+    false
+}
+
 fn find_chap18_imports(content: &str) -> (usize, usize) {
     // Returns (eph_count, per_count)
     let parsed = SourceFile::parse(content, Edition::Edition2021);
@@ -90,8 +101,7 @@ fn find_chap18_imports(content: &str) -> (usize, usize) {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
-                let use_text = use_item.to_string();
-                if use_text.contains("Chap18::") {
+                if path_starts_with_chapter(&use_item, "Chap18") {
                     if has_eph_in_use_path(&use_item) {
                         eph_count += 1;
                     } else if has_per_in_use_path(&use_item) {
@@ -116,8 +126,7 @@ fn find_chap19_imports(content: &str) -> usize {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
-                let use_text = use_item.to_string();
-                if use_text.contains("Chap19::") {
+                if path_starts_with_chapter(&use_item, "Chap19") {
                     count += 1;
                 }
             }
@@ -125,6 +134,18 @@ fn find_chap19_imports(content: &str) -> usize {
     }
     
     count
+}
+
+fn is_ufcs_pattern(node: &ra_ap_syntax::SyntaxNode) -> bool {
+    // Check if this is a PATH_EXPR with a PATH that contains an AS_KW (UFCS pattern)
+    if node.kind() == SyntaxKind::PATH_EXPR {
+        for descendant in node.descendants_with_tokens() {
+            if descendant.kind() == SyntaxKind::AS_KW {
+                return true;
+            }
+        }
+    }
+    false
 }
 
 fn find_ufcs_calls(content: &str, file_path: &Path) -> Vec<UfcsCall> {
@@ -141,10 +162,10 @@ fn find_ufcs_calls(content: &str, file_path: &Path) -> Vec<UfcsCall> {
         if node.kind() == SyntaxKind::CALL_EXPR {
             // Get the function being called (first child should be the path/expr)
             if let Some(callee) = node.first_child() {
-                let callee_text = callee.to_string();
-                
-                // Check if this is a UFCS pattern: contains "<", " as ", and "::"
-                if callee_text.contains('<') && callee_text.contains(" as ") && callee_text.contains(">::") {
+                // Check if this is a UFCS pattern using AST
+                if is_ufcs_pattern(&callee) {
+                    let callee_text = callee.to_string();
+                    
                     // Parse the UFCS call to extract type, trait, and method
                     if let Some((type_name, trait_name, method)) = parse_ufcs_from_text(&callee_text) {
                         // Skip "Self" patterns
@@ -184,13 +205,18 @@ fn find_ufcs_calls(content: &str, file_path: &Path) -> Vec<UfcsCall> {
     // Look for MACRO_RULES nodes and scan their token trees
     for node in root.descendants() {
         if node.kind() == SyntaxKind::MACRO_RULES {
-            let macro_text = node.to_string();
             let macro_offset = node.text_range().start();
             
-            // Scan the macro body for UFCS patterns
-            for (line_idx, line_text) in macro_text.lines().enumerate() {
-                if line_text.contains('<') && line_text.contains(" as ") && line_text.contains(">::") {
-                    // Find UFCS patterns in the line
+            // Look for AS_KW tokens in the macro's token tree (indicates UFCS pattern)
+            let has_ufcs = node.descendants_with_tokens()
+                .any(|t| t.kind() == SyntaxKind::AS_KW);
+            
+            if has_ufcs {
+                let macro_text = node.to_string();
+                // Scan the macro body for UFCS patterns
+                for (line_idx, line_text) in macro_text.lines().enumerate() {
+                    // Now that we know there's UFCS in this macro, check each line
+                    // Note: We still need string parsing for extracting details from token streams
                     if let Some((type_name, trait_name, method)) = extract_ufcs_from_line(line_text) {
                         // Skip "Self" patterns
                         if !type_name.starts_with("Self") && !type_name.is_empty() && !trait_name.is_empty() {

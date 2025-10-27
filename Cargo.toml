@@ -230,6 +230,10 @@ name = "fix-grouped-imports"
 path = "src/bin/fix_grouped_imports.rs"
 
 [[bin]]
+name = "fix-chap18-chap19-both"
+path = "src/bin/fix_chap18_chap19_both.rs"
+
+[[bin]]
 name = "fix-chap18-to-chap19"
 path = "src/bin/fix_chap18_to_chap19.rs"
 

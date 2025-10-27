@@ -46,42 +46,51 @@ impl ViolationType {
     }
 }
 
-fn categorize_import(use_text: &str) -> Option<ViolationType> {
-    // Skip macro imports (end with Lit)
-    if use_text.contains("Lit") {
-        let parts: Vec<&str> = use_text.split("::").collect();
-        if let Some(last) = parts.last() {
-            if last.trim_end_matches(';').trim().ends_with("Lit") {
-                return None; // Macro import, OK
+fn get_final_import_name(use_item: &ast::Use) -> Option<String> {
+    // Get the final segment of the path being imported
+    if let Some(use_tree) = use_item.use_tree() {
+        if let Some(path) = use_tree.path() {
+            if let Some(last_segment) = path.segments().last() {
+                return Some(last_segment.to_string());
             }
         }
     }
-    
+    None
+}
+
+fn has_rename(use_item: &ast::Use) -> bool {
+    if let Some(use_tree) = use_item.use_tree() {
+        use_tree.rename().is_some()
+    } else {
+        false
+    }
+}
+
+fn categorize_import(use_item: &ast::Use) -> Option<ViolationType> {
     // Skip imports with "as" renames - these are legitimate type aliases
-    if use_text.contains(" as ") {
+    if has_rename(use_item) {
         return None;
     }
     
+    // Get the final imported name
+    let item = get_final_import_name(use_item)?;
+    
+    // Skip macro imports (end with Lit)
+    if item.ends_with("Lit") {
+        return None; // Macro import, OK
+    }
+    
     // Check what's being imported
-    if use_text.contains("Trait;") || use_text.contains("Trait,") || use_text.ends_with("Trait }") {
+    if item.ends_with("Trait") {
         Some(ViolationType::Trait)
     } else {
         // Check if it's a function (lowercase) or Type (PascalCase)
-        let parts: Vec<&str> = use_text.split("::").collect();
-        if let Some(last) = parts.last() {
-            let item = last.trim_end_matches(';').trim();
-            // Remove any braces/commas
-            let item = item.trim_end_matches('}').trim_end_matches(',').trim();
-            
-            if !item.is_empty() {
-                let first_char = item.chars().next()?;
-                if first_char.is_lowercase() {
-                    Some(ViolationType::Function)
-                } else if first_char.is_uppercase() {
-                    Some(ViolationType::Type)
-                } else {
-                    None
-                }
+        if !item.is_empty() {
+            let first_char = item.chars().next()?;
+            if first_char.is_lowercase() {
+                Some(ViolationType::Function)
+            } else if first_char.is_uppercase() {
+                Some(ViolationType::Type)
             } else {
                 None
             }
@@ -89,6 +98,41 @@ fn categorize_import(use_text: &str) -> Option<ViolationType> {
             None
         }
     }
+}
+
+fn is_from_apas_ai(use_item: &ast::Use) -> bool {
+    if let Some(use_tree) = use_item.use_tree() {
+        if let Some(path) = use_tree.path() {
+            // Check if the first segment is "apas_ai"
+            if let Some(first_segment) = path.segments().next() {
+                return first_segment.to_string() == "apas_ai";
+            }
+        }
+    }
+    false
+}
+
+fn is_wildcard_import(use_item: &ast::Use) -> bool {
+    if let Some(use_tree) = use_item.use_tree() {
+        use_tree.syntax().descendants_with_tokens()
+            .any(|n| n.kind() == SyntaxKind::STAR)
+    } else {
+        false
+    }
+}
+
+fn is_toplevel_wildcard(use_item: &ast::Use) -> bool {
+    // Check if it's "use apas_ai::*;" (only 2 segments with wildcard)
+    if let Some(use_tree) = use_item.use_tree() {
+        if let Some(path) = use_tree.path() {
+            let segments: Vec<_> = path.segments().collect();
+            // Should have exactly 1 segment (apas_ai) and a wildcard
+            if segments.len() == 1 && is_wildcard_import(use_item) {
+                return segments[0].to_string() == "apas_ai";
+            }
+        }
+    }
+    false
 }
 
 fn check_file(file_path: &PathBuf) -> Vec<(usize, String, ViolationType)> {
@@ -106,23 +150,20 @@ fn check_file(file_path: &PathBuf) -> Vec<(usize, String, ViolationType)> {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
-                let use_text = use_item.to_string().trim().to_string();
-                
                 // Check if it's importing from apas_ai
-                if use_text.contains("apas_ai::") {
+                if is_from_apas_ai(&use_item) {
+                    let use_text = use_item.to_string().trim().to_string();
+                    
                     // First check for BOGUS top-level wildcard "use apas_ai::*;"
-                    if use_text == "use apas_ai::*;" {
+                    if is_toplevel_wildcard(&use_item) {
                         let line = rusticate::line_number(&node, &content);
                         violations.push((line, use_text, ViolationType::ToplevelWildcard));
                         continue;
                     }
                     
                     // Check if it's NOT a wildcard import
-                    // Wildcard imports end with ::*; or ::* ;
-                    let is_wildcard = use_text.trim_end_matches(';').trim_end().ends_with("::*");
-                    
-                    if !is_wildcard {
-                        if let Some(vtype) = categorize_import(&use_text) {
+                    if !is_wildcard_import(&use_item) {
+                        if let Some(vtype) = categorize_import(&use_item) {
                             // Get line number
                             let line = rusticate::line_number(&node, &content);
                             violations.push((line, use_text, vtype));
