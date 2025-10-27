@@ -126,3 +126,13 @@ Entering directory '/home/milnes/projects/rusticate/src'
 Total violations: 791 files checked, 10 violations found
 
 Completed in 439ms
+Entering directory '/home/milnes/projects/rusticate/src'
+
+/home/milnes/projects/rusticate/src/bin/fix_doctests.rs:139: String hacking detected: code.contains("[(") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/fix_doctests.rs:139: String hacking detected: code.contains("(\"") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/fix_binary_logging.rs:64: String hacking detected: text.contains("::File::create") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/fix_binary_logging.rs:249: String hacking detected: new_content[start..].find("}\n") - Use AST traversal instead
+
+Total violations: 790 files checked, 4 violations found
+
+Completed in 1746ms
