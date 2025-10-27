@@ -385,6 +385,8 @@ pub mod args {
                 search_dir(path, &mut all_files);
             }
         }
+        // Sort for deterministic, reproducible output across all tools
+        all_files.sort();
         all_files
     }
     

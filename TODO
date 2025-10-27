@@ -1,12 +1,13 @@
 
 
-  Review all programs use the -d -f -m -c.
-
   Are all programs sorting output file names?
+
   Are all summaries matching the information listings?
+
   Is maximal code sharing implemented?
 
   Separate APAS from Rust
+
   Union review-X and fix-X
 
   
