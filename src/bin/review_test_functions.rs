@@ -51,11 +51,28 @@ struct PublicFunction {
     impl_type: Option<String>, // For methods: Some(TypeName), for free functions: None
 }
 
+#[derive(Debug, Clone)]
+struct TraitImpl {
+    trait_name: String,   // "Display", "Debug", "PartialEq", etc.
+    type_name: String,    // "PQEntry", "ArraySeqS", etc.
+    method_name: String,  // "fmt", "eq", etc.
+    _file: PathBuf,       // For future use
+    _line: usize,         // For future use
+}
+
 #[derive(Debug)]
 struct TestCoverage {
     function: PublicFunction,
     call_count: usize,
     test_files: Vec<PathBuf>,
+    coverage_source: CoverageSource,
+}
+
+#[derive(Debug, Clone)]
+enum CoverageSource {
+    Direct,                  // Direct function call
+    DisplayTrait,            // via format!(), println!(), etc.
+    DebugTrait,              // via format!("{:?}"), println!("{:?}"), etc.
 }
 
 fn get_line_number(node: &SyntaxNode, content: &str) -> usize {
@@ -154,21 +171,93 @@ fn find_parent_impl_type(node: &SyntaxNode) -> Option<String> {
         if parent.kind() == SyntaxKind::IMPL {
             if let Some(impl_def) = ast::Impl::cast(parent.clone()) {
                 if let Some(self_ty) = impl_def.self_ty() {
-                    // Extract type name from self_ty
-                    // Look for the first NAME token
-                    for token in self_ty.syntax().descendants_with_tokens() {
-                        if token.kind() == SyntaxKind::NAME {
-                            if let Some(name_text) = token.as_token() {
-                                return Some(name_text.text().to_string());
-                            }
-                        }
-                    }
+                    // Extract type name (without generics)
+                    // For "MappingStEph<A, B>" we want just "MappingStEph"
+                    let full_type = self_ty.syntax().text().to_string();
+                    // Strip everything after the first '<' (generic parameters)
+                    let type_name = if let Some(idx) = full_type.find('<') {
+                        full_type[..idx].trim().to_string()
+                    } else {
+                        full_type.trim().to_string()
+                    };
+                    return Some(type_name);
                 }
             }
         }
         current = parent.parent();
     }
     None
+}
+
+/// Find all trait implementations in a source file
+/// Returns: Vec<TraitImpl> with trait name, type name, method name, file, line
+fn find_trait_implementations(file_path: &Path) -> Result<Vec<TraitImpl>> {
+    let content = fs::read_to_string(file_path)?;
+    let parsed = ra_ap_syntax::SourceFile::parse(&content, ra_ap_syntax::Edition::Edition2021);
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    let mut trait_impls = Vec::new();
+    
+    // Find all impl blocks
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::IMPL {
+            if let Some(impl_def) = ast::Impl::cast(node.clone()) {
+                // Check if this is a trait implementation (not inherent impl)
+                if let Some(trait_ref) = impl_def.trait_() {
+                    // Extract trait name (just "Display", not "Display for Type")
+                    // Find the first NAME_REF token in the trait_ref syntax
+                    let trait_name = trait_ref.syntax()
+                        .descendants_with_tokens()
+                        .find_map(|t| {
+                            if t.kind() == SyntaxKind::NAME_REF {
+                                t.as_token().map(|tok| tok.text().to_string())
+                            } else {
+                                None
+                            }
+                        })
+                        .unwrap_or_else(|| trait_ref.syntax().text().to_string());
+                    
+                    // Extract type name (without generics)
+                    // For "MappingStEph<A, B>" we want just "MappingStEph"
+                    let type_name = if let Some(self_ty) = impl_def.self_ty() {
+                        // Get the full text first
+                        let full_type = self_ty.syntax().text().to_string();
+                        // Strip everything after the first '<' (generic parameters)
+                        if let Some(idx) = full_type.find('<') {
+                            full_type[..idx].trim().to_string()
+                        } else {
+                            full_type.trim().to_string()
+                        }
+                    } else {
+                        continue;
+                    };
+                    
+                    // Extract all methods in this trait impl
+                    if let Some(assoc_item_list) = impl_def.assoc_item_list() {
+                        for item in assoc_item_list.assoc_items() {
+                            if let ast::AssocItem::Fn(fn_def) = item {
+                                if let Some(name) = fn_def.name() {
+                                    let method_name = name.text().to_string();
+                                    let line = get_line_number(fn_def.syntax(), &content);
+                                    
+                                    trait_impls.push(TraitImpl {
+                                        trait_name: trait_name.clone(),
+                                        type_name: type_name.clone(),
+                                        method_name,
+                                        _file: file_path.to_path_buf(),
+                                        _line: line,
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    Ok(trait_impls)
 }
 
 /// Find all function calls in a test file
@@ -277,6 +366,134 @@ fn find_function_calls(test_file: &Path) -> Result<HashMap<String, usize>> {
     Ok(call_counts)
 }
 
+/// Find format macro calls (format!(), println!(), etc.) in test files
+/// Returns HashMap of type name -> (call_count, is_debug)
+/// is_debug: true for {:?}, false for {}
+fn find_format_macro_calls(test_file: &Path, trait_impls: &[TraitImpl]) -> Result<HashMap<String, (usize, CoverageSource)>> {
+    let content = fs::read_to_string(test_file)?;
+    let parsed = ra_ap_syntax::SourceFile::parse(&content, ra_ap_syntax::Edition::Edition2021);
+    let tree = parsed.tree();
+    let root = tree.syntax();
+    
+    let mut format_calls: HashMap<String, (usize, CoverageSource)> = HashMap::new();
+    
+    // Build a mapping from type names to trait implementations
+    // Key: type_name, Value: Vec<(trait_name, method_name)>
+    let mut type_to_traits: HashMap<String, Vec<(String, String)>> = HashMap::new();
+    for trait_impl in trait_impls {
+        type_to_traits
+            .entry(trait_impl.type_name.clone())
+            .or_default()
+            .push((trait_impl.trait_name.clone(), trait_impl.method_name.clone()));
+    }
+    
+    // Find all macro calls
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::MACRO_CALL {
+            if let Some(macro_call) = ast::MacroCall::cast(node.clone()) {
+                // Check if it's a format-related macro
+                let macro_name = if let Some(path) = macro_call.path() {
+                    path.segments().last().and_then(|seg| seg.name_ref()).map(|n| n.text().to_string())
+                } else {
+                    None
+                };
+                
+                let is_format_macro = macro_name.as_ref().map_or(false, |name| {
+                    matches!(name.as_str(), "format" | "println" | "eprintln" | "print" | "eprint" | "write" | "writeln")
+                });
+                
+                if !is_format_macro {
+                    continue;
+                }
+                
+                // Extract token tree
+                if let Some(token_tree) = macro_call.token_tree() {
+                    // Collect all tokens
+                    let tokens: Vec<_> = token_tree.syntax()
+                        .descendants_with_tokens()
+                        .filter_map(|e| e.as_token().map(|t| (t.kind(), t.text().to_string())))
+                        .collect();
+                    
+                    // Look for format specifiers: {} or {:?}
+                    // Pattern: STRING_LITERAL containing {} or {:?}, followed by COMMA, then IDENT(s)
+                    
+                    let mut found_display = false;
+                    let mut found_debug = false;
+                    let mut identifiers = Vec::new();
+                    let mut in_format_string = false;
+                    
+                    for i in 0..tokens.len() {
+                        let (kind, text) = &tokens[i];
+                        
+                        // Check for format string literals
+                        if *kind == SyntaxKind::STRING {
+                            in_format_string = true;
+                            if text.contains("{}") {
+                                found_display = true;
+                            }
+                            if text.contains("{:?}") {
+                                found_debug = true;
+                            }
+                        }
+                        
+                        // After format string, collect identifiers (the variables being formatted)
+                        if in_format_string && *kind == SyntaxKind::IDENT {
+                            // Skip rust keywords
+                            if !["let", "mut", "ref", "const", "static", "fn", "if", "else", "match", "for", "while", "loop"].contains(&text.as_str()) {
+                                identifiers.push(text.clone());
+                            }
+                        }
+                    }
+                    
+                    // For each identifier, check if it matches a type name in our trait implementations
+                    // Heuristic: variable name often relates to type name
+                    // Examples: "entry" -> "Entry", "PQEntry"
+                    //           "graph" -> "Graph", "DirGraphMtEph"
+                    //           "seq" -> "Seq", "ArraySeqMtEph"
+                    
+                    for ident in identifiers {
+                        // Try to match identifier to type names
+                        // Strategy 1: Direct match (case-insensitive prefix)
+                        // Strategy 2: Check if type name contains identifier (case-insensitive)
+                        
+                        for (type_name, traits) in &type_to_traits {
+                            let type_lower = type_name.to_lowercase();
+                            let ident_lower = ident.to_lowercase();
+                            
+                            // Check if this type implements Display or Debug
+                            let has_display = traits.iter().any(|(t, m)| t.contains("Display") && m == "fmt");
+                            let has_debug = traits.iter().any(|(t, m)| t.contains("Debug") && m == "fmt");
+                            
+                            // Match heuristics:
+                            // 1. Type name contains identifier: "DirGraphMtEph" contains "graph"
+                            // 2. Identifier is a lowercase version of type: "entry" -> "Entry"
+                            let matches = type_lower.contains(&ident_lower) || 
+                                          ident_lower == type_lower ||
+                                          type_lower.starts_with(&ident_lower);
+                            
+                            if matches {
+                                // Determine coverage source based on format specifier
+                                if found_display && has_display {
+                                    let key = format!("{}::fmt", type_name);
+                                    let entry = format_calls.entry(key).or_insert((0, CoverageSource::DisplayTrait));
+                                    entry.0 += 1;
+                                }
+                                if found_debug && has_debug {
+                                    let key = format!("{}::fmt", type_name);
+                                    let entry = format_calls.entry(key).or_insert((0, CoverageSource::DebugTrait));
+                                    entry.0 += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    Ok(format_calls)
+}
+
 fn main() -> Result<()> {
     let start = Instant::now();
     
@@ -299,8 +516,9 @@ fn main() -> Result<()> {
         std::process::exit(1);
     }
     
-    // Step 1: Find all public functions in src/
+    // Step 1: Find all public functions and trait implementations in src/
     let mut all_functions = Vec::new();
+    let mut all_trait_impls = Vec::new();
     for entry in WalkDir::new(&src_dir).follow_links(true) {
         let entry = entry?;
         if entry.file_type().is_file() && entry.path().extension().and_then(|s| s.to_str()) == Some("rs") {
@@ -308,16 +526,22 @@ fn main() -> Result<()> {
                 Ok(functions) => all_functions.extend(functions),
                 Err(e) => logger.log(&format!("Warning: Failed to parse {}: {}", entry.path().display(), e)),
             }
+            match find_trait_implementations(entry.path()) {
+                Ok(trait_impls) => all_trait_impls.extend(trait_impls),
+                Err(e) => logger.log(&format!("Warning: Failed to parse trait impls in {}: {}", entry.path().display(), e)),
+            }
         }
     }
     
-    // Step 2: Find all function calls in tests/
+    // Step 2: Find all function calls and format macro calls in tests/
     let mut test_call_counts: HashMap<String, (usize, Vec<PathBuf>)> = HashMap::new();
+    let mut trait_method_calls: HashMap<String, (usize, Vec<PathBuf>, CoverageSource)> = HashMap::new();
     
     if tests_dir.exists() {
         for entry in WalkDir::new(&tests_dir).follow_links(true) {
             let entry = entry?;
             if entry.file_type().is_file() && entry.path().extension().and_then(|s| s.to_str()) == Some("rs") {
+                // Find direct function calls
                 match find_function_calls(entry.path()) {
                     Ok(calls) => {
                         for (fn_name, count) in calls {
@@ -330,6 +554,20 @@ fn main() -> Result<()> {
                     }
                     Err(e) => logger.log(&format!("Warning: Failed to parse test file {}: {}", entry.path().display(), e)),
                 }
+                
+                // Find format macro calls (Display/Debug trait usage)
+                match find_format_macro_calls(entry.path(), &all_trait_impls) {
+                    Ok(format_calls) => {
+                        for (method_key, (count, source)) in format_calls {
+                            let entry_data = trait_method_calls.entry(method_key).or_insert((0, Vec::new(), source));
+                            entry_data.0 += count;
+                            if !entry_data.1.contains(&entry.path().to_path_buf()) {
+                                entry_data.1.push(entry.path().to_path_buf());
+                            }
+                        }
+                    }
+                    Err(e) => logger.log(&format!("Warning: Failed to parse format macros in test file {}: {}", entry.path().display(), e)),
+                }
             }
         }
     }
@@ -337,11 +575,30 @@ fn main() -> Result<()> {
     // Step 3: Build coverage report
     let mut coverage: Vec<TestCoverage> = Vec::new();
     for func in all_functions {
-        let (call_count, test_files) = test_call_counts.get(&func.name).cloned().unwrap_or((0, Vec::new()));
+        // Check for direct function calls
+        let (mut call_count, mut test_files) = test_call_counts.get(&func.name).cloned().unwrap_or((0, Vec::new()));
+        let mut coverage_source = CoverageSource::Direct;
+        
+        // Check if this is a trait method (e.g., fmt in Display/Debug impl)
+        // Build the key as "TypeName::method_name"
+        if let Some(ref impl_type) = func.impl_type {
+            let trait_method_key = format!("{}::{}", impl_type, func.name);
+            if let Some((trait_count, trait_test_files, trait_source)) = trait_method_calls.get(&trait_method_key) {
+                call_count += trait_count;
+                for tf in trait_test_files {
+                    if !test_files.contains(tf) {
+                        test_files.push(tf.clone());
+                    }
+                }
+                coverage_source = trait_source.clone();
+            }
+        }
+        
         coverage.push(TestCoverage {
             function: func,
             call_count,
             test_files,
+            coverage_source,
         });
     }
     
@@ -394,12 +651,20 @@ fn main() -> Result<()> {
         let rel_path = cov.function.file.strip_prefix(&project_root)
             .unwrap_or(&cov.function.file);
         
-        logger.log(&format!("{}:{}:  {} - {} call(s) in {} test file(s)", 
+        // Add coverage source annotation for trait methods
+        let coverage_annotation = match cov.coverage_source {
+            CoverageSource::DisplayTrait => " (via Display trait)",
+            CoverageSource::DebugTrait => " (via Debug trait)",
+            CoverageSource::Direct => "",
+        };
+        
+        logger.log(&format!("{}:{}:  {} - {} call(s) in {} test file(s){}", 
             rel_path.display(), 
             cov.function.line,
             func_desc,
             cov.call_count,
-            cov.test_files.len()
+            cov.test_files.len(),
+            coverage_annotation
         ));
     }
     
