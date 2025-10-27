@@ -12,6 +12,21 @@ use std::path::{Path, PathBuf};
 use std::io::{self, Write};
 use std::time::Instant;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/count_loc.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn count_lines_in_file(path: &Path) -> Result<usize> {
     let content = fs::read_to_string(path)?;
     Ok(content.lines().count())

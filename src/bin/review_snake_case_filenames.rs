@@ -10,7 +10,23 @@ use anyhow::Result;
 use rusticate::{StandardArgs, format_number, find_rust_files};
 use std::path::{Path, PathBuf};
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_snake_case_filenames.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct Violation {
     file: PathBuf,
@@ -96,8 +112,8 @@ fn main() -> Result<()> {
     let base_dir = args.base_dir();
     
     // Print compilation directory for Emacs compile-mode
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let search_dirs = args.get_search_dirs();
     
@@ -112,25 +128,25 @@ fn main() -> Result<()> {
     
     // Report violations
     if violations.is_empty() {
-        println!("✓ All files follow snake_case naming convention");
+        log!("✓ All files follow snake_case naming convention");
     } else {
-        println!("✗ Found {} violation(s):", format_number(violations.len()));
-        println!();
+        log!("✗ Found {} violation(s):", format_number(violations.len()));
+        log!("");
         for v in &violations {
             // Use relative path from base_dir (Emacs will use compilation directory)
             if let Ok(rel_path) = v.file.strip_prefix(&base_dir) {
-                println!("{}:1: {}", rel_path.display(), v.message);
+                log!("{}:1: {}", rel_path.display(), v.message);
             }
         }
     }
     
     // Summary line
-    println!();
-    println!("Summary: {} files checked, {} files with violations",
+    log!("");
+    log!("Summary: {} files checked, {} files with violations",
              format_number(files.len()), format_number(violations.len()));
     
     let elapsed = start.elapsed().as_millis();
-    println!("Completed in {}ms", elapsed);
+    log!("Completed in {}ms", elapsed);
     
     // Exit code: 0 if no violations, 1 if violations found
     if violations.is_empty() {

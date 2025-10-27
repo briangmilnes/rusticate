@@ -19,6 +19,21 @@ use std::fs;
 use std::time::Instant;
 use rusticate::{StandardArgs, find_rust_files};
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/fix_import_order.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 enum ImportSection {
     Std,
@@ -250,12 +265,12 @@ fn main() -> Result<()> {
     let base_dir = args.base_dir();
     
     // Print compilation directory for Emacs compile-mode
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     if dry_run {
-        println!("DRY RUN MODE: Will not modify files");
-        println!();
+        log!("DRY RUN MODE: Will not modify files");
+        log!("");
     }
     
     let search_dirs = args.get_search_dirs();
@@ -301,7 +316,7 @@ fn main() -> Result<()> {
                 .map(|(idx, _)| idx + 1)
                 .unwrap_or(1);
             
-            println!("{}:{}: Fixed import order", rel_path.display(), first_import_line);
+            log!("{}:{}: Fixed import order", rel_path.display(), first_import_line);
             
             // Show before/after of import section (just the use statements)
             let source_imports: Vec<&str> = source.lines()
@@ -315,25 +330,25 @@ fn main() -> Result<()> {
                 .collect();
             
             if !source_imports.is_empty() {
-                println!("  Before:");
+                log!("  Before:");
                 for line in source_imports.iter().take(5) {
-                    println!("    {}", line);
+                    log!("    {}", line);
                 }
                 if source_imports.len() > 5 {
-                    println!("    ... ({} more lines)", source_imports.len() - 5);
+                    log!("    ... ({} more lines)", source_imports.len() - 5);
                 }
             }
             
             if !fixed_imports.is_empty() {
-                println!("  After:");
+                log!("  After:");
                 for line in fixed_imports.iter().take(5) {
-                    println!("    {}", line);
+                    log!("    {}", line);
                 }
                 if fixed_imports.len() > 5 {
-                    println!("    ... ({} more lines)", fixed_imports.len() - 5);
+                    log!("    ... ({} more lines)", fixed_imports.len() - 5);
                 }
             }
-            println!();
+            log!("");
             
             if !dry_run {
                 match fs::write(file, &fixed) {
@@ -353,17 +368,17 @@ fn main() -> Result<()> {
     
     // Summary
     if dry_run {
-        println!("Would fix {} file(s), {} already correct", fixed_count, already_correct);
+        log!("Would fix {} file(s), {} already correct", fixed_count, already_correct);
     } else {
-        println!("✓ Fixed {} file(s), {} already correct", fixed_count, already_correct);
+        log!("✓ Fixed {} file(s), {} already correct", fixed_count, already_correct);
     }
     
     if failed_count > 0 {
-        println!("✗ Failed to process {} file(s)", failed_count);
+        log!("✗ Failed to process {} file(s)", failed_count);
     }
     
     let elapsed = start.elapsed().as_millis();
-    println!("Completed in {}ms", elapsed);
+    log!("Completed in {}ms", elapsed);
     
     Ok(())
 }

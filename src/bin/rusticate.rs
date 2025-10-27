@@ -31,7 +31,23 @@
 
 use std::env;
 use std::process::{Command, exit};
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/rusticate.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn main() {
     let args: Vec<String> = env::args().collect();
 

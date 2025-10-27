@@ -14,7 +14,23 @@ use ra_ap_syntax::{ast::{self, AstNode, HasName}, SyntaxKind, SourceFile, Editio
 use rusticate::{StandardArgs, find_rust_files};
 use std::path::Path;
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_trait_self_usage.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn main() -> Result<()> {
     let start_time = Instant::now();
     let args = StandardArgs::parse()?;
@@ -22,7 +38,7 @@ fn main() -> Result<()> {
 
     let files = find_rust_files(&args.paths);
 
-    println!("Reviewing {} Rust files for trait Self usage...", files.len());
+    log!("Reviewing {} Rust files for trait Self usage...", files.len());
 
     let mut all_violations = 0;
     let mut files_with_violations = 0;
@@ -36,14 +52,14 @@ fn main() -> Result<()> {
     }
 
     if all_violations == 0 {
-        println!("✓ Trait Self Usage: No violations found");
+        log!("✓ Trait Self Usage: No violations found");
         let elapsed = start_time.elapsed();
         eprintln!("\nCompleted in {}ms", elapsed.as_millis());
         return Ok(());
     }
 
-    println!("\n✗ Found {} violation(s) in {} file(s)", all_violations, files_with_violations);
-    println!("\nNote: Trait methods should return Self, &Self, or &mut Self instead of concrete types");
+    log!("\n✗ Found {} violation(s) in {} file(s)", all_violations, files_with_violations);
+    log!("\nNote: Trait methods should return Self, &Self, or &mut Self instead of concrete types");
 
     let elapsed = start_time.elapsed();
     eprintln!("\nCompleted in {}ms", elapsed.as_millis());

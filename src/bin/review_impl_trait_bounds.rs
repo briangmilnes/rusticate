@@ -10,7 +10,23 @@ use ra_ap_syntax::{ast::{self, AstNode, HasName}, SyntaxKind, SourceFile, Editio
 use rusticate::{StandardArgs, find_rust_files};
 use std::path::Path;
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_impl_trait_bounds.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn main() -> Result<()> {
     let start_time = Instant::now();
     let args = StandardArgs::parse()?;
@@ -22,9 +38,9 @@ fn main() -> Result<()> {
         .filter(|p| p.starts_with(base_dir.join("src")))
         .collect();
 
-    println!("INHERENT IMPL BLOCKS WITH TRAIT BOUNDS COMPARISON");
-    println!("{}", "=".repeat(80));
-    println!();
+    log!("INHERENT IMPL BLOCKS WITH TRAIT BOUNDS COMPARISON");
+    log!("{}", "=".repeat(80));
+    log!("");
 
     let mut total_impls = 0;
     let mut with_traits = 0;
@@ -86,22 +102,22 @@ fn main() -> Result<()> {
                         without_traits += 1;
                     }
 
-                    println!("{}:{}", rel_path.display(), line_num);
-                    println!("  Type: {}", type_name);
-                    println!("  Has trait: {}", if has_trait { "YES" } else { "NO" });
-                    println!("  Inherent impl: {}", first_line);
-                    println!();
+                    log!("{}:{}", rel_path.display(), line_num);
+                    log!("  Type: {}", type_name);
+                    log!("  Has trait: {}", if has_trait { "YES" } else { "NO" });
+                    log!("  Inherent impl: {}", first_line);
+                    log!("");
                 }
             }
         }
     }
 
-    println!("{}", "=".repeat(80));
-    println!("SUMMARY");
-    println!("{}", "=".repeat(80));
-    println!("Total impl blocks with generics: {}", total_impls);
-    println!("  With trait definitions: {}", with_traits);
-    println!("  Without trait definitions: {}", without_traits);
+    log!("{}", "=".repeat(80));
+    log!("SUMMARY");
+    log!("{}", "=".repeat(80));
+    log!("Total impl blocks with generics: {}", total_impls);
+    log!("  With trait definitions: {}", with_traits);
+    log!("  Without trait definitions: {}", without_traits);
 
     let elapsed = start_time.elapsed();
     eprintln!("\nCompleted in {}ms", elapsed.as_millis());

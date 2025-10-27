@@ -10,7 +10,23 @@
 use anyhow::Result;
 use std::process::Command;
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_bench_modules.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn main() -> Result<()> {
     let start = Instant::now();
     
@@ -22,26 +38,26 @@ fn main() -> Result<()> {
     let stderr = String::from_utf8_lossy(&output.stderr);
     
     if !output.status.success() {
-        println!("❌ Benchmark compilation check failed:");
+        log!("❌ Benchmark compilation check failed:");
         
         // Show error lines
         for line in stderr.lines() {
             let line_lower = line.to_lowercase();
             if line_lower.contains("error") || line_lower.contains("warning") {
-                println!("   {}", line);
+                log!("   {}", line);
             }
         }
         
         let elapsed = start.elapsed().as_millis();
-        println!("Completed in {}ms", elapsed);
+        log!("Completed in {}ms", elapsed);
         
         std::process::exit(1);
     }
     
-    println!("✓ All benchmark modules compile successfully");
+    log!("✓ All benchmark modules compile successfully");
     
     let elapsed = start.elapsed().as_millis();
-    println!("Completed in {}ms", elapsed);
+    log!("Completed in {}ms", elapsed);
     
     Ok(())
 }

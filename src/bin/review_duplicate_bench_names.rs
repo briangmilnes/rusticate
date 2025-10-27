@@ -12,6 +12,21 @@ use std::collections::HashMap;
 use std::fs;
 use std::time::Instant;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_duplicate_bench_names.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn main() -> Result<()> {
     let start = Instant::now();
     
@@ -67,32 +82,32 @@ fn main() -> Result<()> {
     duplicates.sort_by(|a, b| a.0.cmp(&b.0));
     
     if !duplicates.is_empty() {
-        println!("✗ Found duplicate benchmark names in Cargo.toml:");
-        println!();
+        log!("✗ Found duplicate benchmark names in Cargo.toml:");
+        log!("");
         
         let mut total_violations = 0;
         for (name, paths) in &duplicates {
-            println!("  name = \"{}\" appears {} times:", name, paths.len());
+            log!("  name = \"{}\" appears {} times:", name, paths.len());
             for path in paths {
-                println!("    - {}", path);
+                log!("    - {}", path);
             }
-            println!();
+            log!("");
             total_violations += paths.len() - 1;
         }
         
-        println!("Total violations: {}", total_violations);
-        println!("\nFix: Each benchmark must have a unique name.");
-        println!("Suggestion: Add chapter suffix like 'BenchFooChap37' and 'BenchFooChap38'");
+        log!("Total violations: {}", total_violations);
+        log!("\nFix: Each benchmark must have a unique name.");
+        log!("Suggestion: Add chapter suffix like 'BenchFooChap37' and 'BenchFooChap38'");
         
         let elapsed = start.elapsed().as_millis();
-        println!("Completed in {}ms", elapsed);
+        log!("Completed in {}ms", elapsed);
         
         std::process::exit(1);
     }
-    println!("✓ All {} benchmark names are unique in Cargo.toml", total_benches);
+    log!("✓ All {} benchmark names are unique in Cargo.toml", total_benches);
     
     let elapsed = start.elapsed().as_millis();
-    println!("Completed in {}ms", elapsed);
+    log!("Completed in {}ms", elapsed);
     
     Ok(())
 }

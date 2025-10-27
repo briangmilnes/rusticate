@@ -27,6 +27,21 @@ use std::path::{Path, PathBuf};
 use std::time::Instant;
 use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes, line_number};
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_stub_delegation.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct ImplInfo {
     line: usize,
@@ -316,8 +331,8 @@ fn main() -> Result<()> {
     let args = StandardArgs::parse()?;
     let base_dir = args.base_dir();
     
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let files = find_rust_files(&args.paths);
     
@@ -350,9 +365,9 @@ fn main() -> Result<()> {
     // Report findings in Emacs compile-mode format (all lines clickable)
     if !all_violations.is_empty() {
         for v in &all_violations {
-            println!("{}:{}: {} - inherent impl with {} overlapping methods", 
+            log!("{}:{}: {} - inherent impl with {} overlapping methods", 
                 v.file.display(), v.inherent_line, v.type_name, v.method_analyses.len());
-            println!("{}:{}: {} - trait impl {} with {} overlapping methods",
+            log!("{}:{}: {} - trait impl {} with {} overlapping methods",
                 v.file.display(), v.trait_line, v.type_name, v.trait_name, v.method_analyses.len());
             
             // Group methods by pattern
@@ -375,29 +390,29 @@ fn main() -> Result<()> {
                 let names: Vec<String> = identical.iter()
                     .map(|(name, kind)| format!("{}:{}", name, kind))
                     .collect();
-                println!("  IDENTICAL ({}): {}", identical.len(), names.join(", "));
+                log!("  IDENTICAL ({}): {}", identical.len(), names.join(", "));
             }
             if !stubs.is_empty() {
                 let names: Vec<String> = stubs.iter()
                     .map(|(name, kind)| format!("{}:{}", name, kind))
                     .collect();
-                println!("  STUB DELEGATION ({}): {}", stubs.len(), names.join(", "));
+                log!("  STUB DELEGATION ({}): {}", stubs.len(), names.join(", "));
             }
             if !similar.is_empty() {
                 let names: Vec<String> = similar.iter()
                     .map(|(name, kind, sim)| format!("{}:{} ({:.1}%)", name, kind, sim * 100.0))
                     .collect();
-                println!("  HIGH SIMILARITY ({}): {}", similar.len(), names.join(", "));
+                log!("  HIGH SIMILARITY ({}): {}", similar.len(), names.join(", "));
             }
             if !different.is_empty() {
                 let names: Vec<String> = different.iter()
                     .map(|(name, kind, sim)| format!("{}:{} ({:.1}%)", name, kind, sim * 100.0))
                     .collect();
-                println!("  DIFFERENT ({}): {}", different.len(), names.join(", "));
+                log!("  DIFFERENT ({}): {}", different.len(), names.join(", "));
             }
         }
         
-        println!();
+        log!("");
         
         // Pareto analysis of duplication patterns
         let mut total_methods = 0;
@@ -424,9 +439,9 @@ fn main() -> Result<()> {
         }
         let total = total_methods + total_functions;
         
-        println!("{}", "=".repeat(80));
-        println!("PARETO ANALYSIS: DUPLICATION PATTERNS");
-        println!("{}", "=".repeat(80));
+        log!("{}", "=".repeat(80));
+        log!("PARETO ANALYSIS: DUPLICATION PATTERNS");
+        log!("{}", "=".repeat(80));
         
         let mut patterns = vec![
             ("IDENTICAL (exact duplication)", identical_count),
@@ -441,22 +456,22 @@ fn main() -> Result<()> {
             cumulative += count;
             let percentage = (*count as f64 / total as f64) * 100.0;
             let cumulative_pct = (cumulative as f64 / total as f64) * 100.0;
-            println!("{:6} ({:5.1}%, cumulative {:5.1}%): {}",
+            log!("{:6} ({:5.1}%, cumulative {:5.1}%): {}",
                 format_number(*count), percentage, cumulative_pct, pattern);
         }
-        println!("{}", "-".repeat(80));
-        println!("TOTAL OVERLAPPING: {} ({} methods :m, {} functions :f)", 
+        log!("{}", "-".repeat(80));
+        log!("TOTAL OVERLAPPING: {} ({} methods :m, {} functions :f)", 
             format_number(total), format_number(total_methods), format_number(total_functions));
-        println!();
+        log!("");
         
-        println!("✗ Found {} stub delegation violations in {} file(s)",
+        log!("✗ Found {} stub delegation violations in {} file(s)",
             format_number(all_violations.len()),
             format_number(files.len()));
-        println!("Completed in {}ms", start.elapsed().as_millis());
+        log!("Completed in {}ms", start.elapsed().as_millis());
         std::process::exit(1);
     } else {
-        println!("✓ No stub delegation found in {} file(s)", format_number(files.len()));
-        println!("Completed in {}ms", start.elapsed().as_millis());
+        log!("✓ No stub delegation found in {} file(s)", format_number(files.len()));
+        log!("Completed in {}ms", start.elapsed().as_millis());
         Ok(())
     }
 }

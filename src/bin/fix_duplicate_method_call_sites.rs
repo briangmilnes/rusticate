@@ -19,6 +19,21 @@ use rusticate::StandardArgs;
 use rusticate::args::args::find_rust_files;
 use rusticate::duplicate_methods::find_duplicate_methods;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/fix_duplicate_method_call_sites.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn fix_file(file_path: &PathBuf, method_names: &[String], dry_run: bool) -> Result<usize> {
     let source = fs::read_to_string(file_path)?;
     let parsed = SourceFile::parse(&source, Edition::Edition2021);
@@ -97,9 +112,9 @@ fn fix_file(file_path: &PathBuf, method_names: &[String], dry_run: bool) -> Resu
     
     if !dry_run {
         fs::write(file_path, new_source)?;
-        println!("Fixed {} call site(s) in {}", fixed_count, file_path.display());
+        log!("Fixed {} call site(s) in {}", fixed_count, file_path.display());
     } else {
-        println!("[DRY RUN] Would fix {} call site(s) in {}", fixed_count, file_path.display());
+        log!("[DRY RUN] Would fix {} call site(s) in {}", fixed_count, file_path.display());
     }
     
     Ok(fixed_count)
@@ -141,18 +156,18 @@ fn main() -> Result<()> {
     }
     
     if method_names.is_empty() {
-        println!("No duplicate methods found - nothing to fix");
+        log!("No duplicate methods found - nothing to fix");
         return Ok(());
     }
     
-    println!("{}", "=".repeat(80));
-    println!("FIX DUPLICATE METHOD CALL SITES");
+    log!("{}", "=".repeat(80));
+    log!("FIX DUPLICATE METHOD CALL SITES");
     if dry_run {
-        println!("(DRY RUN MODE)");
+        log!("(DRY RUN MODE)");
     }
-    println!("{}", "=".repeat(80));
-    println!("Target methods: {}", method_names.join(", "));
-    println!();
+    log!("{}", "=".repeat(80));
+    log!("Target methods: {}", method_names.join(", "));
+    log!("");
     
     // Get test/bench files to fix
     let search_dirs = args.get_search_dirs();
@@ -175,13 +190,13 @@ fn main() -> Result<()> {
         }
     }
     
-    println!();
-    println!("{}", "=".repeat(80));
-    println!("SUMMARY:");
-    println!("  Files modified: {}", files_modified);
-    println!("  Total call sites fixed: {}", total_fixed);
-    println!();
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("");
+    log!("{}", "=".repeat(80));
+    log!("SUMMARY:");
+    log!("  Files modified: {}", files_modified);
+    log!("  Total call sites fixed: {}", total_fixed);
+    log!("");
+    log!("Completed in {}ms", start.elapsed().as_millis());
     
     Ok(())
 }

@@ -8,7 +8,23 @@ use anyhow::Result;
 use clap::Parser;
 use std::path::PathBuf;
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/fix.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Parser)]
 #[command(name = "fix")]
 #[command(about = "Fix common issues in Rust code", long_about = None)]
@@ -37,20 +53,20 @@ fn main() -> Result<()> {
     // Print directory context
     let parent_dir = args.path.parent()
         .unwrap_or_else(|| std::path::Path::new("."));
-    println!("Entering directory '{}'", parent_dir.display());
-    println!();
+    log!("Entering directory '{}'", parent_dir.display());
+    log!("");
     
-    println!("Fixing file: {:?}", args.path);
-    println!("In-place: {}", args.in_place);
-    println!("Dry-run: {}", args.dry_run);
+    log!("Fixing file: {:?}", args.path);
+    log!("In-place: {}", args.in_place);
+    log!("Dry-run: {}", args.dry_run);
     if let Some(fix) = args.fix_type {
-        println!("Running fix: {}", fix);
+        log!("Running fix: {}", fix);
     }
     
     rusticate::fix_file(&args.path, args.in_place)?;
     
-    println!();
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("");
+    log!("Completed in {}ms", start.elapsed().as_millis());
     
     Ok(())
 }

@@ -3,6 +3,21 @@ use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/fix_stub_delegation.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 /// Check if a method body is a stub delegation (calls Self::method or Type::method)
 fn is_stub_delegation(body: &str, method_name: &str, type_name: &str) -> bool {
     let body_trimmed = body.trim();
@@ -320,7 +335,7 @@ fn main() {
                 if methods_fixed > 0 {
                     total_files_modified += 1;
                     total_methods_fixed += methods_fixed;
-                    println!("{}: fixed {} stub delegations", path.display(), methods_fixed);
+                    log!("{}: fixed {} stub delegations", path.display(), methods_fixed);
                 }
             }
             Err(e) => {
@@ -329,12 +344,12 @@ fn main() {
         }
     }
     
-    println!();
-    println!("Summary:");
-    println!("  Files processed: {}", total_files_processed);
-    println!("  Files modified: {}", total_files_modified);
-    println!("  Stub delegations fixed: {}", total_methods_fixed);
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("");
+    log!("Summary:");
+    log!("  Files processed: {}", total_files_processed);
+    log!("  Files modified: {}", total_files_modified);
+    log!("  Stub delegations fixed: {}", total_methods_fixed);
+    log!("Completed in {}ms", start.elapsed().as_millis());
     
     if total_files_modified > 0 {
         std::process::exit(1);

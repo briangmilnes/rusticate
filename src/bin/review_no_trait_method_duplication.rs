@@ -14,7 +14,23 @@ use rusticate::{StandardArgs, find_rust_files};
 use std::collections::HashMap;
 use std::path::Path;
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_no_trait_method_duplication.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug, Clone)]
 struct ImplBlock {
     is_trait_impl: bool,
@@ -193,18 +209,18 @@ fn main() -> Result<()> {
     }
 
     if all_violations.is_empty() {
-        println!("✓ No Trait Method Duplication: PASS");
+        log!("✓ No Trait Method Duplication: PASS");
         let elapsed = start_time.elapsed();
         eprintln!("\nCompleted in {}ms", elapsed.as_millis());
         return Ok(());
     }
 
     // Report violations
-    println!("✗ No Trait Method Duplication: FAIL\n");
-    println!("Found {} duplicate method(s):\n", all_violations.len());
+    log!("✗ No Trait Method Duplication: FAIL\n");
+    log!("Found {} duplicate method(s):\n", all_violations.len());
 
     for (file_path, violation) in &all_violations {
-        println!(
+        log!(
             "{}:{}: Duplicate method '{}' in inherent impl for {} (also in {} trait impl at line {})",
             file_path.display(),
             violation.inherent_line,
@@ -215,7 +231,7 @@ fn main() -> Result<()> {
         );
     }
 
-    println!("\nFix: Delete the inherent method and keep only the trait method implementation.");
+    log!("\nFix: Delete the inherent method and keep only the trait method implementation.");
 
     let elapsed = start_time.elapsed();
     eprintln!("\nCompleted in {}ms", elapsed.as_millis());

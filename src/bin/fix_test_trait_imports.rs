@@ -3,6 +3,21 @@ use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/fix_test_trait_imports.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn process_file(file_path: &Path) -> Result<bool, Box<dyn std::error::Error>> {
     let content = fs::read_to_string(file_path)?;
     let parse = ra_ap_syntax::SourceFile::parse(&content, Edition::Edition2021);
@@ -130,8 +145,8 @@ fn main() {
     let target_dir = &args[2];
     let start = std::time::Instant::now();
     
-    println!("Adding trait imports to test/bench files in: {}", target_dir);
-    println!();
+    log!("Adding trait imports to test/bench files in: {}", target_dir);
+    log!("");
     
     let files = rusticate::find_rust_files(&[PathBuf::from(target_dir)]);
     
@@ -144,7 +159,7 @@ fn main() {
         match process_file(path) {
             Ok(true) => {
                 modified_files += 1;
-                println!("{}: added trait imports", path.display());
+                log!("{}: added trait imports", path.display());
             }
             Ok(false) => {
                 // No changes needed
@@ -155,10 +170,10 @@ fn main() {
         }
     }
     
-    println!();
-    println!("Summary:");
-    println!("  Files processed: {}", total_files);
-    println!("  Files modified: {}", modified_files);
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("");
+    log!("Summary:");
+    log!("  Files processed: {}", total_files);
+    log!("  Files modified: {}", modified_files);
+    log!("Completed in {}ms", start.elapsed().as_millis());
 }
 

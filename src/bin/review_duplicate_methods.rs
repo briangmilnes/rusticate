@@ -12,7 +12,23 @@ use std::time::Instant;
 use rusticate::StandardArgs;
 use rusticate::args::args::find_rust_files;
 use rusticate::duplicate_methods::find_duplicate_methods;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_duplicate_methods.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn main() -> anyhow::Result<()> {
     let args = StandardArgs::parse()?;
     let start = Instant::now();
@@ -30,21 +46,21 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
-    println!("{}", "=".repeat(80));
-    println!("DUPLICATE METHODS REVIEW");
-    println!("{}", "=".repeat(80));
+    log!("{}", "=".repeat(80));
+    log!("DUPLICATE METHODS REVIEW");
+    log!("{}", "=".repeat(80));
 
     if all_issues.is_empty() {
-        println!("\n✓ No duplicate methods found!");
+        log!("\n✓ No duplicate methods found!");
     } else {
-        println!();
+        log!("");
         for (file_path, issues) in &all_issues {
             for issue in issues {
-                println!("Duplicate method '{}' in {}:", issue.name, file_path.display());
+                log!("Duplicate method '{}' in {}:", issue.name, file_path.display());
                 for loc in &issue.locations {
-                    println!("{}:{}: {}", file_path.display(), loc.line, loc.first_line);
+                    log!("{}:{}: {}", file_path.display(), loc.line, loc.first_line);
                 }
-                println!();
+                log!("");
             }
         }
     }
@@ -52,12 +68,12 @@ fn main() -> anyhow::Result<()> {
     let total_files = all_issues.len();
     let total_issues: usize = all_issues.iter().map(|(_, issues)| issues.len()).sum();
 
-    println!("{}", "=".repeat(80));
-    println!("SUMMARY:");
-    println!("  Total files with duplicates: {}", total_files);
-    println!("  Total duplicate names: {}", total_issues);
-    println!();
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("{}", "=".repeat(80));
+    log!("SUMMARY:");
+    log!("  Total files with duplicates: {}", total_files);
+    log!("  Total duplicate names: {}", total_issues);
+    log!("");
+    log!("Completed in {}ms", start.elapsed().as_millis());
 
     Ok(())
 }

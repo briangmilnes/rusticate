@@ -15,6 +15,21 @@ use std::path::PathBuf;
 use std::time::Instant;
 use rusticate::{StandardArgs, format_number, find_rust_files};
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_doctests.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct DoctestFailure {
     file: PathBuf,
@@ -78,8 +93,8 @@ fn main() -> Result<()> {
     let base_dir = args.base_dir();
     
     // Print compilation directory for Emacs compile-mode
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let search_dirs = args.get_search_dirs();
     
@@ -104,28 +119,28 @@ fn main() -> Result<()> {
     }
     
     if all_failures.is_empty() {
-        println!("✓ All doctests parse correctly");
+        log!("✓ All doctests parse correctly");
     } else {
-        println!("✗ Found {} doctest failure(s):", format_number(all_failures.len()));
-        println!();
+        log!("✗ Found {} doctest failure(s):", format_number(all_failures.len()));
+        log!("");
         
         for failure in &all_failures {
             if let Ok(rel_path) = failure.file.strip_prefix(&base_dir) {
-                println!("{}:{}: doctest failed to parse", rel_path.display(), failure.line);
-                println!("  Error: {}", failure.error_message);
+                log!("{}:{}: doctest failed to parse", rel_path.display(), failure.line);
+                log!("  Error: {}", failure.error_message);
                 if !failure.code_snippet.is_empty() {
-                    println!("  Code: {}", failure.code_snippet.trim());
+                    log!("  Code: {}", failure.code_snippet.trim());
                 }
             }
         }
     }
     
     // Summary
-    println!();
-    println!("Summary: {} doctest(s) failed", format_number(all_failures.len()));
+    log!("");
+    log!("Summary: {} doctest(s) failed", format_number(all_failures.len()));
     
     let elapsed = start.elapsed().as_millis();
-    println!("Completed in {}ms", elapsed);
+    log!("Completed in {}ms", elapsed);
     
     // Exit code: 0 if no failures, 1 if failures found
     if all_failures.is_empty() {

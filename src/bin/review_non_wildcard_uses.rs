@@ -3,6 +3,21 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_non_wildcard_uses.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
 enum ViolationType {
     ToplevelWildcard, // (!) BOGUS
@@ -171,15 +186,15 @@ fn main() {
             file_path.display().to_string()
         };
         
-        println!("{}:{}: {} {}", display_path, line, vtype.letter(), use_stmt);
+        log!("{}:{}: {} {}", display_path, line, vtype.letter(), use_stmt);
     }
     
     if !all_violations.is_empty() {
-        println!();
+        log!("");
     }
-    println!("{}", "=".repeat(80));
-    println!("PARETO: BY VIOLATION TYPE");
-    println!("{}", "=".repeat(80));
+    log!("{}", "=".repeat(80));
+    log!("PARETO: BY VIOLATION TYPE");
+    log!("{}", "=".repeat(80));
     
     let mut sorted_types: Vec<_> = type_counts.iter().collect();
     sorted_types.sort_by(|a, b| b.1.cmp(a.1));
@@ -193,14 +208,14 @@ fn main() {
         } else {
             (0.0, 0.0)
         };
-        println!("{:6} ({:5.1}%, cumulative {:5.1}%): {}",
+        log!("{:6} ({:5.1}%, cumulative {:5.1}%): {}",
             rusticate::format_number(**count), percentage, cumulative_pct, vtype.description());
     }
     
-    println!();
-    println!("{}", "=".repeat(80));
-    println!("PARETO: BY DIRECTORY");
-    println!("{}", "=".repeat(80));
+    log!("");
+    log!("{}", "=".repeat(80));
+    log!("PARETO: BY DIRECTORY");
+    log!("{}", "=".repeat(80));
     
     // Group by directory - initialize all standard directories to 0
     let mut dir_counts: HashMap<String, usize> = HashMap::new();
@@ -255,28 +270,28 @@ fn main() {
         let func_count = type_breakdown.get(&ViolationType::Function).unwrap_or(&0);
         let type_count = type_breakdown.get(&ViolationType::Type).unwrap_or(&0);
         
-        println!("{:6} ({:5.1}%, cumulative {:5.1}%): {} [!:{}, a:{}, b:{}, c:{}]",
+        log!("{:6} ({:5.1}%, cumulative {:5.1}%): {} [!:{}, a:{}, b:{}, c:{}]",
             rusticate::format_number(**count), percentage, cumulative_pct, dir,
             toplevel_count, trait_count, func_count, type_count);
     }
     
-    println!();
-    println!("{}", "-".repeat(80));
-    println!("Total non-wildcard uses: {}", rusticate::format_number(total_violations));
-    println!("Files affected: {}/{}", 
+    log!("");
+    log!("{}", "-".repeat(80));
+    log!("Total non-wildcard uses: {}", rusticate::format_number(total_violations));
+    log!("Files affected: {}/{}", 
         rusticate::format_number(files_with_violations),
         rusticate::format_number(files.len()));
-    println!();
+    log!("");
     
     if total_violations > 0 {
-        println!("✗ Found {} non-wildcard use statements in {} file(s)",
+        log!("✗ Found {} non-wildcard use statements in {} file(s)",
             rusticate::format_number(total_violations),
             rusticate::format_number(files_with_violations));
     } else {
-        println!("✓ All apas_ai imports use wildcard imports");
+        log!("✓ All apas_ai imports use wildcard imports");
     }
     
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("Completed in {}ms", start.elapsed().as_millis());
     
     std::process::exit(if total_violations > 0 { 1 } else { 0 });
 }

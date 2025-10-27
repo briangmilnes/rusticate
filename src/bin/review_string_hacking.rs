@@ -23,6 +23,21 @@ use std::fs;
 use std::time::Instant;
 use rusticate::{StandardArgs, format_number};
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_string_hacking.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn main() -> Result<()> {
     let start = Instant::now();
     let args = StandardArgs::parse()?;
@@ -31,8 +46,8 @@ fn main() -> Result<()> {
     let search_dirs = args.get_search_dirs();
     
     if let Some(dir) = search_dirs.first() {
-        println!("Entering directory '{}'", dir.display());
-        println!();
+        log!("Entering directory '{}'", dir.display());
+        log!("");
     }
     
     let mut total_violations = 0;
@@ -42,19 +57,19 @@ fn main() -> Result<()> {
         let violations = check_for_string_hacking(&source, file_path.to_str().unwrap())?;
         
         for violation in &violations {
-            println!("{}", violation);
+            log!("{}", violation);
         }
         
         total_violations += violations.len();
     }
     
-    println!();
-    println!("Total violations: {} files checked, {} violations found", 
+    log!("");
+    log!("Total violations: {} files checked, {} violations found", 
              format_number(rust_files.len()), 
              format_number(total_violations));
     
     let elapsed = start.elapsed().as_millis();
-    println!("\nCompleted in {}ms", elapsed);
+    log!("\nCompleted in {}ms", elapsed);
     
     Ok(())
 }

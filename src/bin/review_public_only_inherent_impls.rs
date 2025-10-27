@@ -13,6 +13,21 @@ use std::fs;
 use std::time::Instant;
 use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes, line_number};
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_public_only_inherent_impls.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct PublicOnlyImpl {
     file: String,
@@ -103,8 +118,8 @@ fn main() -> Result<()> {
     let args = StandardArgs::parse()?;
     let base_dir = args.base_dir();
     
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let files = find_rust_files(&args.paths);
     
@@ -137,19 +152,19 @@ fn main() -> Result<()> {
     // Report findings in Emacs compile-mode format
     if !violations.is_empty() {
         for v in &violations {
-            println!("{}:{}: inherent impl with only public methods (move to trait impl)", v.file, v.line);
-            println!("  impl {} {{ {} }}", v.type_name, v.pub_methods.join(", "));
+            log!("{}:{}: inherent impl with only public methods (move to trait impl)", v.file, v.line);
+            log!("  impl {} {{ {} }}", v.type_name, v.pub_methods.join(", "));
         }
         
-        println!();
-        println!("✗ Found {} inherent impl(s) with only public methods in {} file(s)",
+        log!("");
+        log!("✗ Found {} inherent impl(s) with only public methods in {} file(s)",
             format_number(violations.len()),
             format_number(files.len()));
-        println!("Completed in {}ms", start.elapsed().as_millis());
+        log!("Completed in {}ms", start.elapsed().as_millis());
         std::process::exit(1);
     } else {
-        println!("✓ No public-only inherent impls found in {} file(s)", format_number(files.len()));
-        println!("Completed in {}ms", start.elapsed().as_millis());
+        log!("✓ No public-only inherent impls found in {} file(s)", format_number(files.len()));
+        log!("Completed in {}ms", start.elapsed().as_millis());
         Ok(())
     }
 }

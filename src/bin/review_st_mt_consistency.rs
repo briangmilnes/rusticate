@@ -22,7 +22,23 @@ use ra_ap_syntax::{ast::{self, AstNode, HasName}, SyntaxKind, SourceFile, Editio
 use rusticate::{StandardArgs, find_rust_files};
 use std::path::Path;
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_st_mt_consistency.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 enum Violation {
     StWithThreading {
@@ -426,7 +442,7 @@ fn main() -> Result<()> {
     }
 
     if all_violations.is_empty() {
-        println!("✓ St/Mt Consistency: All files properly implement single/multi-threading");
+        log!("✓ St/Mt Consistency: All files properly implement single/multi-threading");
         let elapsed = start_time.elapsed();
         eprintln!("\nCompleted in {}ms", elapsed.as_millis());
         return Ok(());
@@ -449,95 +465,95 @@ fn main() -> Result<()> {
         }
     }
 
-    println!("✗ St/Mt Consistency violations found:\n");
+    log!("✗ St/Mt Consistency violations found:\n");
 
     if !st_threading.is_empty() {
-        println!("{}", "=".repeat(80));
-        println!("St files with threading (should be single-threaded only):");
-        println!("{}", "=".repeat(80));
+        log!("{}", "=".repeat(80));
+        log!("St files with threading (should be single-threaded only):");
+        log!("{}", "=".repeat(80));
         for v in &st_threading {
             if let Violation::StWithThreading { file, line, content } = v {
-                println!("{}:{}: {}", file, line, content);
+                log!("{}:{}: {}", file, line, content);
             }
         }
-        println!();
+        log!("");
     }
 
     if !mt_no_threading.is_empty() {
-        println!("{}", "=".repeat(80));
-        println!("Mt files without threading (should use parallel operations):");
-        println!("{}", "=".repeat(80));
+        log!("{}", "=".repeat(80));
+        log!("Mt files without threading (should use parallel operations):");
+        log!("{}", "=".repeat(80));
         for v in &mt_no_threading {
             if let Violation::MtWithoutThreading { file } = v {
-                println!("{}: Missing parallel operations", file);
+                log!("{}: Missing parallel operations", file);
             }
         }
-        println!();
+        log!("");
     }
 
     if !mt_thresholds.is_empty() {
-        println!("{}", "=".repeat(80));
-        println!("Mt files with threshold-based serial fallback:");
-        println!("(APAS is a class example - should always demonstrate parallelism)");
-        println!("{}", "=".repeat(80));
+        log!("{}", "=".repeat(80));
+        log!("Mt files with threshold-based serial fallback:");
+        log!("(APAS is a class example - should always demonstrate parallelism)");
+        log!("{}", "=".repeat(80));
         for v in &mt_thresholds {
             if let Violation::MtWithThreshold { file, line, content } = v {
-                println!("{}:{}: {}", file, line, content);
+                log!("{}:{}: {}", file, line, content);
             }
         }
-        println!();
+        log!("");
     }
 
     if !thread_explosions.is_empty() {
-        println!("{}", "=".repeat(80));
-        println!("THREAD EXPLOSION RISK - Recursive functions spawning multiple threads:");
-        println!("(Recommendation: Use a thread pool like rayon instead of raw spawning)");
-        println!("{}", "=".repeat(80));
+        log!("{}", "=".repeat(80));
+        log!("THREAD EXPLOSION RISK - Recursive functions spawning multiple threads:");
+        log!("(Recommendation: Use a thread pool like rayon instead of raw spawning)");
+        log!("{}", "=".repeat(80));
         for v in &thread_explosions {
             if let Violation::ThreadExplosion { file, line, content, spawn_count } = v {
-                println!("{}:{}: {} spawn(s) detected", file, line, spawn_count);
-                println!("  {}", content);
+                log!("{}:{}: {} spawn(s) detected", file, line, spawn_count);
+                log!("  {}", content);
                 
                 // Calculate potential thread explosion
                 let depth = 5; // Assume typical recursion depth
                 let potential_threads = spawn_count.pow(depth as u32);
-                println!("  → Potential threads at depth {}: {} ({}^{})", 
+                log!("  → Potential threads at depth {}: {} ({}^{})", 
                     depth, potential_threads, spawn_count, depth);
                 
                 if potential_threads > 1000 {
-                    println!("  ⚠️  CRITICAL: Exponential thread explosion detected!");
-                    println!("  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool");
-                    println!("     - Use rayon::join() instead of manual spawn()");
-                    println!("     - Use .par_iter() for collections");
-                    println!("     - Thread pool automatically limits parallelism");
+                    log!("  ⚠️  CRITICAL: Exponential thread explosion detected!");
+                    log!("  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool");
+                    log!("     - Use rayon::join() instead of manual spawn()");
+                    log!("     - Use .par_iter() for collections");
+                    log!("     - Thread pool automatically limits parallelism");
                 }
-                println!();
+                log!("");
             }
         }
-        println!();
+        log!("");
     }
 
     if !test_mt_no_import.is_empty() {
-        println!("{}", "=".repeat(80));
-        println!("Test files named TestXxxMt not importing Mt modules:");
-        println!("(These files should import and test the Mt implementation)");
-        println!("{}", "=".repeat(80));
+        log!("{}", "=".repeat(80));
+        log!("Test files named TestXxxMt not importing Mt modules:");
+        log!("(These files should import and test the Mt implementation)");
+        log!("{}", "=".repeat(80));
         for v in &test_mt_no_import {
             if let Violation::TestMtNotImportingMt { file } = v {
-                println!("{}: No Mt module imported", file);
+                log!("{}: No Mt module imported", file);
             }
         }
-        println!();
+        log!("");
     }
 
-    println!("{}", "=".repeat(80));
-    println!("SUMMARY:");
-    println!("  St files with threading: {}", st_threading.len());
-    println!("  Mt files without threading: {}", mt_no_threading.len());
-    println!("  Mt files with thresholds: {}", mt_thresholds.len());
-    println!("  Mt files with thread explosion risk: {}", thread_explosions.len());
-    println!("  Test Mt files not importing Mt: {}", test_mt_no_import.len());
-    println!("  Total violations: {}", all_violations.len());
+    log!("{}", "=".repeat(80));
+    log!("SUMMARY:");
+    log!("  St files with threading: {}", st_threading.len());
+    log!("  Mt files without threading: {}", mt_no_threading.len());
+    log!("  Mt files with thresholds: {}", mt_thresholds.len());
+    log!("  Mt files with thread explosion risk: {}", thread_explosions.len());
+    log!("  Test Mt files not importing Mt: {}", test_mt_no_import.len());
+    log!("  Total violations: {}", all_violations.len());
 
     let elapsed = start_time.elapsed();
     eprintln!("\nCompleted in {}ms", elapsed.as_millis());

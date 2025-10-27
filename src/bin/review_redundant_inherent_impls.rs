@@ -13,7 +13,23 @@ use ra_ap_syntax::{ast::{self, AstNode, HasVisibility, HasName}, SyntaxKind, Sou
 use rusticate::{StandardArgs, find_rust_files};
 use std::path::PathBuf;
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_redundant_inherent_impls.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug, Clone)]
 struct FileInfo {
     path: PathBuf,
@@ -118,11 +134,11 @@ fn main() -> Result<()> {
     }
 
     if redundant_files.is_empty() {
-        println!("No redundant inherent impls found.");
+        log!("No redundant inherent impls found.");
         return Ok(());
     }
 
-    println!(
+    log!(
         "Found {} files with redundant inherent impls:\n",
         redundant_files.len()
     );
@@ -133,7 +149,7 @@ fn main() -> Result<()> {
     for info in &redundant_files {
         let struct_name = info.struct_name.as_ref().unwrap();
         let rel_path = info.path.strip_prefix(&base_dir).unwrap_or(&info.path);
-        println!("{}: {}", rel_path.display(), struct_name);
+        log!("{}: {}", rel_path.display(), struct_name);
     }
 
     let elapsed = start_time.elapsed();

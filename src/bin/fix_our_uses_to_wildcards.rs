@@ -18,13 +18,28 @@ use std::fs;
 use std::time::Instant;
 use rusticate::{find_rust_files, StandardArgs};
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/fix_our_uses_to_wildcards.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn main() -> Result<()> {
     let start = Instant::now();
     let args = StandardArgs::parse()?;
 
     let base_dir = args.base_dir();
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
 
     let files = find_rust_files(&args.paths);
 
@@ -35,15 +50,15 @@ fn main() -> Result<()> {
 
         if new_source != source {
             fs::write(&file_path, &new_source)?;
-            println!("{}:1: Fixed imports to wildcards", file_path.display());
+            log!("{}:1: Fixed imports to wildcards", file_path.display());
             fixed_count += 1;
         }
     }
 
-    println!();
+    log!("");
     let file_word = if fixed_count == 1 { "file" } else { "files" };
-    println!("Fixed {} {}", fixed_count, file_word);
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("Fixed {} {}", fixed_count, file_word);
+    log!("Completed in {}ms", start.elapsed().as_millis());
 
     Ok(())
 }

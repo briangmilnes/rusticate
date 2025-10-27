@@ -8,7 +8,23 @@ use anyhow::Result;
 use clap::Parser;
 use std::path::PathBuf;
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Parser)]
 #[command(name = "review")]
 #[command(about = "Review Rust code for APAS conventions", long_about = None)]
@@ -36,19 +52,19 @@ fn main() -> Result<()> {
     } else {
         args.path.parent().unwrap_or_else(|| std::path::Path::new("."))
     };
-    println!("Entering directory '{}'", dir.display());
-    println!();
+    log!("Entering directory '{}'", dir.display());
+    log!("");
     
-    println!("Reviewing: {:?}", args.path);
-    println!("Format: {}", args.format);
+    log!("Reviewing: {:?}", args.path);
+    log!("Format: {}", args.format);
     if let Some(check) = args.check {
-        println!("Running check: {}", check);
+        log!("Running check: {}", check);
     }
     
     rusticate::review(&args.path, &args.format)?;
     
-    println!();
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("");
+    log!("Completed in {}ms", start.elapsed().as_millis());
     
     Ok(())
 }

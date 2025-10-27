@@ -17,7 +17,23 @@ use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SourceFile, Edition};
 use rusticate::{StandardArgs, find_rust_files};
 use std::path::Path;
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_qualified_paths.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn check_file(file_path: &Path) -> Vec<String> {
     let content = match std::fs::read_to_string(file_path) {
         Ok(c) => c,
@@ -140,18 +156,18 @@ fn main() -> Result<()> {
     }
 
     if all_violations.is_empty() {
-        println!("✓ Qualified Path Organization: No violations found (RustRules.md)");
+        log!("✓ Qualified Path Organization: No violations found (RustRules.md)");
         let elapsed = start_time.elapsed();
         eprintln!("\nCompleted in {}ms", elapsed.as_millis());
         return Ok(());
     }
 
-    println!("✗ Qualified Path Organization violations found:\n");
+    log!("✗ Qualified Path Organization violations found:\n");
     for violation in &all_violations {
-        println!("{}", violation);
+        log!("{}", violation);
     }
-    println!("\nTotal violations: {}", all_violations.len());
-    println!("\nUse 'use' statements at the top to import types, then use short names.");
+    log!("\nTotal violations: {}", all_violations.len());
+    log!("\nUse 'use' statements at the top to import types, then use short names.");
 
     let elapsed = start_time.elapsed();
     eprintln!("\nCompleted in {}ms", elapsed.as_millis());

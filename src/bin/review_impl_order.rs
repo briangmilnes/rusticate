@@ -21,6 +21,21 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_impl_order.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn is_standard_trait(name: &str) -> bool {
     matches!(name,
         "Eq" | "PartialEq" | "Ord" | "PartialOrd" |
@@ -115,8 +130,8 @@ fn main() -> Result<()> {
     let base_dir = args.base_dir();
     
     // Print compilation directory for Emacs compile-mode
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let search_dirs = args.get_search_dirs();
     
@@ -127,9 +142,9 @@ fn main() -> Result<()> {
         .collect();
     
     if src_dirs.is_empty() {
-        println!("✓ No src/ directories to check");
+        log!("✓ No src/ directories to check");
         let elapsed = start.elapsed().as_millis();
-        println!("Completed in {}ms", elapsed);
+        log!("Completed in {}ms", elapsed);
         return Ok(());
     }
     
@@ -154,39 +169,39 @@ fn main() -> Result<()> {
     
     // Report violations
     if all_violations.is_empty() {
-        println!("✓ All implementations are in correct order");
+        log!("✓ All implementations are in correct order");
     } else {
-        println!("✗ Implementation Order Violations:");
-        println!();
-        println!("Standard trait impls (Eq, Debug, Display, etc.) should be AT THE BOTTOM (after custom trait impls).");
-        println!();
+        log!("✗ Implementation Order Violations:");
+        log!("");
+        log!("Standard trait impls (Eq, Debug, Display, etc.) should be AT THE BOTTOM (after custom trait impls).");
+        log!("");
         
         for v in &all_violations {
             if let Ok(rel_path) = v.file.strip_prefix(&base_dir) {
-                println!("{}:{}: Standard trait '{}' before custom trait '{}'", 
+                log!("{}:{}: Standard trait '{}' before custom trait '{}'", 
                          rel_path.display(), v.standard_line, v.standard_trait, v.custom_trait);
-                println!("  Line {}: {} impl (standard trait)", v.standard_line, v.standard_trait);
-                println!("  Line {}: {} impl (custom trait)", v.custom_line, v.custom_trait);
-                println!("  → Standard trait impls should move to the bottom");
+                log!("  Line {}: {} impl (standard trait)", v.standard_line, v.standard_trait);
+                log!("  Line {}: {} impl (custom trait)", v.custom_line, v.custom_trait);
+                log!("  → Standard trait impls should move to the bottom");
             }
         }
         
-        println!();
-        println!("Correct order:");
-        println!("  1. Data structure (struct/enum)");
-        println!("  2. Trait definition");
-        println!("  3. Inherent impl (impl Type {{ ... }})");
-        println!("  4. Custom trait implementations");
-        println!("  5. Standard trait implementations <- AT THE BOTTOM");
+        log!("");
+        log!("Correct order:");
+        log!("  1. Data structure (struct/enum)");
+        log!("  2. Trait definition");
+        log!("  3. Inherent impl (impl Type {{ ... }})");
+        log!("  4. Custom trait implementations");
+        log!("  5. Standard trait implementations <- AT THE BOTTOM");
     }
     
     // Summary
-    println!();
-    println!("Summary: {} files checked, {} violations", 
+    log!("");
+    log!("Summary: {} files checked, {} violations", 
              format_number(files.len()), format_number(all_violations.len()));
     
     let elapsed = start.elapsed().as_millis();
-    println!("Completed in {}ms", elapsed);
+    log!("Completed in {}ms", elapsed);
     
     if all_violations.is_empty() {
         Ok(())

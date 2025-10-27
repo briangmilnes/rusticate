@@ -12,7 +12,23 @@ use rusticate::{StandardArgs, find_rust_files};
 use std::collections::HashSet;
 use std::path::Path;
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_stt_compliance.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug, Clone)]
 struct NonSttStruct {
     name: String,
@@ -155,11 +171,11 @@ fn main() -> Result<()> {
         .filter(|p| p.starts_with(base_dir.join("src")))
         .collect();
 
-    println!("Analyzing {} source files for StT compliance...", src_files.len());
-    println!("{}", "=".repeat(80));
-    println!();
-    println!("StT requirements: Eq + Clone + Display + Debug + Sized");
-    println!();
+    log!("Analyzing {} source files for StT compliance...", src_files.len());
+    log!("{}", "=".repeat(80));
+    log!("");
+    log!("StT requirements: Eq + Clone + Display + Debug + Sized");
+    log!("");
 
     let mut all_violations = Vec::new();
 
@@ -171,7 +187,7 @@ fn main() -> Result<()> {
     }
 
     if all_violations.is_empty() {
-        println!("\n✓ All public structs satisfy StT requirements!");
+        log!("\n✓ All public structs satisfy StT requirements!");
         let elapsed = start_time.elapsed();
         eprintln!("\nCompleted in {}ms", elapsed.as_millis());
         return Ok(());
@@ -202,16 +218,16 @@ fn main() -> Result<()> {
 
     let total_count: usize = all_violations.iter().map(|(_, v)| v.len()).sum();
 
-    println!("✗ Found {} struct(s) that don't satisfy StT:\n", total_count);
+    log!("✗ Found {} struct(s) that don't satisfy StT:\n", total_count);
 
-    println!("Summary by missing trait:");
-    println!("  Missing Clone:   {}", missing_clone);
-    println!("  Missing Display: {}", missing_display);
-    println!("  Missing Debug:   {}", missing_debug);
-    println!("  Missing Eq:      {}", missing_eq);
+    log!("Summary by missing trait:");
+    log!("  Missing Clone:   {}", missing_clone);
+    log!("  Missing Display: {}", missing_display);
+    log!("  Missing Debug:   {}", missing_debug);
+    log!("  Missing Eq:      {}", missing_eq);
 
-    println!("\n{}", "=".repeat(80));
-    println!("Detailed list:\n");
+    log!("\n{}", "=".repeat(80));
+    log!("Detailed list:\n");
 
     // Sort by number of violations (descending)
     let mut sorted_violations = all_violations;
@@ -219,7 +235,7 @@ fn main() -> Result<()> {
 
     for (file_path, violations) in &sorted_violations {
         let rel_path = file_path.strip_prefix(&base_dir).unwrap_or(file_path);
-        println!("{}:", rel_path.display());
+        log!("{}:", rel_path.display());
         for v in violations {
             let missing_str = v.missing.join(", ");
             let mut derives_vec: Vec<_> = v.derives.iter().cloned().collect();
@@ -229,11 +245,11 @@ fn main() -> Result<()> {
             } else {
                 derives_vec.join(", ")
             };
-            println!("  Line {}: {}", v.line, v.name);
-            println!("    Has derives: {}", derives_str);
-            println!("    Missing: {}", missing_str);
+            log!("  Line {}: {}", v.line, v.name);
+            log!("    Has derives: {}", derives_str);
+            log!("    Missing: {}", missing_str);
         }
-        println!();
+        log!("");
     }
 
     let elapsed = start_time.elapsed();

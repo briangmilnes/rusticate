@@ -14,6 +14,21 @@ use ra_ap_syntax::{SyntaxKind, ast::AstNode};
 use std::fs;
 use std::path::Path;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/count_as.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn count_as_in_file(file_path: &Path) -> Result<usize> {
     let content = fs::read_to_string(file_path)?;
     let source_file = parse_source(&content)?;

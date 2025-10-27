@@ -6,7 +6,23 @@ use anyhow::Result;
 use clap::Parser;
 use std::path::PathBuf;
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/parse.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Parser)]
 #[command(name = "parse")]
 #[command(about = "Parse and display the AST of a Rust file", long_about = None)]
@@ -27,16 +43,16 @@ fn main() -> Result<()> {
     // Print directory context
     let parent_dir = args.path.parent()
         .unwrap_or_else(|| std::path::Path::new("."));
-    println!("Entering directory '{}'", parent_dir.display());
-    println!();
+    log!("Entering directory '{}'", parent_dir.display());
+    log!("");
     
-    println!("Parsing file: {:?}", args.path);
-    println!("Format: {}", args.format);
+    log!("Parsing file: {:?}", args.path);
+    log!("Format: {}", args.format);
     
     rusticate::parse(&args.path)?;
     
-    println!();
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("");
+    log!("Completed in {}ms", start.elapsed().as_millis());
     
     Ok(())
 }

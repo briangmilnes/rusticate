@@ -16,6 +16,21 @@ use std::fs;
 use std::time::Instant;
 use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes, line_number};
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_internal_method_impls.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct InherentImpl {
     file: String,
@@ -123,8 +138,8 @@ fn main() -> Result<()> {
     let args = StandardArgs::parse()?;
     let base_dir = args.base_dir();
     
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let files = find_rust_files(&args.paths);
     
@@ -169,16 +184,16 @@ fn main() -> Result<()> {
     if !only_private.is_empty() {
         has_issues = true;
         for info in &only_private {
-            println!("{}:{}: inherent impl with only internal methods (eliminate)", info.file, info.line);
-            println!("  impl {} {{ {} }}", info.type_name, info.private_methods.join(", "));
+            log!("{}:{}: inherent impl with only internal methods (eliminate)", info.file, info.line);
+            log!("  impl {} {{ {} }}", info.type_name, info.private_methods.join(", "));
         }
     }
     
     if !mixed.is_empty() {
         has_issues = true;
         for info in &mixed {
-            println!("{}:{}: inherent impl with mixed pub/internal (extract internal)", info.file, info.line);
-            println!("  impl {} {{ pub: {}; internal: {} }}", 
+            log!("{}:{}: inherent impl with mixed pub/internal (extract internal)", info.file, info.line);
+            log!("  impl {} {{ pub: {}; internal: {} }}", 
                 info.type_name, 
                 info.pub_methods.join(", "), 
                 info.private_methods.join(", "));
@@ -188,8 +203,8 @@ fn main() -> Result<()> {
     if !only_public.is_empty() {
         has_issues = true;
         for info in &only_public {
-            println!("{}:{}: inherent impl with only public methods (move to trait)", info.file, info.line);
-            println!("  impl {} {{ {} }}", info.type_name, info.pub_methods.join(", "));
+            log!("{}:{}: inherent impl with only public methods (move to trait)", info.file, info.line);
+            log!("  impl {} {{ {} }}", info.type_name, info.pub_methods.join(", "));
         }
     }
     
@@ -197,17 +212,17 @@ fn main() -> Result<()> {
     let total_issues = only_private.len() + mixed.len() + only_public.len();
     
     if has_issues {
-        println!("{}", "=".repeat(80));
-        println!("SUMMARY:");
-        println!("  Only internal methods (ELIMINATE): {}", format_number(only_private.len()));
-        println!("  Mixed pub/internal (EXTRACT internal): {}", format_number(mixed.len()));
-        println!("  Only public (MOVE to trait): {}", format_number(only_public.len()));
-        println!("  TOTAL inherent impl violations: {}", format_number(total_issues));
-        println!("Completed in {}ms", start.elapsed().as_millis());
+        log!("{}", "=".repeat(80));
+        log!("SUMMARY:");
+        log!("  Only internal methods (ELIMINATE): {}", format_number(only_private.len()));
+        log!("  Mixed pub/internal (EXTRACT internal): {}", format_number(mixed.len()));
+        log!("  Only public (MOVE to trait): {}", format_number(only_public.len()));
+        log!("  TOTAL inherent impl violations: {}", format_number(total_issues));
+        log!("Completed in {}ms", start.elapsed().as_millis());
         std::process::exit(1);
     } else {
-        println!("✓ No problematic inherent impls found in {} file(s)", format_number(files.len()));
-        println!("Completed in {}ms", start.elapsed().as_millis());
+        log!("✓ No problematic inherent impls found in {} file(s)", format_number(files.len()));
+        log!("Completed in {}ms", start.elapsed().as_millis());
         Ok(())
     }
 }

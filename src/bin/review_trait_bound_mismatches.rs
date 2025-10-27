@@ -17,6 +17,21 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_trait_bound_mismatches.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct Violation {
     file: PathBuf,
@@ -70,8 +85,8 @@ fn main() -> Result<()> {
     let base_dir = args.base_dir();
     
     // Print compilation directory for Emacs compile-mode
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let search_dirs = args.get_search_dirs();
     
@@ -82,9 +97,9 @@ fn main() -> Result<()> {
         .collect();
     
     if src_dirs.is_empty() {
-        println!("✓ No src/ directories to check");
+        log!("✓ No src/ directories to check");
         let elapsed = start.elapsed().as_millis();
-        println!("Completed in {}ms", elapsed);
+        log!("Completed in {}ms", elapsed);
         return Ok(());
     }
     
@@ -109,28 +124,28 @@ fn main() -> Result<()> {
     
     // Report violations
     if all_violations.is_empty() {
-        println!("✓ No potential trait bound mismatches found");
+        log!("✓ No potential trait bound mismatches found");
     } else {
-        println!("✗ Potential trait bound mismatches found:");
-        println!();
-        println!("Files with trait + inherent impl + trait impl should be reviewed for bound consistency.");
-        println!();
+        log!("✗ Potential trait bound mismatches found:");
+        log!("");
+        log!("Files with trait + inherent impl + trait impl should be reviewed for bound consistency.");
+        log!("");
         
         for v in &all_violations {
             if let Ok(rel_path) = v.file.strip_prefix(&base_dir) {
-                println!("{}:{}: {}", 
+                log!("{}:{}: {}", 
                          rel_path.display(), v.line_num, v.message);
             }
         }
     }
     
     // Summary
-    println!();
-    println!("Summary: {} files checked, {} potential issues", 
+    log!("");
+    log!("Summary: {} files checked, {} potential issues", 
              format_number(files.len()), format_number(all_violations.len()));
     
     let elapsed = start.elapsed().as_millis();
-    println!("Completed in {}ms", elapsed);
+    log!("Completed in {}ms", elapsed);
     
     if all_violations.is_empty() {
         Ok(())

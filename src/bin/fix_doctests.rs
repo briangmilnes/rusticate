@@ -16,6 +16,21 @@ use std::path::PathBuf;
 use std::time::Instant;
 use rusticate::{StandardArgs, format_number, find_rust_files};
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/fix_doctests.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug, Clone)]
 struct DoctestFix {
     line: usize,
@@ -200,12 +215,12 @@ fn main() -> Result<()> {
     let args = StandardArgs::parse()?;
     let base_dir = args.base_dir();
     
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     if dry_run {
-        println!("DRY RUN MODE: Will not modify files");
-        println!();
+        log!("DRY RUN MODE: Will not modify files");
+        log!("");
     }
     
     let files = find_rust_files(&args.paths);
@@ -264,10 +279,10 @@ fn main() -> Result<()> {
                     // Print fixes
                     for fix in &fixes {
                         total_fixes += 1;
-                        println!("{}:{}: Fixed doctest", rel_path.display(), fix.line);
-                        println!("  Added imports:");
+                        log!("{}:{}: Fixed doctest", rel_path.display(), fix.line);
+                        log!("  Added imports:");
                         for import in &fix.suggested_imports {
-                            println!("    {}", import);
+                            log!("    {}", import);
                         }
                     }
                 }
@@ -278,18 +293,18 @@ fn main() -> Result<()> {
         }
     }
     
-    println!();
+    log!("");
     if total_fixes > 0 {
-        println!(
+        log!(
             "✓ Fixed {} doctest(s) in {} file(s) out of {} checked",
             format_number(total_fixes),
             format_number(files_fixed),
             format_number(files.len())
         );
     } else {
-        println!("✓ No doctest issues found in {} file(s)", format_number(files.len()));
+        log!("✓ No doctest issues found in {} file(s)", format_number(files.len()));
     }
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("Completed in {}ms", start.elapsed().as_millis());
     
     Ok(())
 }

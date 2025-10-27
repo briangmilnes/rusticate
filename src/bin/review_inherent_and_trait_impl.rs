@@ -15,6 +15,21 @@ use std::fs;
 use std::time::Instant;
 use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes};
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_inherent_and_trait_impl.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn check_file(source: &str) -> Result<Vec<String>> {
     let parsed = SourceFile::parse(source, Edition::Edition2021);
     
@@ -116,8 +131,8 @@ fn main() -> Result<()> {
     let args = StandardArgs::parse()?;
     let base_dir = args.base_dir();
     
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let files = find_rust_files(&args.paths);
     let mut total_issues = 0;
@@ -141,7 +156,7 @@ fn main() -> Result<()> {
                     total_issues += issues.len();
                     
                     for issue in issues {
-                        println!("{}:1: {}", rel_path.display(), issue);
+                        log!("{}:1: {}", rel_path.display(), issue);
                     }
                 }
             }
@@ -151,22 +166,22 @@ fn main() -> Result<()> {
         }
     }
     
-    println!();
+    log!("");
     if total_issues > 0 {
-        println!(
+        log!(
             "✗ Found {} issue(s) in {} file(s) out of {} checked",
             format_number(total_issues),
             format_number(files_with_issues),
             format_number(files.len())
         );
-        println!("Completed in {}ms", start.elapsed().as_millis());
+        log!("Completed in {}ms", start.elapsed().as_millis());
         std::process::exit(1);
     } else {
-        println!(
+        log!(
             "✓ No issues found in {} file(s)",
             format_number(files.len())
         );
-        println!("Completed in {}ms", start.elapsed().as_millis());
+        log!("Completed in {}ms", start.elapsed().as_millis());
         Ok(())
     }
 }

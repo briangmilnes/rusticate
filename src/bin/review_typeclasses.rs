@@ -25,6 +25,21 @@ use std::path::{Path, PathBuf};
 use std::time::Instant;
 use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes};
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_typeclasses.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct StructInfo {
     name: String,
@@ -443,8 +458,8 @@ fn main() -> Result<()> {
     let args = StandardArgs::parse()?;
     let base_dir = args.base_dir();
     
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let files = find_rust_files(&args.paths);
     
@@ -546,10 +561,10 @@ fn main() -> Result<()> {
         let mut module_fixes: Vec<Fix> = Vec::new();
         // Print module header
         if let Some(ref mod_name) = analysis._module_name {
-            println!("{}:{}: pub mod {} {{ - OK", analysis.file.display(), analysis.module_line, mod_name);
+            log!("{}:{}: pub mod {} {{ - OK", analysis.file.display(), analysis.module_line, mod_name);
             module_oks += 1;
         } else {
-            println!("{}:{}: missing module - BUG", analysis.file.display(), analysis.module_line);
+            log!("{}:{}: missing module - BUG", analysis.file.display(), analysis.module_line);
             has_issues = true;
             module_bugs += 1;
             *bug_counts.entry("missing module".to_string()).or_insert(0) += 1;
@@ -561,7 +576,7 @@ fn main() -> Result<()> {
         let has_pub_type_alias = analysis.type_aliases.iter().any(|t| t._is_public);
         
         if !has_pub_struct && !has_pub_enum && !has_pub_type_alias {
-            println!("{}:{}:\tno pub data type (struct, enum, or type alias) - BUG", 
+            log!("{}:{}:\tno pub data type (struct, enum, or type alias) - BUG", 
                 analysis.file.display(), analysis.module_line);
             has_issues = true;
             module_bugs += 1;
@@ -643,7 +658,7 @@ fn main() -> Result<()> {
             for s in &analysis.structs {
                 let is_main = Some(&s.name) == main_struct;
                 let visibility = if is_main { "external" } else { "internal" };
-                println!("{}:{}:\tstruct {} ({}) - OK", analysis.file.display(), s.line, s.name, visibility);
+                log!("{}:{}:\tstruct {} ({}) - OK", analysis.file.display(), s.line, s.name, visibility);
                 module_oks += 1;
             }
         }
@@ -660,7 +675,7 @@ fn main() -> Result<()> {
             for e in &analysis.enums {
                 let is_main = Some(&e.name) == main_enum;
                 let visibility = if is_main { "external" } else { "internal" };
-                println!("{}:{}:\tenum {} ({}) - OK", analysis.file.display(), e.line, e.name, visibility);
+                log!("{}:{}:\tenum {} ({}) - OK", analysis.file.display(), e.line, e.name, visibility);
             }
         }
         
@@ -682,7 +697,7 @@ fn main() -> Result<()> {
                 } else {
                     "private"
                 };
-                println!("{}:{}:\ttype {} ({}) - OK", analysis.file.display(), t.line, t.name, visibility);
+                log!("{}:{}:\ttype {} ({}) - OK", analysis.file.display(), t.line, t.name, visibility);
             }
         }
         
@@ -708,11 +723,11 @@ fn main() -> Result<()> {
         if !has_pub_trait {
             if is_simple_algorithm || is_functional_trait {
                 // Functional trait or simple algorithm - trait is for documentation only
-                println!("{}:{}:\tno pub trait (functional trait pattern) - OK", 
+                log!("{}:{}:\tno pub trait (functional trait pattern) - OK", 
                     analysis.file.display(), analysis.module_line);
                 module_oks += 1;
             } else {
-                println!("{}:{}:\tno pub trait - BUG", 
+                log!("{}:{}:\tno pub trait - BUG", 
                     analysis.file.display(), analysis.module_line);
                 has_issues = true;
                 module_bugs += 1;
@@ -725,14 +740,14 @@ fn main() -> Result<()> {
             for t in &analysis.traits {
                 let visibility = if t.is_public { "pub" } else { "private" };
                 let label = if t.is_public { "OK" } else { "WARNING" };
-                println!("{}:{}:\ttrait {} ({}) - {}", analysis.file.display(), t.line, t.name, visibility, label);
+                log!("{}:{}:\ttrait {} ({}) - {}", analysis.file.display(), t.line, t.name, visibility, label);
             }
         }
         
         // List pub functions at module level
         if !analysis.functions.is_empty() {
             for f in &analysis.functions {
-                println!("{}:{}:\tpub fn {}", analysis.file.display(), f.line, f.name);
+                log!("{}:{}:\tpub fn {}", analysis.file.display(), f.line, f.name);
             }
         }
         
@@ -777,7 +792,7 @@ fn main() -> Result<()> {
             let first_line = standard_impls.first().map(|i| i.line).unwrap_or(0);
             let last_line = standard_impls.last().map(|i| i.line).unwrap_or(0);
             
-            println!("{}:{}-{}:\tstandard trait impls ({}) - OK", 
+            log!("{}:{}-{}:\tstandard trait impls ({}) - OK", 
                 analysis.file.display(), first_line, last_line, traits.join(", "));
             module_oks += 1;
         }
@@ -806,10 +821,10 @@ fn main() -> Result<()> {
             
             // Print impl header with type visibility and specific error type on same line
             if let Some(err_type) = error_type {
-                println!("{}:{}:\t{} (for {} type) - {} ({})", 
+                log!("{}:{}:\t{} (for {} type) - {} ({})", 
                     analysis.file.display(), impl_info.line, impl_info.header, type_vis, impl_label, err_type);
             } else {
-                println!("{}:{}:\t{} (for {} type) - {}", 
+                log!("{}:{}:\t{} (for {} type) - {}", 
                     analysis.file.display(), impl_info.line, impl_info.header, type_vis, impl_label);
             }
             
@@ -823,13 +838,13 @@ fn main() -> Result<()> {
             
             // Show pub methods if any
             if !impl_info.pub_methods.is_empty() {
-                println!("{}:{}:\t\tpub methods: {}", 
+                log!("{}:{}:\t\tpub methods: {}", 
                     analysis.file.display(), impl_info.line, impl_info.pub_methods.join(", "));
             }
             
             // Show pub functions (associated functions) if any
             if !impl_info.pub_functions.is_empty() {
-                println!("{}:{}:\t\tpub functions: {}", 
+                log!("{}:{}:\t\tpub functions: {}", 
                     analysis.file.display(), impl_info.line, impl_info.pub_functions.join(", "));
             }
             
@@ -846,7 +861,7 @@ fn main() -> Result<()> {
             
                 if !unused_self_methods.is_empty() {
                 for method_name in &unused_self_methods {
-                    println!("{}:{}:\t\tmethod {} has unused self parameter - BUG", 
+                    log!("{}:{}:\t\tmethod {} has unused self parameter - BUG", 
                         analysis.file.display(), impl_info.line, method_name);
                     has_issues = true;
                     module_bugs += 1;
@@ -865,18 +880,18 @@ fn main() -> Result<()> {
                 } else {
                     format!("{} internal methods", impl_info.internal_methods.len())
                 };
-                println!("{}:{}:\t\t{}", 
+                log!("{}:{}:\t\t{}", 
                     analysis.file.display(), impl_info.line, breakdown);
             }
             
             // Check for stub delegation
             if let Some(overlapping) = stub_delegations.get(&impl_info.type_name) {
                 if impl_info.is_trait_impl {
-                    println!("{}:{}:\t\t⚠ used by stubbed inherent impl: {}", 
+                    log!("{}:{}:\t\t⚠ used by stubbed inherent impl: {}", 
                         analysis.file.display(), impl_info.line, overlapping.join(", "));
                     has_issues = true;
                 } else if !impl_info.pub_methods.is_empty() || !impl_info.pub_functions.is_empty() {
-                    println!("{}:{}:\t\t⚠ stub delegation to trait impl: {}", 
+                    log!("{}:{}:\t\t⚠ stub delegation to trait impl: {}", 
                         analysis.file.display(), impl_info.line, overlapping.join(", "));
                     has_issues = true;
                 }
@@ -889,11 +904,11 @@ fn main() -> Result<()> {
         if !has_trait_impl {
             if is_functional_trait {
                 // Functional trait pattern - trait with all functions (no &self), OK to have no impl
-                println!("{}:{}:\tfunctional trait pattern (no impl needed) - OK", 
+                log!("{}:{}:\tfunctional trait pattern (no impl needed) - OK", 
                     analysis.file.display(), analysis.module_line);
                 module_oks += 1;
             } else {
-                println!("{}:{}:\tno Trait impl - BUG", 
+                log!("{}:{}:\tno Trait impl - BUG", 
                     analysis.file.display(), analysis.module_line);
                 has_issues = true;
                 module_bugs += 1;
@@ -1005,7 +1020,7 @@ fn main() -> Result<()> {
         });
         
         if duplicates.is_empty() {
-            println!("{}:{}:\tno duplicate method names", analysis.file.display(), analysis.module_line);
+            log!("{}:{}:\tno duplicate method names", analysis.file.display(), analysis.module_line);
         } else {
             duplicates.sort_by(|a, b| a.0.cmp(&b.0));
             for (method_name, occurrences) in duplicates {
@@ -1079,7 +1094,7 @@ fn main() -> Result<()> {
                     String::new()
                 };
                 
-                println!("{}:{}:\tduplicate method: {} [{}]{} - BUG", 
+                log!("{}:{}:\tduplicate method: {} [{}]{} - BUG", 
                     analysis.file.display(), line, method_name, details.join(", "), note_str);
                 has_issues = true;
                 module_bugs += 1;
@@ -1089,17 +1104,17 @@ fn main() -> Result<()> {
         
         // Show fix recommendations
         if !module_fixes.is_empty() {
-            println!("{}:{}:\tRECOMMENDED FIXES:", analysis.file.display(), analysis.module_line);
+            log!("{}:{}:\tRECOMMENDED FIXES:", analysis.file.display(), analysis.module_line);
             for fix in &module_fixes {
-                println!("{}:{}:\t  {} -> {}", 
+                log!("{}:{}:\t  {} -> {}", 
                     analysis.file.display(), fix.line, fix.description, fix.recommendation);
             }
     } else {
-            println!("{}:{}:\tno fixes known", analysis.file.display(), analysis.module_line);
+            log!("{}:{}:\tno fixes known", analysis.file.display(), analysis.module_line);
         }
         
         // Per-module summary
-        println!("{}:{}:\tModule summary: {} BUGs, {} WARNINGs, {} OKs, {} fixes", 
+        log!("{}:{}:\tModule summary: {} BUGs, {} WARNINGs, {} OKs, {} fixes", 
             analysis.file.display(), analysis.module_line,
             format_number(module_bugs), format_number(module_warnings), 
             format_number(module_oks), format_number(module_fixes.len()));
@@ -1118,24 +1133,24 @@ fn main() -> Result<()> {
             modules_with_no_fixes += 1;
         }
         
-        println!();
+        log!("");
     }
     
-    println!("{}", "=".repeat(80));
-    println!("SUMMARY:");
-    println!("  Total modules analyzed: {}", format_number(all_analyses.len()));
-    println!("  Clean modules (no bugs or warnings): {}", format_number(clean_modules));
-    println!("  Modules with no known fixes: {}", format_number(modules_with_no_fixes));
-    println!("  Total OKs: {}", format_number(total_oks));
-    println!("  Total WARNINGs: {}", format_number(total_warnings));
-    println!("  Total BUGs: {}", format_number(total_bugs));
-    println!("  Total fixes recommended: {}", format_number(total_fixes));
+    log!("{}", "=".repeat(80));
+    log!("SUMMARY:");
+    log!("  Total modules analyzed: {}", format_number(all_analyses.len()));
+    log!("  Clean modules (no bugs or warnings): {}", format_number(clean_modules));
+    log!("  Modules with no known fixes: {}", format_number(modules_with_no_fixes));
+    log!("  Total OKs: {}", format_number(total_oks));
+    log!("  Total WARNINGs: {}", format_number(total_warnings));
+    log!("  Total BUGs: {}", format_number(total_bugs));
+    log!("  Total fixes recommended: {}", format_number(total_fixes));
     
     // Pareto analysis
-    println!();
-    println!("{}", "=".repeat(80));
-    println!("PARETO ANALYSIS: BUGS");
-    println!("{}", "=".repeat(80));
+    log!("");
+    log!("{}", "=".repeat(80));
+    log!("PARETO ANALYSIS: BUGS");
+    log!("{}", "=".repeat(80));
     
     if !bug_counts.is_empty() {
         let mut bug_vec: Vec<_> = bug_counts.iter().collect();
@@ -1146,18 +1161,18 @@ fn main() -> Result<()> {
             cumulative += **count;
             let percentage = (**count as f64 / total_bugs as f64) * 100.0;
             let cumulative_pct = (cumulative as f64 / total_bugs as f64) * 100.0;
-            println!("{:6} ({:5.1}%, cumulative {:5.1}%): {}", 
+            log!("{:6} ({:5.1}%, cumulative {:5.1}%): {}", 
                 format_number(**count), percentage, cumulative_pct, issue_type);
         }
-        println!("{}", "-".repeat(80));
-        println!("TOTAL BUGS: {}", format_number(total_bugs));
+        log!("{}", "-".repeat(80));
+        log!("TOTAL BUGS: {}", format_number(total_bugs));
     }
     
     if !warn_counts.is_empty() {
-        println!();
-        println!("{}", "=".repeat(80));
-        println!("PARETO ANALYSIS: WARNINGS");
-        println!("{}", "=".repeat(80));
+        log!("");
+        log!("{}", "=".repeat(80));
+        log!("PARETO ANALYSIS: WARNINGS");
+        log!("{}", "=".repeat(80));
         
         let mut warn_vec: Vec<_> = warn_counts.iter().collect();
         warn_vec.sort_by(|a, b| b.1.cmp(a.1));
@@ -1167,15 +1182,15 @@ fn main() -> Result<()> {
             cumulative += **count;
             let percentage = (**count as f64 / total_warnings as f64) * 100.0;
             let cumulative_pct = (cumulative as f64 / total_warnings as f64) * 100.0;
-            println!("{:6} ({:5.1}%, cumulative {:5.1}%): {}", 
+            log!("{:6} ({:5.1}%, cumulative {:5.1}%): {}", 
                 format_number(**count), percentage, cumulative_pct, issue_type);
         }
-        println!("{}", "-".repeat(80));
-        println!("TOTAL WARNINGS: {}", format_number(total_warnings));
+        log!("{}", "-".repeat(80));
+        log!("TOTAL WARNINGS: {}", format_number(total_warnings));
     }
     
-    println!();
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("");
+    log!("Completed in {}ms", start.elapsed().as_millis());
     
     if has_issues {
         std::process::exit(1);

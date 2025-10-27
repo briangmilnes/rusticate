@@ -4,6 +4,21 @@ use std::path::PathBuf;
 use std::fs;
 use regex::Regex;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/fix_non_wildcard_uses.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn fix_file(file_path: &PathBuf) -> Result<usize, Box<dyn std::error::Error>> {
     // Skip TestLibIntegration.rs - it tests module structure and should not be modified
     if file_path.ends_with("TestLibIntegration.rs") {
@@ -374,7 +389,7 @@ fn main() {
                         file_path.display().to_string()
                     };
                     
-                    println!("{}:{}: fixed {} module(s)", display_path, 0, modules_fixed);
+                    log!("{}:{}: fixed {} module(s)", display_path, 0, modules_fixed);
                 }
             }
             Err(e) => {
@@ -383,11 +398,11 @@ fn main() {
         }
     }
     
-    println!();
-    println!("{}", "-".repeat(80));
-    println!("Files modified: {}", rusticate::format_number(total_files_modified));
-    println!("Modules converted to wildcards: {}", rusticate::format_number(total_modules_fixed));
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("");
+    log!("{}", "-".repeat(80));
+    log!("Files modified: {}", rusticate::format_number(total_files_modified));
+    log!("Modules converted to wildcards: {}", rusticate::format_number(total_modules_fixed));
+    log!("Completed in {}ms", start.elapsed().as_millis());
     
     if total_files_modified > 0 {
         std::process::exit(1);

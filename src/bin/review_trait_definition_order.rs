@@ -16,7 +16,23 @@ use ra_ap_syntax::{ast::{self, AstNode, HasName}, SyntaxKind, SourceFile, Editio
 use rusticate::{StandardArgs, find_rust_files};
 use std::path::Path;
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_trait_definition_order.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct Violation {
     struct_name: String,
@@ -127,31 +143,31 @@ fn main() -> Result<()> {
     }
 
     if all_violations.is_empty() {
-        println!("✓ All trait definitions are in correct order");
+        log!("✓ All trait definitions are in correct order");
         let elapsed = start_time.elapsed();
         eprintln!("\nCompleted in {}ms", elapsed.as_millis());
         return Ok(());
     }
 
-    println!("✗ Trait Definition Order Violations:\n");
-    println!("Trait definitions should appear BEFORE impl blocks (after struct/enum).\n");
+    log!("✗ Trait Definition Order Violations:\n");
+    log!("Trait definitions should appear BEFORE impl blocks (after struct/enum).\n");
 
     for (file_path, v) in &all_violations {
-        println!("  {}:{}", file_path.display(), v.struct_line);
-        println!("    Struct: {}", v.struct_name);
-        println!("    Line {}: First impl block", v.first_impl_line);
-        println!("    Line {}: trait {} definition", v.trait_line, v.trait_name);
-        println!("    → Trait {} should move before line {}", v.trait_name, v.first_impl_line);
-        println!();
+        log!("  {}:{}", file_path.display(), v.struct_line);
+        log!("    Struct: {}", v.struct_name);
+        log!("    Line {}: First impl block", v.first_impl_line);
+        log!("    Line {}: trait {} definition", v.trait_line, v.trait_name);
+        log!("    → Trait {} should move before line {}", v.trait_name, v.first_impl_line);
+        log!("");
     }
 
-    println!("Total violations: {}", all_violations.len());
-    println!("\nCorrect order:");
-    println!("  1. Data structure (struct/enum)");
-    println!("  2. Trait definition <- SHOULD BE HERE");
-    println!("  3. Inherent impl (impl Type {{ ... }})");
-    println!("  4. Custom trait implementations");
-    println!("  5. Standard trait implementations");
+    log!("Total violations: {}", all_violations.len());
+    log!("\nCorrect order:");
+    log!("  1. Data structure (struct/enum)");
+    log!("  2. Trait definition <- SHOULD BE HERE");
+    log!("  3. Inherent impl (impl Type {{ ... }})");
+    log!("  4. Custom trait implementations");
+    log!("  5. Standard trait implementations");
 
     let elapsed = start_time.elapsed();
     eprintln!("\nCompleted in {}ms", elapsed.as_millis());

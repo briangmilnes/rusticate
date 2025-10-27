@@ -16,6 +16,21 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_where_clause_simplification.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct Violation {
     file: PathBuf,
@@ -106,8 +121,8 @@ fn main() -> Result<()> {
     let base_dir = args.base_dir();
     
     // Print compilation directory for Emacs compile-mode
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let search_dirs = args.get_search_dirs();
     
@@ -118,9 +133,9 @@ fn main() -> Result<()> {
         .collect();
     
     if src_dirs.is_empty() {
-        println!("✓ No src/ directories to check");
+        log!("✓ No src/ directories to check");
         let elapsed = start.elapsed().as_millis();
-        println!("Completed in {}ms", elapsed);
+        log!("Completed in {}ms", elapsed);
         return Ok(());
     }
     
@@ -145,31 +160,31 @@ fn main() -> Result<()> {
     
     // Report violations
     if all_violations.is_empty() {
-        println!("✓ No simple where clauses found that should be inlined");
+        log!("✓ No simple where clauses found that should be inlined");
     } else {
-        println!("✗ Found simplifiable where clauses (RustRules.md Lines 322-329):");
-        println!();
+        log!("✗ Found simplifiable where clauses (RustRules.md Lines 322-329):");
+        log!("");
         
         for v in &all_violations {
             if let Ok(rel_path) = v.file.strip_prefix(&base_dir) {
-                println!("{}:{}: fn {} has simplifiable where clause", 
+                log!("{}:{}: fn {} has simplifiable where clause", 
                          rel_path.display(), v.line_num, v.fn_name);
-                println!("  {}", v.where_text);
-                println!("  → Could be inlined into generic parameters");
+                log!("  {}", v.where_text);
+                log!("  → Could be inlined into generic parameters");
             }
         }
         
-        println!();
-        println!("Suggestion: Inline simple single-bound where clauses into generic parameters.");
+        log!("");
+        log!("Suggestion: Inline simple single-bound where clauses into generic parameters.");
     }
     
     // Summary
-    println!();
-    println!("Summary: {} files checked, {} violations", 
+    log!("");
+    log!("Summary: {} files checked, {} violations", 
              format_number(files.len()), format_number(all_violations.len()));
     
     let elapsed = start.elapsed().as_millis();
-    println!("Completed in {}ms", elapsed);
+    log!("Completed in {}ms", elapsed);
     
     if all_violations.is_empty() {
         Ok(())

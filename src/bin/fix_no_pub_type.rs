@@ -36,6 +36,21 @@ use std::time::Instant;
 use std::collections::{HashMap, HashSet};
 use rusticate::StandardArgs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/fix_no_pub_type.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 /// Extract generic parameter names from a type string
 /// 
 /// Examples:
@@ -306,8 +321,8 @@ fn main() -> Result<()> {
     let args = StandardArgs::parse()?;
     
     let base_dir = args.base_dir();
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     // Get all Rust files to process
     let files = rusticate::find_rust_files(&args.paths);
@@ -349,13 +364,13 @@ fn main() -> Result<()> {
         }
     }
     
-    println!();
+    log!("");
     let file_word = if success_count == 1 { "file" } else { "files" };
     let skip_word = if skip_count == 1 { "file" } else { "files" };
     let error_word = if error_count == 1 { "file" } else { "files" };
-    println!("Summary: {} {} fixed, {} {} skipped, {} {} with errors", 
+    log!("Summary: {} {} fixed, {} {} skipped, {} {} with errors", 
              success_count, file_word, skip_count, skip_word, error_count, error_word);
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("Completed in {}ms", start.elapsed().as_millis());
     
     if error_count > 0 {
         std::process::exit(1);
@@ -397,12 +412,12 @@ fn process_file(file_path: &Path, import_map: &HashMap<(String, String), HashSet
     
     // Step A: Add pub type if needed
     if analysis.needs_pub_type {
-        println!("{}:{}:\tAdding pub type: {}", 
+        log!("{}:{}:\tAdding pub type: {}", 
             file_path.display(), analysis.module_line, analysis.recommended_type);
         
         let new_source = add_pub_type(&source, &analysis)?;
         fs::write(file_path, &new_source)?;
-        println!("{}:{}:\tAdded pub type", file_path.display(), analysis.module_line);
+        log!("{}:{}:\tAdded pub type", file_path.display(), analysis.module_line);
         did_work = true;
     }
     
@@ -414,7 +429,7 @@ fn process_file(file_path: &Path, import_map: &HashMap<(String, String), HashSet
             // Functional trait pattern: All functions, no &self parameters
             // Just add pub type T, keep standalone pub fn for direct calling
             // No impl transformation needed
-            println!("{}:{}:\tFunctional trait pattern - keeping standalone pub fn", file_path.display(), analysis.module_line);
+            log!("{}:{}:\tFunctional trait pattern - keeping standalone pub fn", file_path.display(), analysis.module_line);
             // did_work already set to true from adding pub type
         } else {
             // Complex algorithm pattern: create trait impl
@@ -422,40 +437,40 @@ fn process_file(file_path: &Path, import_map: &HashMap<(String, String), HashSet
             
             if !impl_exists {
                 // Step B: Transform trait signatures
-                println!("{}:{}:\tTransforming trait signatures to use &self", file_path.display(), analysis.module_line);
+                log!("{}:{}:\tTransforming trait signatures to use &self", file_path.display(), analysis.module_line);
                 let mut new_source = transform_algorithm_trait(&current_source, &analysis)?;
                 fs::write(file_path, &new_source)?;
-                println!("{}:{}:\tTransformed trait signatures", file_path.display(), analysis.module_line);
+                log!("{}:{}:\tTransformed trait signatures", file_path.display(), analysis.module_line);
                 
                 // Step C: Create impl Trait for T block
-                println!("{}:{}:\tCreating impl Trait for T block", file_path.display(), analysis.module_line);
+                log!("{}:{}:\tCreating impl Trait for T block", file_path.display(), analysis.module_line);
                 new_source = fs::read_to_string(file_path)?;
                 new_source = create_trait_impl(&new_source, &analysis)?;
                 fs::write(file_path, &new_source)?;
-                println!("{}:{}:\tCreated impl block", file_path.display(), analysis.module_line);
+                log!("{}:{}:\tCreated impl block", file_path.display(), analysis.module_line);
             }
             
             // Step D: Remove redundant standalone pub fn (always run if standalone fn exists)
-            println!("{}:{}:\tRemoving redundant standalone pub fn", file_path.display(), analysis.module_line);
+            log!("{}:{}:\tRemoving redundant standalone pub fn", file_path.display(), analysis.module_line);
             let mut new_source = fs::read_to_string(file_path)?;
             new_source = remove_standalone_pub_fn(&new_source, &analysis)?;
             fs::write(file_path, &new_source)?;
-            println!("{}:{}:\tRemoved standalone pub fn", file_path.display(), analysis.module_line);
+            log!("{}:{}:\tRemoved standalone pub fn", file_path.display(), analysis.module_line);
             
             // Step F: Fix call sites in test and bench files
             match find_test_file(file_path)? {
                 Some(test_file) => {
-                    println!("{}:1:\tFixing test call sites", test_file.display());
+                    log!("{}:1:\tFixing test call sites", test_file.display());
                     fix_call_sites(&test_file, &analysis)?;
-                    println!("{}:1:\tFixed test call sites", test_file.display());
+                    log!("{}:1:\tFixed test call sites", test_file.display());
                 }
                 None => {}
             }
             
             if let Some(bench_file) = find_bench_file(file_path)? {
-                println!("{}:1:\tFixing bench call sites", bench_file.display());
+                log!("{}:1:\tFixing bench call sites", bench_file.display());
                 fix_call_sites(&bench_file, &analysis)?;
-                println!("{}:1:\tFixed bench call sites", bench_file.display());
+                log!("{}:1:\tFixed bench call sites", bench_file.display());
             }
             
             did_work = true;
@@ -464,33 +479,33 @@ fn process_file(file_path: &Path, import_map: &HashMap<(String, String), HashSet
     
     // Step 4: Fix unused self if needed (InsertionSortSt pattern)
         if analysis.has_unused_self {
-            println!("{}:{}:\tFixing unused self parameter", file_path.display(), analysis.module_line);
+            log!("{}:{}:\tFixing unused self parameter", file_path.display(), analysis.module_line);
         let mut new_source = fs::read_to_string(file_path)?;
             new_source = fix_unused_self(&new_source, &analysis)?;
             fs::write(file_path, &new_source)?;
-            println!("{}:{}:\tFixed method signatures and body", file_path.display(), analysis.module_line);
+            log!("{}:{}:\tFixed method signatures and body", file_path.display(), analysis.module_line);
         did_work = true;
         
         // Step 5: Find and fix test file if it exists
         match find_test_file(file_path)? {
             Some(test_file) => {
-                println!("{}:1:\tUpdating test call sites", test_file.display());
+                log!("{}:1:\tUpdating test call sites", test_file.display());
                 fix_call_sites(&test_file, &analysis)?;
-                println!("{}:1:\tUpdated test call sites", test_file.display());
+                log!("{}:1:\tUpdated test call sites", test_file.display());
             }
             None => {}
         }
         
         // Step 6: Find and fix bench file if it exists
         if let Some(bench_file) = find_bench_file(file_path)? {
-            println!("{}:1:\tUpdating bench call sites", bench_file.display());
+            log!("{}:1:\tUpdating bench call sites", bench_file.display());
             fix_call_sites(&bench_file, &analysis)?;
-            println!("{}:1:\tUpdated bench call sites", bench_file.display());
+            log!("{}:1:\tUpdated bench call sites", bench_file.display());
         }
     }
     
     if !did_work {
-        println!("{}:{}:\tNo changes needed", file_path.display(), analysis.module_line);
+        log!("{}:{}:\tNo changes needed", file_path.display(), analysis.module_line);
     }
     
     Ok(did_work)

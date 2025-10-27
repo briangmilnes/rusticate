@@ -15,6 +15,21 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_variable_naming.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct Violation {
     file: PathBuf,
@@ -81,8 +96,8 @@ fn main() -> Result<()> {
     let base_dir = args.base_dir();
     
     // Print compilation directory for Emacs compile-mode
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let search_dirs = args.get_search_dirs();
     
@@ -93,9 +108,9 @@ fn main() -> Result<()> {
         .collect();
     
     if src_dirs.is_empty() {
-        println!("✓ No src/ directories to check");
+        log!("✓ No src/ directories to check");
         let elapsed = start.elapsed().as_millis();
-        println!("Completed in {}ms", elapsed);
+        log!("Completed in {}ms", elapsed);
         return Ok(());
     }
     
@@ -113,30 +128,30 @@ fn main() -> Result<()> {
     
     // Report violations
     if all_violations.is_empty() {
-        println!("✓ No prohibited variable names found");
+        log!("✓ No prohibited variable names found");
     } else {
-        println!("✗ Found prohibited variable names (RustRules.md Lines 22-26):");
-        println!();
+        log!("✗ Found prohibited variable names (RustRules.md Lines 22-26):");
+        log!("");
         
         for v in &all_violations {
             if let Ok(rel_path) = v.file.strip_prefix(&base_dir) {
-                println!("{}:{}: {}", 
+                log!("{}:{}: {}", 
                          rel_path.display(), v.line_num, v.issue);
-                println!("  {}", v.line_content);
+                log!("  {}", v.line_content);
             }
         }
         
-        println!();
-        println!("Fix: Use descriptive names like 'entries', 'result_vec', 'filtered_data'.");
+        log!("");
+        log!("Fix: Use descriptive names like 'entries', 'result_vec', 'filtered_data'.");
     }
     
     // Summary
-    println!();
-    println!("Summary: {} files checked, {} violations", 
+    log!("");
+    log!("Summary: {} files checked, {} violations", 
              format_number(files.len()), format_number(all_violations.len()));
     
     let elapsed = start.elapsed().as_millis();
-    println!("Completed in {}ms", elapsed);
+    log!("Completed in {}ms", elapsed);
     
     if all_violations.is_empty() {
         Ok(())

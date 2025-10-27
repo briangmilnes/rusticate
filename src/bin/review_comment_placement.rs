@@ -14,6 +14,21 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_comment_placement.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct CommentIssue {
     file: PathBuf,
@@ -275,8 +290,8 @@ fn main() -> Result<()> {
         .and_then(|d| d.parent())
         .unwrap_or(std::path::Path::new("."));
     
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let files = find_rust_files(&search_dirs);
     let mut total_issues = 0;
@@ -284,7 +299,7 @@ fn main() -> Result<()> {
     for file in &files {
         let issues = check_file(file)?;
         for issue in issues {
-            println!(
+            log!(
                 "{}:{}:\t{}: {}",
                 issue.file.display(),
                 issue.line,
@@ -296,12 +311,12 @@ fn main() -> Result<()> {
     }
 
     if total_issues == 0 {
-        println!("No comment placement issues found.");
+        log!("No comment placement issues found.");
     } else {
-        println!("\nTotal issues: {}", total_issues);
+        log!("\nTotal issues: {}", total_issues);
     }
     
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("Completed in {}ms", start.elapsed().as_millis());
 
     Ok(())
 }

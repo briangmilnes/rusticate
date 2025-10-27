@@ -15,6 +15,21 @@ use std::time::Instant;
 use anyhow::Result;
 use rusticate::{StandardArgs, format_number, find_rust_files};
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_integration_test_structure.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct Violation {
     file: PathBuf,
@@ -69,8 +84,8 @@ fn main() -> Result<()> {
     let base_dir = args.base_dir();
     
     // Print compilation directory for Emacs compile-mode
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let search_dirs = args.get_search_dirs();
     
@@ -81,9 +96,9 @@ fn main() -> Result<()> {
         .collect();
     
     if tests_dirs.is_empty() {
-        println!("✓ No tests/ directory found");
+        log!("✓ No tests/ directory found");
         let elapsed = start.elapsed().as_millis();
-        println!("Completed in {}ms", elapsed);
+        log!("Completed in {}ms", elapsed);
         return Ok(());
     }
     
@@ -101,31 +116,31 @@ fn main() -> Result<()> {
     
     // Report violations
     if all_violations.is_empty() {
-        println!("✓ No #[cfg(test)] modules in integration tests");
+        log!("✓ No #[cfg(test)] modules in integration tests");
     } else {
-        println!("✗ Found #[cfg(test)] in integration tests (RustRules.md Lines 292-298):");
-        println!();
+        log!("✗ Found #[cfg(test)] in integration tests (RustRules.md Lines 292-298):");
+        log!("");
         
         for v in &all_violations {
             if let Ok(rel_path) = v.file.strip_prefix(&base_dir) {
-                println!("{}:{}: #[cfg(test)] in integration test", 
+                log!("{}:{}: #[cfg(test)] in integration test", 
                          rel_path.display(), v.line_num);
-                println!("  {}", v.line_content);
+                log!("  {}", v.line_content);
             }
         }
         
-        println!();
-        println!("Fix: Remove #[cfg(test)] modules from integration tests.");
-        println!("Integration tests should have #[test] functions at root level.");
+        log!("");
+        log!("Fix: Remove #[cfg(test)] modules from integration tests.");
+        log!("Integration tests should have #[test] functions at root level.");
     }
     
     // Summary
-    println!();
-    println!("Summary: {} files checked, {} violations", 
+    log!("");
+    log!("Summary: {} files checked, {} violations", 
              format_number(files.len()), format_number(all_violations.len()));
     
     let elapsed = start.elapsed().as_millis();
-    println!("Completed in {}ms", elapsed);
+    log!("Completed in {}ms", elapsed);
     
     if all_violations.is_empty() {
         Ok(())

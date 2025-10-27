@@ -19,6 +19,21 @@ use rusticate::{StandardArgs, find_nodes};
 use rusticate::args::args::find_rust_files;
 use rusticate::duplicate_methods::find_duplicate_methods;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/fix_duplicate_methods.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn find_module_block(root: &ra_ap_syntax::SyntaxNode) -> Option<ra_ap_syntax::SyntaxNode> {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::MODULE {
@@ -152,9 +167,9 @@ fn fix_file(file_path: &PathBuf, dry_run: bool) -> Result<usize> {
     
     if !dry_run {
         fs::write(file_path, new_source)?;
-        println!("Fixed {} duplicate pub fn(s) in {}", fixed_count, file_path.display());
+        log!("Fixed {} duplicate pub fn(s) in {}", fixed_count, file_path.display());
     } else {
-        println!("[DRY RUN] Would fix {} duplicate pub fn(s) in {}", fixed_count, file_path.display());
+        log!("[DRY RUN] Would fix {} duplicate pub fn(s) in {}", fixed_count, file_path.display());
     }
     
     Ok(fixed_count)
@@ -171,13 +186,13 @@ fn main() -> Result<()> {
     let search_dirs = args.get_search_dirs();
     let files = find_rust_files(&search_dirs);
 
-    println!("{}", "=".repeat(80));
-    println!("FIX DUPLICATE METHODS");
+    log!("{}", "=".repeat(80));
+    log!("FIX DUPLICATE METHODS");
     if dry_run {
-        println!("(DRY RUN MODE)");
+        log!("(DRY RUN MODE)");
     }
-    println!("{}", "=".repeat(80));
-    println!();
+    log!("{}", "=".repeat(80));
+    log!("");
 
     let mut total_fixed = 0;
     let mut files_modified = 0;
@@ -191,13 +206,13 @@ fn main() -> Result<()> {
         }
     }
 
-    println!();
-    println!("{}", "=".repeat(80));
-    println!("SUMMARY:");
-    println!("  Files modified: {}", files_modified);
-    println!("  Total fixes: {}", total_fixed);
-    println!();
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("");
+    log!("{}", "=".repeat(80));
+    log!("SUMMARY:");
+    log!("  Files modified: {}", files_modified);
+    log!("  Total fixes: {}", total_fixed);
+    log!("");
+    log!("Completed in {}ms", start.elapsed().as_millis());
 
     Ok(())
 }

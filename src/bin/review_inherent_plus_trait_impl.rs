@@ -11,6 +11,7 @@ use rusticate::{StandardArgs, find_rust_files};
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
 use std::time::Instant;
+use std::fs;
 
 const STANDARD_TRAITS: &[&str] = &[
     "Debug", "Clone", "Copy", "PartialEq", "Eq", "PartialOrd", "Ord",
@@ -19,6 +20,21 @@ const STANDARD_TRAITS: &[&str] = &[
     "Send", "Sync", "Sized", "Unpin"
 ];
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_inherent_plus_trait_impl.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct Violation {
     struct_name: String,
@@ -121,7 +137,7 @@ fn main() -> Result<()> {
     }
 
     if all_violations.is_empty() {
-        println!("\n✓ All structs use trait impl only (no inherent+trait duplication)!");
+        log!("\n✓ All structs use trait impl only (no inherent+trait duplication)!");
         let elapsed = start_time.elapsed();
         eprintln!("\nCompleted in {}ms", elapsed.as_millis());
         return Ok(());
@@ -129,35 +145,35 @@ fn main() -> Result<()> {
 
     let total_count: usize = all_violations.values().map(|v| v.len()).sum();
 
-    println!("✗ Inherent + Trait Impl Pattern: {} struct(s)\n", total_count);
-    println!("Structs should use TRAIT impl only, not both inherent impl and trait impl.\n");
-    println!("{}", "=".repeat(80));
+    log!("✗ Inherent + Trait Impl Pattern: {} struct(s)\n", total_count);
+    log!("Structs should use TRAIT impl only, not both inherent impl and trait impl.\n");
+    log!("{}", "=".repeat(80));
 
     for (file_path, file_violations) in all_violations.iter() {
         let rel_path = file_path.strip_prefix(&base_dir).unwrap_or(file_path);
-        println!("\n{}:", rel_path.display());
+        log!("\n{}:", rel_path.display());
 
         for violation in file_violations {
-            println!("  {}:", violation.struct_name);
+            log!("  {}:", violation.struct_name);
             let inherent_str = violation.inherent_lines.iter()
                 .map(|l| l.to_string())
                 .collect::<Vec<_>>()
                 .join(", ");
-            println!("    Inherent impl at line(s): {}", inherent_str);
+            log!("    Inherent impl at line(s): {}", inherent_str);
             
             let mut trait_names: Vec<_> = violation.traits.keys().collect();
             trait_names.sort();
             for trait_name in trait_names {
                 let lines = &violation.traits[trait_name];
                 let lines_str = lines.iter().map(|l| l.to_string()).collect::<Vec<_>>().join(", ");
-                println!("    Trait impl {} at line(s): {}", trait_name, lines_str);
+                log!("    Trait impl {} at line(s): {}", trait_name, lines_str);
             }
         }
     }
 
-    println!("\n{}", "=".repeat(80));
-    println!("Total: {} struct(s) with both inherent and trait impls", total_count);
-    println!("\nRecommendation: Remove inherent impl, keep only trait impl.");
+    log!("\n{}", "=".repeat(80));
+    log!("Total: {} struct(s) with both inherent and trait impls", total_count);
+    log!("\nRecommendation: Remove inherent impl, keep only trait impl.");
 
     let elapsed = start_time.elapsed();
     eprintln!("\nCompleted in {}ms", elapsed.as_millis());

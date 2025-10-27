@@ -15,6 +15,21 @@ use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_module_encapsulation.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct Violation {
     file: PathBuf,
@@ -121,8 +136,8 @@ fn main() -> Result<()> {
     let base_dir = args.base_dir();
     
     // Print compilation directory for Emacs compile-mode
-    println!("Entering directory '{}'", base_dir.display());
-    println!();
+    log!("Entering directory '{}'", base_dir.display());
+    log!("");
     
     let search_dirs = args.get_search_dirs();
     
@@ -133,9 +148,9 @@ fn main() -> Result<()> {
         .collect();
     
     if src_dirs.is_empty() {
-        println!("✓ No src/ directories to check");
+        log!("✓ No src/ directories to check");
         let elapsed = start.elapsed().as_millis();
-        println!("Completed in {}ms", elapsed);
+        log!("Completed in {}ms", elapsed);
         return Ok(());
     }
     
@@ -153,27 +168,27 @@ fn main() -> Result<()> {
     
     // Report violations
     if all_violations.is_empty() {
-        println!("✓ All code is properly encapsulated in pub mod blocks");
+        log!("✓ All code is properly encapsulated in pub mod blocks");
     } else {
-        println!("✗ Found {} violation(s):", format_number(all_violations.len()));
-        println!();
+        log!("✗ Found {} violation(s):", format_number(all_violations.len()));
+        log!("");
         for v in &all_violations {
             // Use relative path from base_dir (Emacs will use compilation directory)
             if let Ok(rel_path) = v.file.strip_prefix(&base_dir) {
-                println!("{}:{}: {} outside pub mod", rel_path.display(), v.line_num, v.keyword);
-                println!("  {}", v.line_content.trim());
+                log!("{}:{}: {} outside pub mod", rel_path.display(), v.line_num, v.keyword);
+                log!("  {}", v.line_content.trim());
             }
         }
     }
     
     // Summary line
     let unique_files: std::collections::HashSet<_> = all_violations.iter().map(|v| &v.file).collect();
-    println!();
-    println!("Summary: {} files checked, {} files with violations, {} total violations",
+    log!("");
+    log!("Summary: {} files checked, {} files with violations, {} total violations",
              format_number(files.len()), format_number(unique_files.len()), format_number(all_violations.len()));
     
     let elapsed = start.elapsed().as_millis();
-    println!("Completed in {}ms", elapsed);
+    log!("Completed in {}ms", elapsed);
     
     // Exit code: 0 if no violations, 1 if violations found
     if all_violations.is_empty() {

@@ -17,7 +17,23 @@ use ra_ap_syntax::{ast::{self, AstNode, HasVisibility, HasName}, SyntaxKind, Sou
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::time::Instant;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/review_trait_method_conflicts.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 #[derive(Debug)]
 struct ConflictInfo {
     file: PathBuf,
@@ -248,12 +264,12 @@ fn main() -> Result<()> {
     }
     
     if files_to_check.is_empty() {
-        println!("✓ No tests/ or benches/ directories found");
+        log!("✓ No tests/ or benches/ directories found");
         return Ok(());
     }
     
-    println!("Analyzing {} test/benchmark files for trait method conflicts...", files_to_check.len());
-    println!("{}", "=".repeat(80));
+    log!("Analyzing {} test/benchmark files for trait method conflicts...", files_to_check.len());
+    log!("{}", "=".repeat(80));
     
     let mut all_conflicts = Vec::new();
     
@@ -264,15 +280,15 @@ fn main() -> Result<()> {
     }
     
     if all_conflicts.is_empty() {
-        println!("\n✓ No trait method conflicts detected!");
-        println!("All test/benchmark files are safe for trait default implementation refactor.");
+        log!("\n✓ No trait method conflicts detected!");
+        log!("All test/benchmark files are safe for trait default implementation refactor.");
         let elapsed = start_time.elapsed();
         eprintln!("\nCompleted in {}ms", elapsed.as_millis());
         return Ok(());
     }
     
     // Report conflicts
-    println!("\n✗ Found {} file(s) with potential trait method conflicts:\n", all_conflicts.len());
+    log!("\n✗ Found {} file(s) with potential trait method conflicts:\n", all_conflicts.len());
     
     let mut total_conflicting_methods = 0;
     
@@ -283,33 +299,33 @@ fn main() -> Result<()> {
         let rel_path = conflict.file.strip_prefix(&repo_root).unwrap_or(&conflict.file);
         total_conflicting_methods += conflict.conflicts.len();
         
-        println!("\n{}:", rel_path.display());
-        println!("  Imports {} modules with wildcards:", conflict.imports.len());
+        log!("\n{}:", rel_path.display());
+        log!("  Imports {} modules with wildcards:", conflict.imports.len());
         for imp in &conflict.imports {
             let method_count = conflict.module_methods.get(imp).map(|m| m.len()).unwrap_or(0);
-            println!("    - {} ({} trait methods)", imp, method_count);
+            log!("    - {} ({} trait methods)", imp, method_count);
         }
         
-        println!("\n  {} conflicting method(s):", conflict.conflicts.len());
+        log!("\n  {} conflicting method(s):", conflict.conflicts.len());
         let mut conflict_list: Vec<_> = conflict.conflicts.iter().collect();
         conflict_list.sort_by_key(|(name, _)| *name);
         
         for (method, module_pairs) in conflict_list {
-            println!("    • {}()", method);
+            log!("    • {}()", method);
             for (mod1, mod2) in module_pairs {
-                println!("        ↳ {} vs {}", mod1, mod2);
+                log!("        ↳ {} vs {}", mod1, mod2);
             }
         }
     }
     
-    println!("\n{}", "=".repeat(80));
-    println!("Summary:");
-    println!("  Files with conflicts: {}", all_conflicts.len());
-    println!("  Total conflicting methods: {}", total_conflicting_methods);
-    println!("\nThese files will need fixes before moving methods to trait defaults:");
-    println!("  1. Remove wildcard imports and use specific imports");
-    println!("  2. Use fully-qualified syntax: Trait::method(&obj)");
-    println!("  3. Use type ascription or turbofish to disambiguate");
+    log!("\n{}", "=".repeat(80));
+    log!("Summary:");
+    log!("  Files with conflicts: {}", all_conflicts.len());
+    log!("  Total conflicting methods: {}", total_conflicting_methods);
+    log!("\nThese files will need fixes before moving methods to trait defaults:");
+    log!("  1. Remove wildcard imports and use specific imports");
+    log!("  2. Use fully-qualified syntax: Trait::method(&obj)");
+    log!("  3. Use type ascription or turbofish to disambiguate");
     
     let elapsed = start_time.elapsed();
     eprintln!("\nCompleted in {}ms", elapsed.as_millis());

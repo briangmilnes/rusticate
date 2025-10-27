@@ -5,7 +5,23 @@ use std::collections::HashMap;
 use std::process::Command;
 use std::time::Instant;
 use rusticate::format_number;
+use std::fs;
 
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/analyze_review_typeclasses.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 fn main() -> Result<()> {
     let start = Instant::now();
     
@@ -76,11 +92,11 @@ fn main() -> Result<()> {
     let total_warnings: usize = warn_counts.values().sum();
     
     // Print results
-    println!("Entering directory '{}'", std::env::current_dir()?.display());
-    println!();
-    println!("{}", "=".repeat(80));
-    println!("PARETO ANALYSIS: BUGS");
-    println!("{}", "=".repeat(80));
+    log!("Entering directory '{}'", std::env::current_dir()?.display());
+    log!("");
+    log!("{}", "=".repeat(80));
+    log!("PARETO ANALYSIS: BUGS");
+    log!("{}", "=".repeat(80));
     
     if !bug_vec.is_empty() {
         let mut cumulative = 0;
@@ -88,19 +104,19 @@ fn main() -> Result<()> {
             cumulative += **count;
             let percentage = (**count as f64 / total_bugs as f64) * 100.0;
             let cumulative_pct = (cumulative as f64 / total_bugs as f64) * 100.0;
-            println!("{:6} ({:5.1}%, cumulative {:5.1}%): {}", 
+            log!("{:6} ({:5.1}%, cumulative {:5.1}%): {}", 
                 format_number(**count), percentage, cumulative_pct, issue_type);
         }
-        println!("{}", "-".repeat(80));
-        println!("TOTAL BUGS: {}", format_number(total_bugs));
+        log!("{}", "-".repeat(80));
+        log!("TOTAL BUGS: {}", format_number(total_bugs));
     } else {
-        println!("No bugs found!");
+        log!("No bugs found!");
     }
     
-    println!();
-    println!("{}", "=".repeat(80));
-    println!("PARETO ANALYSIS: WARNINGS");
-    println!("{}", "=".repeat(80));
+    log!("");
+    log!("{}", "=".repeat(80));
+    log!("PARETO ANALYSIS: WARNINGS");
+    log!("{}", "=".repeat(80));
     
     if !warn_vec.is_empty() {
         let mut cumulative = 0;
@@ -108,17 +124,17 @@ fn main() -> Result<()> {
             cumulative += **count;
             let percentage = (**count as f64 / total_warnings as f64) * 100.0;
             let cumulative_pct = (cumulative as f64 / total_warnings as f64) * 100.0;
-            println!("{:6} ({:5.1}%, cumulative {:5.1}%): {}", 
+            log!("{:6} ({:5.1}%, cumulative {:5.1}%): {}", 
                 format_number(**count), percentage, cumulative_pct, issue_type);
         }
-        println!("{}", "-".repeat(80));
-        println!("TOTAL WARNINGS: {}", format_number(total_warnings));
+        log!("{}", "-".repeat(80));
+        log!("TOTAL WARNINGS: {}", format_number(total_warnings));
     } else {
-        println!("No warnings found!");
+        log!("No warnings found!");
     }
     
-    println!();
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("");
+    log!("Completed in {}ms", start.elapsed().as_millis());
     
     Ok(())
 }
