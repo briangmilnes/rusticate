@@ -92,11 +92,17 @@ fn main() -> Result<()> {
     let mut tests_total = 0;
     let mut benches_total = 0;
     let mut other_total = 0;
+    let mut src_file_count = 0;
+    let mut tests_file_count = 0;
+    let mut benches_file_count = 0;
+    let mut scripts_file_count = 0;
+    let mut other_file_count = 0;
     
     // Count SRC
     if !src_dirs.is_empty() {
         let _ = print_line("SRC LOC");
         let src_files = find_rust_files(&src_dirs);
+        src_file_count = src_files.len();
         for file in &src_files {
             if let Ok(lines) = count_lines_in_file(file) {
                 if let Ok(rel_path) = file.strip_prefix(&base_dir) {
@@ -121,6 +127,7 @@ fn main() -> Result<()> {
     if !tests_dirs.is_empty() {
         if print_line("Tests LOC").is_err() { return Ok(()); }
         let tests_files = find_rust_files(&tests_dirs);
+        tests_file_count = tests_files.len();
         for file in &tests_files {
             if let Ok(lines) = count_lines_in_file(file) {
                 if let Ok(rel_path) = file.strip_prefix(&base_dir) {
@@ -143,6 +150,7 @@ fn main() -> Result<()> {
     if !benches_dirs.is_empty() {
         if print_line("Benches LOC").is_err() { return Ok(()); }
         let benches_files = find_rust_files(&benches_dirs);
+        benches_file_count = benches_files.len();
         for file in &benches_files {
             if let Ok(lines) = count_lines_in_file(file) {
                 if let Ok(rel_path) = file.strip_prefix(&base_dir) {
@@ -173,6 +181,7 @@ fn main() -> Result<()> {
         let script_files = scripts_dirs.iter()
             .flat_map(|d| find_script_files(d))
             .collect::<Vec<_>>();
+        scripts_file_count = script_files.len();
         
         for file in &script_files {
             if let Ok(lines) = count_lines_in_file(file) {
@@ -200,6 +209,7 @@ fn main() -> Result<()> {
     
     if !true_other_dirs.is_empty() {
         let other_files = find_rust_files(&true_other_dirs);
+        other_file_count += other_files.len();
         for file in &other_files {
             if let Ok(lines) = count_lines_in_file(file) {
                 if let Ok(rel_path) = file.strip_prefix(&base_dir) {
@@ -218,6 +228,7 @@ fn main() -> Result<()> {
     
     // Count individual files
     if !files.is_empty() {
+        other_file_count += files.len();
         for file in &files {
             if let Ok(lines) = count_lines_in_file(file) {
                 if let Ok(rel_path) = file.strip_prefix(&base_dir) {
@@ -236,26 +247,27 @@ fn main() -> Result<()> {
     
     // Total
     let total_loc = src_total + tests_total + benches_total + scripts_total + other_total;
+    let total_files = src_file_count + tests_file_count + benches_file_count + scripts_file_count + other_file_count;
     
     // Summary line - only show categories that were searched
     if print_line("").is_err() { return Ok(()); }
     let mut summary_parts = Vec::new();
     if !src_dirs.is_empty() {
-        summary_parts.push(format!("src {} LOC", format_number(src_total)));
+        summary_parts.push(format!("src {} files {} LOC", format_number(src_file_count), format_number(src_total)));
     }
     if !tests_dirs.is_empty() {
-        summary_parts.push(format!("tests {} LOC", format_number(tests_total)));
+        summary_parts.push(format!("tests {} files {} LOC", format_number(tests_file_count), format_number(tests_total)));
     }
     if !benches_dirs.is_empty() {
-        summary_parts.push(format!("benches {} LOC", format_number(benches_total)));
+        summary_parts.push(format!("benches {} files {} LOC", format_number(benches_file_count), format_number(benches_total)));
     }
     if scripts_total > 0 {
-        summary_parts.push(format!("scripts {} LOC", format_number(scripts_total)));
+        summary_parts.push(format!("scripts {} files {} LOC", format_number(scripts_file_count), format_number(scripts_total)));
     }
     if other_total > 0 {
-        summary_parts.push(format!("other {} LOC", format_number(other_total)));
+        summary_parts.push(format!("other {} files {} LOC", format_number(other_file_count), format_number(other_total)));
     }
-    summary_parts.push(format!("total {} LOC", format_number(total_loc)));
+    summary_parts.push(format!("total {} files {} LOC", format_number(total_files), format_number(total_loc)));
     
     if print_line(&format!("Summary: {}", summary_parts.join(", "))).is_err() { 
         return Ok(()); 
