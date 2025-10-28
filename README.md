@@ -684,6 +684,32 @@ GPL-3.0 - See LICENSE file for details.
 
 Copyright (C) Brian G. Milnes 2025
 
+## Development
+
+### Testing with APAS-AI
+
+Many rusticate tools have been extensively tested on the [APAS-AI](https://github.com/briangmilnes/APAS-AI) codebase. To run tests against APAS-AI:
+
+```bash
+# From rusticate project root, check out APAS-AI
+mkdir -p APAS-AI-copy
+cd APAS-AI-copy
+git clone https://github.com/briangmilnes/APAS-AI.git apas-ai
+cd ..
+
+# Run count tools on APAS-AI
+target/release/rusticate-count-loc -c APAS-AI-copy/apas-ai
+target/release/rusticate-count-as -c APAS-AI-copy/apas-ai
+target/release/rusticate-count-vec -c APAS-AI-copy/apas-ai
+target/release/rusticate-count-where -c APAS-AI-copy/apas-ai
+
+# Run review tools on APAS-AI
+target/release/rusticate-review string-hacking -c APAS-AI-copy/apas-ai
+target/release/rusticate-review test-functions -c APAS-AI-copy/apas-ai
+```
+
+The APAS-AI codebase is checked out in `APAS-AI-copy/apas-ai/` by convention to avoid confusion with the main rusticate project.
+
 ## Contributing
 
 Contributions welcome! Please ensure:
@@ -691,7 +717,8 @@ Contributions welcome! Please ensure:
 2. Output is deterministic (sorted)
 3. Add corresponding fix tool for each review tool
 4. Tests pass after automatic fixes
+5. Run `rusticate-review string-hacking` on your changes
 
 ## Authors
 
-[Your Name/Team]
+Brian G. Milnes
