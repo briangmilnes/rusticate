@@ -231,6 +231,7 @@ Tools that detect issues but don't modify code. All output to `analyses/tool-nam
 |------|-------------|
 | `review-string-hacking` | **Detect string manipulation that should use AST** |
 | `review-summary-accuracy` | Verify summary counts match actual violations |
+| `review-logging` | Check that binaries have dual stdout+file logging |
 
 ---
 
@@ -281,7 +282,6 @@ Tools that automatically modify code. **Always run tests after fixing!**
 | Tool | Description |
 |------|-------------|
 | `fix-logging` | Add dual stdout+file logging to binaries |
-| `fix-binary-logging` | Inject logging boilerplate into binaries |
 
 #### Chapter Migration (APAS-specific)
 
@@ -678,7 +678,9 @@ The following tools have been validated on the large-scale [APAS-AI](https://git
 
 ## License
 
-[Your License Here]
+GPL-3.0 - See LICENSE file for details.
+
+Copyright (C) Brian G. Milnes 2025
 
 ## Contributing
 

@@ -246,6 +246,10 @@ name = "fix-logging"
 path = "src/bin/fix_logging.rs"
 
 [[bin]]
+name = "rusticate-review-logging"
+path = "src/bin/review_logging.rs"
+
+[[bin]]
 name = "rusticate-review-string-hacking"
 path = "src/bin/review_string_hacking.rs"
 
