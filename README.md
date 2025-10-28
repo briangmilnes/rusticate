@@ -4,7 +4,7 @@
 
 Rusticating Python as a method for code review and fix of Rust files in LLMs by using abstract syntax trees in Rust code instead of Python and regexps.
 
-Python will be sent back to the family estate for not working well.
+Python will be sent back to the family estate for not working well!
 
 ---
 
@@ -28,6 +28,8 @@ Python will be sent back to the family estate for not working well.
 ## Overview
 
 **Rusticate** is a suite of 76+ AST-based tools for analyzing and automatically fixing Rust codebases. Unlike traditional linters that rely on string manipulation or regex, Rusticate uses the Rust Analyzer syntax tree (`ra_ap_syntax`) for precise, reliable code transformations.
+
+**Note:** While Rusticate is a general-purpose Rust analysis toolkit, some tools are specific to the [APAS-AI](https://github.com/briangmilnes/APAS-AI) project (Algorithm Performance Analysis System - a comprehensive Rust implementation of algorithms and data structures). These APAS-specific tools handle chapter migration (Chap18 → Chap19), module naming conventions, and parallelism patterns specific to that codebase.
 
 ### Key Features
 
