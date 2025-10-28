@@ -7,12 +7,10 @@
 //! 
 //! Binary: rusticate-review-duplicate-methods
 
-use std::path::PathBuf;
 use std::time::Instant;
 use rusticate::StandardArgs;
 use rusticate::args::args::find_rust_files;
 use rusticate::duplicate_methods::find_duplicate_methods;
-use std::fs;
 
 
 macro_rules! log {

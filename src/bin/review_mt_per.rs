@@ -16,7 +16,7 @@
 //! Binary: review-mt-per
 
 use anyhow::Result;
-use ra_ap_syntax::{ast::{self, AstNode, HasName}, SyntaxKind, SourceFile, Edition};
+use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SourceFile, Edition};
 use rusticate::{find_rust_files, StandardArgs};
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -120,11 +120,11 @@ fn main() -> Result<()> {
         };
         
         // Categorize by directory
-        if file_path.to_str().map_or(false, |s| s.contains("/tests/")) {
+        if file_path.to_str().is_some_and(|s| s.contains("/tests/")) {
             test_files.push(file_info);
-        } else if file_path.to_str().map_or(false, |s| s.contains("/benches/")) {
+        } else if file_path.to_str().is_some_and(|s| s.contains("/benches/")) {
             bench_files.push(file_info);
-        } else if file_path.to_str().map_or(false, |s| s.contains("/src/")) {
+        } else if file_path.to_str().is_some_and(|s| s.contains("/src/")) {
             src_files.push(file_info);
         }
     }

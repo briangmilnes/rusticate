@@ -47,7 +47,7 @@ pub mod logging {
             let (log_file, log_path) = match Self::create_log_file(tool_name, &start_time) {
                 Ok((file, path)) => (Some(file), Some(path)),
                 Err(e) => {
-                    eprintln!("Warning: Could not create log file: {}", e);
+                    eprintln!("Warning: Could not create log file: {e}");
                     eprintln!("Continuing without logging...");
                     (None, None)
                 }
@@ -74,7 +74,7 @@ pub mod logging {
             fs::create_dir_all(&log_dir)?;
             
             // Create log file: run-<HH-MM-SS>.log
-            let log_path = log_dir.join(format!("run-{}.log", time_str));
+            let log_path = log_dir.join(format!("run-{time_str}.log"));
             let log_file = fs::File::create(&log_path)?;
             
             Ok((log_file, log_path))
@@ -83,18 +83,18 @@ pub mod logging {
         /// Log a message to both stdout and the log file
         pub fn log(&mut self, message: &str) {
             // Always print to stdout
-            println!("{}", message);
+            println!("{message}");
             
             // Write to log file if available
             if let Some(ref mut file) = self.log_file {
-                let _ = writeln!(file, "{}", message);
+                let _ = writeln!(file, "{message}");
             }
         }
 
         /// Log without printing to stdout (log file only)
         pub fn log_silent(&mut self, message: &str) {
             if let Some(ref mut file) = self.log_file {
-                let _ = writeln!(file, "{}", message);
+                let _ = writeln!(file, "{message}");
             }
         }
 
@@ -109,7 +109,7 @@ pub mod logging {
             let duration = end_time.signed_duration_since(self.start_time);
             
             self.log("");
-            self.log(&format!("=== Run Summary ==="));
+            self.log("=== Run Summary ===");
             self.log(summary);
             self.log(&format!("Started: {}", self.start_time.format("%Y-%m-%d %H:%M:%S")));
             self.log(&format!("Ended: {}", end_time.format("%Y-%m-%d %H:%M:%S")));

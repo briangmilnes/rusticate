@@ -74,8 +74,8 @@ fn check_file(file_path: &Path, source: &str) -> Result<Vec<Violation>> {
                 // Check if name matches file stem
                 if struct_name != file_stem {
                     // Allow "S" suffix variant (FooS vs Foo)
-                    let name_with_s = format!("{}S", struct_name);
-                    let stem_with_s = format!("{}S", file_stem);
+                    let name_with_s = format!("{struct_name}S");
+                    let stem_with_s = format!("{file_stem}S");
                     
                     if name_with_s != file_stem && struct_name != stem_with_s {
                         let line_num = rusticate::line_number(struct_ast.syntax(), source);

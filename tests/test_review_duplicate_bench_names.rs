@@ -25,10 +25,10 @@ fn test_review_duplicate_bench_names_on_apas() -> Result<()> {
     
     // Print output for debugging
     if !stderr.is_empty() {
-        eprintln!("STDERR:\n{}", stderr);
+        eprintln!("STDERR:\n{stderr}");
     }
     
-    println!("STDOUT:\n{}", stdout);
+    println!("STDOUT:\n{stdout}");
     
     // The tool checks Cargo.toml, exit code depends on whether there are duplicates
     Ok(())

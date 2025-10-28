@@ -8,9 +8,8 @@
 //! Binary: review-unnecessary-ufcs-and-qualified-paths
 
 use anyhow::Result;
-use ra_ap_syntax::{ast::{self, AstNode, HasName}, SyntaxKind, SourceFile, Edition, SyntaxNode};
+use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SourceFile, Edition, SyntaxNode};
 use rusticate::{find_rust_files, StandardArgs};
-use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
@@ -53,14 +52,13 @@ fn find_glob_imports(root: &SyntaxNode) -> Vec<String> {
     let mut imports = Vec::new();
     
     for node in root.descendants() {
-        if node.kind() == SyntaxKind::USE {
-            if has_star_in_use_tree(&node) {
+        if node.kind() == SyntaxKind::USE
+            && has_star_in_use_tree(&node) {
                 // Extract the full use statement using AST
                 if let Some(use_stmt) = ast::Use::cast(node.clone()) {
                     imports.push(use_stmt.syntax().to_string());
                 }
             }
-        }
     }
     
     imports

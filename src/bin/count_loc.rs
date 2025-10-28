@@ -54,7 +54,7 @@ fn find_script_files(dir: &Path) -> Vec<PathBuf> {
 // Helper to print, ignoring broken pipe errors
 fn print_line(s: &str) -> io::Result<()> {
     let mut stdout = io::stdout();
-    writeln!(stdout, "{}", s)?;
+    writeln!(stdout, "{s}")?;
     Ok(())
 }
 
@@ -109,10 +109,8 @@ fn main() -> Result<()> {
                     if print_line(&format!("{:>8} {}", format_number(lines), rel_path.display())).is_err() {
                         return Ok(());
                     }
-                } else {
-                    if print_line(&format!("{:>8} {}", format_number(lines), file.display())).is_err() {
-                        return Ok(());
-                    }
+                } else if print_line(&format!("{:>8} {}", format_number(lines), file.display())).is_err() {
+                    return Ok(());
                 }
                 src_total += lines;
             }
@@ -134,10 +132,8 @@ fn main() -> Result<()> {
                     if print_line(&format!("{:>8} {}", format_number(lines), rel_path.display())).is_err() {
                         return Ok(());
                     }
-                } else {
-                    if print_line(&format!("{:>8} {}", format_number(lines), file.display())).is_err() {
-                        return Ok(());
-                    }
+                } else if print_line(&format!("{:>8} {}", format_number(lines), file.display())).is_err() {
+                    return Ok(());
                 }
                 tests_total += lines;
             }
@@ -157,10 +153,8 @@ fn main() -> Result<()> {
                     if print_line(&format!("{:>8} {}", format_number(lines), rel_path.display())).is_err() {
                         return Ok(());
                     }
-                } else {
-                    if print_line(&format!("{:>8} {}", format_number(lines), file.display())).is_err() {
-                        return Ok(());
-                    }
+                } else if print_line(&format!("{:>8} {}", format_number(lines), file.display())).is_err() {
+                    return Ok(());
                 }
                 benches_total += lines;
             }
@@ -189,10 +183,8 @@ fn main() -> Result<()> {
                     if print_line(&format!("{:>8} {}", format_number(lines), rel_path.display())).is_err() {
                         return Ok(());
                     }
-                } else {
-                    if print_line(&format!("{:>8} {}", format_number(lines), file.display())).is_err() {
-                        return Ok(());
-                    }
+                } else if print_line(&format!("{:>8} {}", format_number(lines), file.display())).is_err() {
+                    return Ok(());
                 }
                 scripts_total += lines;
             }
@@ -216,10 +208,8 @@ fn main() -> Result<()> {
                     if print_line(&format!("{:>8} {}", format_number(lines), rel_path.display())).is_err() {
                         return Ok(());
                     }
-                } else {
-                    if print_line(&format!("{:>8} {}", format_number(lines), file.display())).is_err() {
-                        return Ok(());
-                    }
+                } else if print_line(&format!("{:>8} {}", format_number(lines), file.display())).is_err() {
+                    return Ok(());
                 }
                 other_total += lines;
             }
@@ -235,10 +225,8 @@ fn main() -> Result<()> {
                     if print_line(&format!("{:>8} {}", format_number(lines), rel_path.display())).is_err() {
                         return Ok(());
                     }
-                } else {
-                    if print_line(&format!("{:>8} {}", format_number(lines), file.display())).is_err() {
-                        return Ok(());
-                    }
+                } else if print_line(&format!("{:>8} {}", format_number(lines), file.display())).is_err() {
+                    return Ok(());
                 }
                 other_total += lines;
             }
@@ -274,7 +262,7 @@ fn main() -> Result<()> {
     }
     
     let elapsed = start.elapsed().as_millis();
-    let _ = print_line(&format!("Completed in {}ms", elapsed));
+    let _ = print_line(&format!("Completed in {elapsed}ms"));
     
     Ok(())
 }

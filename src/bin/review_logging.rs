@@ -49,7 +49,7 @@ fn has_std_fs_import(content: &str) -> bool {
                     if let Some(path) = use_tree.path() {
                         let segments: Vec<_> = path.segments().collect();
                         if segments.len() == 2 {
-                            if let (Some(first), Some(second)) = (segments.get(0), segments.get(1)) {
+                            if let (Some(first), Some(second)) = (segments.first(), segments.get(1)) {
                                 let first_text = first.syntax().text().to_string();
                                 let second_text = second.syntax().text().to_string();
                                 if first_text == "std" && second_text == "fs" {
@@ -92,7 +92,7 @@ fn main() -> Result<()> {
             fs::read_dir(dir)?
                 .filter_map(|e| e.ok())
                 .map(|e| e.path())
-                .filter(|p| p.extension().map_or(false, |ext| ext == "rs"))
+                .filter(|p| p.extension().is_some_and(|ext| ext == "rs"))
                 .collect()
         };
         
@@ -131,7 +131,7 @@ fn main() -> Result<()> {
     if !missing_logging.is_empty() {
         println!("Missing logging:");
         for (file, issue) in &missing_logging {
-            println!("  {}: {}", file, issue);
+            println!("  {file}: {issue}");
         }
         println!();
     }
@@ -139,7 +139,7 @@ fn main() -> Result<()> {
     if !partial_logging.is_empty() {
         println!("Partial logging:");
         for (file, issues) in &partial_logging {
-            println!("  {}: {}", file, issues);
+            println!("  {file}: {issues}");
         }
         println!();
     }
@@ -147,7 +147,7 @@ fn main() -> Result<()> {
     if !complete_logging.is_empty() {
         println!("Complete logging ({} files):", complete_logging.len());
         for file in &complete_logging {
-            println!("  {}", file);
+            println!("  {file}");
         }
         println!();
     }
@@ -156,11 +156,10 @@ fn main() -> Result<()> {
     let complete_count = complete_logging.len();
     let issues_count = missing_logging.len() + partial_logging.len();
     
-    println!("Summary: {} files checked, {} with complete logging, {} with issues",
-        total, complete_count, issues_count);
+    println!("Summary: {total} files checked, {complete_count} with complete logging, {issues_count} with issues");
     
     let elapsed = start.elapsed().as_millis();
-    println!("Completed in {}ms", elapsed);
+    println!("Completed in {elapsed}ms");
     
     Ok(())
 }

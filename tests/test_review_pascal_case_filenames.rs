@@ -21,7 +21,7 @@ fn test_review_pascal_case_filenames_on_apas() -> Result<()> {
     
     // Run the binary with -c (codebase: src, tests, benches)
     let output = Command::new(binary_path)
-        .args(&["-c"])
+        .args(["-c"])
         .current_dir("APAS-AI-copy/apas-ai")
         .output()?;
     
@@ -30,7 +30,7 @@ fn test_review_pascal_case_filenames_on_apas() -> Result<()> {
     
     // Print for debugging
     if !stderr.is_empty() {
-        eprintln!("STDERR: {}", stderr);
+        eprintln!("STDERR: {stderr}");
     }
     
     // Validate exit code (1 = violations found)
@@ -41,7 +41,7 @@ fn test_review_pascal_case_filenames_on_apas() -> Result<()> {
     
     // Validate violation message
     assert!(stdout.contains("✗ Found") && stdout.contains("violation(s):"),
-        "Expected violation message not found in output:\n{}", stdout);
+        "Expected violation message not found in output:\n{stdout}");
     
     // Validate that underscores are being detected
     assert!(stdout.contains("uses snake_case (underscore)"),
@@ -64,21 +64,20 @@ fn test_review_pascal_case_filenames_on_apas() -> Result<()> {
         .expect("Failed to parse files checked");
     
     // Parse "53 files with violations"
-    let files_with_violations = parts[1].trim().split_whitespace()
+    let files_with_violations = parts[1].split_whitespace()
         .next()
         .and_then(|s| parse_number(s).ok())
         .expect("Failed to parse files with violations");
     
     // Validate numbers (53 files have underscores: Example41_3, Algorithm21_1, etc.)
-    assert!(files_checked > 700, "Expected >700 files checked, got {}", files_checked);
+    assert!(files_checked > 700, "Expected >700 files checked, got {files_checked}");
     assert_eq!(files_with_violations, 53, "Expected exactly 53 files with violations (underscore names)");
     
     // Validate timing line
     assert!(stdout.contains("Completed in"), "Missing timing line");
     assert!(stdout.contains("ms"), "Missing milliseconds unit");
     
-    println!("✓ Test passed: {} files checked, {} violations found (files with underscores)", 
-             files_checked, files_with_violations);
+    println!("✓ Test passed: {files_checked} files checked, {files_with_violations} violations found (files with underscores)");
     Ok(())
 }
 

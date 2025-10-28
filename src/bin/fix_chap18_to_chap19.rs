@@ -14,11 +14,11 @@
 //!
 //! Binary: fix-chap18-to-chap19
 
-use anyhow::{Result, bail};
+use anyhow::Result;
 use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SourceFile, Edition};
 use rusticate::{find_rust_files, StandardArgs};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::time::Instant;
 
 fn is_chap20_or_higher(file_path: &Path) -> bool {

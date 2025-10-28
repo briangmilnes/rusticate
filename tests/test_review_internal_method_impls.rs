@@ -9,8 +9,8 @@ mod tests {
     #[serial]
     fn test_review_helper_inherent_impls_on_apas() {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
-        let binary_path = format!("{}/target/release/rusticate-review-helper-inherent-impls", manifest_dir);
-        let test_dir = format!("{}/APAS-AI-copy/apas-ai", manifest_dir);
+        let binary_path = format!("{manifest_dir}/target/release/rusticate-review-helper-inherent-impls");
+        let test_dir = format!("{manifest_dir}/APAS-AI-copy/apas-ai");
         
         let output = Command::new(&binary_path)
             .arg("-c")
@@ -22,9 +22,9 @@ mod tests {
         let stderr = String::from_utf8_lossy(&output.stderr);
 
         if !stderr.is_empty() {
-            println!("STDERR: {}", stderr);
+            println!("STDERR: {stderr}");
         }
-        println!("STDOUT: {}", stdout);
+        println!("STDOUT: {stdout}");
 
         // Should find violations
         assert!(stdout.contains("ONLY PRIVATE HELPERS"), "Expected to find private helper impls");
@@ -38,7 +38,7 @@ mod tests {
             .expect("Expected to parse 'only private' count");
         
         // Should find at least 100 violations (as of commit e06fb8d)
-        assert!(only_private >= 100, "Expected at least 100 private helper impls, got {}", only_private);
+        assert!(only_private >= 100, "Expected at least 100 private helper impls, got {only_private}");
         
         // Should exit with code 1 (violations found)
         assert_eq!(output.status.code(), Some(1), "Expected exit code 1 for violations");

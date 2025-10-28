@@ -21,8 +21,8 @@ fn test_review_public_only_inherent_impls_on_apas() {
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
     
-    println!("STDOUT:\n{}", stdout);
-    println!("STDERR:\n{}", stderr);
+    println!("STDOUT:\n{stdout}");
+    println!("STDERR:\n{stderr}");
     
     // Should find violations (exit code 1)
     assert_eq!(output.status.code(), Some(1), "Expected violations in APAS-AI");

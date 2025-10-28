@@ -10,7 +10,6 @@ use anyhow::Result;
 use rusticate::{StandardArgs, format_number, find_rust_files};
 use std::path::{Path, PathBuf};
 use std::time::Instant;
-use std::fs;
 
 
 macro_rules! log {
@@ -83,11 +82,11 @@ fn check_file(file_path: &Path) -> Option<Violation> {
         };
         
         let message = if name.contains('_') {
-            format!("File '{}' uses snake_case (underscore), should be PascalCase", filename)
-        } else if name.chars().next().map_or(false, |c| c.is_lowercase()) {
-            format!("File '{}' starts with lowercase (camelCase), should be PascalCase", filename)
+            format!("File '{filename}' uses snake_case (underscore), should be PascalCase")
+        } else if name.chars().next().is_some_and(|c| c.is_lowercase()) {
+            format!("File '{filename}' starts with lowercase (camelCase), should be PascalCase")
         } else {
-            format!("File '{}' does not follow PascalCase convention", filename)
+            format!("File '{filename}' does not follow PascalCase convention")
         };
         
         return Some(Violation {

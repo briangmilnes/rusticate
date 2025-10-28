@@ -80,11 +80,11 @@ fn expand_grouped_import(use_stmt: &ast::Use, content: &str) -> Option<(TextRang
         let tree = tree.trim();
         // Build the full import statement
         let full_import = if base_path.is_empty() {
-            format!("use {};", tree)
+            format!("use {tree};")
         } else if base_path.ends_with("::") {
-            format!("use {}{};", base_path, tree)
+            format!("use {base_path}{tree};")
         } else {
-            format!("use {}::{};", base_path, tree)
+            format!("use {base_path}::{tree};")
         };
         individual_imports.push(full_import);
     }

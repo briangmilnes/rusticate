@@ -13,7 +13,6 @@ use ra_ap_syntax::{ast::{self, AstNode, HasVisibility, HasName}, SyntaxKind, Sou
 use rusticate::{StandardArgs, find_rust_files};
 use std::path::PathBuf;
 use std::time::Instant;
-use std::fs;
 
 
 macro_rules! log {
@@ -65,9 +64,7 @@ fn analyze_file(file_path: &PathBuf) -> Option<FileInfo> {
         }
     }
 
-    if struct_name.is_none() {
-        return None;
-    }
+    struct_name.as_ref()?;
 
     let target_struct = struct_name.as_ref().unwrap().clone();
 

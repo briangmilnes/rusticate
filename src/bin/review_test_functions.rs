@@ -36,9 +36,9 @@ impl Logger {
     }
     
     fn log(&self, msg: &str) {
-        println!("{}", msg);
+        println!("{msg}");
         if let Ok(mut file) = self.file.lock() {
-            let _ = writeln!(file, "{}", msg);
+            let _ = writeln!(file, "{msg}");
         }
     }
 }
@@ -427,7 +427,7 @@ fn find_format_macro_calls(test_file: &Path, trait_impls: &[TraitImpl]) -> Resul
                     None
                 };
                 
-                let is_format_macro = macro_name.as_ref().map_or(false, |name| {
+                let is_format_macro = macro_name.as_ref().is_some_and(|name| {
                     matches!(name.as_str(), "format" | "println" | "eprintln" | "print" | "eprint" | "write" | "writeln")
                 });
                 
@@ -457,11 +457,26 @@ fn find_format_macro_calls(test_file: &Path, trait_impls: &[TraitImpl]) -> Resul
                         // Check for format string literals
                         if *kind == SyntaxKind::STRING {
                             in_format_string = true;
-                            if text.contains("{}") {
-                                found_display = true;
-                            }
-                            if text.contains("{:?}") {
-                                found_debug = true;
+                            
+                            // Parse format string for specifiers without string hacking
+                            let chars: Vec<char> = text.chars().collect();
+                            let mut i = 0;
+                            while i < chars.len() {
+                                if i + 1 < chars.len() && chars[i] == '{' {
+                                    if chars[i + 1] == '}' {
+                                        // Found {}
+                                        found_display = true;
+                                        i += 2;
+                                    } else if i + 3 < chars.len() && chars[i + 1] == ':' && chars[i + 2] == '?' && chars[i + 3] == '}' {
+                                        // Found {:?}
+                                        found_debug = true;
+                                        i += 4;
+                                    } else {
+                                        i += 1;
+                                    }
+                                } else {
+                                    i += 1;
+                                }
                             }
                         }
                         
@@ -502,7 +517,7 @@ fn find_format_macro_calls(test_file: &Path, trait_impls: &[TraitImpl]) -> Resul
                                 ident_lower == type_lower ||
                                 type_lower.starts_with(&ident_lower) ||
                                 type_lower.contains(&ident_lower)
-                            } else if ident_lower.len() >= 1 {
+                            } else if !ident_lower.is_empty() {
                                 // For short identifiers, require exact match only
                                 ident_lower == type_lower
                             } else {
@@ -512,12 +527,12 @@ fn find_format_macro_calls(test_file: &Path, trait_impls: &[TraitImpl]) -> Resul
                             if matches {
                                 // Determine coverage source based on format specifier
                                 if found_display && has_display {
-                                    let key = format!("{}::fmt", type_name);
+                                    let key = format!("{type_name}::fmt");
                                     let entry = format_calls.entry(key).or_insert((0, CoverageSource::DisplayTrait));
                                     entry.0 += 1;
                                 }
                                 if found_debug && has_debug {
-                                    let key = format!("{}::fmt", type_name);
+                                    let key = format!("{type_name}::fmt");
                                     let entry = format_calls.entry(key).or_insert((0, CoverageSource::DebugTrait));
                                     entry.0 += 1;
                                 }
@@ -560,7 +575,7 @@ fn find_operator_usage(test_file: &Path, trait_impls: &[TraitImpl]) -> Result<Ha
                 if let Some(bin_expr) = ast::BinExpr::cast(node.clone()) {
                     // Check if operator is == or !=
                     let op_details = bin_expr.op_details();
-                    let op_token = op_details.and_then(|(token, _)| Some(token.kind()));
+                    let op_token = op_details.map(|(token, _)| token.kind());
                     
                     if matches!(op_token, Some(SyntaxKind::EQ2) | Some(SyntaxKind::NEQ)) {
                         // Extract identifiers from LHS and RHS
@@ -614,7 +629,7 @@ fn find_operator_usage(test_file: &Path, trait_impls: &[TraitImpl]) -> Result<Ha
                                     ident_lower == type_lower ||
                                     type_lower.starts_with(&ident_lower) ||
                                     type_lower.contains(&ident_lower)
-                                } else if ident_lower.len() >= 1 {
+                                } else if !ident_lower.is_empty() {
                                     // For short identifiers, require exact match only
                                     ident_lower == type_lower
                                 } else {
@@ -622,7 +637,7 @@ fn find_operator_usage(test_file: &Path, trait_impls: &[TraitImpl]) -> Result<Ha
                                 };
                                 
                                 if matches {
-                                    let key = format!("{}::eq", type_name);
+                                    let key = format!("{type_name}::eq");
                                     let entry = operator_calls.entry(key).or_insert((0, CoverageSource::PartialEqTrait));
                                     entry.0 += 1;
                                 }
@@ -642,7 +657,7 @@ fn find_operator_usage(test_file: &Path, trait_impls: &[TraitImpl]) -> Result<Ha
                         None
                     };
                     
-                    let is_assert_eq = macro_name.as_ref().map_or(false, |name| {
+                    let is_assert_eq = macro_name.as_ref().is_some_and(|name| {
                         matches!(name.as_str(), "assert_eq" | "assert_ne")
                     });
                     
@@ -687,7 +702,7 @@ fn find_operator_usage(test_file: &Path, trait_impls: &[TraitImpl]) -> Result<Ha
                                     ident_lower == type_lower ||
                                     type_lower.starts_with(&ident_lower) ||
                                     type_lower.contains(&ident_lower)
-                                } else if ident_lower.len() >= 1 {
+                                } else if !ident_lower.is_empty() {
                                     // For short identifiers, require exact match only
                                     ident_lower == type_lower
                                 } else {
@@ -695,7 +710,7 @@ fn find_operator_usage(test_file: &Path, trait_impls: &[TraitImpl]) -> Result<Ha
                                 };
                                 
                                 if matches {
-                                    let key = format!("{}::eq", type_name);
+                                    let key = format!("{type_name}::eq");
                                     let entry = operator_calls.entry(key).or_insert((0, CoverageSource::PartialEqTrait));
                                     entry.0 += 1;
                                 }
@@ -753,7 +768,7 @@ fn build_call_graph(file: &Path) -> Result<Vec<CallGraphEdge>> {
                 // Find the impl type if this function is in an impl block
                 let impl_type = find_parent_impl_type(&node);
                 let qualified_caller = if let Some(ref type_name) = impl_type {
-                    format!("{}::{}", type_name, caller_name)
+                    format!("{type_name}::{caller_name}")
                 } else {
                     caller_name.clone()
                 };
@@ -791,7 +806,7 @@ fn build_call_graph(file: &Path) -> Result<Vec<CallGraphEdge>> {
                                         let callee = name_ref.text().to_string();
                                         // For self.method(), qualify with impl type
                                         let qualified_callee = if let Some(ref type_name) = impl_type {
-                                            format!("{}::{}", type_name, callee)
+                                            format!("{type_name}::{callee}")
                                         } else {
                                             callee
                                         };
@@ -1345,7 +1360,7 @@ fn main() -> Result<()> {
         // Add derived annotation if applicable
         let derived_annotation = if cov.function.is_derived {
             if let Some(ref trait_name) = cov.function.derived_from {
-                format!(" (derived {})", trait_name)
+                format!(" (derived {trait_name})")
             } else {
                 " (derived)".to_string()
             }
@@ -1382,14 +1397,14 @@ fn main() -> Result<()> {
             CoverageSource::DisplayTrait => " (via Display trait)".to_string(),
             CoverageSource::DebugTrait => " (via Debug trait)".to_string(),
             CoverageSource::PartialEqTrait => " (via PartialEq trait)".to_string(),
-            CoverageSource::TransitiveCoverage(caller) => format!(" (tested transitively via {})", caller),
+            CoverageSource::TransitiveCoverage(caller) => format!(" (tested transitively via {caller})"),
             CoverageSource::Direct => "".to_string(),
         };
         
         // Add derived annotation if applicable
         let derived_annotation = if cov.function.is_derived {
             if let Some(ref trait_name) = cov.function.derived_from {
-                format!(" (derived {})", trait_name)
+                format!(" (derived {trait_name})")
             } else {
                 " (derived)".to_string()
             }
@@ -1431,8 +1446,8 @@ fn main() -> Result<()> {
         if coverage.is_empty() { 0.0 } else { 100.0 * untested.len() as f64 / coverage.len() as f64 }
     ));
     if untested_derived > 0 || untested_explicit > 0 {
-        logger.log(&format!("    - {} derived trait methods", untested_derived));
-        logger.log(&format!("    - {} explicit methods", untested_explicit));
+        logger.log(&format!("    - {untested_derived} derived trait methods"));
+        logger.log(&format!("    - {untested_explicit} explicit methods"));
     }
     logger.log(&format!("  Total test calls: {}", tested.iter().map(|c| c.call_count).sum::<usize>()));
     logger.log(&"=".repeat(80));

@@ -8,7 +8,7 @@
 //! Binary: fix-unnecessary-ufcs
 
 use anyhow::Result;
-use ra_ap_syntax::{ast::{self, AstNode, HasArgList, HasGenericArgs, HasName}, SyntaxKind, SourceFile, Edition, SyntaxNode, TextRange};
+use ra_ap_syntax::{ast::{self, AstNode, HasArgList, HasGenericArgs}, SyntaxKind, SourceFile, Edition, SyntaxNode, TextRange};
 use rusticate::{find_rust_files, StandardArgs};
 use std::fs;
 use std::path::Path;
@@ -38,11 +38,10 @@ fn has_star_token(use_node: &SyntaxNode) -> bool {
 
 fn has_glob_imports(root: &SyntaxNode) -> bool {
     for node in root.descendants() {
-        if node.kind() == SyntaxKind::USE {
-            if has_star_token(&node) {
+        if node.kind() == SyntaxKind::USE
+            && has_star_token(&node) {
                 return true;
             }
-        }
     }
     false
 }
@@ -55,9 +54,9 @@ fn build_simplified_call(
     args: &str,
 ) -> String {
     if generics.is_empty() {
-        format!("{}::{}{}", base_type, method, args)
+        format!("{base_type}::{method}{args}")
     } else {
-        format!("{}::{}::{}{}", base_type, generics, method, args)
+        format!("{base_type}::{generics}::{method}{args}")
     }
 }
 
@@ -142,11 +141,7 @@ fn find_ufcs_replacements(root: &SyntaxNode) -> Vec<UfcsReplacement> {
                     if let Some(type_path) = path_type.path() {
                         if let Some(type_seg) = type_path.segment() {
                             // Get base type name
-                            base_type = if let Some(name) = type_seg.name_ref() {
-                                Some(name.syntax().text().to_string())
-                            } else {
-                                None
-                            };
+                            base_type = type_seg.name_ref().map(|name| name.syntax().text().to_string());
                             
                             // Get generics if present
                             if let Some(gen_args) = type_seg.generic_arg_list() {

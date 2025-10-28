@@ -37,7 +37,7 @@ pub fn review(file: &Path, format: &str) -> Result<()> {
     match format {
         "json" => {
             let json = serde_json::to_string_pretty(&issues)?;
-            println!("{}", json);
+            println!("{json}");
         }
         _ => {
             if issues.is_empty() {
@@ -45,7 +45,7 @@ pub fn review(file: &Path, format: &str) -> Result<()> {
             } else {
                 println!("Found {} issue(s):", issues.len());
                 for issue in issues {
-                    println!("  - {}", issue);
+                    println!("  - {issue}");
                 }
             }
         }
@@ -63,9 +63,9 @@ pub fn fix_file(file: &Path, in_place: bool) -> Result<()> {
     
     if in_place {
         std::fs::write(file, fixed_code)?;
-        println!("Fixed and saved to {:?}", file);
+        println!("Fixed and saved to {file:?}");
     } else {
-        println!("{}", fixed_code);
+        println!("{fixed_code}");
     }
     
     Ok(())
@@ -76,7 +76,7 @@ pub fn parse(file: &Path) -> Result<()> {
     let source = std::fs::read_to_string(file)?;
     let syntax = parse_file(&source)?;
     
-    println!("{:#?}", syntax);
+    println!("{syntax:#?}");
     
     Ok(())
 }

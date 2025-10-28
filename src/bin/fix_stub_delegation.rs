@@ -27,8 +27,8 @@ fn is_stub_delegation(body: &str, method_name: &str, type_name: &str) -> bool {
         let inner = body_trimmed[1..body_trimmed.len()-1].trim();
         
         // Check for Self::method_name( or Type::method_name(
-        let self_call = format!("Self::{}(", method_name);
-        let type_call = format!("{}::{}(", type_name, method_name);
+        let self_call = format!("Self::{method_name}(");
+        let type_call = format!("{type_name}::{method_name}(");
         
         if inner.starts_with(&self_call) || inner.starts_with(&type_call) {
             return true;
@@ -114,7 +114,7 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
     for node in root.descendants() {
         if node.kind() == SyntaxKind::IMPL {
             if let Some(type_name) = extract_type_name(&node) {
-                type_impls.entry(type_name).or_insert_with(Vec::new).push(node.clone());
+                type_impls.entry(type_name).or_default().push(node.clone());
             }
         }
     }
@@ -218,7 +218,7 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
                                                 
                                                 // Mark this method for removal from its inherent impl
                                                 let inherent_key = (*inherent_node) as *const SyntaxNode as usize;
-                                                methods_to_remove_by_inherent.entry(inherent_key).or_insert_with(Vec::new).push(method_name.clone());
+                                                methods_to_remove_by_inherent.entry(inherent_key).or_default().push(method_name.clone());
                                                 total_moved += 1;
                                             }
                                         }
@@ -226,7 +226,7 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
                                         // Not a stub - but it's in the trait, so remove duplicate from inherent impl
                                         if let Some((_, _, inherent_node)) = inherent_methods.get(&method_name) {
                                             let inherent_key = (*inherent_node) as *const SyntaxNode as usize;
-                                            methods_to_remove_by_inherent.entry(inherent_key).or_insert_with(Vec::new).push(method_name.clone());
+                                            methods_to_remove_by_inherent.entry(inherent_key).or_default().push(method_name.clone());
                                             total_removed += 1;
                                         }
                                     }
@@ -288,11 +288,11 @@ fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::erro
                             };
                             
                             let mut rebuilt = String::from(impl_header);
-                            rebuilt.push_str("\n");
+                            rebuilt.push('\n');
                             for method in methods_to_keep {
                                 rebuilt.push_str("        ");
                                 rebuilt.push_str(&method);
-                                rebuilt.push_str("\n");
+                                rebuilt.push('\n');
                             }
                             rebuilt.push_str("    }");
                             
@@ -315,7 +315,7 @@ fn main() {
     let args = match rusticate::StandardArgs::parse() {
         Ok(args) => args,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            eprintln!("Error: {e}");
             std::process::exit(1);
         }
     };

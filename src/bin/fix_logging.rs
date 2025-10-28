@@ -8,7 +8,7 @@
 //! Binary: fix-logging
 
 use anyhow::Result;
-use ra_ap_syntax::{ast, AstNode, Edition, SourceFile, SyntaxKind, SyntaxNode, TextRange, TextSize};
+use ra_ap_syntax::{ast, AstNode, Edition, SourceFile, SyntaxKind, SyntaxNode, TextSize};
 use rusticate::{find_rust_files, StandardArgs};
 use std::fs;
 use std::path::Path;
@@ -35,7 +35,7 @@ fn has_std_fs_import(root: &SyntaxNode) -> bool {
                         // Check if path is exactly "std::fs" (not std::fs::something)
                         let segments: Vec<_> = path.segments().collect();
                         if segments.len() == 2 {
-                            if let (Some(first), Some(second)) = (segments.get(0), segments.get(1)) {
+                            if let (Some(first), Some(second)) = (segments.first(), segments.get(1)) {
                                 if first.to_string() == "std" && second.to_string() == "fs" {
                                     return true;
                                 }
@@ -83,13 +83,13 @@ macro_rules! log {{
         if let Ok(mut file) = std::fs::OpenOptions::new()
             .create(true)
             .append(true)
-            .open("analyses/{}.log")
+            .open("analyses/{tool_name}.log")
         {{
             let _ = writeln!(file, "{{}}", msg);
         }}
     }}}};
 }}
-"#, tool_name)
+"#)
 }
 
 fn should_replace_println(macro_call: &ast::MacroCall) -> bool {
@@ -167,7 +167,7 @@ fn apply_replacements(_content: &str, tool_name: &str, root: &SyntaxNode) -> Str
     };
     
     let std_fs_insert = if !has_std_fs_import(new_root) {
-        find_last_use_statement_end(new_root).map(|pos| usize::from(pos))
+        find_last_use_statement_end(new_root).map(usize::from)
     } else {
         None
     };

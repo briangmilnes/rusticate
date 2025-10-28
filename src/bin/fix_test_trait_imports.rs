@@ -75,7 +75,7 @@ fn process_file(file_path: &Path) -> Result<bool, Box<dyn std::error::Error>> {
                                 
                                 if module_segments.len() >= 3 {
                                     let module = module_segments.join("::");
-                                    module_imports.entry(module.clone()).or_insert_with(Vec::new).push(use_text.clone());
+                                    module_imports.entry(module.clone()).or_default().push(use_text.clone());
                                 }
                             }
                         }
@@ -87,9 +87,9 @@ fn process_file(file_path: &Path) -> Result<bool, Box<dyn std::error::Error>> {
     
     // Find modules that need wildcard imports
     let mut imports_to_add = Vec::new();
-    for (module, _uses) in &module_imports {
+    for module in module_imports.keys() {
         if !has_wildcard.contains(module) {
-            imports_to_add.push(format!("use {}::*;", module));
+            imports_to_add.push(format!("use {module}::*;"));
         }
     }
     
@@ -105,7 +105,7 @@ fn process_file(file_path: &Path) -> Result<bool, Box<dyn std::error::Error>> {
             if let Some(parent) = node.parent() {
                 if parent.kind() == SyntaxKind::SOURCE_FILE || 
                    (parent.kind() == SyntaxKind::ITEM_LIST && 
-                    parent.parent().map_or(false, |gp| gp.kind() == SyntaxKind::MODULE)) {
+                    parent.parent().is_some_and(|gp| gp.kind() == SyntaxKind::MODULE)) {
                     let range = node.text_range();
                     last_use_end = Some(range.end().into());
                 }

@@ -14,7 +14,6 @@ use rusticate::{StandardArgs, find_rust_files};
 use std::collections::HashMap;
 use std::path::Path;
 use std::time::Instant;
-use std::fs;
 
 
 macro_rules! log {

@@ -86,7 +86,7 @@ fn convert_chap18_to_chap19_per(content: &str, file_path: &Path) -> Option<Strin
     let root = tree.syntax();
     
     // Skip files that use RedefinableTrait (not available in Chap19)
-    if uses_redefinable_trait(&root) {
+    if uses_redefinable_trait(root) {
         return None;
     }
     

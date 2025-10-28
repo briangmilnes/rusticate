@@ -116,13 +116,13 @@ fn is_stub_call(body: &str, method_name: &str) -> bool {
     let normalized = normalize_whitespace(body);
     
     // Pattern 1: { self.method() } or { self.method(args) }
-    let self_pattern = format!("{{self.{}(", method_name);
+    let self_pattern = format!("{{self.{method_name}(");
     if normalized.contains(&normalize_whitespace(&self_pattern)) {
         return true;
     }
     
     // Pattern 2: { Self::method() } or { Type::method() }
-    let self_ufcs_pattern = format!("{{Self::{}(", method_name);
+    let self_ufcs_pattern = format!("{{Self::{method_name}(");
     if normalized.contains(&normalize_whitespace(&self_ufcs_pattern)) {
         return true;
     }
@@ -388,13 +388,13 @@ fn main() -> Result<()> {
             
             if !identical.is_empty() {
                 let names: Vec<String> = identical.iter()
-                    .map(|(name, kind)| format!("{}:{}", name, kind))
+                    .map(|(name, kind)| format!("{name}:{kind}"))
                     .collect();
                 log!("  IDENTICAL ({}): {}", identical.len(), names.join(", "));
             }
             if !stubs.is_empty() {
                 let names: Vec<String> = stubs.iter()
-                    .map(|(name, kind)| format!("{}:{}", name, kind))
+                    .map(|(name, kind)| format!("{name}:{kind}"))
                     .collect();
                 log!("  STUB DELEGATION ({}): {}", stubs.len(), names.join(", "));
             }

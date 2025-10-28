@@ -228,7 +228,7 @@ fn find_glob_imported_mt_modules(root: &SyntaxNode, mt_module_names: &[String]) 
                                     let name = name_ref.text().to_string();
                                     // Check if this name matches any mt_module_name (either exact match or ends with "/name")
                                     for mt_module in mt_module_names {
-                                        if mt_module == &name || mt_module.ends_with(&format!("/{}", name)) {
+                                        if mt_module == &name || mt_module.ends_with(&format!("/{name}")) {
                                             if !imported.contains(&name) {
                                                 imported.push(name.clone());
                                             }
@@ -270,12 +270,12 @@ fn find_method_calls_in_function(
                                 
                                 // Case 1a: UFCS call: <Type as Trait>::method()
                                 // Check if the path contains "as" keyword (UFCS syntax)
-                                let has_as = path.qualifier().map_or(false, |q| {
+                                let has_as = path.qualifier().is_some_and(|q| {
                                     q.syntax().descendants_with_tokens().any(|t| t.kind() == SyntaxKind::AS_KW)
                                 });
                                 
                                 if debug && has_as {
-                                    eprintln!("DEBUG: Found UFCS call at line {}", call_line);
+                                    eprintln!("DEBUG: Found UFCS call at line {call_line}");
                                 }
                                 
                                 if has_as {
@@ -285,7 +285,7 @@ fn find_method_calls_in_function(
                                             if let Some(name) = seg.name_ref() {
                                                 eprintln!("  Segment[{}]: {}", i, name.text());
                                             } else {
-                                                eprintln!("  Segment[{}]: <no name_ref>", i);
+                                                eprintln!("  Segment[{i}]: <no name_ref>");
                                             }
                                         }
                                     }
@@ -297,7 +297,7 @@ fn find_method_calls_in_function(
                                         if let Some(method_name_ref) = last_segment.name_ref() {
                                             let method_name = method_name_ref.text().to_string();
                                             if debug {
-                                                eprintln!("DEBUG: Got method name: {}", method_name);
+                                                eprintln!("DEBUG: Got method name: {method_name}");
                                             }
                                             
                                             // For UFCS, extract the type name from the path
@@ -324,7 +324,7 @@ fn find_method_calls_in_function(
                                                 
                                                 if let Some(type_name) = type_name {
                                                     if debug {
-                                                        eprintln!("DEBUG: Extracted type name: {}", type_name);
+                                                        eprintln!("DEBUG: Extracted type name: {type_name}");
                                                     }
                                                     
                                                     // Check both the type name and type name without 'S' suffix
@@ -335,26 +335,26 @@ fn find_method_calls_in_function(
                                                     };
                                                     
                                                     if debug {
-                                                        eprintln!("DEBUG: UFCS call <{} as _>::{} at line {}", type_name, method_name, call_line);
-                                                        eprintln!("  Candidates: {:?}", candidates);
+                                                        eprintln!("DEBUG: UFCS call <{type_name} as _>::{method_name} at line {call_line}");
+                                                        eprintln!("  Candidates: {candidates:?}");
                                                     }
                                                     
                                                     // Check if this method is parallel in any glob-imported module
                                                     for candidate in &candidates {
                                                         if debug {
-                                                            eprintln!("  Checking candidate: {}", candidate);
-                                                            eprintln!("  Against glob imports: {:?}", glob_imported_modules);
+                                                            eprintln!("  Checking candidate: {candidate}");
+                                                            eprintln!("  Against glob imports: {glob_imported_modules:?}");
                                                         }
                                                         for module_name in glob_imported_modules {
                                                             if candidate == module_name {
                                                                 if debug {
-                                                                    eprintln!("    Candidate {} matches glob import {}", candidate, module_name);
+                                                                    eprintln!("    Candidate {candidate} matches glob import {module_name}");
                                                                 }
                                                                 let mut found = false;
                                                                 for (map_key, parallel_methods) in parallel_methods_map {
-                                                                    if map_key.ends_with(&format!("/{}", module_name)) || map_key == module_name {
+                                                                    if map_key.ends_with(&format!("/{module_name}")) || map_key == module_name {
                                                                         if debug {
-                                                                            eprintln!("      Checking map_key: {}, methods: {:?}", map_key, parallel_methods);
+                                                                            eprintln!("      Checking map_key: {map_key}, methods: {parallel_methods:?}");
                                                                         }
                                                                         if parallel_methods.contains(&method_name) {
                                                                             calls.push(ParallelCall {
@@ -399,9 +399,9 @@ fn find_method_calls_in_function(
                                                     };
                                                     
                                                     if debug {
-                                                        eprintln!("DEBUG: Call {}::{} at line {}", type_name, method_name, call_line);
-                                                        eprintln!("  Candidates: {:?}", candidates);
-                                                        eprintln!("  Glob imports: {:?}", glob_imported_modules);
+                                                        eprintln!("DEBUG: Call {type_name}::{method_name} at line {call_line}");
+                                                        eprintln!("  Candidates: {candidates:?}");
+                                                        eprintln!("  Glob imports: {glob_imported_modules:?}");
                                                     }
                                                     
                                                     // Check if this method is parallel in any glob-imported module
@@ -409,15 +409,15 @@ fn find_method_calls_in_function(
                                                         for module_name in glob_imported_modules {
                                                             if candidate == module_name {
                                                                 if debug {
-                                                                    eprintln!("  MATCH: {} == {}", candidate, module_name);
+                                                                    eprintln!("  MATCH: {candidate} == {module_name}");
                                                                 }
                                                                 // Try to find the parallel methods in the map, checking all chapter variants
                                                                 let mut found = false;
                                                                 for (map_key, parallel_methods) in parallel_methods_map {
                                                                     // Check if map_key ends with "/module_name" (e.g., "Chap19/ArraySeqMtEph" ends with "/ArraySeqMtEph")
-                                                                    if map_key.ends_with(&format!("/{}", module_name)) || map_key == module_name {
+                                                                    if map_key.ends_with(&format!("/{module_name}")) || map_key == module_name {
                                                                         if debug {
-                                                                            eprintln!("    Parallel methods in {}: {:?}", map_key, parallel_methods);
+                                                                            eprintln!("    Parallel methods in {map_key}: {parallel_methods:?}");
                                                                         }
                                                                         if parallel_methods.contains(&method_name) {
                                                                             calls.push(ParallelCall {
@@ -476,17 +476,17 @@ fn find_method_calls_in_function(
                         let method_name = name_ref.text().to_string();
                         
                         if debug {
-                            eprintln!("DEBUG: Method call .{} at line {}", method_name, call_line);
+                            eprintln!("DEBUG: Method call .{method_name} at line {call_line}");
                         }
                         
                         // Check if this method is parallel in any glob-imported module
                         for module_name in glob_imported_modules {
                             for (map_key, parallel_methods) in parallel_methods_map {
                                 // Check if map_key ends with "/module_name"
-                                if map_key.ends_with(&format!("/{}", module_name)) || map_key == module_name {
-                                    if parallel_methods.contains(&method_name) {
+                                if (map_key.ends_with(&format!("/{module_name}")) || map_key == module_name)
+                                    && parallel_methods.contains(&method_name) {
                                         if debug {
-                                            eprintln!("  MATCH: method {} found in module {}", method_name, map_key);
+                                            eprintln!("  MATCH: method {method_name} found in module {map_key}");
                                         }
                                         calls.push(ParallelCall {
                                             called_module: map_key.clone(),
@@ -495,7 +495,6 @@ fn find_method_calls_in_function(
                                         });
                                         break;
                                     }
-                                }
                             }
                         }
                     }
@@ -568,7 +567,7 @@ fn extract_module_name(path: &Path) -> String {
         if let Some(parent_name) = parent.file_name().and_then(|s| s.to_str()) {
             if parent_name.starts_with("Chap") {
                 if let Some(file_stem) = path.file_stem().and_then(|s| s.to_str()) {
-                    return format!("{}/{}", parent_name, file_stem);
+                    return format!("{parent_name}/{file_stem}");
                 }
             }
         }

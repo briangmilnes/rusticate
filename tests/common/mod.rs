@@ -23,7 +23,7 @@ impl TestContext {
         
         // Checkout if needed
         if current_commit != expected_commit {
-            eprintln!("Checking out APAS to commit {}", expected_commit);
+            eprintln!("Checking out APAS to commit {expected_commit}");
             Self::checkout_commit(&apas_path, &expected_commit)?;
         }
         
@@ -54,7 +54,7 @@ impl TestContext {
     /// Get current commit of a git repository
     fn get_current_commit(repo: &Path) -> Result<String> {
         let output = Command::new("git")
-            .args(&["-C", repo.to_str().unwrap(), "rev-parse", "HEAD"])
+            .args(["-C", repo.to_str().unwrap(), "rev-parse", "HEAD"])
             .output()
             .context("Failed to run git rev-parse")?;
         
@@ -68,12 +68,12 @@ impl TestContext {
     /// Checkout a specific commit
     fn checkout_commit(repo: &Path, commit: &str) -> Result<()> {
         let status = Command::new("git")
-            .args(&["-C", repo.to_str().unwrap(), "checkout", commit])
+            .args(["-C", repo.to_str().unwrap(), "checkout", commit])
             .status()
             .context("Failed to run git checkout")?;
         
         if !status.success() {
-            return Err(anyhow::anyhow!("git checkout failed for commit {}", commit));
+            return Err(anyhow::anyhow!("git checkout failed for commit {commit}"));
         }
         
         Ok(())
@@ -84,6 +84,6 @@ impl TestContext {
 pub fn parse_number(s: &str) -> Result<usize> {
     let cleaned = s.replace(",", "");
     cleaned.parse::<usize>()
-        .context(format!("Failed to parse number: {}", s))
+        .context(format!("Failed to parse number: {s}"))
 }
 

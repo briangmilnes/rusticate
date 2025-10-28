@@ -43,7 +43,7 @@ fn count_as_in_file(file_path: &Path) -> Result<usize> {
     for token in root.descendants_with_tokens() {
         if token.kind() == SyntaxKind::AS_KW {
             // Check if this AS_KW is part of a RENAME node (import alias)
-            let is_import_alias = token.parent().map_or(false, |parent| {
+            let is_import_alias = token.parent().is_some_and(|parent| {
                 parent.ancestors().any(|ancestor| ancestor.kind() == SyntaxKind::RENAME)
             });
             

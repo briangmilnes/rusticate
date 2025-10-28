@@ -143,7 +143,7 @@ pub mod count_helper {
         
         for section in &section_order {
             if let Some(files) = section_counts.get(section) {
-                println!("{}:", section);
+                println!("{section}:");
                 for (file, count) in files {
                     println!("  {}: {}", file, format_number(*count));
                 }

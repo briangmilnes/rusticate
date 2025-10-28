@@ -133,7 +133,7 @@ fn rewrite_node(
                             // Convert path to string to check pattern
                             let path_text = path.to_string();
                             if let Some(ref target_type) = ctx.target_type_name {
-                                if path_text.starts_with(&format!("{}::", target_type)) {
+                                if path_text.starts_with(&format!("{target_type}::")) {
                                     // This is Type::method() where we want Type::<T>::method()
                                     // Emit Type
                                     output.push_str(target_type);
@@ -147,7 +147,7 @@ fn rewrite_node(
                                     // Emit ::method_name
                                     output.push_str("::");
                                     // Get method name (everything after the first ::)
-                                    if let Some(method_part) = path_text.strip_prefix(&format!("{}::", target_type)) {
+                                    if let Some(method_part) = path_text.strip_prefix(&format!("{target_type}::")) {
                                         output.push_str(method_part);
                                     }
                                     // Emit arg list by finding ARG_LIST child
@@ -287,7 +287,7 @@ fn rewrite_let_stmt(
     // Determine category and context
     let (category, ctx) = if is_toplevel_collect(init_syntax) {
         let type_str = type_ref.to_string();
-        let generic_str = format!("<{}>", type_str);
+        let generic_str = format!("<{type_str}>");
         let node_ptr = init_syntax as *const SyntaxNode as usize;
         (
             SimplificationCategory::Collect,
@@ -360,7 +360,7 @@ fn contains_path_starting_with(node: &SyntaxNode, type_name: &str) -> bool {
                             // Get the path as text
                             let path_text = path.to_string();
                             // Check if it starts with our type name followed by ::
-                            if path_text.starts_with(&format!("{}::", type_name)) {
+                            if path_text.starts_with(&format!("{type_name}::")) {
                                 return true;
                             }
                         }

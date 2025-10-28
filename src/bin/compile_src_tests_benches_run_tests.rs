@@ -21,7 +21,7 @@ fn main() {
     let args = match StandardArgs::parse() {
         Ok(a) => a,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            eprintln!("Error: {e}");
             exit(1);
         }
     };
@@ -50,7 +50,7 @@ fn main() {
             log!("Inferred module: {}\n", module);
             all_success = grind_module(&module);
         } else {
-            eprintln!("Error: Cannot infer module from file path: {}", file);
+            eprintln!("Error: Cannot infer module from file path: {file}");
             eprintln!("File path should contain Chap##/ModuleName.rs pattern");
             exit(1);
         }
@@ -141,16 +141,16 @@ fn grind_module(module: &str) -> bool {
     log!("✓ src compiled successfully\n");
     
     // Step 2: Compile test module
-    let test_name = format!("Test{}", module);
+    let test_name = format!("Test{module}");
     log!("Step 2/4: Compiling test {}...", test_name);
     if !run_command("cargo", &["test", "--release", "--test", &test_name, "--no-run"]) {
-        eprintln!("✗ Failed to compile test {}", test_name);
+        eprintln!("✗ Failed to compile test {test_name}");
         return false;
     }
     log!("✓ test {} compiled successfully\n", test_name);
     
     // Step 3: Compile bench module (if exists)
-    let bench_name = format!("Bench{}", module);
+    let bench_name = format!("Bench{module}");
     log!("Step 3/4: Compiling bench {}...", bench_name);
     let bench_exists = run_command("cargo", &["bench", "--bench", &bench_name, "--no-run"]);
     if bench_exists {
@@ -162,7 +162,7 @@ fn grind_module(module: &str) -> bool {
     // Step 4: Run tests for this module
     log!("Step 4/4: Running tests for {}...", test_name);
     if !run_command("cargo", &["test", "--release", "--test", &test_name]) {
-        eprintln!("✗ Tests failed for {}", test_name);
+        eprintln!("✗ Tests failed for {test_name}");
         return false;
     }
     log!("✓ all tests passed for {}\n", test_name);
@@ -180,7 +180,7 @@ fn grind_directory(dir: &str) -> bool {
     log!("✓ src compiled successfully\n");
     
     // Find all test files in tests/{dir}/
-    let test_dir = format!("tests/{}", dir);
+    let test_dir = format!("tests/{dir}");
     log!("Step 2/4: Finding tests in {}...", test_dir);
     
     let test_files = match std::fs::read_dir(&test_dir) {
@@ -188,7 +188,7 @@ fn grind_directory(dir: &str) -> bool {
             entries
                 .filter_map(|e| e.ok())
                 .filter(|e| {
-                    e.path().extension().map_or(false, |ext| ext == "rs")
+                    e.path().extension().is_some_and(|ext| ext == "rs")
                 })
                 .filter_map(|e| {
                     e.path().file_stem()
@@ -197,7 +197,7 @@ fn grind_directory(dir: &str) -> bool {
                 .collect::<Vec<_>>()
         }
         Err(_) => {
-            eprintln!("⊘ No test directory found: {}", test_dir);
+            eprintln!("⊘ No test directory found: {test_dir}");
             Vec::new()
         }
     };
@@ -210,7 +210,7 @@ fn grind_directory(dir: &str) -> bool {
         log!("Step 3/4: Compiling tests in {}...", test_dir);
         for test_name in &test_files {
             if !run_command("cargo", &["test", "--release", "--test", test_name, "--no-run"]) {
-                eprintln!("✗ Failed to compile test {}", test_name);
+                eprintln!("✗ Failed to compile test {test_name}");
                 return false;
             }
         }
@@ -219,7 +219,7 @@ fn grind_directory(dir: &str) -> bool {
         log!("Step 4/4: Running tests in {}...", test_dir);
         for test_name in &test_files {
             if !run_command("cargo", &["test", "--release", "--test", test_name]) {
-                eprintln!("✗ Tests failed for {}", test_name);
+                eprintln!("✗ Tests failed for {test_name}");
                 return false;
             }
         }
@@ -227,7 +227,7 @@ fn grind_directory(dir: &str) -> bool {
     }
     
     // Find and compile bench files
-    let bench_dir = format!("benches/{}", dir);
+    let bench_dir = format!("benches/{dir}");
     log!("Checking for benches in {}...", bench_dir);
     
     let bench_files = match std::fs::read_dir(&bench_dir) {
@@ -235,7 +235,7 @@ fn grind_directory(dir: &str) -> bool {
             entries
                 .filter_map(|e| e.ok())
                 .filter(|e| {
-                    e.path().extension().map_or(false, |ext| ext == "rs")
+                    e.path().extension().is_some_and(|ext| ext == "rs")
                 })
                 .filter_map(|e| {
                     e.path().file_stem()
@@ -253,7 +253,7 @@ fn grind_directory(dir: &str) -> bool {
         log!("Found {} bench file(s)", bench_files.len());
         for bench_name in &bench_files {
             if !run_command("cargo", &["bench", "--bench", bench_name, "--no-run"]) {
-                eprintln!("✗ Failed to compile bench {}", bench_name);
+                eprintln!("✗ Failed to compile bench {bench_name}");
                 return false;
             }
         }
@@ -265,7 +265,6 @@ fn grind_directory(dir: &str) -> bool {
 
 fn run_command(program: &str, args: &[&str]) -> bool {
     use std::process::Stdio;
-use std::fs;
     
     let status = Command::new(program)
         .args(args)

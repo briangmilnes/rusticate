@@ -96,7 +96,7 @@ fn fix_file(file_path: &PathBuf) -> Result<usize, Box<dyn std::error::Error>> {
                 if i > 0 {
                     macro_imports.push('\n');
                 }
-                macro_imports.push_str(&format!("use apas_ai::{};", macro_name));
+                macro_imports.push_str(&format!("use apas_ai::{macro_name};"));
             }
             content_working = content_working.replace(&toplevel_wildcard_line, &macro_imports);
         } else {
@@ -183,7 +183,7 @@ fn fix_file(file_path: &PathBuf) -> Result<usize, Box<dyn std::error::Error>> {
                                 }
                                 
                                 module_to_imports.entry(module_path.clone())
-                                    .or_insert_with(Vec::new)
+                                    .or_default()
                                     .push(use_text.clone());
                                 imports_to_replace.push((use_text, module_path));
                             }
@@ -213,7 +213,7 @@ fn fix_file(file_path: &PathBuf) -> Result<usize, Box<dyn std::error::Error>> {
             continue;
         }
         
-        let wildcard_import = format!("use {}::*;", module_path);
+        let wildcard_import = format!("use {module_path}::*;");
         
         // Replace the first import with the wildcard
         if let Some(first_import) = old_imports.first() {
@@ -359,7 +359,7 @@ fn main() {
     let args = match rusticate::StandardArgs::parse() {
         Ok(args) => args,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            eprintln!("Error: {e}");
             std::process::exit(1);
         }
     };

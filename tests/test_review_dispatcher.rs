@@ -99,12 +99,11 @@ fn test_dispatcher_invalid_tool() {
 fn test_all_review_tools_exist() {
     // Test that each review tool binary exists
     for tool in get_all_review_tools() {
-        let binary_name = format!("rusticate-review-{}", tool);
+        let binary_name = format!("rusticate-review-{tool}");
         let binary = get_binary_path(&binary_name);
         assert!(
             binary.exists(),
-            "Review tool binary does not exist: {}",
-            binary_name
+            "Review tool binary does not exist: {binary_name}"
         );
     }
 }
@@ -119,7 +118,7 @@ fn test_dispatcher_runs_each_tool() {
             .arg(tool)
             .arg("--help")
             .output()
-            .unwrap_or_else(|_| panic!("Failed to run rusticate-review {}", tool));
+            .unwrap_or_else(|_| panic!("Failed to run rusticate-review {tool}"));
         
         // Should either succeed or fail gracefully (some tools might require args)
         // Main thing is the dispatcher found and executed the tool
@@ -128,8 +127,7 @@ fn test_dispatcher_runs_each_tool() {
         
         assert!(
             stdout.contains("Usage:") || stderr.contains("Usage:") || output.status.success(),
-            "Tool {} did not run correctly through dispatcher",
-            tool
+            "Tool {tool} did not run correctly through dispatcher"
         );
     }
 }
@@ -138,25 +136,24 @@ fn test_dispatcher_runs_each_tool() {
 fn test_each_review_tool_directly() {
     // Test that each review tool can be run directly with --help
     for tool in get_all_review_tools() {
-        let binary_name = format!("rusticate-review-{}", tool);
+        let binary_name = format!("rusticate-review-{tool}");
         let binary = get_binary_path(&binary_name);
         
         if !binary.exists() {
-            panic!("Binary does not exist: {}", binary_name);
+            panic!("Binary does not exist: {binary_name}");
         }
         
         let output = Command::new(&binary)
             .arg("--help")
             .output()
-            .unwrap_or_else(|_| panic!("Failed to run {}", binary_name));
+            .unwrap_or_else(|_| panic!("Failed to run {binary_name}"));
         
         let stdout = String::from_utf8_lossy(&output.stdout);
         let stderr = String::from_utf8_lossy(&output.stderr);
         
         assert!(
             output.status.success() || stdout.contains("Usage:") || stderr.contains("Usage:"),
-            "Tool {} did not respond to --help correctly",
-            binary_name
+            "Tool {binary_name} did not respond to --help correctly"
         );
     }
 }

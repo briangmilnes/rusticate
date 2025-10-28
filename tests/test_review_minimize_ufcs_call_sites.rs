@@ -17,7 +17,7 @@ fn test_review_minimize_ufcs_call_sites_on_apas() -> Result<()> {
     let binary_path = std::env::current_dir()?.join("target/release/rusticate-review-minimize-ufcs-call-sites");
     
     let output = Command::new(binary_path)
-        .args(&["-c"])
+        .args(["-c"])
         .current_dir("APAS-AI-copy/apas-ai")
         .output()?;
     

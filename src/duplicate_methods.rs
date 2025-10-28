@@ -206,7 +206,7 @@ pub fn find_duplicate_methods(file_path: &Path) -> Result<Vec<DuplicateIssue>> {
     // Group by name and find duplicates
     let mut name_groups: HashMap<String, Vec<MethodLocation>> = HashMap::new();
     for loc in method_locations {
-        name_groups.entry(loc.name.clone()).or_insert_with(Vec::new).push(loc);
+        name_groups.entry(loc.name.clone()).or_default().push(loc);
     }
     
     let mut issues = Vec::new();

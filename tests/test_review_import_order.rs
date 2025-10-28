@@ -22,7 +22,7 @@ fn test_review_import_order_on_apas() -> Result<()> {
     
     // Run the binary with -d src
     let output = Command::new(binary_path)
-        .args(&["-d", "src"])
+        .args(["-d", "src"])
         .current_dir("APAS-AI-copy/apas-ai")
         .output()?;
     
@@ -31,10 +31,10 @@ fn test_review_import_order_on_apas() -> Result<()> {
 
     // Print for debugging
     if !stderr.is_empty() {
-        eprintln!("STDERR: {}", stderr);
+        eprintln!("STDERR: {stderr}");
     }
     
-    println!("OUTPUT:\n{}", stdout);
+    println!("OUTPUT:\n{stdout}");
     
     // The script should find violations (Types::Types::* is often last instead of first)
     // Exit code 1 = violations found
@@ -44,7 +44,7 @@ fn test_review_import_order_on_apas() -> Result<()> {
     
     // Validate violation message format
     assert!(stdout.contains("✗ Found") && stdout.contains("violation(s)"),
-        "Expected violation message not found in output:\n{}", stdout);
+        "Expected violation message not found in output:\n{stdout}");
     
     // Should detect Types::Types::* ordering issues
     assert!(stdout.contains("Types::Types"),
@@ -77,16 +77,15 @@ fn test_review_import_order_on_apas() -> Result<()> {
         .expect("Failed to parse total violations");
     
     // Validate numbers - should find significant violations
-    assert!(files_checked > 200, "Expected >200 files checked, got {}", files_checked);
-    assert!(files_with_violations > 50, "Expected >50 files with violations, got {}", files_with_violations);
-    assert!(total_violations > 100, "Expected >100 total violations, got {}", total_violations);
+    assert!(files_checked > 200, "Expected >200 files checked, got {files_checked}");
+    assert!(files_with_violations > 50, "Expected >50 files with violations, got {files_with_violations}");
+    assert!(total_violations > 100, "Expected >100 total violations, got {total_violations}");
     
     // Validate timing line
     assert!(stdout.contains("Completed in"), "Missing timing line");
     assert!(stdout.contains("ms"), "Missing milliseconds unit");
     
-    println!("✓ Test passed: {} files checked, {} files with violations, {} total violations", 
-             files_checked, files_with_violations, total_violations);
+    println!("✓ Test passed: {files_checked} files checked, {files_with_violations} files with violations, {total_violations} total violations");
     Ok(())
 }
 
@@ -106,7 +105,7 @@ fn test_review_import_order_on_rusticate() -> Result<()> {
     // Currently expects violations (exit code 1)
     // Once fixed, change this to assert exit code 0
     assert_eq!(output.status.code(), Some(1), 
-        "Rusticate currently has import violations (TODO: fix):\n{}", stdout);
+        "Rusticate currently has import violations (TODO: fix):\n{stdout}");
     
     // Validate output format
     assert!(stdout.contains("✗ Found") && stdout.contains("violation(s)"),
@@ -115,7 +114,7 @@ fn test_review_import_order_on_rusticate() -> Result<()> {
     assert!(stdout.contains("Summary:") && stdout.contains("Completed in"),
         "Expected summary and timing lines");
     
-    println!("Rusticate import violations (TODO: fix these):\n{}", stdout);
+    println!("Rusticate import violations (TODO: fix these):\n{stdout}");
     Ok(())
 }
 

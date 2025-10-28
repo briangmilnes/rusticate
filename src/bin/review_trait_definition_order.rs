@@ -16,7 +16,6 @@ use ra_ap_syntax::{ast::{self, AstNode, HasName}, SyntaxKind, SourceFile, Editio
 use rusticate::{StandardArgs, find_rust_files};
 use std::path::Path;
 use std::time::Instant;
-use std::fs;
 
 
 macro_rules! log {
@@ -79,8 +78,7 @@ fn check_file(file_path: &Path) -> Vec<Violation> {
             SyntaxKind::STRUCT | SyntaxKind::ENUM => {
                 // Reset state for new struct/enum
                 if let Some(adt) = ast::Struct::cast(node.clone())
-                    .map(|s| s.name().map(|n| n.to_string()))
-                    .flatten()
+                    .and_then(|s| s.name().map(|n| n.to_string()))
                     .or_else(|| {
                         ast::Enum::cast(node.clone())
                             .and_then(|e| e.name().map(|n| n.to_string()))

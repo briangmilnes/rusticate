@@ -45,7 +45,7 @@ fn count_vec_in_file(file_path: &Path) -> Result<usize> {
                     // Check if any segment in the path has "Vec" as its name_ref
                     return path.segments().any(|seg| {
                         seg.name_ref()
-                            .map_or(false, |name_ref| name_ref.text() == "Vec")
+                            .is_some_and(|name_ref| name_ref.text() == "Vec")
                     });
                 }
             }

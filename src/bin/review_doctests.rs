@@ -81,7 +81,7 @@ fn check_doctest(code: &str) -> Option<String> {
     
     if !parsed.errors().is_empty() {
         let error = &parsed.errors()[0];
-        Some(format!("{}", error))
+        Some(format!("{error}"))
     } else {
         None
     }

@@ -6,7 +6,6 @@ use anyhow::Result;
 use clap::Parser;
 use std::path::PathBuf;
 use std::time::Instant;
-use std::fs;
 
 
 macro_rules! log {

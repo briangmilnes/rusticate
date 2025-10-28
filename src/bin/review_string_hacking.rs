@@ -122,8 +122,7 @@ fn check_for_string_hacking(source: &str, file_path: &str) -> Result<Vec<String>
                                                         let line = get_line_number(source, node.text_range().start().into());
                                                         let arg_display = token_text;
                                                         violations.push(format!(
-                                                            "{}:{}: String hacking detected: {}.{}({}) - Use AST traversal instead",
-                                                            file_path, line, receiver_text, method_name, arg_display
+                                                            "{file_path}:{line}: String hacking detected: {receiver_text}.{method_name}({arg_display}) - Use AST traversal instead"
                                                         ));
                                                         break; // Only report once per call
                                                     }
@@ -176,8 +175,7 @@ fn check_for_string_hacking(source: &str, file_path: &str) -> Result<Vec<String>
                                         if code_related.iter().any(|&name| var_name == name) {
                                             let line = get_line_number(source, node.text_range().start().into());
                                             violations.push(format!(
-                                                "{}:{}: String hacking detected: {}.replace() on code - Use AST node replacement instead",
-                                                file_path, line, var_name
+                                                "{file_path}:{line}: String hacking detected: {var_name}.replace() on code - Use AST node replacement instead"
                                             ));
                                         }
                                     }
@@ -203,8 +201,7 @@ fn check_for_string_hacking(source: &str, file_path: &str) -> Result<Vec<String>
                                                     if is_source_like_variable(&receiver_text) {
                                                         let line = get_line_number(source, node.text_range().start().into());
                                                         violations.push(format!(
-                                                            "{}:{}: String hacking detected: {}.{}({}) - Use AST node ranges instead",
-                                                            file_path, line, receiver_text, method_name, token_text
+                                                            "{file_path}:{line}: String hacking detected: {receiver_text}.{method_name}({token_text}) - Use AST node ranges instead"
                                                         ));
                                                         break;
                                                     }
@@ -228,8 +225,7 @@ fn check_for_string_hacking(source: &str, file_path: &str) -> Result<Vec<String>
                                         if let Some(closure_expr) = ast::ClosureExpr::cast(arg.syntax().clone()) {
                                             let line = get_line_number(source, node.text_range().start().into());
                                             violations.push(format!(
-                                                "{}:{}: String hacking detected: {}.rfind(<closure>) - Use AST traversal instead",
-                                                file_path, line, receiver_text
+                                                "{file_path}:{line}: String hacking detected: {receiver_text}.rfind(<closure>) - Use AST traversal instead"
                                             ));
                                             break;
                                         }
@@ -257,8 +253,8 @@ fn check_for_string_hacking(source: &str, file_path: &str) -> Result<Vec<String>
                                 let mut found_char_iteration = false;
                                 if let Some(parent) = node.parent() {
                                     for sibling in parent.children() {
-                                        if sibling.text_range().start() > node.text_range().end() {
-                                            if sibling.kind() == SyntaxKind::FOR_EXPR {
+                                        if sibling.text_range().start() > node.text_range().end()
+                                            && sibling.kind() == SyntaxKind::FOR_EXPR {
                                                 // Check if the for loop iterates over a .chars() or .enumerate() call
                                                 if let Some(for_expr) = ast::ForExpr::cast(sibling.clone()) {
                                                     if let Some(iterable) = for_expr.iterable() {
@@ -274,15 +270,13 @@ fn check_for_string_hacking(source: &str, file_path: &str) -> Result<Vec<String>
                                                     }
                                                 }
                                             }
-                                        }
                                     }
                                 }
                                 
                                 if found_char_iteration {
                                     let line = get_line_number(source, node.text_range().start().into());
                                     violations.push(format!(
-                                        "{}:{}: Manual depth counting detected - Use ast::CallExpr and .arg_list() instead",
-                                        file_path, line
+                                        "{file_path}:{line}: Manual depth counting detected - Use ast::CallExpr and .arg_list() instead"
                                     ));
                                 }
                             }

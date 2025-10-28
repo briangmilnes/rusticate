@@ -18,7 +18,7 @@ fn test_review_no_extern_crate_on_apas() -> Result<()> {
     
     // Run the binary with -c (codebase: src, tests, benches)
     let output = Command::new(binary_path)
-        .args(&["-c"])
+        .args(["-c"])
         .current_dir("APAS-AI-copy/apas-ai")
         .output()?;
     
@@ -27,7 +27,7 @@ fn test_review_no_extern_crate_on_apas() -> Result<()> {
     
     // Print for debugging
     if !stderr.is_empty() {
-        eprintln!("STDERR: {}", stderr);
+        eprintln!("STDERR: {stderr}");
     }
     
     // Validate exit code (0 = no violations)
@@ -37,7 +37,7 @@ fn test_review_no_extern_crate_on_apas() -> Result<()> {
     
     // Validate success message
     assert!(stdout.contains("✓ No 'extern crate' usage found"),
-        "Expected success message not found in output:\n{}", stdout);
+        "Expected success message not found in output:\n{stdout}");
     
     // Parse and validate numeric output from Summary line
     // Expected format: "Summary: 719 files checked, 0 files with violations, 0 total violations"
@@ -56,19 +56,19 @@ fn test_review_no_extern_crate_on_apas() -> Result<()> {
         .expect("Failed to parse files checked");
     
     // Parse "0 files with violations"
-    let files_with_violations = parts[1].trim().split_whitespace()
+    let files_with_violations = parts[1].split_whitespace()
         .next()
         .and_then(|s| parse_number(s).ok())
         .expect("Failed to parse files with violations");
     
     // Parse "0 total violations"
-    let total_violations = parts[2].trim().split_whitespace()
+    let total_violations = parts[2].split_whitespace()
         .next()
         .and_then(|s| parse_number(s).ok())
         .expect("Failed to parse total violations");
     
     // Validate numbers
-    assert!(files_checked > 700, "Expected >700 files checked, got {}", files_checked);
+    assert!(files_checked > 700, "Expected >700 files checked, got {files_checked}");
     assert_eq!(files_with_violations, 0, "Expected 0 files with violations");
     assert_eq!(total_violations, 0, "Expected 0 total violations");
     
@@ -76,7 +76,7 @@ fn test_review_no_extern_crate_on_apas() -> Result<()> {
     assert!(stdout.contains("Completed in"), "Missing timing line");
     assert!(stdout.contains("ms"), "Missing milliseconds unit");
     
-    println!("✓ Test passed: {} files checked, no violations found", files_checked);
+    println!("✓ Test passed: {files_checked} files checked, no violations found");
     Ok(())
 }
 

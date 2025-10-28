@@ -6,11 +6,9 @@
 //! Binary: rusticate-review-impl-trait-bounds
 
 use anyhow::Result;
-use ra_ap_syntax::{ast::{self, AstNode, HasName}, SyntaxKind, SourceFile, Edition};
+use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SourceFile, Edition};
 use rusticate::{StandardArgs, find_rust_files};
-use std::path::Path;
 use std::time::Instant;
-use std::fs;
 
 
 macro_rules! log {
@@ -93,8 +91,8 @@ fn main() -> Result<()> {
                     };
 
                     // Look for trait definition in same file
-                    let trait_name = format!("{}Trait", type_name);
-                    let has_trait = content.contains(&format!("pub trait {}", trait_name));
+                    let trait_name = format!("{type_name}Trait");
+                    let has_trait = content.contains(&format!("pub trait {trait_name}"));
 
                     if has_trait {
                         with_traits += 1;

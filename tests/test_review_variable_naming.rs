@@ -17,7 +17,7 @@ fn test_review_variable_naming_on_apas() -> Result<()> {
     let binary_path = std::env::current_dir()?.join("target/release/rusticate-review-variable-naming");
     
     let output = Command::new(binary_path)
-        .args(&["-d", "src"])
+        .args(["-d", "src"])
         .current_dir("APAS-AI-copy/apas-ai")
         .output()?;
     
@@ -26,7 +26,7 @@ fn test_review_variable_naming_on_apas() -> Result<()> {
     
     // Print output for debugging
     if !stderr.is_empty() {
-        eprintln!("STDERR:\n{}", stderr);
+        eprintln!("STDERR:\n{stderr}");
     }
     
     // Parse the summary line to get counts

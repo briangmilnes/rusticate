@@ -106,7 +106,7 @@ fn check_file(file_path: &Path, source: &str) -> Result<Vec<Violation>> {
 }
 
 fn print_line(line: &str) -> Result<()> {
-    writeln!(io::stdout(), "{}", line)?;
+    writeln!(io::stdout(), "{line}")?;
     Ok(())
 }
 
@@ -167,7 +167,7 @@ fn main() -> Result<()> {
         format_number(files_with_violations),
         format_number(total_violations)
     ))?;
-    print_line(&format!("Completed in {}ms", elapsed))?;
+    print_line(&format!("Completed in {elapsed}ms"))?;
 
     if total_violations > 0 {
         std::process::exit(1);

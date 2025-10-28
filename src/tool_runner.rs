@@ -69,7 +69,7 @@ pub mod tool_runner {
         
         // Print timing
         println!();
-        println!("{}", summary);
+        println!("{summary}");
         println!("Completed in {}ms", start.elapsed().as_millis());
         
         // Finalize logger if enabled
@@ -98,7 +98,7 @@ pub mod tool_runner {
         
         // Print timing
         println!();
-        println!("{}", summary);
+        println!("{summary}");
         println!("Completed in {}ms", start.elapsed().as_millis());
         
         Ok(())

@@ -8,10 +8,9 @@
 use anyhow::Result;
 use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SourceFile, Edition};
 use rusticate::{StandardArgs, find_rust_files};
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::path::Path;
 use std::time::Instant;
-use std::fs;
 
 const STANDARD_TRAITS: &[&str] = &[
     "Debug", "Clone", "Copy", "PartialEq", "Eq", "PartialOrd", "Ord",
@@ -92,7 +91,7 @@ fn analyze_file(file_path: &Path) -> Vec<Violation> {
                             // Skip standard traits
                             if !STANDARD_TRAITS.contains(&trait_name.as_str()) {
                                 struct_impls.entry(struct_name).or_insert((Vec::new(), HashMap::new()))
-                                    .1.entry(trait_name).or_insert(Vec::new()).push(line_num);
+                                    .1.entry(trait_name).or_default().push(line_num);
                             }
                         }
                     }

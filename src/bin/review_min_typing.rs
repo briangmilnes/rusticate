@@ -69,7 +69,7 @@ fn contains_path_starting_with(node: &SyntaxNode, type_name: &str) -> bool {
                             // Get the path as text
                             let path_text = path.to_string();
                             // Check if it starts with our type name followed by ::
-                            if path_text.starts_with(&format!("{}::", type_name)) {
+                            if path_text.starts_with(&format!("{type_name}::")) {
                                 return true;
                             }
                         }

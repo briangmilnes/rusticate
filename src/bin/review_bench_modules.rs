@@ -10,7 +10,6 @@
 use anyhow::Result;
 use std::process::Command;
 use std::time::Instant;
-use std::fs;
 
 
 macro_rules! log {
@@ -32,7 +31,7 @@ fn main() -> Result<()> {
     
     // Run cargo bench to check if benchmarks compile
     let output = Command::new("cargo")
-        .args(&["bench", "--benches", "--no-run", "--quiet"])
+        .args(["bench", "--benches", "--no-run", "--quiet"])
         .output()?;
     
     let stderr = String::from_utf8_lossy(&output.stderr);

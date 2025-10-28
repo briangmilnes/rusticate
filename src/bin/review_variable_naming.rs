@@ -65,7 +65,7 @@ fn check_file(file_path: &Path) -> Result<Vec<Violation>> {
                     violations.push(Violation {
                         file: file_path.to_path_buf(),
                         line_num,
-                        issue: format!("temp variable: {}", word),
+                        issue: format!("temp variable: {word}"),
                         line_content: trimmed.to_string(),
                     });
                 }
@@ -79,7 +79,7 @@ fn check_file(file_path: &Path) -> Result<Vec<Violation>> {
                 violations.push(Violation {
                     file: file_path.to_path_buf(),
                     line_num,
-                    issue: format!("rock band name: {}", band),
+                    issue: format!("rock band name: {band}"),
                     line_content: trimmed.to_string(),
                 });
                 break; // Only report one per line

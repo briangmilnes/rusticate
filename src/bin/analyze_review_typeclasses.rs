@@ -5,7 +5,6 @@ use std::collections::HashMap;
 use std::process::Command;
 use std::time::Instant;
 use rusticate::format_number;
-use std::fs;
 
 
 macro_rules! log {

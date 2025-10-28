@@ -17,7 +17,6 @@ use ra_ap_syntax::{ast::{self, AstNode, HasVisibility, HasName}, SyntaxKind, Sou
 use std::collections::{HashMap, HashSet};
 use std::path::{Path, PathBuf};
 use std::time::Instant;
-use std::fs;
 
 
 macro_rules! log {
@@ -62,9 +61,7 @@ fn extract_wildcard_imports(root: &ra_ap_syntax::SyntaxNode) -> Vec<String> {
 
 fn extract_apas_wildcard_path(use_tree: &ast::UseTree) -> Option<String> {
     // Check if this is a wildcard import
-    if use_tree.star_token().is_none() {
-        return None;
-    }
+    use_tree.star_token()?;
     
     // Get the path before the ::*
     if let Some(path) = use_tree.path() {
@@ -143,7 +140,7 @@ fn find_module_file(module_path: &str, repo_root: &Path) -> Option<PathBuf> {
     let mut file_path = repo_root.join("src");
     for (i, part) in parts.iter().enumerate() {
         if i == parts.len() - 1 {
-            file_path = file_path.join(format!("{}.rs", part));
+            file_path = file_path.join(format!("{part}.rs"));
         } else {
             file_path = file_path.join(part);
         }
@@ -242,7 +239,7 @@ fn search_dir(dir: &Path, files: &mut Vec<PathBuf>) {
     if let Ok(entries) = std::fs::read_dir(dir) {
         for entry in entries.flatten() {
             let path = entry.path();
-            if path.is_file() && path.extension().map_or(false, |e| e == "rs") {
+            if path.is_file() && path.extension().is_some_and(|e| e == "rs") {
                 files.push(path);
             } else if path.is_dir() {
                 search_dir(&path, files);

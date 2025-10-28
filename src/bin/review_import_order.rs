@@ -160,7 +160,7 @@ fn check_file(file_path: &Path, source: &str, in_src: bool) -> Result<Vec<Violat
                     violations.push(Violation {
                         file: file_path.to_path_buf(),
                         line_num,
-                        message: format!("missing blank line between {:?} and {:?} imports", prev_section, section),
+                        message: format!("missing blank line between {prev_section:?} and {section:?} imports"),
                         context: use_text.trim().to_string(),
                     });
                 }

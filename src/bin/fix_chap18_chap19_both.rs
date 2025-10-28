@@ -63,11 +63,10 @@ fn path_contains_name(use_item: &ast::Use, name: &str) -> bool {
         }
         // Also check the use tree list if it's a grouped import
         for child in use_tree.syntax().descendants() {
-            if child.kind() == SyntaxKind::NAME_REF {
-                if child.text().to_string() == name {
+            if child.kind() == SyntaxKind::NAME_REF
+                && child.text() == name {
                     return true;
                 }
-            }
         }
     }
     false
@@ -178,7 +177,7 @@ fn simplify_ufcs_call(node: &ra_ap_syntax::SyntaxNode) -> Option<String> {
     // Use AST to parse UFCS: <Type as Trait>::function
     // Return: Type::function
     
-    use ra_ap_syntax::ast::HasName;
+    
     
     // Must be a PATH_EXPR node
     if node.kind() != SyntaxKind::PATH_EXPR {
@@ -228,7 +227,7 @@ fn simplify_ufcs_call(node: &ra_ap_syntax::SyntaxNode) -> Option<String> {
         }
     }
     
-    Some(format!("{}::{}{}", type_name, function_name, generic_args))
+    Some(format!("{type_name}::{function_name}{generic_args}"))
 }
 
 fn remove_chap18_imports_and_simplify_ufcs(content: &str) -> Option<String> {
@@ -331,7 +330,7 @@ fn main() -> Result<()> {
         .into_iter()
         // Skip Chap18 and Chap19 implementation directories
         .filter(|path| {
-            !path.to_str().map_or(false, |s| s.contains("/Chap18/") || s.contains("/Chap19/"))
+            !path.to_str().is_some_and(|s| s.contains("/Chap18/") || s.contains("/Chap19/"))
         })
         .collect();
     

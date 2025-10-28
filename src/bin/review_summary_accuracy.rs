@@ -46,7 +46,7 @@ fn extract_summary_counts(content: &str) -> Vec<(String, usize)> {
         // Pattern: "Total public functions: 332"
         if let Some(start) = line.find("Total public functions:") {
             if let Some(num_str) = line[start..].split(':').nth(1) {
-                if let Ok(num) = num_str.trim().split_whitespace().next().unwrap_or("0").replace(",", "").parse::<usize>() {
+                if let Ok(num) = num_str.split_whitespace().next().unwrap_or("0").replace(",", "").parse::<usize>() {
                     counts.push(("Total public functions".to_string(), num));
                 }
             }
@@ -55,7 +55,7 @@ fn extract_summary_counts(content: &str) -> Vec<(String, usize)> {
         // Pattern: "Functions with test coverage: 329 (99.1%)"
         if let Some(start) = line.find("Functions with test coverage:") {
             if let Some(num_str) = line[start..].split(':').nth(1) {
-                let num_part = num_str.trim().split_whitespace().next().unwrap_or("0");
+                let num_part = num_str.split_whitespace().next().unwrap_or("0");
                 if let Ok(num) = num_part.replace(",", "").parse::<usize>() {
                     counts.push(("Functions with test coverage".to_string(), num));
                 }
@@ -65,7 +65,7 @@ fn extract_summary_counts(content: &str) -> Vec<(String, usize)> {
         // Pattern: "Functions without test coverage: 3 (0.9%)"
         if let Some(start) = line.find("Functions without test coverage:") {
             if let Some(num_str) = line[start..].split(':').nth(1) {
-                let num_part = num_str.trim().split_whitespace().next().unwrap_or("0");
+                let num_part = num_str.split_whitespace().next().unwrap_or("0");
                 if let Ok(num) = num_part.replace(",", "").parse::<usize>() {
                     counts.push(("Functions without test coverage".to_string(), num));
                 }
@@ -149,14 +149,13 @@ fn count_actual_items(content: &str) -> HashMap<String, usize> {
         
         // Count violation lines (lines starting with file path and containing line number)
         // Pattern: "src/path/file.rs:123: message"
-        if line.starts_with("src/") || line.starts_with("tests/") || line.starts_with("benches/") {
-            if line.contains(":.") || line.contains(": ") {
+        if (line.starts_with("src/") || line.starts_with("tests/") || line.starts_with("benches/"))
+            && (line.contains(":.") || line.contains(": ")) {
                 let parts: Vec<&str> = line.splitn(2, ':').collect();
-                if parts.len() >= 2 && parts[1].chars().next().map_or(false, |c| c.is_ascii_digit()) {
+                if parts.len() >= 2 && parts[1].chars().next().is_some_and(|c| c.is_ascii_digit()) {
                     violation_lines += 1;
                 }
             }
-        }
     }
     
     counts.insert("Functions without test coverage (actual)".to_string(), no_test_coverage_count);
@@ -230,7 +229,7 @@ fn main() -> Result<()> {
                     .map(|entry| entry.path())
                     .filter(|p| {
                         p.is_file() && 
-                        (p.extension().map_or(false, |e| e == "txt" || e == "log"))
+                        (p.extension().is_some_and(|e| e == "txt" || e == "log"))
                     })
                     .collect();
                 files_to_check.extend(dir_files);
@@ -245,7 +244,7 @@ fn main() -> Result<()> {
                 .map(|entry| entry.path())
                 .filter(|path| {
                     path.is_file() && 
-                    (path.extension().map_or(false, |e| e == "txt" || e == "log"))
+                    (path.extension().is_some_and(|e| e == "txt" || e == "log"))
                 })
                 .collect();
         }

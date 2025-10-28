@@ -248,10 +248,10 @@ fn run_compile(cwd: &Path, args: &[&str]) -> Result<bool> {
 
     // Print all output
     for line in stdout.lines() {
-        println!("{}", line);
+        println!("{line}");
     }
     for line in stderr.lines() {
-        println!("{}", line);
+        println!("{line}");
     }
 
     Ok(output.status.success())
@@ -271,7 +271,7 @@ fn find_module_file(base: &Path, dir: &str, module_name: &str) -> Result<Option<
             let dir_name = path.file_name().unwrap().to_str().unwrap();
             if dir_name.starts_with("Chap") {
                 // Check for the module file
-                let module_file = path.join(format!("{}.rs", module_name));
+                let module_file = path.join(format!("{module_name}.rs"));
                 if module_file.exists() {
                     return Ok(Some(module_file));
                 }

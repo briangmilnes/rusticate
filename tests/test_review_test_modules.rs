@@ -25,10 +25,10 @@ fn test_review_test_modules_on_apas() -> Result<()> {
     
     // Print output for debugging
     if !stderr.is_empty() {
-        eprintln!("STDERR:\n{}", stderr);
+        eprintln!("STDERR:\n{stderr}");
     }
     
-    println!("STDOUT:\n{}", stdout);
+    println!("STDOUT:\n{stdout}");
     
     // The tool runs cargo test --no-run, exit code depends on whether tests compile
     Ok(())

@@ -58,14 +58,14 @@ fn get_available_review_tools() -> Vec<&'static str> {
 }
 
 fn run_review_tool(tool_name: &str, args: &[String]) -> Result<()> {
-    let binary_name = format!("rusticate-review-{}", tool_name);
+    let binary_name = format!("rusticate-review-{tool_name}");
     let exe_path = env::current_exe()
         .context("Failed to get current executable path")?
         .parent()
         .context("Failed to get parent directory")?
         .join(&binary_name);
     
-    println!("\n=== Running {} ===", tool_name);
+    println!("\n=== Running {tool_name} ===");
     
     let status = Command::new(&exe_path)
         .args(args)
@@ -73,10 +73,10 @@ fn run_review_tool(tool_name: &str, args: &[String]) -> Result<()> {
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
         .status()
-        .with_context(|| format!("Failed to run {}", binary_name))?;
+        .with_context(|| format!("Failed to run {binary_name}"))?;
     
     if !status.success() {
-        eprintln!("Warning: {} exited with status {}", tool_name, status);
+        eprintln!("Warning: {tool_name} exited with status {status}");
     }
     
     Ok(())
@@ -98,7 +98,7 @@ fn print_usage() {
     eprintln!();
     eprintln!("Available tools:");
     for tool in get_available_review_tools() {
-        eprintln!("  {}", tool);
+        eprintln!("  {tool}");
     }
     eprintln!();
     eprintln!("Examples:");
@@ -137,7 +137,7 @@ fn main() -> Result<()> {
         
         for tool in &tools {
             if let Err(e) = run_review_tool(tool, &passthrough_args) {
-                eprintln!("Error running {}: {}", tool, e);
+                eprintln!("Error running {tool}: {e}");
                 failed_tools.push(*tool);
             }
         }
@@ -149,7 +149,7 @@ fn main() -> Result<()> {
         if !failed_tools.is_empty() {
             println!("Failed tools ({}):", failed_tools.len());
             for tool in failed_tools {
-                println!("  - {}", tool);
+                println!("  - {tool}");
             }
             std::process::exit(1);
         } else {
@@ -159,11 +159,11 @@ fn main() -> Result<()> {
         // Run specific tool
         let available_tools = get_available_review_tools();
         if !available_tools.contains(&tool_or_command.as_str()) {
-            eprintln!("Error: Unknown review tool '{}'", tool_or_command);
+            eprintln!("Error: Unknown review tool '{tool_or_command}'");
             eprintln!();
             eprintln!("Available tools:");
             for tool in available_tools {
-                eprintln!("  {}", tool);
+                eprintln!("  {tool}");
             }
             eprintln!();
             eprintln!("Or use 'all' to run all review tools");

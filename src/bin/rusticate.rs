@@ -31,7 +31,6 @@
 
 use std::env;
 use std::process::{Command, exit};
-use std::fs;
 
 
 macro_rules! log {
@@ -85,7 +84,7 @@ fn main() {
     }
 
     let review_name = &args[1];
-    let binary_name = format!("rusticate-review-{}", review_name);
+    let binary_name = format!("rusticate-review-{review_name}");
 
     // Get the directory where this binary is located
     let current_exe = env::current_exe().unwrap_or_else(|_| {
@@ -102,7 +101,7 @@ fn main() {
 
     // Check if the target binary exists
     if !target_binary.exists() {
-        eprintln!("Error: Review tool '{}' not found", review_name);
+        eprintln!("Error: Review tool '{review_name}' not found");
         eprintln!("Expected binary: {}", target_binary.display());
         eprintln!();
         eprintln!("Run 'rusticate' without arguments to see available reviews.");
@@ -116,7 +115,7 @@ fn main() {
         .args(remaining_args)
         .status()
         .unwrap_or_else(|e| {
-            eprintln!("Error executing {}: {}", binary_name, e);
+            eprintln!("Error executing {binary_name}: {e}");
             exit(1);
         });
 

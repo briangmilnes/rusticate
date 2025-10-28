@@ -25,12 +25,12 @@ fn test_review_bench_modules_on_apas() -> Result<()> {
     
     // Print output for debugging
     if !stderr.is_empty() {
-        eprintln!("STDERR:\n{}", stderr);
+        eprintln!("STDERR:\n{stderr}");
     }
     
     // The tool runs cargo bench --no-run, so we just check it doesn't crash
     // Exit code depends on whether benchmarks compile
-    println!("STDOUT:\n{}", stdout);
+    println!("STDOUT:\n{stdout}");
     
     Ok(())
 }

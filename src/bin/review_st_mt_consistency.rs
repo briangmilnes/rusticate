@@ -22,7 +22,6 @@ use ra_ap_syntax::{ast::{self, AstNode, HasName}, SyntaxKind, SourceFile, Editio
 use rusticate::{StandardArgs, find_rust_files};
 use std::path::Path;
 use std::time::Instant;
-use std::fs;
 
 
 macro_rules! log {
@@ -333,7 +332,7 @@ fn analyze_thread_explosion(content: &str) -> Vec<(usize, String, usize)> {
                                     if let Some(path) = path_expr.path() {
                                         let path_str = path.to_string();
                                         if path_str == fn_name || 
-                                           path_str == format!("Self::{}", fn_name) {
+                                           path_str == format!("Self::{fn_name}") {
                                             is_recursive = true;
                                         }
                                     }

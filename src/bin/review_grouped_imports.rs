@@ -11,10 +11,10 @@
 //! Binary: review-grouped-imports
 
 use anyhow::Result;
-use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SourceFile, Edition, SyntaxNode};
+use ra_ap_syntax::{ast::AstNode, SyntaxKind, SourceFile, Edition, SyntaxNode};
 use rusticate::{find_rust_files, StandardArgs};
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::time::Instant;
 
 macro_rules! log {
@@ -49,14 +49,13 @@ fn find_grouped_imports(root: &SyntaxNode, content: &str) -> Vec<GroupedImport> 
     let mut grouped = Vec::new();
     
     for node in root.descendants() {
-        if node.kind() == SyntaxKind::USE {
-            if has_use_tree_list(&node) {
+        if node.kind() == SyntaxKind::USE
+            && has_use_tree_list(&node) {
                 grouped.push(GroupedImport {
                     line: get_line_number(&node, content),
                     full_text: node.to_string(),
                 });
             }
-        }
     }
     
     grouped

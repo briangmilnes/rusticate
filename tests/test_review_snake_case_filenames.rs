@@ -19,12 +19,12 @@ fn test_review_snake_case_on_apas() -> Result<()> {
     let binary_path = std::env::current_dir()?.join("target/release/rusticate-review-snake-case-filenames");
     
     let output = Command::new(binary_path)
-        .args(&["-c"])
+        .args(["-c"])
         .current_dir("APAS-AI-copy/apas-ai")
         .output()?;
     
     let stdout = String::from_utf8_lossy(&output.stdout);
-    println!("Output:\n{}", stdout);
+    println!("Output:\n{stdout}");
     
     // Should fail (violations found)
     assert_eq!(output.status.code(), Some(1));
@@ -47,7 +47,7 @@ fn test_review_snake_case_on_apas() -> Result<()> {
             let violations = parse_number(violations_str)?;
             
             // APAS uses PascalCase, so should have many violations
-            assert!(violations > 500, "Expected many violations in APAS, got {}", violations);
+            assert!(violations > 500, "Expected many violations in APAS, got {violations}");
         }
     }
     

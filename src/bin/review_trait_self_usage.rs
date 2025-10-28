@@ -14,7 +14,6 @@ use ra_ap_syntax::{ast::{self, AstNode, HasName}, SyntaxKind, SourceFile, Editio
 use rusticate::{StandardArgs, find_rust_files};
 use std::path::Path;
 use std::time::Instant;
-use std::fs;
 
 
 macro_rules! log {

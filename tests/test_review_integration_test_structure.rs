@@ -17,7 +17,7 @@ fn test_review_integration_test_structure_on_apas() -> Result<()> {
     let binary_path = std::env::current_dir()?.join("target/release/rusticate-review-integration-test-structure");
     
     let output = Command::new(binary_path)
-        .args(&["-d", "tests"])
+        .args(["-d", "tests"])
         .current_dir("APAS-AI-copy/apas-ai")
         .output()?;
     
@@ -26,7 +26,7 @@ fn test_review_integration_test_structure_on_apas() -> Result<()> {
     
     // Print output for debugging
     if !stderr.is_empty() {
-        eprintln!("STDERR:\n{}", stderr);
+        eprintln!("STDERR:\n{stderr}");
     }
     
     // Parse the summary line to get counts

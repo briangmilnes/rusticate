@@ -76,7 +76,7 @@ fn fix_file(file_path: &PathBuf, method_names: &[String], dry_run: bool) -> Resu
                                             // Build new call: receiver.method(rest_of_args)
                                             let rest_args: Vec<String> = args.iter().skip(1).map(|a| a.to_string()).collect();
                                             let new_call = if rest_args.is_empty() {
-                                                format!("{}.{}()", receiver, fn_name)
+                                                format!("{receiver}.{fn_name}()")
                                             } else {
                                                 format!("{}.{}({})", receiver, fn_name, rest_args.join(", "))
                                             };
@@ -146,11 +146,10 @@ fn main() -> Result<()> {
                 
                 // If it has trait + impl but no pub fn, that pub fn was removed
                 // But we also want to catch cases where pub fn still exists but shouldn't
-                if has_trait && has_impl {
-                    if !method_names.contains(&issue.name) {
+                if has_trait && has_impl
+                    && !method_names.contains(&issue.name) {
                         method_names.push(issue.name.clone());
                     }
-                }
             }
         }
     }

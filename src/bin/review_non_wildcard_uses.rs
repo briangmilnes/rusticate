@@ -181,7 +181,7 @@ fn main() {
     let standard_args = match rusticate::StandardArgs::parse() {
         Ok(args) => args,
         Err(e) => {
-            eprintln!("Error: {}", e);
+            eprintln!("Error: {e}");
             std::process::exit(1);
         }
     };
@@ -286,7 +286,7 @@ fn main() {
         
         *dir_counts.entry(dir.to_string()).or_insert(0) += 1;
         *dir_type_counts.entry(dir.to_string())
-            .or_insert_with(HashMap::new)
+            .or_default()
             .entry(vtype.clone())
             .or_insert(0) += 1;
     }

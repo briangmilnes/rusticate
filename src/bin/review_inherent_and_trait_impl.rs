@@ -111,8 +111,7 @@ fn check_file(source: &str) -> Result<Vec<String>> {
             if trait_methods.contains_key(method) {
                 let trait_name = &trait_methods[method];
                 issues.push(format!(
-                    "Type '{}' has public method '{}' in both inherent impl and trait impl for '{}' (violates Single Implementation Pattern)",
-                    type_name, method, trait_name
+                    "Type '{type_name}' has public method '{method}' in both inherent impl and trait impl for '{trait_name}' (violates Single Implementation Pattern)"
                 ));
             }
         }

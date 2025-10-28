@@ -62,7 +62,7 @@ fn extract_generic_params(type_str: &str) -> Vec<String> {
     let mut params = Vec::new();
     
     // Parse the type to extract generic parameters
-    let wrapped = format!("type Dummy = {};", type_str);
+    let wrapped = format!("type Dummy = {type_str};");
     let parsed = SourceFile::parse(&wrapped, Edition::Edition2021);
     
     if !parsed.errors().is_empty() {
@@ -76,23 +76,20 @@ fn extract_generic_params(type_str: &str) -> Vec<String> {
     for node in root.descendants() {
         if node.kind() == SyntaxKind::TYPE_ARG {
             let param_name = node.to_string().trim().to_string();
-            if param_name.len() == 1 && param_name.chars().next().unwrap().is_uppercase() {
-                if !params.contains(&param_name) {
+            if param_name.len() == 1 && param_name.chars().next().unwrap().is_uppercase()
+                && !params.contains(&param_name) {
                     params.push(param_name);
                 }
-            }
         } else if node.kind() == SyntaxKind::PATH_TYPE {
             // Check for slice types like [T]
             if let Some(path_type) = ast::PathType::cast(node.clone()) {
                 if let Some(path) = path_type.path() {
                     let path_text = path.to_string().trim().to_string();
-                    if path_text.len() == 1 && path_text.chars().next().unwrap().is_uppercase() {
-                        if node.parent().map_or(false, |p| p.kind() == SyntaxKind::SLICE_TYPE) {
-                            if !params.contains(&path_text) {
+                    if path_text.len() == 1 && path_text.chars().next().unwrap().is_uppercase()
+                        && node.parent().is_some_and(|p| p.kind() == SyntaxKind::SLICE_TYPE)
+                            && !params.contains(&path_text) {
                                 params.push(path_text);
                             }
-                        }
-                    }
                 }
             }
         }
@@ -110,10 +107,10 @@ fn format_type_alias(type_str: &str) -> String {
     let params = extract_generic_params(type_str);
     
     if params.is_empty() {
-        format!("pub type T = {};", type_str)
+        format!("pub type T = {type_str};")
     } else {
         let param_list = params.join(", ");
-        format!("pub type T<{}> = {};", param_list, type_str)
+        format!("pub type T<{param_list}> = {type_str};")
     }
 }
 
@@ -150,7 +147,7 @@ fn clean_parameter_type(type_str: &str) -> String {
 /// Uses AST parsing to properly handle generic substitution.
 fn substitute_generic_t(type_str: &str) -> String {
     // Parse the type as a Rust type expression
-    let wrapped = format!("type Dummy = {};", type_str);
+    let wrapped = format!("type Dummy = {type_str};");
     let parsed = SourceFile::parse(&wrapped, Edition::Edition2021);
     
     if !parsed.errors().is_empty() {
@@ -179,7 +176,7 @@ fn substitute_generic_t(type_str: &str) -> String {
             if let Some(path_type) = ast::PathType::cast(node.clone()) {
                 if let Some(path) = path_type.path() {
                     let path_text = path.to_string();
-                    if path_text.trim() == "T" && node.parent().map_or(false, |p| p.kind() == SyntaxKind::SLICE_TYPE) {
+                    if path_text.trim() == "T" && node.parent().is_some_and(|p| p.kind() == SyntaxKind::SLICE_TYPE) {
                         let start: usize = node.text_range().start().into();
                         let end: usize = node.text_range().end().into();
                         replacements.push((start, end));
@@ -272,7 +269,7 @@ fn extract_imports_from_use_tree(
                             .collect();
                         if let Some(function_name) = nested_segments.last() {
                             import_map.entry((module_name.clone(), function_name.clone()))
-                                .or_insert_with(HashSet::new)
+                                .or_default()
                                 .insert(importing_file.to_path_buf());
                         }
                     }
@@ -285,11 +282,11 @@ fn extract_imports_from_use_tree(
                 if function_name == "*" {
                     // Mark this module as having wildcard imports
                     import_map.entry((module_name.clone(), "*".to_string()))
-                        .or_insert_with(HashSet::new)
+                        .or_default()
                         .insert(importing_file.to_path_buf());
                 } else {
                     import_map.entry((module_name, function_name))
-                        .or_insert_with(HashSet::new)
+                        .or_default()
                         .insert(importing_file.to_path_buf());
                 }
             }
@@ -458,13 +455,10 @@ fn process_file(file_path: &Path, import_map: &HashMap<(String, String), HashSet
             log!("{}:{}:\tRemoved standalone pub fn", file_path.display(), analysis.module_line);
             
             // Step F: Fix call sites in test and bench files
-            match find_test_file(file_path)? {
-                Some(test_file) => {
-                    log!("{}:1:\tFixing test call sites", test_file.display());
-                    fix_call_sites(&test_file, &analysis)?;
-                    log!("{}:1:\tFixed test call sites", test_file.display());
-                }
-                None => {}
+            if let Some(test_file) = find_test_file(file_path)? {
+                log!("{}:1:\tFixing test call sites", test_file.display());
+                fix_call_sites(&test_file, &analysis)?;
+                log!("{}:1:\tFixed test call sites", test_file.display());
             }
             
             if let Some(bench_file) = find_bench_file(file_path)? {
@@ -487,13 +481,10 @@ fn process_file(file_path: &Path, import_map: &HashMap<(String, String), HashSet
         did_work = true;
         
         // Step 5: Find and fix test file if it exists
-        match find_test_file(file_path)? {
-            Some(test_file) => {
-                log!("{}:1:\tUpdating test call sites", test_file.display());
-                fix_call_sites(&test_file, &analysis)?;
-                log!("{}:1:\tUpdated test call sites", test_file.display());
-            }
-            None => {}
+        if let Some(test_file) = find_test_file(file_path)? {
+            log!("{}:1:\tUpdating test call sites", test_file.display());
+            fix_call_sites(&test_file, &analysis)?;
+            log!("{}:1:\tUpdated test call sites", test_file.display());
         }
         
         // Step 6: Find and fix bench file if it exists
@@ -578,7 +569,7 @@ fn analyze_module(source: &str, source_file: &Path) -> Result<ModuleAnalysis> {
     }
     
     // Compute recommended type by analyzing the module
-    let (recommended_type, has_unused_self, is_functional_trait) = compute_recommended_type(&root)?;
+    let (recommended_type, has_unused_self, is_functional_trait) = compute_recommended_type(root)?;
     
     Ok(ModuleAnalysis {
         module_name,
@@ -597,21 +588,21 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
     for node in root.descendants() {
         if node.kind() == SyntaxKind::STRUCT {
             if let Some(struct_ast) = ast::Struct::cast(node.clone()) {
-                if struct_ast.visibility().map_or(false, |v| v.to_string() == "pub") {
+                if struct_ast.visibility().is_some_and(|v| v.to_string() == "pub") {
                     return Err(anyhow::anyhow!("Module already has pub struct - no type alias needed"));
                 }
             }
         }
         if node.kind() == SyntaxKind::ENUM {
             if let Some(enum_ast) = ast::Enum::cast(node.clone()) {
-                if enum_ast.visibility().map_or(false, |v| v.to_string() == "pub") {
+                if enum_ast.visibility().is_some_and(|v| v.to_string() == "pub") {
                     return Err(anyhow::anyhow!("Module already has pub enum - no type alias needed"));
                 }
             }
         }
         if node.kind() == SyntaxKind::TYPE_ALIAS {
             if let Some(type_alias) = ast::TypeAlias::cast(node.clone()) {
-                if type_alias.visibility().map_or(false, |v| v.to_string() == "pub") {
+                if type_alias.visibility().is_some_and(|v| v.to_string() == "pub") {
                     return Err(anyhow::anyhow!("Module already has pub type - no type alias needed"));
                 }
             }
@@ -702,7 +693,7 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
                         // If it's not just "T", it's an external type
                         if type_name != "T" {
                             // Check if it's a concrete type (starts with uppercase, or contains ::)
-                            if type_name.chars().next().map_or(false, |c| c.is_uppercase()) || type_name.contains("::") {
+                            if type_name.chars().next().is_some_and(|c| c.is_uppercase()) || type_name.contains("::") {
                                 proposed_type = Some(format_type_alias(&type_name));
                                 break;
                             }
@@ -773,11 +764,7 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
                             // Check for Types::Types or crate::Types::Types
                             let has_types_types = if segments.len() >= 2 && segments[0] == "Types" && segments[1] == "Types" {
                                 true
-                            } else if segments.len() >= 3 && segments[0] == "crate" && segments[1] == "Types" && segments[2] == "Types" {
-                                true
-                            } else {
-                                false
-                            };
+                            } else { segments.len() >= 3 && segments[0] == "crate" && segments[1] == "Types" && segments[2] == "Types" };
                             
                             if has_types_types && use_tree.to_string().ends_with("::*") {
                                 has_types_import = true;
@@ -808,7 +795,7 @@ fn compute_recommended_type(root: &ra_ap_syntax::SyntaxNode) -> Result<(String, 
                     
                     if !in_impl {
                         if let Some(fn_ast) = ast::Fn::cast(node.clone()) {
-                            if fn_ast.visibility().map_or(false, |v| v.to_string() == "pub") {
+                            if fn_ast.visibility().is_some_and(|v| v.to_string() == "pub") {
                                 standalone_pub_fns.push(fn_ast);
                             }
                         }
@@ -910,7 +897,7 @@ fn add_pub_type(source: &str, analysis: &ModuleAnalysis) -> Result<String> {
     let before = &source[..insert_pos];
     let after = &source[insert_pos..];
     
-    Ok(format!("{}{}{}", before, insertion, after))
+    Ok(format!("{before}{insertion}{after}"))
 }
 
 fn find_test_file(src_file: &Path) -> Result<Option<PathBuf>> {
@@ -932,7 +919,7 @@ fn find_test_file(src_file: &Path) -> Result<Option<PathBuf>> {
     let test_file = project_root
         .join("tests")
         .join(parent)
-        .join(format!("Test{}.rs", file_stem));
+        .join(format!("Test{file_stem}.rs"));
     
     if test_file.exists() {
         return Ok(Some(test_file));
@@ -946,7 +933,7 @@ fn find_test_file(src_file: &Path) -> Result<Option<PathBuf>> {
         let test_file2 = project_root
             .join("tests")
             .join(parent)
-            .join(format!("Test{}.rs", modified_stem));
+            .join(format!("Test{modified_stem}.rs"));
         
         if test_file2.exists() {
             return Ok(Some(test_file2));
@@ -971,7 +958,7 @@ fn find_bench_file(src_file: &Path) -> Result<Option<PathBuf>> {
         .ok_or_else(|| anyhow::anyhow!("Could not find project root"))?
         .join("benches")
         .join(parent)
-        .join(format!("Bench{}.rs", file_stem));
+        .join(format!("Bench{file_stem}.rs"));
     
     if bench_file.exists() {
         Ok(Some(bench_file))
@@ -1023,7 +1010,7 @@ fn fix_imports_to_wildcard(source: &str, module_name: &str) -> Result<String> {
                     let use_text = use_tree.to_string();
                     
                     // Check if this is importing from our module (e.g., "Chap55::DFSStEph::DFSStEph::dfs")
-                    if use_text.contains(&format!("::{}::{}", module_name, module_name)) && !use_text.ends_with("::*") {
+                    if use_text.contains(&format!("::{module_name}::{module_name}")) && !use_text.ends_with("::*") {
                         // Extract the module path up to the second module name
                         if let Some(path) = use_tree.path() {
                             let segments: Vec<_> = path.segments().map(|s| s.to_string()).collect();
@@ -1100,8 +1087,8 @@ fn fix_algorithm_call_sites(source: &str, analysis: &ModuleAnalysis) -> Result<S
                         // Check if callee is "method_name" or "Module::method_name"
                         // But NOT "receiver.method_call" (already a method call)
                         let is_function_call = callee_text == *method_name || 
-                                              callee_text.ends_with(&format!("::{}", method_name));
-                        let is_method_call = callee_text.ends_with(&format!(".{}", method_name));
+                                              callee_text.ends_with(&format!("::{method_name}"));
+                        let is_method_call = callee_text.ends_with(&format!(".{method_name}"));
                         
                         if is_function_call && !is_method_call {
                             // This is a function/static call, transform to method call
@@ -1116,10 +1103,10 @@ fn fix_algorithm_call_sites(source: &str, analysis: &ModuleAnalysis) -> Result<S
                                 let receiver = &args[0];
                                 
                                 let new_call = if args.len() == 1 {
-                                    format!("{}.{}()", receiver, method_name)
+                                    format!("{receiver}.{method_name}()")
                                 } else {
                                     let remaining_args = args[1..].join(", ");
-                                    format!("{}.{}({})", receiver, method_name, remaining_args)
+                                    format!("{receiver}.{method_name}({remaining_args})")
                                 };
                                 
                                 let start: usize = node.text_range().start().into();
@@ -1264,7 +1251,7 @@ fn create_inherent_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<Stri
             
             if !in_impl {
                 if let Some(fn_ast) = ast::Fn::cast(node.clone()) {
-                    if fn_ast.visibility().map_or(false, |v| v.to_string() == "pub") {
+                    if fn_ast.visibility().is_some_and(|v| v.to_string() == "pub") {
                         if let Some(name) = fn_ast.name() {
                             fn_name = name.text().to_string();
                             
@@ -1345,7 +1332,7 @@ fn has_standalone_pub_fn(source: &str, analysis: &ModuleAnalysis, import_map: &H
                 
                 if !in_impl {
                     if let Some(fn_ast) = ast::Fn::cast(node.clone()) {
-                        if fn_ast.visibility().map_or(false, |v| v.to_string() == "pub") {
+                        if fn_ast.visibility().is_some_and(|v| v.to_string() == "pub") {
                             return Ok(true);  // Found standalone pub fn, done!
                         }
                     }
@@ -1451,11 +1438,10 @@ fn has_standalone_pub_fn(source: &str, analysis: &ModuleAnalysis, import_map: &H
                                                 let type_part = param_text[colon_pos + 1..].trim();
                                                 // Skip if first param is an external type (not in analysis.recommended_type)
                                                 // e.g., if type is "&AtomicUsize" but recommended_type doesn't contain "AtomicUsize"
-                                                if type_part.contains("AtomicUsize") || type_part.contains("Atomic") {
-                                                    if !analysis.recommended_type.contains("AtomicUsize") && !analysis.recommended_type.contains("Atomic") {
+                                                if (type_part.contains("AtomicUsize") || type_part.contains("Atomic"))
+                                                    && !analysis.recommended_type.contains("AtomicUsize") && !analysis.recommended_type.contains("Atomic") {
                                                         continue; // Skip this function - it operates on external type
                                                     }
-                                                }
                                             }
                                         }
                                     }
@@ -1589,7 +1575,7 @@ fn replace_identifier_in_body(body_text: &str, old_name: &str, new_name: &str) -
     }
     
     // Wrap in a function so we can parse it as a valid Rust fragment
-    let wrapped = format!("fn dummy() {{ {} }}", body_text);
+    let wrapped = format!("fn dummy() {{ {body_text} }}");
     let parsed = SourceFile::parse(&wrapped, Edition::Edition2021);
     if !parsed.errors().is_empty() {
         // If parsing fails, fall back to original text
@@ -1764,7 +1750,7 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
             .collect();
         
         eprintln!("Warning: Not all trait methods have standalone pub fn implementations.");
-        eprintln!("Missing: {:?}", missing);
+        eprintln!("Missing: {missing:?}");
         eprintln!("Skipping transformation for this module (needs manual handling).");
         
         return Err(anyhow::anyhow!(
@@ -1777,12 +1763,12 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
     }
     
     // Build the impl block
-    let mut impl_block = format!("\n\n    impl {} for T {{", trait_name);
+    let mut impl_block = format!("\n\n    impl {trait_name} for T {{");
     
     for (method_name, ret_type, params, first_param_name, body_text) in impl_methods {
         if params.len() == 1 {
             // Single parameter: replace param name with self in body using AST
-            impl_block.push_str(&format!("\n        fn {}(&self){} {{", method_name, ret_type));
+            impl_block.push_str(&format!("\n        fn {method_name}(&self){ret_type} {{"));
             
             // Use AST-based identifier replacement
             let modified_body = replace_identifier_in_body(&body_text, &first_param_name, "self")?;
@@ -1796,7 +1782,7 @@ fn create_trait_impl(source: &str, _analysis: &ModuleAnalysis) -> Result<String>
             let remaining_params: Vec<&str> = params.iter().skip(1).map(|s| s.as_str()).collect();
             let params_str = remaining_params.join(", ");
             
-            impl_block.push_str(&format!("\n        fn {}(&self, {}){} {{", method_name, params_str, ret_type));
+            impl_block.push_str(&format!("\n        fn {method_name}(&self, {params_str}){ret_type} {{"));
             
             // Use AST-based identifier replacement
             let modified_body = replace_identifier_in_body(&body_text, &first_param_name, "self")?;
@@ -1866,7 +1852,7 @@ fn transform_algorithm_trait(source: &str, _analysis: &ModuleAnalysis) -> Result
                                             // Replace entire param list
                                             let param_list_start: usize = param_list.syntax().text_range().start().into();
                                             let param_list_end: usize = param_list.syntax().text_range().end().into();
-                                            let new_param_list = format!("({})", new_params);
+                                            let new_param_list = format!("({new_params})");
                                             replacements.push((param_list_start, param_list_end, new_param_list));
                                         }
                                     }
@@ -2177,7 +2163,7 @@ fn fix_unused_self_calls(source: &str) -> Result<String> {
                                     };
                                     
                                     // Build new call: identifier.insSort()
-                                    let new_call = format!("{}.insSort()", identifier);
+                                    let new_call = format!("{identifier}.insSort()");
                                     
                                     // Record replacement for entire method call expression
                                     let start: usize = node.text_range().start().into();

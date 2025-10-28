@@ -112,7 +112,7 @@ fn infer_missing_imports(code: &str) -> Vec<String> {
     // Helper to check if AST contains specific name (like "Triple")
     let has_name_ref = |root: &ra_ap_syntax::SyntaxNode, name: &str| -> bool {
         root.descendants().any(|n| {
-            n.kind() == SyntaxKind::NAME_REF && n.text().to_string() == name
+            n.kind() == SyntaxKind::NAME_REF && n.text() == name
         })
     };
     
@@ -130,17 +130,40 @@ fn infer_missing_imports(code: &str) -> Vec<String> {
         });
         
         // Check if it looks like APAS triple usage without explicit import
-        if has_tuple_or_array && !has_use_stmt(&root) && !has_name_ref(&root, "Triple") {
+        if has_tuple_or_array && !has_use_stmt(root) && !has_name_ref(root, "Triple") {
             has_triple_pattern = true;
         }
     } else {
         // Fallback to heuristics for unparseable fragments
-        // Note: String checks here because doctest fragment may not be valid Rust
-        has_triple_pattern = (code.contains("[(") || code.contains("(\"")) 
-            && !code.contains("use") && !code.contains("Triple");
+        // Note: Character-level checks here because doctest fragment may not be valid Rust
+        // Look for patterns like [( or (" that suggest tuple/array usage
+        let has_array_tuple = {
+            let chars: Vec<char> = code.chars().collect();
+            let mut found = false;
+            for i in 0..chars.len().saturating_sub(1) {
+                if (chars[i] == '[' && chars[i + 1] == '(') ||
+                   (chars[i] == '(' && chars[i + 1] == '"') {
+                    found = true;
+                    break;
+                }
+            }
+            found
+        };
+        
+        let has_use_keyword = code.chars().collect::<Vec<_>>().windows(3)
+            .any(|w| w == ['u', 's', 'e']);
+        let has_triple_name = code.chars().collect::<Vec<_>>().windows(6)
+            .any(|w| w == ['T', 'r', 'i', 'p', 'l', 'e']);
+        
+        has_triple_pattern = has_array_tuple && !has_use_keyword && !has_triple_name;
     }
     
-    let has_graph_macro = code.contains("GraphStEph") && code.contains("Lit!");
+    let has_graph_macro = {
+        let chars: Vec<char> = code.chars().collect();
+        let has_graphsteph = chars.windows(10).any(|w| w == ['G', 'r', 'a', 'p', 'h', 'S', 't', 'E', 'p', 'h']);
+        let has_lit_macro = chars.windows(4).any(|w| w == ['L', 'i', 't', '!']);
+        has_graphsteph && has_lit_macro
+    };
     
     if has_triple_pattern || has_graph_macro {
         imports.insert("use apas_ai::Types::Types::Triple;".to_string());
@@ -157,10 +180,10 @@ fn infer_missing_imports(code: &str) -> Vec<String> {
     if !has_errors {
         let tree = parsed.tree();
         let root = tree.syntax();
-        let has_use = has_use_stmt(&root);
+        let has_use = has_use_stmt(root);
         
         for (name, import) in &type_patterns {
-            if has_name_ref(&root, name) && !has_use {
+            if has_name_ref(root, name) && !has_use {
                 imports.insert(import.to_string());
             }
         }

@@ -18,7 +18,7 @@ fn test_review_module_encapsulation_on_apas() -> Result<()> {
     
     // Run the binary with -d src
     let output = Command::new(binary_path)
-        .args(&["-d", "src"])
+        .args(["-d", "src"])
         .current_dir("APAS-AI-copy/apas-ai")
         .output()?;
     
@@ -27,7 +27,7 @@ fn test_review_module_encapsulation_on_apas() -> Result<()> {
     
     // Print for debugging
     if !stderr.is_empty() {
-        eprintln!("STDERR: {}", stderr);
+        eprintln!("STDERR: {stderr}");
     }
     
     // Validate exit code (1 = violations found at this commit)
@@ -38,7 +38,7 @@ fn test_review_module_encapsulation_on_apas() -> Result<()> {
     
     // Validate violation message
     assert!(stdout.contains("✗ Found") && stdout.contains("violation(s):"),
-        "Expected violation message not found in output:\n{}", stdout);
+        "Expected violation message not found in output:\n{stdout}");
     
     // Parse and validate numeric output from Summary line
     // Expected format: "Summary: 265 files checked, 3 files with violations, 82 total violations"
@@ -57,21 +57,21 @@ fn test_review_module_encapsulation_on_apas() -> Result<()> {
         .expect("Failed to parse files checked");
     
     // Parse "3 files with violations"
-    let files_with_violations = parts[1].trim().split_whitespace()
+    let files_with_violations = parts[1].split_whitespace()
         .next()
         .and_then(|s| parse_number(s).ok())
         .expect("Failed to parse files with violations");
     
     // Parse "82 total violations"
-    let total_violations = parts[2].trim().split_whitespace()
+    let total_violations = parts[2].split_whitespace()
         .next()
         .and_then(|s| parse_number(s).ok())
         .expect("Failed to parse total violations");
     
     // Validate numbers (checking that violations exist)
-    assert!(files_checked > 250, "Expected >250 files checked, got {}", files_checked);
-    assert!(files_with_violations >= 3, "Expected at least 3 files with violations, got {}", files_with_violations);
-    assert!(total_violations >= 80, "Expected at least 80 total violations, got {}", total_violations);
+    assert!(files_checked > 250, "Expected >250 files checked, got {files_checked}");
+    assert!(files_with_violations >= 3, "Expected at least 3 files with violations, got {files_with_violations}");
+    assert!(total_violations >= 80, "Expected at least 80 total violations, got {total_violations}");
     
     // Validate that the violations are in the expected files
     assert!(stdout.contains("ArraySeqStEphSimple.rs"), "Expected Simple file in violations");
@@ -82,8 +82,7 @@ fn test_review_module_encapsulation_on_apas() -> Result<()> {
     assert!(stdout.contains("Completed in"), "Missing timing line");
     assert!(stdout.contains("ms"), "Missing milliseconds unit");
     
-    println!("✓ Test passed: {} files checked, {} violations found in 3 experimental files", 
-             files_checked, total_violations);
+    println!("✓ Test passed: {files_checked} files checked, {total_violations} violations found in 3 experimental files");
     Ok(())
 }
 

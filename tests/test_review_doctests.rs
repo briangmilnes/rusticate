@@ -19,7 +19,7 @@ fn test_review_doctests_on_apas() -> Result<()> {
     let binary_path = std::env::current_dir()?.join("target/release/rusticate-review-doctests");
     
     let output = Command::new(binary_path)
-        .args(&["-d", "src"])
+        .args(["-d", "src"])
         .current_dir("APAS-AI-copy/apas-ai")
         .output()?;
     
@@ -27,7 +27,7 @@ fn test_review_doctests_on_apas() -> Result<()> {
     let stderr = String::from_utf8_lossy(&output.stderr);
     
     if !stderr.is_empty() {
-        eprintln!("STDERR:\n{}", stderr);
+        eprintln!("STDERR:\n{stderr}");
     }
     
     // Should produce output

@@ -97,7 +97,7 @@ pub mod ast_utils {
     
     /// Check if a node has a parent of a specific kind
     pub fn has_parent_of_kind(node: &SyntaxNode, kind: SyntaxKind) -> bool {
-        node.parent().map_or(false, |p| p.kind() == kind)
+        node.parent().is_some_and(|p| p.kind() == kind)
     }
 }
 

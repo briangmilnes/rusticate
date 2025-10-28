@@ -115,7 +115,7 @@ pub mod args {
                         i += 1;
                     }
                     other => {
-                        return Err(anyhow::anyhow!("Unknown option: {}", other));
+                        return Err(anyhow::anyhow!("Unknown option: {other}"));
                     }
                 }
             }
@@ -139,7 +139,7 @@ pub mod args {
             
             // 1. Find the source file in src/
             let src_dir = current_dir.join("src");
-            let module_file = format!("{}.rs", module_name);
+            let module_file = format!("{module_name}.rs");
             let mut src_files = Vec::new();
             
             if src_dir.exists() {
@@ -148,8 +148,7 @@ pub mod args {
             
             if src_files.is_empty() {
                 return Err(anyhow::anyhow!(
-                    "Module '{}' not found in src/", 
-                    module_name
+                    "Module '{module_name}' not found in src/"
                 ));
             }
             
@@ -231,7 +230,7 @@ pub mod args {
             if let Ok(entries) = std::fs::read_dir(dir) {
                 for entry in entries.flatten() {
                     let path = entry.path();
-                    if path.is_file() && path.file_name().map_or(false, |n| n == filename) {
+                    if path.is_file() && path.file_name().is_some_and(|n| n == filename) {
                         results.push(path);
                     } else if path.is_dir() {
                         Self::search_for_file(&path, filename, results)?;
@@ -248,7 +247,7 @@ pub mod args {
                 .and_then(|n| n.to_str())
                 .unwrap_or(program_name);
             
-            println!("Usage: {} [OPTIONS]", name);
+            println!("Usage: {name} [OPTIONS]");
             println!();
             println!("Options:");
             println!("  -c, --codebase             Analyze src/, tests/, benches/ (default)");
@@ -258,12 +257,12 @@ pub mod args {
             println!("  -h, --help                 Show this help message");
             println!();
             println!("Examples:");
-            println!("  {}                           # Analyze codebase (src/, tests/, benches/)", name);
-            println!("  {} -c                        # Same as above", name);
-            println!("  {} -d src tests benches      # Analyze multiple directories", name);
-            println!("  {} -d src                    # Analyze just src/", name);
-            println!("  {} -f src/lib.rs             # Analyze single file", name);
-            println!("  {} -m ArraySeqStEph          # Analyze module + tests + benches", name);
+            println!("  {name}                           # Analyze codebase (src/, tests/, benches/)");
+            println!("  {name} -c                        # Same as above");
+            println!("  {name} -d src tests benches      # Analyze multiple directories");
+            println!("  {name} -d src                    # Analyze just src/");
+            println!("  {name} -f src/lib.rs             # Analyze single file");
+            println!("  {name} -m ArraySeqStEph          # Analyze module + tests + benches");
         }
 
         /// Get all paths
@@ -300,7 +299,7 @@ pub mod args {
                     let has_benches = path.join("benches").exists();
                     
                     if (has_src || has_tests || has_benches) && 
-                       !path.file_name().map_or(false, |n| n == "src" || n == "tests" || n == "benches") {
+                       !path.file_name().is_some_and(|n| n == "src" || n == "tests" || n == "benches") {
                         // This is a project root - expand to standard directories
                         if has_src {
                             dirs.push(path.join("src"));
@@ -364,7 +363,7 @@ pub mod args {
             if let Ok(entries) = std::fs::read_dir(dir) {
                 for entry in entries.flatten() {
                     let path = entry.path();
-                    if path.is_file() && path.extension().map_or(false, |e| e == "rs") {
+                    if path.is_file() && path.extension().is_some_and(|e| e == "rs") {
                         files.push(path);
                     } else if path.is_dir() {
                         search_dir(&path, files);
@@ -377,7 +376,7 @@ pub mod args {
         for path in dirs {
             if path.is_file() {
                 // Direct file - add it if it's a .rs file
-                if path.extension().map_or(false, |e| e == "rs") {
+                if path.extension().is_some_and(|e| e == "rs") {
                     all_files.push(path.clone());
                 }
             } else if path.is_dir() {

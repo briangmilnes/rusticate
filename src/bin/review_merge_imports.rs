@@ -1,7 +1,6 @@
 use anyhow::Result;
 use ra_ap_syntax::{ast, AstNode, SourceFile, SyntaxKind};
 use rusticate::{find_rust_files, StandardArgs};
-use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
 

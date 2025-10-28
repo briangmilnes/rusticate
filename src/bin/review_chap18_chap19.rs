@@ -12,7 +12,6 @@
 use anyhow::Result;
 use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SourceFile, Edition};
 use rusticate::{find_rust_files, StandardArgs};
-use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
@@ -377,7 +376,7 @@ fn main() -> Result<()> {
         .into_iter()
         // Skip Chap18 and Chap19 implementation directories
         .filter(|path| {
-            !path.to_str().map_or(false, |s| s.contains("/Chap18/") || s.contains("/Chap19/"))
+            !path.to_str().is_some_and(|s| s.contains("/Chap18/") || s.contains("/Chap19/"))
         })
         .collect();
     let mut reports: Vec<FileReport> = Vec::new();

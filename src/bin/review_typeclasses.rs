@@ -143,7 +143,7 @@ fn extract_type_name(self_ty: &ast::Type) -> String {
 fn check_calls_trait(body: &str) -> bool {
     // Parse the body and check if it contains trait method calls or UFCS
     // Wrap in braces to make it a valid block expression
-    let wrapped = format!("{{ {} }}", body);
+    let wrapped = format!("{{ {body} }}");
     let parsed = SourceFile::parse(&wrapped, Edition::Edition2021);
     if !parsed.errors().is_empty() {
         // If parse fails, can't determine - assume not a delegation
@@ -325,7 +325,7 @@ fn analyze_file(file_path: &Path, source: &str) -> Result<Option<ModuleAnalysis>
     // Identify the main struct (matches module name or module name + "S")
     let main_struct_name = module_name.as_ref().and_then(|mod_name| {
         structs.iter()
-            .find(|s| s.name == *mod_name || s.name == format!("{}S", mod_name))
+            .find(|s| s.name == *mod_name || s.name == format!("{mod_name}S"))
             .map(|s| s.name.clone())
     });
     
@@ -410,13 +410,11 @@ fn analyze_file(file_path: &Path, source: &str) -> Result<Option<ModuleAnalysis>
                             } else {
                                 pub_functions.push(method_name);
                             }
+                        } else if has_self {
+                                            internal_methods.push(method_name);
                         } else {
-                            if has_self {
-                                internal_methods.push(method_name);
-            } else {
-                                internal_functions.push(method_name);
-                            }
-                        }
+                                            internal_functions.push(method_name);
+                                        }
                     }
                 }
             }
@@ -601,14 +599,14 @@ fn main() -> Result<()> {
                             
                             // Extract actual parameter types from methods (prefer this over impl type)
                             let mut found_param_type = false;
-                            for (_method_name, param_types) in &impl_info.method_param_types {
+                            for param_types in impl_info.method_param_types.values() {
                                 // Get first parameter type (which may include references)
                                 if let Some(first_param_type) = param_types.first() {
                                     // Add lifetime if it's a reference
                                     if first_param_type.starts_with('&') {
-                                        proposed_type = Some(format!("pub type T<'a, S> = {}; // from method parameter", first_param_type));
+                                        proposed_type = Some(format!("pub type T<'a, S> = {first_param_type}; // from method parameter"));
                                     } else {
-                                        proposed_type = Some(format!("pub type T<S> = {}; // from method parameter", first_param_type));
+                                        proposed_type = Some(format!("pub type T<S> = {first_param_type}; // from method parameter"));
                                     }
                                     found_param_type = true;
                                     break;
@@ -618,11 +616,11 @@ fn main() -> Result<()> {
                             // Fallback to impl type if no parameters found
                             if !found_param_type {
                                 if impl_for_type == "T" {
-                                    proposed_type = Some(format!("pub type T = (); // impl for T but no method parameters found"));
+                                    proposed_type = Some("pub type T = (); // impl for T but no method parameters found".to_string());
                                 } else if impl_for_type.contains("<") {
-                                    proposed_type = Some(format!("pub type T<S> = {}; // from impl type", impl_for_type));
+                                    proposed_type = Some(format!("pub type T<S> = {impl_for_type}; // from impl type"));
                                 } else {
-                                    proposed_type = Some(format!("pub type T = {};", impl_for_type));
+                                    proposed_type = Some(format!("pub type T = {impl_for_type};"));
                                 }
                             }
                             break;
@@ -633,7 +631,7 @@ fn main() -> Result<()> {
                 // If no impl found, check for pub fn to extract return/param types
                 if proposed_type.is_none() && !analysis.functions.is_empty() {
                     // Parse first pub function to extract common types (N, etc.)
-                    proposed_type = Some(format!("pub type T = N; // common type for algorithm modules"));
+                    proposed_type = Some("pub type T = N; // common type for algorithm modules".to_string());
                 }
                 
                 if let Some(recommendation) = proposed_type {
@@ -651,7 +649,7 @@ fn main() -> Result<()> {
             // Determine main struct (matches module name or module name + "S")
             let main_struct = analysis._module_name.as_ref().and_then(|mod_name| {
                 analysis.structs.iter()
-                    .find(|s| s.name == *mod_name || s.name == format!("{}S", mod_name))
+                    .find(|s| s.name == *mod_name || s.name == format!("{mod_name}S"))
                     .map(|s| &s.name)
             });
             
@@ -668,7 +666,7 @@ fn main() -> Result<()> {
             // Determine main enum (matches module name or module name + "S")
             let main_enum = analysis._module_name.as_ref().and_then(|mod_name| {
                 analysis.enums.iter()
-                    .find(|e| e.name == *mod_name || e.name == format!("{}S", mod_name))
+                    .find(|e| e.name == *mod_name || e.name == format!("{mod_name}S"))
                     .map(|e| &e.name)
             });
             
@@ -684,7 +682,7 @@ fn main() -> Result<()> {
             // Determine main type alias (matches module name or module name + "S")
             let main_type_alias = analysis._module_name.as_ref().and_then(|mod_name| {
                 analysis.type_aliases.iter()
-                    .find(|t| t.name == *mod_name || t.name == format!("{}S", mod_name))
+                    .find(|t| t.name == *mod_name || t.name == format!("{mod_name}S"))
                     .map(|t| &t.name)
             });
             
@@ -872,10 +870,10 @@ fn main() -> Result<()> {
             // Show internal methods/functions count if there are any (but don't list them unless there's an issue)
             let total_internal = impl_info.internal_methods.len() + impl_info.internal_functions.len();
             if total_internal > 0 && impl_info.pub_methods.is_empty() && impl_info.pub_functions.is_empty() {
-                let breakdown = if impl_info.internal_methods.len() > 0 && impl_info.internal_functions.len() > 0 {
+                let breakdown = if !impl_info.internal_methods.is_empty() && !impl_info.internal_functions.is_empty() {
                     format!("{} internal ({} methods, {} functions)", 
                         total_internal, impl_info.internal_methods.len(), impl_info.internal_functions.len())
-                } else if impl_info.internal_functions.len() > 0 {
+                } else if !impl_info.internal_functions.is_empty() {
                     format!("{} internal functions", impl_info.internal_functions.len())
                 } else {
                     format!("{} internal methods", impl_info.internal_methods.len())
@@ -930,7 +928,7 @@ fn main() -> Result<()> {
         let mut method_occurrences: std::collections::HashMap<String, Vec<MethodOccurrence>> = std::collections::HashMap::new();
         for impl_info in &analysis.impls {
             for method in &impl_info.pub_methods {
-                method_occurrences.entry(method.clone()).or_insert_with(Vec::new).push(MethodOccurrence {
+                method_occurrences.entry(method.clone()).or_default().push(MethodOccurrence {
                     line: impl_info.line,
                     type_name: impl_info.type_name.clone(),
                     is_trait_impl: impl_info.is_trait_impl,
@@ -940,7 +938,7 @@ fn main() -> Result<()> {
                 });
             }
             for func in &impl_info.pub_functions {
-                method_occurrences.entry(func.clone()).or_insert_with(Vec::new).push(MethodOccurrence {
+                method_occurrences.entry(func.clone()).or_default().push(MethodOccurrence {
                     line: impl_info.line,
                     type_name: impl_info.type_name.clone(),
                     is_trait_impl: impl_info.is_trait_impl,
@@ -950,7 +948,7 @@ fn main() -> Result<()> {
                 });
             }
             for method in &impl_info.internal_methods {
-                method_occurrences.entry(method.clone()).or_insert_with(Vec::new).push(MethodOccurrence {
+                method_occurrences.entry(method.clone()).or_default().push(MethodOccurrence {
                     line: impl_info.line,
                     type_name: impl_info.type_name.clone(),
                     is_trait_impl: impl_info.is_trait_impl,
@@ -960,7 +958,7 @@ fn main() -> Result<()> {
                 });
             }
             for func in &impl_info.internal_functions {
-                method_occurrences.entry(func.clone()).or_insert_with(Vec::new).push(MethodOccurrence {
+                method_occurrences.entry(func.clone()).or_default().push(MethodOccurrence {
                     line: impl_info.line,
                     type_name: impl_info.type_name.clone(),
                     is_trait_impl: impl_info.is_trait_impl,
@@ -973,7 +971,7 @@ fn main() -> Result<()> {
         
         // Also check module-level pub functions
         for func in &analysis.functions {
-            method_occurrences.entry(func.name.clone()).or_insert_with(Vec::new).push(MethodOccurrence {
+            method_occurrences.entry(func.name.clone()).or_default().push(MethodOccurrence {
                 line: func.line,
                 type_name: "module".to_string(),
                 is_trait_impl: false,
@@ -1085,7 +1083,7 @@ fn main() -> Result<()> {
                     } else {
                         format!("inherent {}", occ.type_name)
                     };
-                    format!("{} {}", visibility, impl_type)
+                    format!("{visibility} {impl_type}")
                 }).collect();
                 
                 let note_str = if !analysis_notes.is_empty() {
