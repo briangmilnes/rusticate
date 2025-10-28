@@ -493,12 +493,21 @@ fn find_format_macro_calls(test_file: &Path, trait_impls: &[TraitImpl]) -> Resul
                             let has_display = traits.iter().any(|(t, m)| t.contains("Display") && m == "fmt");
                             let has_debug = traits.iter().any(|(t, m)| t.contains("Debug") && m == "fmt");
                             
-                            // Match heuristics:
-                            // 1. Type name contains identifier: "DirGraphMtEph" contains "graph"
-                            // 2. Identifier is a lowercase version of type: "entry" -> "Entry"
-                            let matches = type_lower.contains(&ident_lower) || 
-                                          ident_lower == type_lower ||
-                                          type_lower.starts_with(&ident_lower);
+                            // Match heuristics (with minimum length to avoid false positives):
+                            // 1. Exact match (case-insensitive): "entry" -> "Entry"
+                            // 2. Type starts with identifier (min 3 chars): "graph" -> "GraphStEph"
+                            // 3. Type contains identifier as word boundary (min 3 chars): "entry" -> "PQEntry"
+                            // Note: Single-letter variables like "g" are too generic and excluded
+                            let matches = if ident_lower.len() >= 3 {
+                                ident_lower == type_lower ||
+                                type_lower.starts_with(&ident_lower) ||
+                                type_lower.contains(&ident_lower)
+                            } else if ident_lower.len() >= 1 {
+                                // For short identifiers, require exact match only
+                                ident_lower == type_lower
+                            } else {
+                                false
+                            };
                             
                             if matches {
                                 // Determine coverage source based on format specifier
@@ -600,10 +609,17 @@ fn find_operator_usage(test_file: &Path, trait_impls: &[TraitImpl]) -> Result<Ha
                                     continue;
                                 }
                                 
-                                // Match heuristics (same as Display/Debug)
-                                let matches = type_lower.contains(&ident_lower) || 
-                                              ident_lower == type_lower ||
-                                              type_lower.starts_with(&ident_lower);
+                                // Match heuristics (with minimum length to avoid false positives)
+                                let matches = if ident_lower.len() >= 3 {
+                                    ident_lower == type_lower ||
+                                    type_lower.starts_with(&ident_lower) ||
+                                    type_lower.contains(&ident_lower)
+                                } else if ident_lower.len() >= 1 {
+                                    // For short identifiers, require exact match only
+                                    ident_lower == type_lower
+                                } else {
+                                    false
+                                };
                                 
                                 if matches {
                                     let key = format!("{}::eq", type_name);
@@ -666,10 +682,17 @@ fn find_operator_usage(test_file: &Path, trait_impls: &[TraitImpl]) -> Result<Ha
                                     continue;
                                 }
                                 
-                                // Match heuristics
-                                let matches = type_lower.contains(&ident_lower) || 
-                                              ident_lower == type_lower ||
-                                              type_lower.starts_with(&ident_lower);
+                                // Match heuristics (with minimum length to avoid false positives)
+                                let matches = if ident_lower.len() >= 3 {
+                                    ident_lower == type_lower ||
+                                    type_lower.starts_with(&ident_lower) ||
+                                    type_lower.contains(&ident_lower)
+                                } else if ident_lower.len() >= 1 {
+                                    // For short identifiers, require exact match only
+                                    ident_lower == type_lower
+                                } else {
+                                    false
+                                };
                                 
                                 if matches {
                                     let key = format!("{}::eq", type_name);

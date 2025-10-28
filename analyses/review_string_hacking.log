@@ -166,3 +166,505 @@ src/bin/fix_doctests.rs:139: String hacking detected: code.contains("(\"") - Use
 Total violations: 75 files checked, 4 violations found
 
 Completed in 49ms
+Entering directory 'src/bin/count_as.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/count_as.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/count_vec.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/count_vec.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/analyze_review_typeclasses.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/compile_and_test.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/compile.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/compile_src_tests_benches_run_tests.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/count_as.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/count_loc.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/count_vec.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/count_where.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/fix_binary_logging.rs'
+
+src/bin/fix_binary_logging.rs:64: String hacking detected: text.contains("::File::create") - Use AST traversal instead
+src/bin/fix_binary_logging.rs:249: String hacking detected: new_content[start..].find("}\n") - Use AST traversal instead
+
+Total violations: 1 files checked, 2 violations found
+
+Completed in 2ms
+Entering directory 'src/bin/fix_chap18_chap19_both.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 4ms
+Entering directory 'src/bin/fix_chap18_to_chap19_per.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_chap18_to_chap19.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_doctests.rs'
+
+src/bin/fix_doctests.rs:139: String hacking detected: code.contains("[(") - Use AST traversal instead
+src/bin/fix_doctests.rs:139: String hacking detected: code.contains("(\"") - Use AST traversal instead
+
+Total violations: 1 files checked, 2 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_duplicate_method_call_sites.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_duplicate_methods.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_grouped_imports.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_import_order.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_logging.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_merge_imports.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_min_typing.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 2ms
+Entering directory 'src/bin/fix_non_wildcard_uses.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 2ms
+Entering directory 'src/bin/fix_no_pub_type.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 7ms
+Entering directory 'src/bin/fix_our_uses_to_wildcards.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/fix.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/fix_stub_delegation.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 3ms
+Entering directory 'src/bin/fix_test_trait_imports.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_unnecessary_ufcs.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 2ms
+Entering directory 'src/bin/parse.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/review_bench_modules.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/review_chap18_chap19.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 3ms
+Entering directory 'src/bin/review_comment_placement.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_doctests.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/review_duplicate_bench_names.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/review_duplicate_methods.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/review_grouped_imports.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_impl_order.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_impl_trait_bounds.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_import_order.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 2ms
+Entering directory 'src/bin/review_inherent_and_trait_impl.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 2ms
+Entering directory 'src/bin/review_inherent_and_transitive_mt.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 3ms
+Entering directory 'src/bin/review_inherent_plus_trait_impl.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_integration_test_structure.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_internal_method_impls.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 2ms
+Entering directory 'src/bin/review_merge_imports.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_minimize_ufcs_call_sites.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_min_typing.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_module_encapsulation.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_mt_per.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_no_extern_crate.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_non_wildcard_uses.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 2ms
+Entering directory 'src/bin/review_no_trait_method_duplication.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_pascal_case_filenames.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_public_only_inherent_impls.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_qualified_paths.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_redundant_inherent_impls.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/review_simplifiable_ufcs.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 2ms
+Entering directory 'src/bin/review_single_trait_impl.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_snake_case_filenames.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_st_mt_consistency.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 2ms
+Entering directory 'src/bin/review_string_hacking.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_struct_file_naming.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_stt_compliance.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_stub_delegation.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 3ms
+Entering directory 'src/bin/review_summary_accuracy.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 4ms
+Entering directory 'src/bin/review_test_functions.rs'
+
+src/bin/review_test_functions.rs:460: String hacking detected: text.contains("{}") - Use AST traversal instead
+src/bin/review_test_functions.rs:463: String hacking detected: text.contains("{:?}") - Use AST traversal instead
+
+Total violations: 1 files checked, 2 violations found
+
+Completed in 6ms
+Entering directory 'src/bin/review_test_modules.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/review_trait_bound_mismatches.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/review_trait_definition_order.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/review_trait_method_conflicts.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_trait_self_usage.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'src/bin/review_typeclasses.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 8ms
+Entering directory 'src/bin/review_unnecessary_ufcs_and_qualified_paths.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_variable_naming.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/review_where_clause_simplification.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 2ms
+Entering directory 'src/bin/rusticate.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_binary_logging.rs'
+
+src/bin/fix_binary_logging.rs:64: String hacking detected: text.contains("::File::create") - Use AST traversal instead
+src/bin/fix_binary_logging.rs:249: String hacking detected: new_content[start..].find("}\n") - Use AST traversal instead
+
+Total violations: 1 files checked, 2 violations found
+
+Completed in 1ms
+Entering directory 'src/bin/fix_binary_logging.rs'
+
+src/bin/fix_binary_logging.rs:64: String hacking detected: text.contains("::File::create") - Use AST traversal instead
+src/bin/fix_binary_logging.rs:249: String hacking detected: new_content[start..].find("}\n") - Use AST traversal instead
+
+Total violations: 1 files checked, 2 violations found
+
+Completed in 1ms
