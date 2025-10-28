@@ -42,8 +42,11 @@ fn count_vec_in_file(file_path: &Path) -> Result<usize> {
         .filter(|node| {
             if let Some(path_type) = ast::PathType::cast((*node).clone()) {
                 if let Some(path) = path_type.path() {
-                    // Check if any segment in the path is "Vec"
-                    return path.segments().any(|seg| seg.to_string() == "Vec");
+                    // Check if any segment in the path has "Vec" as its name_ref
+                    return path.segments().any(|seg| {
+                        seg.name_ref()
+                            .map_or(false, |name_ref| name_ref.text() == "Vec")
+                    });
                 }
             }
             false
@@ -56,7 +59,7 @@ fn count_vec_in_file(file_path: &Path) -> Result<usize> {
 fn main() -> Result<()> {
     let args = StandardArgs::parse()?;
     let base_dir = args.base_dir();
-    let paths = args.paths;
+    let paths = args.get_search_dirs();
     
     tool_runner::run_simple("count-vec", base_dir.clone(), || {
         count_helper::run_count(&paths, &base_dir, count_vec_in_file, "Vec usages")

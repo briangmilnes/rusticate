@@ -43,7 +43,7 @@ fn count_where_in_file(file_path: &Path) -> Result<usize> {
 fn main() -> Result<()> {
     let args = StandardArgs::parse()?;
     let base_dir = args.base_dir();
-    let paths = args.paths;
+    let paths = args.get_search_dirs();
     
     tool_runner::run_simple("count-where", base_dir.clone(), || {
         count_helper::run_count(&paths, &base_dir, count_where_in_file, "where clauses")
