@@ -1,0 +1,15 @@
+Reviewing 817 Rust files for trait Self usage...
+
+✗ Found 35 violation(s) in 15 file(s)
+
+Note: Trait methods should return Self, &Self, or &mut Self instead of concrete types
+Reviewing 876 Rust files for trait Self usage...
+
+✗ Found 54 violation(s) in 16 file(s)
+
+Note: Trait methods should return Self, &Self, or &mut Self instead of concrete types
+Reviewing 876 Rust files for trait Self usage...
+
+✗ Found 54 violation(s) in 16 file(s)
+
+Note: Trait methods should return Self, &Self, or &mut Self instead of concrete types

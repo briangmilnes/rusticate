@@ -1,0 +1,63 @@
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found simplifiable where clauses (RustRules.md Lines 322-329):
+
+src/ast_utils.rs:37: fn <anonymous> has simplifiable where clause
+  where         F: Fn(&SyntaxNode) -> bool,
+  → Could be inlined into generic parameters
+src/count_helper.rs:17: fn <anonymous> has simplifiable where clause
+  where         F: Fn(&Path) -> Result<usize>,
+  → Could be inlined into generic parameters
+src/tool_runner.rs:38: fn <anonymous> has simplifiable where clause
+  where         F: FnOnce(&mut ToolLogger) -> Result<String>,
+  → Could be inlined into generic parameters
+src/tool_runner.rs:83: fn <anonymous> has simplifiable where clause
+  where         F: FnOnce() -> Result<String>,
+  → Could be inlined into generic parameters
+
+Suggestion: Inline simple single-bound where clauses into generic parameters.
+
+Summary: 87 files checked, 4 violations
+Completed in 94ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found simplifiable where clauses (RustRules.md Lines 322-329):
+
+src/ast_utils.rs:37: fn <anonymous> has simplifiable where clause
+  where         F: Fn(&SyntaxNode) -> bool,
+  → Could be inlined into generic parameters
+src/count_helper.rs:17: fn <anonymous> has simplifiable where clause
+  where         F: Fn(&Path) -> Result<usize>,
+  → Could be inlined into generic parameters
+src/tool_runner.rs:38: fn <anonymous> has simplifiable where clause
+  where         F: FnOnce(&mut ToolLogger) -> Result<String>,
+  → Could be inlined into generic parameters
+src/tool_runner.rs:83: fn <anonymous> has simplifiable where clause
+  where         F: FnOnce() -> Result<String>,
+  → Could be inlined into generic parameters
+
+Suggestion: Inline simple single-bound where clauses into generic parameters.
+
+Summary: 87 files checked, 4 violations
+Completed in 70ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found simplifiable where clauses (RustRules.md Lines 322-329):
+
+src/ast_utils.rs:37: fn <anonymous> has simplifiable where clause
+  where         F: Fn(&SyntaxNode) -> bool,
+  → Could be inlined into generic parameters
+src/count_helper.rs:17: fn <anonymous> has simplifiable where clause
+  where         F: Fn(&Path) -> Result<usize>,
+  → Could be inlined into generic parameters
+src/tool_runner.rs:38: fn <anonymous> has simplifiable where clause
+  where         F: FnOnce(&mut ToolLogger) -> Result<String>,
+  → Could be inlined into generic parameters
+src/tool_runner.rs:83: fn <anonymous> has simplifiable where clause
+  where         F: FnOnce() -> Result<String>,
+  → Could be inlined into generic parameters
+
+Suggestion: Inline simple single-bound where clauses into generic parameters.
+
+Summary: 87 files checked, 4 violations
+Completed in 72ms

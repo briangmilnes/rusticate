@@ -1,0 +1,873 @@
+Entering directory '/home/milnes/projects/rusticate'
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap19/ArraySeqMtEphSlice.rs:23: inherent impl with only internal methods (eliminate)
+  impl Inner { new, len }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap23/BalBinTreeStEph.rs:46: inherent impl with only internal methods (eliminate)
+  impl BalBinNode { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeq.rs:29: inherent impl with only internal methods (eliminate)
+  impl AVLTreeNode { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeq.rs:307: inherent impl with only internal methods (eliminate)
+  impl AVLTreeSeqIter { new, push_left }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStEph.rs:24: inherent impl with only internal methods (eliminate)
+  impl AVLTreeNode { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStEph.rs:200: inherent impl with only internal methods (eliminate)
+  impl AVLTreeSeqIterStEph { new, push_left }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStPer.rs:257: inherent impl with only internal methods (eliminate)
+  impl AVLTreeSeqStPerIter { push_left }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTPlainMtEph.rs:32: inherent impl with only internal methods (eliminate)
+  impl Node { update }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetBBAlphaMtEph.rs:62: inherent impl with only internal methods (eliminate)
+  impl BSTSetBBAlphaMtEph { values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetPlainMtEph.rs:62: inherent impl with only internal methods (eliminate)
+  impl BSTSetPlainMtEph { values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetRBMtEph.rs:62: inherent impl with only internal methods (eliminate)
+  impl BSTSetRBMtEph { values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetSplayMtEph.rs:62: inherent impl with only internal methods (eliminate)
+  impl BSTSetSplayMtEph { values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTParaTreapMtEph.rs:118: inherent impl with only internal methods (eliminate)
+  impl ParamTreap { expose_internal, expose_with_priority, join_with_priority, split_inner, join_pair_inner, union_inner, intersect_inner, difference_inner, filter_inner, filter_parallel, reduce_inner, reduce_parallel, collect_in_order }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTSetTreapMtEph.rs:82: inherent impl with only internal methods (eliminate)
+  impl BSTSetTreapMtEph { values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTTreapMtEph.rs:24: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTTreapMtEph.rs:67: inherent impl with only internal methods (eliminate)
+  impl BSTTreapMtEph { size_link, update, rotate_left, rotate_right, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTReducedStEph.rs:36: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTReducedStEph.rs:113: inherent impl with only internal methods (eliminate)
+  impl BSTReducedStEph { size_link, reduced_value_link, update_node, make_node, rotate_left, rotate_right, insert_link, find_link, min_key_link, max_key_link, collect_keys, collect_values, range_reduce_link }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTSizeStEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTSizeStEph.rs:68: inherent impl with only internal methods (eliminate)
+  impl BSTSizeStEph { size_link, update_size, make_node, rotate_left, rotate_right, insert_link, find_link, min_link, max_link, in_order_collect, rank_link, select_link, split_rank_link }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/AugOrderedTableStEph.rs:324: inherent impl with only internal methods (eliminate)
+  impl AugOrderedTableStEph { recalculate_reduction, calculate_reduction }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/AugOrderedTableStPer.rs:359: inherent impl with only internal methods (eliminate)
+  impl AugOrderedTableStPer { recalculate_reduction, calculate_reduction }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BalancedTreePQ.rs:332: inherent impl with only internal methods (eliminate)
+  impl BalancedTreePQ { is_sorted, height }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BalancedTreePQ.rs:357: inherent impl with only internal methods (eliminate)
+  impl BalancedTreePQ { split, join, filter, map }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BinaryHeapPQ.rs:51: inherent impl with only internal methods (eliminate)
+  impl BinaryHeapPQ { left_child, right_child, parent, is_heap, bubble_up, bubble_down, swap_elements, heapify }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BinaryHeapPQ.rs:261: inherent impl with only internal methods (eliminate)
+  impl BinaryHeapPQ { insert_all, extract_all_sorted, is_valid_heap, height, level_elements }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BinaryHeapPQ.rs:351: inherent impl with only internal methods (eliminate)
+  impl BinaryHeapPQ { from_vec, to_vec, to_sorted_vec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/HeapsortExample.rs:194: inherent impl with only internal methods (eliminate)
+  impl HeapsortComparison { all_results_match, all_results_sorted }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/LeftistHeapPQ.rs:83: inherent impl with only internal methods (eliminate)
+  impl LeftistHeapNode { rank, make_node, meld_nodes, size, height, is_leftist, is_heap, to_vec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/DoubleHashFlatHashTableStEph.rs:17: inherent impl with only internal methods (eliminate)
+  impl DoubleHashFlatHashTableStEph { second_hash }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistMtEph.rs:63: inherent impl with only internal methods (eliminate)
+  impl MinEditDistMtEphS { min_edit_distance_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainMtEph.rs:61: inherent impl with only internal methods (eliminate)
+  impl MatrixChainMtEphS { multiply_cost, parallel_min_reduction, matrix_chain_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainMtPer.rs:54: inherent impl with only internal methods (eliminate)
+  impl MatrixChainMtPerS { multiply_cost, parallel_min_reduction, matrix_chain_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainStEph.rs:64: inherent impl with only internal methods (eliminate)
+  impl MatrixChainStEphS { multiply_cost, matrix_chain_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainStPer.rs:52: inherent impl with only internal methods (eliminate)
+  impl MatrixChainStPerS { multiply_cost, matrix_chain_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeStEph.rs:67: inherent impl with only internal methods (eliminate)
+  impl OBSTStEphS { obst_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeStPer.rs:55: inherent impl with only internal methods (eliminate)
+  impl OBSTStPerS { obst_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/Probability.rs:31: inherent impl with only internal methods (eliminate)
+  impl Probability { new, value, infinity, zero }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/BottomUpDPMtEph.rs:36: inherent impl with only internal methods (eliminate)
+  impl BottomUpDPMtEphS { new, med_bottom_up_parallel, initialize_base_cases, compute_diagonal_parallel, compute_cell_value_static, s_length, t_length, is_empty, set_s, set_t }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/BottomUpDPMtPer.rs:36: inherent impl with only internal methods (eliminate)
+  impl BottomUpDPMtPerS { new, med_bottom_up_parallel, initialize_base_cases, compute_diagonal_parallel, compute_cell_value_static, s_length, t_length, is_empty }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/BottomUpDPStEph.rs:34: inherent impl with only internal methods (eliminate)
+  impl BottomUpDPStEphS { new, med_bottom_up, initialize_base_cases, compute_diagonal, compute_cell_value, s_length, t_length, is_empty, set_s, set_t }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/BottomUpDPStPer.rs:34: inherent impl with only internal methods (eliminate)
+  impl BottomUpDPStPerS { new, med_bottom_up, initialize_base_cases, compute_diagonal, compute_cell_value, s_length, t_length, is_empty }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPMtEph.rs:38: inherent impl with only internal methods (eliminate)
+  impl TopDownDPMtEphS { new, med_memoized_concurrent, med_recursive_concurrent, med_memoized_parallel, med_recursive_parallel, memo_size, is_memoized, get_memoized, insert_memo, s_length, t_length, is_empty, clear_memo, set_s, set_t }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPMtPer.rs:38: inherent impl with only internal methods (eliminate)
+  impl TopDownDPMtPerS { new, med_memoized_concurrent, med_recursive_concurrent, med_memoized_parallel, med_recursive_parallel, with_memo_table, memo_size, is_memoized, get_memoized, s_length, t_length, is_empty, clear_memo }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPStEph.rs:36: inherent impl with only internal methods (eliminate)
+  impl TopDownDPStEphS { new, med_memoized, med_recursive, memo_size, is_memoized, get_memoized, insert_memo, s_length, t_length, is_empty, clear_memo, set_s, set_t }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPStPer.rs:36: inherent impl with only internal methods (eliminate)
+  impl TopDownDPStPerS { new, med_memoized, med_recursive, with_memo_table, memo_size, is_memoized, get_memoized, s_length, t_length, is_empty, clear_memo }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/AllPairsResultStEphFloat.rs:52: inherent impl with only internal methods (eliminate)
+  impl AllPairsResultStEphFloat { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/AllPairsResultStEphInt.rs:49: inherent impl with only internal methods (eliminate)
+  impl AllPairsResultStEphInt { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/AllPairsResultStPerFloat.rs:51: inherent impl with only internal methods (eliminate)
+  impl AllPairsResultStPerFloat { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/AllPairsResultStPerInt.rs:48: inherent impl with only internal methods (eliminate)
+  impl AllPairsResultStPerInt { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/SSSPResultStEphFloat.rs:52: inherent impl with only internal methods (eliminate)
+  impl SSSPResultStEphFloat { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/SSSPResultStEphInt.rs:49: inherent impl with only internal methods (eliminate)
+  impl SSSPResultStEphInt { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/SSSPResultStPerFloat.rs:51: inherent impl with only internal methods (eliminate)
+  impl SSSPResultStPerFloat { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/SSSPResultStPerInt.rs:48: inherent impl with only internal methods (eliminate)
+  impl SSSPResultStPerInt { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap57/StackStEph.rs:44: inherent impl with only internal methods (eliminate)
+  impl StackStEph { new, push, pop, peek, is_empty, size }
+src/args.rs:19: inherent impl with only internal methods (eliminate)
+  impl StandardArgs { parse, find_module, search_for_file, print_usage, paths, base_dir, get_search_dirs }
+src/bin/review_internal_method_impls.rs:42: inherent impl with only internal methods (eliminate)
+  impl InherentImpl { category }
+src/bin/review_non_wildcard_uses.rs:28: inherent impl with only internal methods (eliminate)
+  impl ViolationType { letter, description }
+src/bin/review_test_functions.rs:19: inherent impl with only internal methods (eliminate)
+  impl Logger { new, log }
+src/logging.rs:26: inherent impl with only internal methods (eliminate)
+  impl ToolLogger { new_disabled, new, create_log_file, log, log_silent, log_path, finalize }
+src/tool_runner.rs:27: inherent impl with only internal methods (eliminate)
+  impl ToolConfig { new }
+tests/common/mod.rs:13: inherent impl with only internal methods (eliminate)
+  impl TestContext { ensure_apas_at_script_commit, extract_commit_from_script, get_current_commit, checkout_commit }
+tests/integration/common.rs:13: inherent impl with only internal methods (eliminate)
+  impl TestContext { ensure_apas_at_script_commit, extract_commit_from_script, get_current_commit, checkout_commit }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap44/Example44_1.rs:45: inherent impl with mixed pub/internal (extract internal)
+  impl TweetQueryExamples { pub: new; internal: search_fun, search_club, search_food, search_chess, complex_query_fun_and_food_or_chess, count_fun_but_not_chess, search_food_or_fun, search_party_and_food, get_all_words, get_word_count, query_builder_example }
+APAS-AI-copy/apas-ai/experiments/src/ErgonomicInterfaces.rs:118: inherent impl with mixed pub/internal (extract internal)
+  impl Math { pub: multiply; internal: add }
+APAS-AI-copy/experiments/src/ErgonomicInterfaces.rs:118: inherent impl with mixed pub/internal (extract internal)
+  impl Math { pub: multiply; internal: add }
+src/visitor.rs:13: inherent impl with mixed pub/internal (extract internal)
+  impl IssueVisitor { pub: new; internal: visit }
+APAS-AI-copy/apas-ai/experiments/src/M1.rs:17: inherent impl with only public methods (move to trait)
+  impl M1 { method2 }
+APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:19: inherent impl with only public methods (move to trait)
+  impl MemoryStorage { new }
+APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:71: inherent impl with only public methods (move to trait)
+  impl UserManager { new, create_user, get_user_email, delete_user }
+APAS-AI-copy/experiments/src/M1.rs:17: inherent impl with only public methods (move to trait)
+  impl M1 { method2 }
+APAS-AI-copy/experiments/src/SwappableModule.rs:19: inherent impl with only public methods (move to trait)
+  impl MemoryStorage { new }
+APAS-AI-copy/experiments/src/SwappableModule.rs:71: inherent impl with only public methods (move to trait)
+  impl UserManager { new, create_user, get_user_email, delete_user }
+================================================================================
+SUMMARY:
+  Only internal methods (ELIMINATE): 63
+  Mixed pub/internal (EXTRACT internal): 4
+  Only public (MOVE to trait): 6
+  TOTAL inherent impl violations: 73
+Completed in 642ms
+Entering directory '/home/milnes/projects/rusticate'
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap05/MappingStEph.rs:53: inherent impl with only internal methods (eliminate)
+  impl MappingStEph { unique_pairs_from_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/LabUnDirGraphMtEph.rs:187: inherent impl with only internal methods (eliminate)
+  impl LabUnDirGraphMtEph { sizeA, arcs, NPlus, NMinus, InDegree, OutDegree }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/LabUnDirGraphStEph.rs:137: inherent impl with only internal methods (eliminate)
+  impl LabUnDirGraphStEph { sizeA, arcs, NPlus, NMinus, InDegree, OutDegree }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/UnDirGraphMtEph.rs:186: inherent impl with only internal methods (eliminate)
+  impl UnDirGraphMtEph { sizeA, arcs, NPlus, NMinus, NPlusOfVertices, NMinusOfVertices, InDegree, OutDegree }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/UnDirGraphStEph.rs:99: inherent impl with only internal methods (eliminate)
+  impl UnDirGraphStEph { sizeA, arcs, NPlus, NMinus, NPlusOfVertices, NMinusOfVertices, InDegree, OutDegree }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphMtEphFloat.rs:19: inherent impl with only internal methods (eliminate)
+  impl WeightedDirGraphMtEphFloat { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, out_neighbors_weighted, in_neighbors_weighted, total_weight }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphMtEphInt.rs:19: inherent impl with only internal methods (eliminate)
+  impl WeightedDirGraphMtEphInt { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, out_neighbors_weighted, in_neighbors_weighted, total_weight }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphStEphFloat.rs:45: inherent impl with only internal methods (eliminate)
+  impl WeightedDirGraphStEphFloat { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, out_neighbors_weighted, in_neighbors_weighted, total_weight, edges_above_weight, edges_below_weight, min_weight_edge, max_weight_edge, scale_weights }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphStEphInt.rs:15: inherent impl with only internal methods (eliminate)
+  impl WeightedDirGraphStEphInt { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, out_neighbors_weighted, in_neighbors_weighted, total_weight, edges_above_weight, edges_below_weight }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedUnDirGraphMtEphFloat.rs:19: inherent impl with only internal methods (eliminate)
+  impl WeightedUnDirGraphMtEphFloat { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, neighbors_weighted, total_weight, vertex_degree }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedUnDirGraphMtEphInt.rs:19: inherent impl with only internal methods (eliminate)
+  impl WeightedUnDirGraphMtEphInt { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, neighbors_weighted, total_weight, vertex_degree }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedUnDirGraphStEphFloat.rs:43: inherent impl with only internal methods (eliminate)
+  impl WeightedUnDirGraphStEphFloat { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, neighbors_weighted, total_weight, vertex_degree, is_connected, min_weight_edge, max_weight_edge }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedUnDirGraphStEphInt.rs:15: inherent impl with only internal methods (eliminate)
+  impl WeightedUnDirGraphStEphInt { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, neighbors_weighted, total_weight, vertex_degree, is_connected }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap12/Exercise12_5.rs:35: inherent impl with only internal methods (eliminate)
+  impl ConcurrentStackMt { raw_pop }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap12/Exercise12_5.rs:124: inherent impl with only internal methods (eliminate)
+  impl ConcurrentStackMt { drain }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap17/MathSeq.rs:114: inherent impl with only internal methods (eliminate)
+  impl MathSeqS { iter, iter_mut, from_vec, with_len }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap19/ArraySeqMtEphSlice.rs:22: inherent impl with only internal methods (eliminate)
+  impl Inner { new, len }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap19/ArraySeqMtEphSlice.rs:75: inherent impl with only internal methods (eliminate)
+  impl ArraySeqMtEphSliceS { from_box, from_vec, to_vec, with_exclusive, set, len, clamp_subrange }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap23/BalBinTreeStEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl BalBinNode { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap23/PrimTreeSeqSt.rs:62: inherent impl with only internal methods (eliminate)
+  impl PrimTreeSeqStS { empty, singleton, from_vec, into_vec, as_slice, length, expose, join }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeq.rs:31: inherent impl with only internal methods (eliminate)
+  impl AVLTreeNode { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeq.rs:296: inherent impl with only internal methods (eliminate)
+  impl AVLTreeSeqIter { new, push_left }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStEph.rs:24: inherent impl with only internal methods (eliminate)
+  impl AVLTreeNode { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStEph.rs:190: inherent impl with only internal methods (eliminate)
+  impl AVLTreeSeqIterStEph { new, push_left }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStPer.rs:258: inherent impl with only internal methods (eliminate)
+  impl AVLTreeSeqStPerIter { push_left }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs:23: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs:69: inherent impl with only internal methods (eliminate)
+  impl BSTAVLMtEph { height_link, size_link, update, rotate_right, rotate_left, rebalance, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLStEph.rs:21: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLStEph.rs:69: inherent impl with only internal methods (eliminate)
+  impl BSTAVLStEph { height_link, size_link, update, rotate_right, rotate_left, rebalance, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTBBAlphaMtEph.rs:24: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTBBAlphaMtEph.rs:69: inherent impl with only internal methods (eliminate)
+  impl BSTBBAlphaMtEph { size_link, update, insert_link, needs_rebuild, rebalance_if_needed, collect_values, build_balanced, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTBBAlphaStEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTPlainMtEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl Node { new, update }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs:29: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs:69: inherent impl with only internal methods (eliminate)
+  impl BSTRBMtEph { is_red, size_link, update, rotate_left, rotate_right, flip_colors, fix_up, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBStEph.rs:27: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBStEph.rs:75: inherent impl with only internal methods (eliminate)
+  impl BSTRBStEph { is_red, size_link, update, rotate_left, rotate_right, flip_colors, fix_up, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs:69: inherent impl with only internal methods (eliminate)
+  impl BSTSplayMtEph { size_link, update, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayStEph.rs:20: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayStEph.rs:67: inherent impl with only internal methods (eliminate)
+  impl BSTSplayStEph { size_link, update, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap38/BSTParaMtEph.rs:84: inherent impl with only internal methods (eliminate)
+  impl ParamBST { expose_internal, join_mid, split_inner, join_m, min_key, join_pair_inner, union_inner, intersect_inner, difference_inner, filter_inner, filter_parallel, reduce_inner, reduce_parallel, collect_in_order }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap38/BSTParaStEph.rs:62: inherent impl with only internal methods (eliminate)
+  impl ParamBST { expose_internal, join_mid, split_inner, join_m, min_key, join_pair_inner, union_inner, collect_in_order }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTParaTreapMtEph.rs:67: inherent impl with only internal methods (eliminate)
+  impl ParamTreap { expose_internal, expose_with_priority, join_with_priority, join_mid, split_inner, join_pair_inner, union_inner, intersect_inner, difference_inner, filter_inner, filter_parallel, reduce_inner, reduce_parallel, collect_in_order }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTTreapMtEph.rs:24: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTTreapMtEph.rs:70: inherent impl with only internal methods (eliminate)
+  impl BSTTreapMtEph { size_link, update, rotate_left, rotate_right, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTTreapStEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTTreapStEph.rs:69: inherent impl with only internal methods (eliminate)
+  impl BSTTreapStEph { size_link, update, rotate_left, rotate_right, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTKeyValueStEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTKeyValueStEph.rs:71: inherent impl with only internal methods (eliminate)
+  impl BSTKeyValueStEph { rotate_left, rotate_right, insert_link, find_link, min_key_link, max_key_link, collect_keys, collect_values }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTReducedStEph.rs:26: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTReducedStEph.rs:113: inherent impl with only internal methods (eliminate)
+  impl BSTReducedStEph { size_link, reduced_value_link, update_node, make_node, rotate_left, rotate_right, insert_link, find_link, min_key_link, max_key_link, collect_keys, collect_values, range_reduce_link }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTSizeStEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTSizeStEph.rs:72: inherent impl with only internal methods (eliminate)
+  impl BSTSizeStEph { size_link, update_size, make_node, rotate_left, rotate_right, insert_link, find_link, min_link, max_link, in_order_collect, rank_link, select_link, split_rank_link }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/AugOrderedTableMtEph.rs:366: inherent impl with only internal methods (eliminate)
+  impl AugOrderedTableMtEph { recalculate_reduction, calculate_reduction }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/AugOrderedTableStEph.rs:324: inherent impl with only internal methods (eliminate)
+  impl AugOrderedTableStEph { recalculate_reduction, calculate_reduction }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/AugOrderedTableStPer.rs:359: inherent impl with only internal methods (eliminate)
+  impl AugOrderedTableStPer { recalculate_reduction, calculate_reduction }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap44/DocumentIndex.rs:175: inherent impl with only internal methods (eliminate)
+  impl DocumentIndex { empty, get_all_words, word_count }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BalancedTreePQ.rs:179: inherent impl with only internal methods (eliminate)
+  impl BalancedTreePQ { find_max, delete_max, insert_all, extract_all_sorted, contains, remove, range }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BalancedTreePQ.rs:313: inherent impl with only internal methods (eliminate)
+  impl BalancedTreePQ { from_vec, to_vec, to_sorted_vec, is_sorted, height }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BalancedTreePQ.rs:363: inherent impl with only internal methods (eliminate)
+  impl BalancedTreePQ { split, join, filter, map }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BinaryHeapPQ.rs:52: inherent impl with only internal methods (eliminate)
+  impl BinaryHeapPQ { left_child, right_child, parent, is_heap, bubble_up, bubble_down, swap_elements, heapify }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BinaryHeapPQ.rs:275: inherent impl with only internal methods (eliminate)
+  impl BinaryHeapPQ { insert_all, extract_all_sorted, is_valid_heap, height, level_elements }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BinaryHeapPQ.rs:371: inherent impl with only internal methods (eliminate)
+  impl BinaryHeapPQ { from_vec, to_vec, to_sorted_vec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/HeapsortExample.rs:155: inherent impl with only internal methods (eliminate)
+  impl HeapsortComparison { all_results_match, all_results_sorted }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/LeftistHeapPQ.rs:63: inherent impl with only internal methods (eliminate)
+  impl LeftistHeapNode { rank, make_node, meld_nodes, size, height, is_leftist, is_heap, to_vec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/LeftistHeapPQ.rs:298: inherent impl with only internal methods (eliminate)
+  impl LeftistHeapPQ { extract_all_sorted, height, root_rank, is_valid_leftist_heap, from_vec, to_vec, to_sorted_vec, meld_multiple, split }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/SortedListPQ.rs:199: inherent impl with only internal methods (eliminate)
+  impl SortedListPQ { insert_all, extract_all_sorted, find_max, delete_max }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/SortedListPQ.rs:282: inherent impl with only internal methods (eliminate)
+  impl SortedListPQ { from_vec, to_vec, to_sorted_vec, is_sorted }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/UnsortedListPQ.rs:149: inherent impl with only internal methods (eliminate)
+  impl UnsortedListPQ { insert_all, extract_all_sorted }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/UnsortedListPQ.rs:216: inherent impl with only internal methods (eliminate)
+  impl UnsortedListPQ { from_vec, to_vec, to_sorted_vec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedDoubleHashing.rs:40: inherent impl with only internal methods (eliminate)
+  impl RelativePrimeValidator { gcd, are_relatively_prime, validate_double_hashing, probe_sequence_period, generate_valid_h2_values }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedDoubleHashing.rs:109: inherent impl with only internal methods (eliminate)
+  impl AdvancedDoubleHashingStrategy { new, new_minimal, analyze_double_hashing_quality, validate_configuration, estimate_probe_count, is_configuration_optimal, get_hash_values, generate_probe_sequence }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedLinearProbing.rs:32: inherent impl with only internal methods (eliminate)
+  impl AdvancedLinearProbingStrategy { new, new_without_clustering, analyze_primary_clustering, is_position_occupied, compute_clustering_metrics, estimate_unsuccessful_probe_count, estimate_successful_probe_count, is_clustering_problematic }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedQuadraticProbing.rs:41: inherent impl with only internal methods (eliminate)
+  impl PrimeValidator { is_prime, next_prime, validate_quadratic_params, gcd }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedQuadraticProbing.rs:114: inherent impl with only internal methods (eliminate)
+  impl AdvancedQuadraticProbingStrategy { new, new_with_coefficients, new_minimal, analyze_secondary_clustering, validate_configuration, recommend_table_size, estimate_probe_count, is_secondary_clustering_problematic, get_coefficients }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/ClusteringAnalysis.rs:74: inherent impl with only internal methods (eliminate)
+  impl ClusteringAnalyzer { new, new_minimal, analyze_linear_probing, analyze_quadratic_probing, analyze_double_hashing, compare_probing_strategies, calculate_linear_clustering_score, calculate_quadratic_clustering_score, calculate_double_hashing_score, assess_performance_impact, create_empty_analysis }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:310: inherent impl with only internal methods (eliminate)
+  impl HashTableUtils { next_prime, is_prime, good_table_size }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:392: inherent impl with only internal methods (eliminate)
+  impl HashFunctionTester { test_distribution, benchmark_hash_function }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/ProbeSequenceExamples.rs:55: inherent impl with only internal methods (eliminate)
+  impl ProbeSequenceAnalyzer { new, new_minimal, analyze_linear_probing, analyze_quadratic_probing, analyze_double_hashing, analyze_collision_pattern, compare_probing_strategies }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47clean/DoubleHashFlatHashTableStEph.rs:16: inherent impl with only internal methods (eliminate)
+  impl DoubleHashFlatHashTableStEph { second_hash }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistMtEph.rs:63: inherent impl with only internal methods (eliminate)
+  impl MinEditDistMtEphS { min_edit_distance_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistMtPer.rs:47: inherent impl with only internal methods (eliminate)
+  impl MinEditDistMtPerS { min_edit_distance_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistStEph.rs:61: inherent impl with only internal methods (eliminate)
+  impl MinEditDistStEphS { min_edit_distance_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistStPer.rs:46: inherent impl with only internal methods (eliminate)
+  impl MinEditDistStPerS { min_edit_distance_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumMtEph.rs:53: inherent impl with only internal methods (eliminate)
+  impl SubsetSumMtEphS { subset_sum_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumMtPer.rs:43: inherent impl with only internal methods (eliminate)
+  impl SubsetSumMtPerS { subset_sum_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumStEph.rs:51: inherent impl with only internal methods (eliminate)
+  impl SubsetSumStEphS { subset_sum_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumStPer.rs:42: inherent impl with only internal methods (eliminate)
+  impl SubsetSumStPerS { subset_sum_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainMtEph.rs:61: inherent impl with only internal methods (eliminate)
+  impl MatrixChainMtEphS { multiply_cost, parallel_min_reduction, matrix_chain_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainMtPer.rs:54: inherent impl with only internal methods (eliminate)
+  impl MatrixChainMtPerS { multiply_cost, parallel_min_reduction, matrix_chain_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainStEph.rs:64: inherent impl with only internal methods (eliminate)
+  impl MatrixChainStEphS { multiply_cost, matrix_chain_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainStPer.rs:52: inherent impl with only internal methods (eliminate)
+  impl MatrixChainStPerS { multiply_cost, matrix_chain_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeMtEph.rs:64: inherent impl with only internal methods (eliminate)
+  impl OBSTMtEphS { parallel_min_reduction, obst_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeMtPer.rs:57: inherent impl with only internal methods (eliminate)
+  impl OBSTMtPerS { parallel_min_reduction, obst_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeStEph.rs:67: inherent impl with only internal methods (eliminate)
+  impl OBSTStEphS { obst_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeStPer.rs:55: inherent impl with only internal methods (eliminate)
+  impl OBSTStPerS { obst_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/Probability.rs:33: inherent impl with only internal methods (eliminate)
+  impl Probability { new, value, infinity, zero }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/BottomUpDPMtEph.rs:37: inherent impl with only internal methods (eliminate)
+  impl BottomUpDPMtEphS { new, med_bottom_up_parallel, initialize_base_cases, compute_diagonal_parallel, compute_cell_value_static, s_length, t_length, is_empty, set_s, set_t }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/BottomUpDPMtPer.rs:37: inherent impl with only internal methods (eliminate)
+  impl BottomUpDPMtPerS { new, med_bottom_up_parallel, initialize_base_cases, compute_diagonal_parallel, compute_cell_value_static, s_length, t_length, is_empty }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/BottomUpDPStEph.rs:35: inherent impl with only internal methods (eliminate)
+  impl BottomUpDPStEphS { new, med_bottom_up, initialize_base_cases, compute_diagonal, compute_cell_value, s_length, t_length, is_empty, set_s, set_t }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/BottomUpDPStPer.rs:35: inherent impl with only internal methods (eliminate)
+  impl BottomUpDPStPerS { new, med_bottom_up, initialize_base_cases, compute_diagonal, compute_cell_value, s_length, t_length, is_empty }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPMtEph.rs:39: inherent impl with only internal methods (eliminate)
+  impl TopDownDPMtEphS { new, med_memoized_concurrent, med_recursive_concurrent, med_memoized_parallel, med_recursive_parallel, memo_size, is_memoized, get_memoized, insert_memo, s_length, t_length, is_empty, clear_memo, set_s, set_t }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPMtPer.rs:39: inherent impl with only internal methods (eliminate)
+  impl TopDownDPMtPerS { new, med_memoized_concurrent, med_recursive_concurrent, med_memoized_parallel, med_recursive_parallel, with_memo_table, memo_size, is_memoized, get_memoized, s_length, t_length, is_empty, clear_memo }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPStEph.rs:37: inherent impl with only internal methods (eliminate)
+  impl TopDownDPStEphS { new, med_memoized, med_recursive, memo_size, is_memoized, get_memoized, insert_memo, s_length, t_length, is_empty, clear_memo, set_s, set_t }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPStPer.rs:37: inherent impl with only internal methods (eliminate)
+  impl TopDownDPStPerS { new, med_memoized, med_recursive, with_memo_table, memo_size, is_memoized, get_memoized, s_length, t_length, is_empty, clear_memo }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/AllPairsResultStEphFloat.rs:52: inherent impl with only internal methods (eliminate)
+  impl AllPairsResultStEphFloat { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/AllPairsResultStEphInt.rs:49: inherent impl with only internal methods (eliminate)
+  impl AllPairsResultStEphInt { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/AllPairsResultStPerFloat.rs:51: inherent impl with only internal methods (eliminate)
+  impl AllPairsResultStPerFloat { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/AllPairsResultStPerInt.rs:48: inherent impl with only internal methods (eliminate)
+  impl AllPairsResultStPerInt { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/SSSPResultStEphFloat.rs:52: inherent impl with only internal methods (eliminate)
+  impl SSSPResultStEphFloat { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/SSSPResultStEphInt.rs:49: inherent impl with only internal methods (eliminate)
+  impl SSSPResultStEphInt { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/SSSPResultStPerFloat.rs:51: inherent impl with only internal methods (eliminate)
+  impl SSSPResultStPerFloat { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/SSSPResultStPerInt.rs:48: inherent impl with only internal methods (eliminate)
+  impl SSSPResultStPerInt { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap57/DijkstraStEphFloat.rs:36: inherent impl with only internal methods (eliminate)
+  impl PQEntry { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap57/DijkstraStEphInt.rs:36: inherent impl with only internal methods (eliminate)
+  impl PQEntry { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap57/StackStEph.rs:44: inherent impl with only internal methods (eliminate)
+  impl StackStEph { new, push, pop, peek, is_empty, size }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap65/PrimStEph.rs:44: inherent impl with only internal methods (eliminate)
+  impl PQEntry { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap65/UnionFindStEph.rs:45: inherent impl with only internal methods (eliminate)
+  impl UnionFindStEph { new, insert, find, union, equals, num_sets }
+src/args.rs:19: inherent impl with only internal methods (eliminate)
+  impl StandardArgs { parse, find_module, search_for_file, print_usage, paths, base_dir, get_search_dirs }
+src/bin/review_internal_method_impls.rs:42: inherent impl with only internal methods (eliminate)
+  impl InherentImpl { category }
+src/bin/review_non_wildcard_uses.rs:28: inherent impl with only internal methods (eliminate)
+  impl ViolationType { letter, description }
+src/bin/review_test_functions.rs:19: inherent impl with only internal methods (eliminate)
+  impl Logger { new, log }
+src/logging.rs:26: inherent impl with only internal methods (eliminate)
+  impl ToolLogger { new_disabled, new, create_log_file, log, log_silent, log_path, finalize }
+src/tool_runner.rs:27: inherent impl with only internal methods (eliminate)
+  impl ToolConfig { new }
+tests/common/mod.rs:13: inherent impl with only internal methods (eliminate)
+  impl TestContext { ensure_apas_at_script_commit, extract_commit_from_script, get_current_commit, checkout_commit }
+tests/integration/common.rs:13: inherent impl with only internal methods (eliminate)
+  impl TestContext { ensure_apas_at_script_commit, extract_commit_from_script, get_current_commit, checkout_commit }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap12/Exercise12_1.rs:29: inherent impl with mixed pub/internal (extract internal)
+  impl SpinLock { pub: new; internal: lock, unlock, with_lock }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeq.rs:112: inherent impl with mixed pub/internal (extract internal)
+  impl ArraySeqS { pub: iter, iter_mut; internal: new, set, length, nth, empty, singleton, isEmpty, isSingleton, subseq, subseq_copy, update, from_vec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqMtEph.rs:22: inherent impl with mixed pub/internal (extract internal)
+  impl ArraySeqMtEphS { pub: empty, new, singleton, from_vec, length, nth_cloned, set, subseq_copy, to_vec; internal: iter_cloned }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqMtPer.rs:24: inherent impl with mixed pub/internal (extract internal)
+  impl ArraySeqMtPerS { pub: empty, new, singleton, from_vec, length, nth, subseq_copy, is_empty, is_singleton; internal: iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqStEph.rs:21: inherent impl with mixed pub/internal (extract internal)
+  impl ArraySeqStEphS { pub: from_vec, new, empty, singleton, length, nth, subseq, set, update, inject; internal: iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqStPer.rs:20: inherent impl with mixed pub/internal (extract internal)
+  impl ArraySeqStPerS { pub: from_vec, new, empty, singleton, length, nth, subseq_copy; internal: iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/LinkedListStEph.rs:25: inherent impl with mixed pub/internal (extract internal)
+  impl LinkedListStEphS { pub: empty, new, singleton, from_vec, length, nth, set, subseq_copy; internal: node_at, node_at_mut }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/LinkedListStPer.rs:97: inherent impl with mixed pub/internal (extract internal)
+  impl LinkedListStPerS { pub: empty, new, singleton, from_vec, length, nth, subseq_copy; internal: node_at }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeq.rs:92: inherent impl with mixed pub/internal (extract internal)
+  impl AVLTreeS { pub: new_root, new, update, from_vec, to_arrayseq, iter, push_back, insert_value, delete_value, is_tree_empty, values_in_order; internal: contains_value }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTBBAlphaStEph.rs:69: inherent impl with mixed pub/internal (extract internal)
+  impl BSTBBAlphaStEph { pub: height, insert, in_order, pre_order; internal: size_link, update, insert_link, needs_rebuild, rebalance_if_needed, collect_values, build_balanced, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetAVLMtEph.rs:62: inherent impl with mixed pub/internal (extract internal)
+  impl BSTSetAVLMtEph { pub: empty, singleton, size, is_empty, find, contains, minimum, maximum, insert, delete, union, intersection, difference, split, join_pair, join_m, filter, reduce, iter_in_order, as_tree; internal: values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetBBAlphaMtEph.rs:62: inherent impl with mixed pub/internal (extract internal)
+  impl BSTSetBBAlphaMtEph { pub: empty, singleton, size, is_empty, find, contains, minimum, maximum, insert, delete, union, intersection, difference, split, join_pair, join_m, filter, reduce, iter_in_order, as_tree; internal: values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetPlainMtEph.rs:62: inherent impl with mixed pub/internal (extract internal)
+  impl BSTSetPlainMtEph { pub: empty, singleton, size, is_empty, find, contains, minimum, maximum, insert, delete, union, intersection, difference, split, join_pair, join_m, filter, reduce, iter_in_order, as_tree; internal: values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetRBMtEph.rs:62: inherent impl with mixed pub/internal (extract internal)
+  impl BSTSetRBMtEph { pub: empty, singleton, size, is_empty, find, contains, minimum, maximum, insert, delete, union, intersection, difference, split, join_pair, join_m, filter, reduce, iter_in_order, as_tree; internal: values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetSplayMtEph.rs:62: inherent impl with mixed pub/internal (extract internal)
+  impl BSTSetSplayMtEph { pub: empty, singleton, size, is_empty, find, contains, minimum, maximum, insert, delete, union, intersection, difference, split, join_pair, join_m, filter, reduce, iter_in_order, as_tree; internal: values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTSetTreapMtEph.rs:62: inherent impl with mixed pub/internal (extract internal)
+  impl BSTSetTreapMtEph { pub: empty, singleton, size, is_empty, find, contains, minimum, maximum, insert, delete, union, intersection, difference, split, join_pair, join_m, filter, reduce, iter_in_order, as_tree; internal: values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap44/DocumentIndex.rs:287: inherent impl with mixed pub/internal (extract internal)
+  impl QueryBuilder { pub: new, find, and, or, and_not; internal: complex_query }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap44/Example44_1.rs:45: inherent impl with mixed pub/internal (extract internal)
+  impl TweetQueryExamples { pub: new; internal: search_fun, search_club, search_food, search_chess, complex_query_fun_and_food_or_chess, count_fun_but_not_chess, search_food_or_fun, search_party_and_food, get_all_words, get_word_count, query_builder_example }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/FlatHashTable.rs:49: inherent impl with mixed pub/internal (extract internal)
+  impl FlatHashTable { pub: load_and_size, statistics, probe_statistics; internal: create_table, insert, lookup, delete, resize, insert_without_resize }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:195: inherent impl with mixed pub/internal (extract internal)
+  impl ProbeSequenceGenerator { pub: new; internal: probe_hash }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:221: inherent impl with mixed pub/internal (extract internal)
+  impl LoadFactorManager { pub: new; internal: load_factor, should_grow, should_shrink, grow_size, shrink_size }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/NestedHashTable.rs:19: inherent impl with mixed pub/internal (extract internal)
+  impl NestedHashTable { pub: size, is_empty, load_factor, statistics; internal: create_table, insert, lookup, delete, resize, insert_without_resize, load_and_size }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/QuadraticProbing.rs:19: inherent impl with mixed pub/internal (extract internal)
+  impl QuadraticProbingStrategy { pub: new; internal: standard }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/SeparateChaining.rs:26: inherent impl with mixed pub/internal (extract internal)
+  impl SeparateChainingHashTable { pub: load_and_size, statistics; internal: create_table, insert, lookup, delete, resize, insert_without_resize }
+APAS-AI-copy/apas-ai/experiments/src/ErgonomicInterfaces.rs:118: inherent impl with mixed pub/internal (extract internal)
+  impl Math { pub: multiply; internal: add }
+APAS-AI-copy/experiments/src/ErgonomicInterfaces.rs:118: inherent impl with mixed pub/internal (extract internal)
+  impl Math { pub: multiply; internal: add }
+src/visitor.rs:13: inherent impl with mixed pub/internal (extract internal)
+  impl IssueVisitor { pub: new; internal: visit }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap05/RelationStEph.rs:54: inherent impl with only public methods (move to trait)
+  impl RelationStEph { FromVec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap05/SetStEph.rs:103: inherent impl with only public methods (move to trait)
+  impl SetStEph { empty, singleton, size, mem, union, intersection, partition, insert, iter, FromVec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap23/BalBinTreeStEph.rs:50: inherent impl with only public methods (move to trait)
+  impl BalBinTree { leaf, node, is_leaf, in_order, pre_order, height, size }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStEph.rs:69: inherent impl with only public methods (move to trait)
+  impl AVLTreeSeqStEphS { new_root, new, update, from_vec, to_arrayseq, iter, push_back, contains_value, insert_value, delete_value }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStPer.rs:239: inherent impl with only public methods (move to trait)
+  impl AVLTreeSeqStPerS { to_arrayseq, iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/DoubleHashing.rs:18: inherent impl with only public methods (move to trait)
+  impl DoubleHashingStrategy { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:88: inherent impl with only public methods (move to trait)
+  impl PolynomialHashFunction { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:119: inherent impl with only public methods (move to trait)
+  impl UniversalIntegerHashFunction { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:167: inherent impl with only public methods (move to trait)
+  impl UniversalIntegerHashFamily { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:267: inherent impl with only public methods (move to trait)
+  impl HashTableStats { new, with_collision_stats }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/LinearProbing.rs:17: inherent impl with only public methods (move to trait)
+  impl LinearProbingStrategy { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47clean/StructChainedHashTable.rs:25: inherent impl with only public methods (move to trait)
+  impl ChainList { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinMtEph.rs:38: inherent impl with only public methods (move to trait)
+  impl ClosurePriority { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinMtPer.rs:32: inherent impl with only public methods (move to trait)
+  impl ClosurePriority { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinStEph.rs:28: inherent impl with only public methods (move to trait)
+  impl ClosurePriority { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinStPer.rs:34: inherent impl with only public methods (move to trait)
+  impl ClosurePriority { new }
+APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:19: inherent impl with only public methods (move to trait)
+  impl MemoryStorage { new }
+APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:71: inherent impl with only public methods (move to trait)
+  impl UserManager { new, create_user, get_user_email, delete_user }
+APAS-AI-copy/experiments/src/M1.rs:17: inherent impl with only public methods (move to trait)
+  impl M1 { method2 }
+APAS-AI-copy/experiments/src/SwappableModule.rs:19: inherent impl with only public methods (move to trait)
+  impl MemoryStorage { new }
+APAS-AI-copy/experiments/src/SwappableModule.rs:71: inherent impl with only public methods (move to trait)
+  impl UserManager { new, create_user, get_user_email, delete_user }
+================================================================================
+SUMMARY:
+  Only internal methods (ELIMINATE): 127
+  Mixed pub/internal (EXTRACT internal): 27
+  Only public (MOVE to trait): 21
+  TOTAL inherent impl violations: 175
+Completed in 823ms
+Entering directory '/home/milnes/projects/rusticate'
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap05/MappingStEph.rs:53: inherent impl with only internal methods (eliminate)
+  impl MappingStEph { unique_pairs_from_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/LabUnDirGraphMtEph.rs:187: inherent impl with only internal methods (eliminate)
+  impl LabUnDirGraphMtEph { sizeA, arcs, NPlus, NMinus, InDegree, OutDegree }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/LabUnDirGraphStEph.rs:137: inherent impl with only internal methods (eliminate)
+  impl LabUnDirGraphStEph { sizeA, arcs, NPlus, NMinus, InDegree, OutDegree }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/UnDirGraphMtEph.rs:186: inherent impl with only internal methods (eliminate)
+  impl UnDirGraphMtEph { sizeA, arcs, NPlus, NMinus, NPlusOfVertices, NMinusOfVertices, InDegree, OutDegree }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/UnDirGraphStEph.rs:99: inherent impl with only internal methods (eliminate)
+  impl UnDirGraphStEph { sizeA, arcs, NPlus, NMinus, NPlusOfVertices, NMinusOfVertices, InDegree, OutDegree }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphMtEphFloat.rs:19: inherent impl with only internal methods (eliminate)
+  impl WeightedDirGraphMtEphFloat { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, out_neighbors_weighted, in_neighbors_weighted, total_weight }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphMtEphInt.rs:19: inherent impl with only internal methods (eliminate)
+  impl WeightedDirGraphMtEphInt { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, out_neighbors_weighted, in_neighbors_weighted, total_weight }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphStEphFloat.rs:45: inherent impl with only internal methods (eliminate)
+  impl WeightedDirGraphStEphFloat { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, out_neighbors_weighted, in_neighbors_weighted, total_weight, edges_above_weight, edges_below_weight, min_weight_edge, max_weight_edge, scale_weights }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphStEphInt.rs:15: inherent impl with only internal methods (eliminate)
+  impl WeightedDirGraphStEphInt { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, out_neighbors_weighted, in_neighbors_weighted, total_weight, edges_above_weight, edges_below_weight }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedUnDirGraphMtEphFloat.rs:19: inherent impl with only internal methods (eliminate)
+  impl WeightedUnDirGraphMtEphFloat { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, neighbors_weighted, total_weight, vertex_degree }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedUnDirGraphMtEphInt.rs:19: inherent impl with only internal methods (eliminate)
+  impl WeightedUnDirGraphMtEphInt { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, neighbors_weighted, total_weight, vertex_degree }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedUnDirGraphStEphFloat.rs:43: inherent impl with only internal methods (eliminate)
+  impl WeightedUnDirGraphStEphFloat { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, neighbors_weighted, total_weight, vertex_degree, is_connected, min_weight_edge, max_weight_edge }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedUnDirGraphStEphInt.rs:15: inherent impl with only internal methods (eliminate)
+  impl WeightedUnDirGraphStEphInt { from_weighted_edges, add_weighted_edge, get_edge_weight, weighted_edges, neighbors_weighted, total_weight, vertex_degree, is_connected }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap12/Exercise12_5.rs:35: inherent impl with only internal methods (eliminate)
+  impl ConcurrentStackMt { raw_pop }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap12/Exercise12_5.rs:124: inherent impl with only internal methods (eliminate)
+  impl ConcurrentStackMt { drain }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap17/MathSeq.rs:114: inherent impl with only internal methods (eliminate)
+  impl MathSeqS { iter, iter_mut, from_vec, with_len }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap19/ArraySeqMtEphSlice.rs:22: inherent impl with only internal methods (eliminate)
+  impl Inner { new, len }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap19/ArraySeqMtEphSlice.rs:75: inherent impl with only internal methods (eliminate)
+  impl ArraySeqMtEphSliceS { from_box, from_vec, to_vec, with_exclusive, set, len, clamp_subrange }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap23/BalBinTreeStEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl BalBinNode { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap23/PrimTreeSeqSt.rs:62: inherent impl with only internal methods (eliminate)
+  impl PrimTreeSeqStS { empty, singleton, from_vec, into_vec, as_slice, length, expose, join }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeq.rs:31: inherent impl with only internal methods (eliminate)
+  impl AVLTreeNode { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeq.rs:296: inherent impl with only internal methods (eliminate)
+  impl AVLTreeSeqIter { new, push_left }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStEph.rs:24: inherent impl with only internal methods (eliminate)
+  impl AVLTreeNode { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStEph.rs:190: inherent impl with only internal methods (eliminate)
+  impl AVLTreeSeqIterStEph { new, push_left }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStPer.rs:258: inherent impl with only internal methods (eliminate)
+  impl AVLTreeSeqStPerIter { push_left }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs:23: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs:69: inherent impl with only internal methods (eliminate)
+  impl BSTAVLMtEph { height_link, size_link, update, rotate_right, rotate_left, rebalance, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLStEph.rs:21: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLStEph.rs:69: inherent impl with only internal methods (eliminate)
+  impl BSTAVLStEph { height_link, size_link, update, rotate_right, rotate_left, rebalance, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTBBAlphaMtEph.rs:24: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTBBAlphaMtEph.rs:69: inherent impl with only internal methods (eliminate)
+  impl BSTBBAlphaMtEph { size_link, update, insert_link, needs_rebuild, rebalance_if_needed, collect_values, build_balanced, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTBBAlphaStEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTPlainMtEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl Node { new, update }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs:29: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs:69: inherent impl with only internal methods (eliminate)
+  impl BSTRBMtEph { is_red, size_link, update, rotate_left, rotate_right, flip_colors, fix_up, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBStEph.rs:27: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBStEph.rs:75: inherent impl with only internal methods (eliminate)
+  impl BSTRBStEph { is_red, size_link, update, rotate_left, rotate_right, flip_colors, fix_up, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs:69: inherent impl with only internal methods (eliminate)
+  impl BSTSplayMtEph { size_link, update, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayStEph.rs:20: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayStEph.rs:67: inherent impl with only internal methods (eliminate)
+  impl BSTSplayStEph { size_link, update, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap38/BSTParaMtEph.rs:84: inherent impl with only internal methods (eliminate)
+  impl ParamBST { expose_internal, join_mid, split_inner, join_m, min_key, join_pair_inner, union_inner, intersect_inner, difference_inner, filter_inner, filter_parallel, reduce_inner, reduce_parallel, collect_in_order }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap38/BSTParaStEph.rs:62: inherent impl with only internal methods (eliminate)
+  impl ParamBST { expose_internal, join_mid, split_inner, join_m, min_key, join_pair_inner, union_inner, collect_in_order }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTParaTreapMtEph.rs:67: inherent impl with only internal methods (eliminate)
+  impl ParamTreap { expose_internal, expose_with_priority, join_with_priority, join_mid, split_inner, join_pair_inner, union_inner, intersect_inner, difference_inner, filter_inner, filter_parallel, reduce_inner, reduce_parallel, collect_in_order }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTTreapMtEph.rs:24: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTTreapMtEph.rs:70: inherent impl with only internal methods (eliminate)
+  impl BSTTreapMtEph { size_link, update, rotate_left, rotate_right, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTTreapStEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTTreapStEph.rs:69: inherent impl with only internal methods (eliminate)
+  impl BSTTreapStEph { size_link, update, rotate_left, rotate_right, insert_link, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTKeyValueStEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTKeyValueStEph.rs:71: inherent impl with only internal methods (eliminate)
+  impl BSTKeyValueStEph { rotate_left, rotate_right, insert_link, find_link, min_key_link, max_key_link, collect_keys, collect_values }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTReducedStEph.rs:26: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTReducedStEph.rs:113: inherent impl with only internal methods (eliminate)
+  impl BSTReducedStEph { size_link, reduced_value_link, update_node, make_node, rotate_left, rotate_right, insert_link, find_link, min_key_link, max_key_link, collect_keys, collect_values, range_reduce_link }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTSizeStEph.rs:22: inherent impl with only internal methods (eliminate)
+  impl Node { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap40/BSTSizeStEph.rs:72: inherent impl with only internal methods (eliminate)
+  impl BSTSizeStEph { size_link, update_size, make_node, rotate_left, rotate_right, insert_link, find_link, min_link, max_link, in_order_collect, rank_link, select_link, split_rank_link }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/AugOrderedTableMtEph.rs:366: inherent impl with only internal methods (eliminate)
+  impl AugOrderedTableMtEph { recalculate_reduction, calculate_reduction }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/AugOrderedTableStEph.rs:324: inherent impl with only internal methods (eliminate)
+  impl AugOrderedTableStEph { recalculate_reduction, calculate_reduction }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/AugOrderedTableStPer.rs:359: inherent impl with only internal methods (eliminate)
+  impl AugOrderedTableStPer { recalculate_reduction, calculate_reduction }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap44/DocumentIndex.rs:175: inherent impl with only internal methods (eliminate)
+  impl DocumentIndex { empty, get_all_words, word_count }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BalancedTreePQ.rs:179: inherent impl with only internal methods (eliminate)
+  impl BalancedTreePQ { find_max, delete_max, insert_all, extract_all_sorted, contains, remove, range }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BalancedTreePQ.rs:313: inherent impl with only internal methods (eliminate)
+  impl BalancedTreePQ { from_vec, to_vec, to_sorted_vec, is_sorted, height }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BalancedTreePQ.rs:363: inherent impl with only internal methods (eliminate)
+  impl BalancedTreePQ { split, join, filter, map }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BinaryHeapPQ.rs:52: inherent impl with only internal methods (eliminate)
+  impl BinaryHeapPQ { left_child, right_child, parent, is_heap, bubble_up, bubble_down, swap_elements, heapify }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BinaryHeapPQ.rs:275: inherent impl with only internal methods (eliminate)
+  impl BinaryHeapPQ { insert_all, extract_all_sorted, is_valid_heap, height, level_elements }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/BinaryHeapPQ.rs:371: inherent impl with only internal methods (eliminate)
+  impl BinaryHeapPQ { from_vec, to_vec, to_sorted_vec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/HeapsortExample.rs:155: inherent impl with only internal methods (eliminate)
+  impl HeapsortComparison { all_results_match, all_results_sorted }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/LeftistHeapPQ.rs:63: inherent impl with only internal methods (eliminate)
+  impl LeftistHeapNode { rank, make_node, meld_nodes, size, height, is_leftist, is_heap, to_vec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/LeftistHeapPQ.rs:298: inherent impl with only internal methods (eliminate)
+  impl LeftistHeapPQ { extract_all_sorted, height, root_rank, is_valid_leftist_heap, from_vec, to_vec, to_sorted_vec, meld_multiple, split }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/SortedListPQ.rs:199: inherent impl with only internal methods (eliminate)
+  impl SortedListPQ { insert_all, extract_all_sorted, find_max, delete_max }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/SortedListPQ.rs:282: inherent impl with only internal methods (eliminate)
+  impl SortedListPQ { from_vec, to_vec, to_sorted_vec, is_sorted }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/UnsortedListPQ.rs:149: inherent impl with only internal methods (eliminate)
+  impl UnsortedListPQ { insert_all, extract_all_sorted }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap45/UnsortedListPQ.rs:216: inherent impl with only internal methods (eliminate)
+  impl UnsortedListPQ { from_vec, to_vec, to_sorted_vec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedDoubleHashing.rs:40: inherent impl with only internal methods (eliminate)
+  impl RelativePrimeValidator { gcd, are_relatively_prime, validate_double_hashing, probe_sequence_period, generate_valid_h2_values }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedDoubleHashing.rs:109: inherent impl with only internal methods (eliminate)
+  impl AdvancedDoubleHashingStrategy { new, new_minimal, analyze_double_hashing_quality, validate_configuration, estimate_probe_count, is_configuration_optimal, get_hash_values, generate_probe_sequence }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedLinearProbing.rs:32: inherent impl with only internal methods (eliminate)
+  impl AdvancedLinearProbingStrategy { new, new_without_clustering, analyze_primary_clustering, is_position_occupied, compute_clustering_metrics, estimate_unsuccessful_probe_count, estimate_successful_probe_count, is_clustering_problematic }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedQuadraticProbing.rs:41: inherent impl with only internal methods (eliminate)
+  impl PrimeValidator { is_prime, next_prime, validate_quadratic_params, gcd }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedQuadraticProbing.rs:114: inherent impl with only internal methods (eliminate)
+  impl AdvancedQuadraticProbingStrategy { new, new_with_coefficients, new_minimal, analyze_secondary_clustering, validate_configuration, recommend_table_size, estimate_probe_count, is_secondary_clustering_problematic, get_coefficients }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/ClusteringAnalysis.rs:74: inherent impl with only internal methods (eliminate)
+  impl ClusteringAnalyzer { new, new_minimal, analyze_linear_probing, analyze_quadratic_probing, analyze_double_hashing, compare_probing_strategies, calculate_linear_clustering_score, calculate_quadratic_clustering_score, calculate_double_hashing_score, assess_performance_impact, create_empty_analysis }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:310: inherent impl with only internal methods (eliminate)
+  impl HashTableUtils { next_prime, is_prime, good_table_size }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:392: inherent impl with only internal methods (eliminate)
+  impl HashFunctionTester { test_distribution, benchmark_hash_function }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/ProbeSequenceExamples.rs:55: inherent impl with only internal methods (eliminate)
+  impl ProbeSequenceAnalyzer { new, new_minimal, analyze_linear_probing, analyze_quadratic_probing, analyze_double_hashing, analyze_collision_pattern, compare_probing_strategies }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47clean/DoubleHashFlatHashTableStEph.rs:16: inherent impl with only internal methods (eliminate)
+  impl DoubleHashFlatHashTableStEph { second_hash }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistMtEph.rs:63: inherent impl with only internal methods (eliminate)
+  impl MinEditDistMtEphS { min_edit_distance_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistMtPer.rs:47: inherent impl with only internal methods (eliminate)
+  impl MinEditDistMtPerS { min_edit_distance_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistStEph.rs:61: inherent impl with only internal methods (eliminate)
+  impl MinEditDistStEphS { min_edit_distance_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistStPer.rs:46: inherent impl with only internal methods (eliminate)
+  impl MinEditDistStPerS { min_edit_distance_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumMtEph.rs:53: inherent impl with only internal methods (eliminate)
+  impl SubsetSumMtEphS { subset_sum_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumMtPer.rs:43: inherent impl with only internal methods (eliminate)
+  impl SubsetSumMtPerS { subset_sum_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumStEph.rs:51: inherent impl with only internal methods (eliminate)
+  impl SubsetSumStEphS { subset_sum_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumStPer.rs:42: inherent impl with only internal methods (eliminate)
+  impl SubsetSumStPerS { subset_sum_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainMtEph.rs:61: inherent impl with only internal methods (eliminate)
+  impl MatrixChainMtEphS { multiply_cost, parallel_min_reduction, matrix_chain_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainMtPer.rs:54: inherent impl with only internal methods (eliminate)
+  impl MatrixChainMtPerS { multiply_cost, parallel_min_reduction, matrix_chain_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainStEph.rs:64: inherent impl with only internal methods (eliminate)
+  impl MatrixChainStEphS { multiply_cost, matrix_chain_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainStPer.rs:52: inherent impl with only internal methods (eliminate)
+  impl MatrixChainStPerS { multiply_cost, matrix_chain_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeMtEph.rs:64: inherent impl with only internal methods (eliminate)
+  impl OBSTMtEphS { parallel_min_reduction, obst_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeMtPer.rs:57: inherent impl with only internal methods (eliminate)
+  impl OBSTMtPerS { parallel_min_reduction, obst_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeStEph.rs:67: inherent impl with only internal methods (eliminate)
+  impl OBSTStEphS { obst_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeStPer.rs:55: inherent impl with only internal methods (eliminate)
+  impl OBSTStPerS { obst_rec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/Probability.rs:33: inherent impl with only internal methods (eliminate)
+  impl Probability { new, value, infinity, zero }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/BottomUpDPMtEph.rs:37: inherent impl with only internal methods (eliminate)
+  impl BottomUpDPMtEphS { new, med_bottom_up_parallel, initialize_base_cases, compute_diagonal_parallel, compute_cell_value_static, s_length, t_length, is_empty, set_s, set_t }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/BottomUpDPMtPer.rs:37: inherent impl with only internal methods (eliminate)
+  impl BottomUpDPMtPerS { new, med_bottom_up_parallel, initialize_base_cases, compute_diagonal_parallel, compute_cell_value_static, s_length, t_length, is_empty }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/BottomUpDPStEph.rs:35: inherent impl with only internal methods (eliminate)
+  impl BottomUpDPStEphS { new, med_bottom_up, initialize_base_cases, compute_diagonal, compute_cell_value, s_length, t_length, is_empty, set_s, set_t }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/BottomUpDPStPer.rs:35: inherent impl with only internal methods (eliminate)
+  impl BottomUpDPStPerS { new, med_bottom_up, initialize_base_cases, compute_diagonal, compute_cell_value, s_length, t_length, is_empty }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPMtEph.rs:39: inherent impl with only internal methods (eliminate)
+  impl TopDownDPMtEphS { new, med_memoized_concurrent, med_recursive_concurrent, med_memoized_parallel, med_recursive_parallel, memo_size, is_memoized, get_memoized, insert_memo, s_length, t_length, is_empty, clear_memo, set_s, set_t }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPMtPer.rs:39: inherent impl with only internal methods (eliminate)
+  impl TopDownDPMtPerS { new, med_memoized_concurrent, med_recursive_concurrent, med_memoized_parallel, med_recursive_parallel, with_memo_table, memo_size, is_memoized, get_memoized, s_length, t_length, is_empty, clear_memo }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPStEph.rs:37: inherent impl with only internal methods (eliminate)
+  impl TopDownDPStEphS { new, med_memoized, med_recursive, memo_size, is_memoized, get_memoized, insert_memo, s_length, t_length, is_empty, clear_memo, set_s, set_t }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPStPer.rs:37: inherent impl with only internal methods (eliminate)
+  impl TopDownDPStPerS { new, med_memoized, med_recursive, with_memo_table, memo_size, is_memoized, get_memoized, s_length, t_length, is_empty, clear_memo }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/AllPairsResultStEphFloat.rs:52: inherent impl with only internal methods (eliminate)
+  impl AllPairsResultStEphFloat { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/AllPairsResultStEphInt.rs:49: inherent impl with only internal methods (eliminate)
+  impl AllPairsResultStEphInt { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/AllPairsResultStPerFloat.rs:51: inherent impl with only internal methods (eliminate)
+  impl AllPairsResultStPerFloat { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/AllPairsResultStPerInt.rs:48: inherent impl with only internal methods (eliminate)
+  impl AllPairsResultStPerInt { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/SSSPResultStEphFloat.rs:52: inherent impl with only internal methods (eliminate)
+  impl SSSPResultStEphFloat { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/SSSPResultStEphInt.rs:49: inherent impl with only internal methods (eliminate)
+  impl SSSPResultStEphInt { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/SSSPResultStPerFloat.rs:51: inherent impl with only internal methods (eliminate)
+  impl SSSPResultStPerFloat { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap56/SSSPResultStPerInt.rs:48: inherent impl with only internal methods (eliminate)
+  impl SSSPResultStPerInt { new, get_distance, set_distance, get_predecessor, set_predecessor, is_reachable, extract_path }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap57/DijkstraStEphFloat.rs:36: inherent impl with only internal methods (eliminate)
+  impl PQEntry { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap57/DijkstraStEphInt.rs:36: inherent impl with only internal methods (eliminate)
+  impl PQEntry { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap57/StackStEph.rs:44: inherent impl with only internal methods (eliminate)
+  impl StackStEph { new, push, pop, peek, is_empty, size }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap65/PrimStEph.rs:44: inherent impl with only internal methods (eliminate)
+  impl PQEntry { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap65/UnionFindStEph.rs:45: inherent impl with only internal methods (eliminate)
+  impl UnionFindStEph { new, insert, find, union, equals, num_sets }
+src/args.rs:19: inherent impl with only internal methods (eliminate)
+  impl StandardArgs { parse, find_module, search_for_file, print_usage, paths, base_dir, get_search_dirs }
+src/bin/review_internal_method_impls.rs:42: inherent impl with only internal methods (eliminate)
+  impl InherentImpl { category }
+src/bin/review_non_wildcard_uses.rs:28: inherent impl with only internal methods (eliminate)
+  impl ViolationType { letter, description }
+src/bin/review_test_functions.rs:19: inherent impl with only internal methods (eliminate)
+  impl Logger { new, log }
+src/logging.rs:26: inherent impl with only internal methods (eliminate)
+  impl ToolLogger { new_disabled, new, create_log_file, log, log_silent, log_path, finalize }
+src/tool_runner.rs:27: inherent impl with only internal methods (eliminate)
+  impl ToolConfig { new }
+tests/common/mod.rs:13: inherent impl with only internal methods (eliminate)
+  impl TestContext { ensure_apas_at_script_commit, extract_commit_from_script, get_current_commit, checkout_commit }
+tests/integration/common.rs:13: inherent impl with only internal methods (eliminate)
+  impl TestContext { ensure_apas_at_script_commit, extract_commit_from_script, get_current_commit, checkout_commit }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap12/Exercise12_1.rs:29: inherent impl with mixed pub/internal (extract internal)
+  impl SpinLock { pub: new; internal: lock, unlock, with_lock }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeq.rs:112: inherent impl with mixed pub/internal (extract internal)
+  impl ArraySeqS { pub: iter, iter_mut; internal: new, set, length, nth, empty, singleton, isEmpty, isSingleton, subseq, subseq_copy, update, from_vec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqMtEph.rs:22: inherent impl with mixed pub/internal (extract internal)
+  impl ArraySeqMtEphS { pub: empty, new, singleton, from_vec, length, nth_cloned, set, subseq_copy, to_vec; internal: iter_cloned }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqMtPer.rs:24: inherent impl with mixed pub/internal (extract internal)
+  impl ArraySeqMtPerS { pub: empty, new, singleton, from_vec, length, nth, subseq_copy, is_empty, is_singleton; internal: iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqStEph.rs:21: inherent impl with mixed pub/internal (extract internal)
+  impl ArraySeqStEphS { pub: from_vec, new, empty, singleton, length, nth, subseq, set, update, inject; internal: iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqStPer.rs:20: inherent impl with mixed pub/internal (extract internal)
+  impl ArraySeqStPerS { pub: from_vec, new, empty, singleton, length, nth, subseq_copy; internal: iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/LinkedListStEph.rs:25: inherent impl with mixed pub/internal (extract internal)
+  impl LinkedListStEphS { pub: empty, new, singleton, from_vec, length, nth, set, subseq_copy; internal: node_at, node_at_mut }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/LinkedListStPer.rs:97: inherent impl with mixed pub/internal (extract internal)
+  impl LinkedListStPerS { pub: empty, new, singleton, from_vec, length, nth, subseq_copy; internal: node_at }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeq.rs:92: inherent impl with mixed pub/internal (extract internal)
+  impl AVLTreeS { pub: new_root, new, update, from_vec, to_arrayseq, iter, push_back, insert_value, delete_value, is_tree_empty, values_in_order; internal: contains_value }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTBBAlphaStEph.rs:69: inherent impl with mixed pub/internal (extract internal)
+  impl BSTBBAlphaStEph { pub: height, insert, in_order, pre_order; internal: size_link, update, insert_link, needs_rebuild, rebalance_if_needed, collect_values, build_balanced, find_link, min_link, max_link, in_order_collect, pre_order_collect }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetAVLMtEph.rs:62: inherent impl with mixed pub/internal (extract internal)
+  impl BSTSetAVLMtEph { pub: empty, singleton, size, is_empty, find, contains, minimum, maximum, insert, delete, union, intersection, difference, split, join_pair, join_m, filter, reduce, iter_in_order, as_tree; internal: values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetBBAlphaMtEph.rs:62: inherent impl with mixed pub/internal (extract internal)
+  impl BSTSetBBAlphaMtEph { pub: empty, singleton, size, is_empty, find, contains, minimum, maximum, insert, delete, union, intersection, difference, split, join_pair, join_m, filter, reduce, iter_in_order, as_tree; internal: values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetPlainMtEph.rs:62: inherent impl with mixed pub/internal (extract internal)
+  impl BSTSetPlainMtEph { pub: empty, singleton, size, is_empty, find, contains, minimum, maximum, insert, delete, union, intersection, difference, split, join_pair, join_m, filter, reduce, iter_in_order, as_tree; internal: values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetRBMtEph.rs:62: inherent impl with mixed pub/internal (extract internal)
+  impl BSTSetRBMtEph { pub: empty, singleton, size, is_empty, find, contains, minimum, maximum, insert, delete, union, intersection, difference, split, join_pair, join_m, filter, reduce, iter_in_order, as_tree; internal: values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetSplayMtEph.rs:62: inherent impl with mixed pub/internal (extract internal)
+  impl BSTSetSplayMtEph { pub: empty, singleton, size, is_empty, find, contains, minimum, maximum, insert, delete, union, intersection, difference, split, join_pair, join_m, filter, reduce, iter_in_order, as_tree; internal: values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTSetTreapMtEph.rs:62: inherent impl with mixed pub/internal (extract internal)
+  impl BSTSetTreapMtEph { pub: empty, singleton, size, is_empty, find, contains, minimum, maximum, insert, delete, union, intersection, difference, split, join_pair, join_m, filter, reduce, iter_in_order, as_tree; internal: values_vec, rebuild_from_vec, from_sorted_iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap44/DocumentIndex.rs:287: inherent impl with mixed pub/internal (extract internal)
+  impl QueryBuilder { pub: new, find, and, or, and_not; internal: complex_query }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap44/Example44_1.rs:45: inherent impl with mixed pub/internal (extract internal)
+  impl TweetQueryExamples { pub: new; internal: search_fun, search_club, search_food, search_chess, complex_query_fun_and_food_or_chess, count_fun_but_not_chess, search_food_or_fun, search_party_and_food, get_all_words, get_word_count, query_builder_example }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/FlatHashTable.rs:49: inherent impl with mixed pub/internal (extract internal)
+  impl FlatHashTable { pub: load_and_size, statistics, probe_statistics; internal: create_table, insert, lookup, delete, resize, insert_without_resize }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:195: inherent impl with mixed pub/internal (extract internal)
+  impl ProbeSequenceGenerator { pub: new; internal: probe_hash }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:221: inherent impl with mixed pub/internal (extract internal)
+  impl LoadFactorManager { pub: new; internal: load_factor, should_grow, should_shrink, grow_size, shrink_size }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/NestedHashTable.rs:19: inherent impl with mixed pub/internal (extract internal)
+  impl NestedHashTable { pub: size, is_empty, load_factor, statistics; internal: create_table, insert, lookup, delete, resize, insert_without_resize, load_and_size }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/QuadraticProbing.rs:19: inherent impl with mixed pub/internal (extract internal)
+  impl QuadraticProbingStrategy { pub: new; internal: standard }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/SeparateChaining.rs:26: inherent impl with mixed pub/internal (extract internal)
+  impl SeparateChainingHashTable { pub: load_and_size, statistics; internal: create_table, insert, lookup, delete, resize, insert_without_resize }
+APAS-AI-copy/apas-ai/experiments/src/ErgonomicInterfaces.rs:118: inherent impl with mixed pub/internal (extract internal)
+  impl Math { pub: multiply; internal: add }
+APAS-AI-copy/experiments/src/ErgonomicInterfaces.rs:118: inherent impl with mixed pub/internal (extract internal)
+  impl Math { pub: multiply; internal: add }
+src/visitor.rs:13: inherent impl with mixed pub/internal (extract internal)
+  impl IssueVisitor { pub: new; internal: visit }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap05/RelationStEph.rs:54: inherent impl with only public methods (move to trait)
+  impl RelationStEph { FromVec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap05/SetStEph.rs:103: inherent impl with only public methods (move to trait)
+  impl SetStEph { empty, singleton, size, mem, union, intersection, partition, insert, iter, FromVec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap23/BalBinTreeStEph.rs:50: inherent impl with only public methods (move to trait)
+  impl BalBinTree { leaf, node, is_leaf, in_order, pre_order, height, size }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStEph.rs:69: inherent impl with only public methods (move to trait)
+  impl AVLTreeSeqStEphS { new_root, new, update, from_vec, to_arrayseq, iter, push_back, contains_value, insert_value, delete_value }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStPer.rs:239: inherent impl with only public methods (move to trait)
+  impl AVLTreeSeqStPerS { to_arrayseq, iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/DoubleHashing.rs:18: inherent impl with only public methods (move to trait)
+  impl DoubleHashingStrategy { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:88: inherent impl with only public methods (move to trait)
+  impl PolynomialHashFunction { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:119: inherent impl with only public methods (move to trait)
+  impl UniversalIntegerHashFunction { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:167: inherent impl with only public methods (move to trait)
+  impl UniversalIntegerHashFamily { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:267: inherent impl with only public methods (move to trait)
+  impl HashTableStats { new, with_collision_stats }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/LinearProbing.rs:17: inherent impl with only public methods (move to trait)
+  impl LinearProbingStrategy { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47clean/StructChainedHashTable.rs:25: inherent impl with only public methods (move to trait)
+  impl ChainList { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinMtEph.rs:38: inherent impl with only public methods (move to trait)
+  impl ClosurePriority { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinMtPer.rs:32: inherent impl with only public methods (move to trait)
+  impl ClosurePriority { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinStEph.rs:28: inherent impl with only public methods (move to trait)
+  impl ClosurePriority { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinStPer.rs:34: inherent impl with only public methods (move to trait)
+  impl ClosurePriority { new }
+APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:19: inherent impl with only public methods (move to trait)
+  impl MemoryStorage { new }
+APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:71: inherent impl with only public methods (move to trait)
+  impl UserManager { new, create_user, get_user_email, delete_user }
+APAS-AI-copy/experiments/src/M1.rs:17: inherent impl with only public methods (move to trait)
+  impl M1 { method2 }
+APAS-AI-copy/experiments/src/SwappableModule.rs:19: inherent impl with only public methods (move to trait)
+  impl MemoryStorage { new }
+APAS-AI-copy/experiments/src/SwappableModule.rs:71: inherent impl with only public methods (move to trait)
+  impl UserManager { new, create_user, get_user_email, delete_user }
+================================================================================
+SUMMARY:
+  Only internal methods (ELIMINATE): 127
+  Mixed pub/internal (EXTRACT internal): 27
+  Only public (MOVE to trait): 21
+  TOTAL inherent impl violations: 175
+Completed in 1148ms

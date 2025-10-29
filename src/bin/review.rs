@@ -13,6 +13,22 @@ use anyhow::{Context, Result};
 use std::process::{Command, Stdio};
 use std::time::Instant;
 use std::env;
+use std::fs;
+
+macro_rules! log {
+    ($($arg:tt)*) => {{
+        use std::io::Write;
+        let msg = format!($($arg)*);
+        println!("{}", msg);
+        if let Ok(mut file) = fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open("analyses/rusticate-review.log")
+        {
+            let _ = writeln!(file, "{}", msg);
+        }
+    }};
+}
 
 fn get_available_review_tools() -> Vec<&'static str> {
     // Only tools that are actually built (in Cargo.toml)
@@ -65,7 +81,7 @@ fn run_review_tool(tool_name: &str, args: &[String]) -> Result<()> {
         .context("Failed to get parent directory")?
         .join(&binary_name);
     
-    println!("\n=== Running {tool_name} ===");
+    log!("\n=== Running {tool_name} ===");
     
     let status = Command::new(&exe_path)
         .args(args)
@@ -76,7 +92,7 @@ fn run_review_tool(tool_name: &str, args: &[String]) -> Result<()> {
         .with_context(|| format!("Failed to run {binary_name}"))?;
     
     if !status.success() {
-        eprintln!("Warning: {tool_name} exited with status {status}");
+        log!("Warning: {tool_name} exited with status {status}");
     }
     
     Ok(())
@@ -129,31 +145,31 @@ fn main() -> Result<()> {
     let passthrough_args: Vec<String> = args.iter().skip(2).cloned().collect();
     
     if tool_or_command == "all" {
-        println!("Running all review tools...");
-        println!();
+        log!("Running all review tools...");
+        log!("");
         
         let tools = get_available_review_tools();
         let mut failed_tools = Vec::new();
         
         for tool in &tools {
             if let Err(e) = run_review_tool(tool, &passthrough_args) {
-                eprintln!("Error running {tool}: {e}");
+                log!("Error running {tool}: {e}");
                 failed_tools.push(*tool);
             }
         }
         
-        println!();
-        println!("=== Summary ===");
-        println!("Ran {} review tools", tools.len());
+        log!("");
+        log!("=== Summary ===");
+        log!("Ran {} review tools", tools.len());
         
         if !failed_tools.is_empty() {
-            println!("Failed tools ({}):", failed_tools.len());
+            log!("Failed tools ({}):", failed_tools.len());
             for tool in failed_tools {
-                println!("  - {tool}");
+                log!("  - {tool}");
             }
             std::process::exit(1);
         } else {
-            println!("All tools completed successfully");
+            log!("All tools completed successfully");
         }
     } else {
         // Run specific tool
@@ -173,8 +189,8 @@ fn main() -> Result<()> {
         run_review_tool(tool_or_command, &passthrough_args)?;
     }
     
-    println!();
-    println!("Completed in {}ms", start.elapsed().as_millis());
+    log!("");
+    log!("Completed in {}ms", start.elapsed().as_millis());
     
     Ok(())
 }

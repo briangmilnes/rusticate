@@ -430,3 +430,609 @@ SUMMARY:
   Files in Chap20+ using Chap18 (should use Chap19): 182
   Mt files using StInMt types WITH parallel operations: 14
   Mt files using StInMt types WITHOUT parallel operations: 23
+✗ St/Mt Consistency violations found:
+
+================================================================================
+Mt files without threading (should use parallel operations):
+================================================================================
+APAS-AI-copy/apas-ai/apas-ai/src/Chap26/DivConReduceMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap27/ScanContractMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap28/MaxContigSubSumOptMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap35/OrderStatSelectMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetBBAlphaMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTSetTreapMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTTreapMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedSetMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedTableMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedTableMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjMatrixGraphMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjSeqGraphMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjSeqGraphMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjTableGraphMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/EdgeSetGraphMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/GraphSearchMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap54/BFSMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap62/StarPartitionMtEph.rs: Missing parallel operations
+
+================================================================================
+Mt files with threshold-based serial fallback:
+(APAS is a class example - should always demonstrate parallelism)
+================================================================================
+APAS-AI-copy/apas-ai/apas-ai/src/Chap11/FibonacciMtPer.rs:27: if n <= 1 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap26/MergeSortMtPer.rs:164: if n <= 1 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap41/AVLTreeSetMtPer.rs:109: if n <= 1 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap41/AVLTreeSetMtPer.rs:150: if n <= 1 {
+
+================================================================================
+THREAD EXPLOSION RISK - Recursive functions spawning multiple threads:
+(Recommendation: Use a thread pool like rayon instead of raw spawning)
+================================================================================
+APAS-AI-copy/apas-ai/apas-ai/src/Chap26/MergeSortMtPer.rs:28: 2 spawn(s) detected
+  fn merge_parallel(left: &ArraySeqMtPerS<T>, right: &ArraySeqMtPerS<T>) -> ArraySeqMtPerS<T> {
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap27/ReduceContractMtEph.rs:26: 2 spawn(s) detected
+  fn reduce_contract_parallel<F: Fn(&T, &T) -> T + Send + Sync + 'static>(
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap28/MaxContigSubSumDivConMtEph.rs:68: 4 spawn(s) detected
+  fn max_contig_sub_sum_divcon_mt(a: &ArraySeqMtEphS<i32>) -> Option<i32> {
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistMtEph.rs:64: 4 spawn(s) detected
+  /// Internal parallel recursive minimum edit distance with shared memoization
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistMtPer.rs:47: 4 spawn(s) detected
+  /// Internal parallel recursive minimum edit distance with shared memoization
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumMtEph.rs:53: 4 spawn(s) detected
+  /// Internal parallel recursive subset sum with shared memoization
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumMtPer.rs:43: 4 spawn(s) detected
+  /// Internal parallel recursive subset sum with shared memoization
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainMtEph.rs:72: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among split choices
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainMtPer.rs:64: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among split choices
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeMtEph.rs:64: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among root choices
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeMtPer.rs:57: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among root choices
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPMtEph.rs:108: 6 spawn(s) detected
+  /// Claude Work: O(1) per call with memoization, O(|S|*|T|) total
+  → Potential threads at depth 5: 7776 (6^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPMtPer.rs:110: 6 spawn(s) detected
+  /// Claude Work: O(1) per call with memoization, O(|S|*|T|) total
+  → Potential threads at depth 5: 7776 (6^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjMatrixGraphMtPer.rs:105: 2 spawn(s) detected
+  /// Count total edges in matrix (parallel divide-and-conquer over rows)
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjMatrixGraphMtPer.rs:129: 2 spawn(s) detected
+  /// Count true values in a single row (parallel divide-and-conquer)
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjMatrixGraphMtPer.rs:152: 2 spawn(s) detected
+  /// Collect neighbor indices where row[i] == true (parallel)
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjMatrixGraphMtPer.rs:192: 2 spawn(s) detected
+  /// Complement a range of rows (parallel divide-and-conquer)
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjMatrixGraphMtPer.rs:227: 2 spawn(s) detected
+  /// Complement a range of columns in a row (parallel divide-and-conquer)
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap54/BFSMtPer.rs:62: 2 spawn(s) detected
+  /// Process a BFS layer in parallel
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap64/SpanTreeMtEph.rs:33: 4 spawn(s) detected
+  /// Exercise 64.2: Spanning Tree via Star Contraction (Parallel)
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+
+================================================================================
+Test files named TestXxxMt not importing Mt modules:
+(These files should import and test the Mt implementation)
+================================================================================
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap52/TestEdgeSetGraphMtEph.rs: No Mt module imported
+
+================================================================================
+SUMMARY:
+  St files with threading: 0
+  Mt files without threading: 18
+  Mt files with thresholds: 4
+  Mt files with thread explosion risk: 20
+  Test Mt files not importing Mt: 1
+  Total violations: 43
+✗ St/Mt Consistency violations found:
+
+================================================================================
+Mt files without threading (should use parallel operations):
+================================================================================
+APAS-AI-copy/apas-ai/apas-ai/src/Chap26/DivConReduceMt.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap27/ScanContractMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap28/MaxContigSubSumOptMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap35/OrderStatSelectMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap35/OrderStatSelectMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTBBAlphaMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTPlainMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetAVLMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetBBAlphaMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetPlainMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetRBMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetSplayMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTSetTreapMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTTreapMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedSetMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedTableMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedTableMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjMatrixGraphMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjMatrixGraphMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjSeqGraphMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjSeqGraphMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjTableGraphMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/EdgeSetGraphMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/GraphSearchMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap54/BFSMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap54/BFSMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap62/StarPartitionMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap64/SpanTreeMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap64/TSPApproxMtEph.rs: Missing parallel operations
+
+================================================================================
+Mt files with threshold-based serial fallback:
+(APAS is a class example - should always demonstrate parallelism)
+================================================================================
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/DirGraphMtEph.rs:105: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/DirGraphMtEph.rs:150: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/DirGraphMtEph.rs:200: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/DirGraphMtEph.rs:250: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/DirGraphMtEph.rs:295: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/LabDirGraphMtEph.rs:116: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/LabDirGraphMtEph.rs:168: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/LabUnDirGraphMtEph.rs:127: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/UnDirGraphMtEph.rs:85: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/UnDirGraphMtEph.rs:141: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphMtEphFloat.rs:71: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphMtEphFloat.rs:126: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphMtEphInt.rs:67: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphMtEphInt.rs:119: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedUnDirGraphMtEphFloat.rs:71: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedUnDirGraphMtEphInt.rs:67: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap11/FibonacciMt.rs:27: if n <= 1 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap26/MergeSortMt.rs:163: if n <= 1 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap41/AVLTreeSetMtPer.rs:76: if n <= 1 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap41/AVLTreeSetMtPer.rs:117: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap41/AVLTreeSetMtPer.rs:158: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap41/AVLTreeSetMtPer.rs:207: if n <= 8 {
+
+================================================================================
+THREAD EXPLOSION RISK - Recursive functions spawning multiple threads:
+(Recommendation: Use a thread pool like rayon instead of raw spawning)
+================================================================================
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/LabUnDirGraphMtEph.rs:122: 2 spawn(s) detected
+  fn neighbors(&self, v: &V) -> SetStEph<V> {
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap19/ArraySeqMtEphSlice.rs:284: 4 spawn(s) detected
+  fn reduce<F: Fn(&T, &T) -> T + Send + Sync + Clone + 'static>(a: &Self, f: F, id: T) -> T {
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap26/MergeSortMt.rs:27: 2 spawn(s) detected
+  fn merge_parallel(left: &ArraySeqMtPerS<T>, right: &ArraySeqMtPerS<T>) -> ArraySeqMtPerS<T> {
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap27/ReduceContractMtEph.rs:25: 2 spawn(s) detected
+  fn reduce_contract_parallel<F: Fn(&T, &T) -> T + Send + Sync + 'static>(
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap28/MaxContigSubSumDivConMtEph.rs:71: 4 spawn(s) detected
+  fn max_contig_sub_sum_divcon_mt(a: &ArraySeqMtEphS<i32>) -> Option<i32> {
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistMtEph.rs:64: 4 spawn(s) detected
+  /// Internal parallel recursive minimum edit distance with shared memoization
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistMtPer.rs:48: 4 spawn(s) detected
+  /// Internal parallel recursive minimum edit distance with shared memoization
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumMtEph.rs:54: 4 spawn(s) detected
+  /// Internal parallel recursive subset sum with shared memoization
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumMtPer.rs:44: 4 spawn(s) detected
+  /// Internal parallel recursive subset sum with shared memoization
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainMtEph.rs:72: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among split choices
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainMtPer.rs:64: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among split choices
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeMtEph.rs:65: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among root choices
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeMtPer.rs:58: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among root choices
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPMtEph.rs:110: 6 spawn(s) detected
+  /// Recursive helper with parallel branch exploration
+  → Potential threads at depth 5: 7776 (6^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPMtPer.rs:112: 6 spawn(s) detected
+  /// Recursive helper with parallel branch exploration
+  → Potential threads at depth 5: 7776 (6^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+
+================================================================================
+Test files named TestXxxMt not importing Mt modules:
+(These files should import and test the Mt implementation)
+================================================================================
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap52/TestEdgeSetGraphMtEph.rs: No Mt module imported
+
+================================================================================
+SUMMARY:
+  St files with threading: 0
+  Mt files without threading: 35
+  Mt files with thresholds: 22
+  Mt files with thread explosion risk: 15
+  Test Mt files not importing Mt: 1
+  Total violations: 73
+✗ St/Mt Consistency violations found:
+
+================================================================================
+Mt files without threading (should use parallel operations):
+================================================================================
+APAS-AI-copy/apas-ai/apas-ai/src/Chap26/DivConReduceMt.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap27/ScanContractMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap28/MaxContigSubSumOptMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap35/OrderStatSelectMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap35/OrderStatSelectMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTBBAlphaMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTPlainMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetAVLMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetBBAlphaMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetPlainMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetRBMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetSplayMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTSetTreapMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTTreapMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedSetMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedTableMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedTableMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjMatrixGraphMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjMatrixGraphMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjSeqGraphMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjSeqGraphMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/AdjTableGraphMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap52/EdgeSetGraphMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/GraphSearchMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap54/BFSMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap54/BFSMtPer.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap62/StarPartitionMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap64/SpanTreeMtEph.rs: Missing parallel operations
+APAS-AI-copy/apas-ai/apas-ai/src/Chap64/TSPApproxMtEph.rs: Missing parallel operations
+
+================================================================================
+Mt files with threshold-based serial fallback:
+(APAS is a class example - should always demonstrate parallelism)
+================================================================================
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/DirGraphMtEph.rs:105: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/DirGraphMtEph.rs:150: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/DirGraphMtEph.rs:200: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/DirGraphMtEph.rs:250: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/DirGraphMtEph.rs:295: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/LabDirGraphMtEph.rs:116: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/LabDirGraphMtEph.rs:168: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/LabUnDirGraphMtEph.rs:127: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/UnDirGraphMtEph.rs:85: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/UnDirGraphMtEph.rs:141: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphMtEphFloat.rs:71: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphMtEphFloat.rs:126: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphMtEphInt.rs:67: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedDirGraphMtEphInt.rs:119: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedUnDirGraphMtEphFloat.rs:71: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/WeightedUnDirGraphMtEphInt.rs:67: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap11/FibonacciMt.rs:27: if n <= 1 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap26/MergeSortMt.rs:163: if n <= 1 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap41/AVLTreeSetMtPer.rs:76: if n <= 1 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap41/AVLTreeSetMtPer.rs:117: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap41/AVLTreeSetMtPer.rs:158: if n <= 8 {
+APAS-AI-copy/apas-ai/apas-ai/src/Chap41/AVLTreeSetMtPer.rs:207: if n <= 8 {
+
+================================================================================
+THREAD EXPLOSION RISK - Recursive functions spawning multiple threads:
+(Recommendation: Use a thread pool like rayon instead of raw spawning)
+================================================================================
+APAS-AI-copy/apas-ai/apas-ai/src/Chap06/LabUnDirGraphMtEph.rs:122: 2 spawn(s) detected
+  fn neighbors(&self, v: &V) -> SetStEph<V> {
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap19/ArraySeqMtEphSlice.rs:284: 4 spawn(s) detected
+  fn reduce<F: Fn(&T, &T) -> T + Send + Sync + Clone + 'static>(a: &Self, f: F, id: T) -> T {
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap26/MergeSortMt.rs:27: 2 spawn(s) detected
+  fn merge_parallel(left: &ArraySeqMtPerS<T>, right: &ArraySeqMtPerS<T>) -> ArraySeqMtPerS<T> {
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap27/ReduceContractMtEph.rs:25: 2 spawn(s) detected
+  fn reduce_contract_parallel<F: Fn(&T, &T) -> T + Send + Sync + 'static>(
+  → Potential threads at depth 5: 32 (2^5)
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap28/MaxContigSubSumDivConMtEph.rs:71: 4 spawn(s) detected
+  fn max_contig_sub_sum_divcon_mt(a: &ArraySeqMtEphS<i32>) -> Option<i32> {
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistMtEph.rs:64: 4 spawn(s) detected
+  /// Internal parallel recursive minimum edit distance with shared memoization
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/MinEditDistMtPer.rs:48: 4 spawn(s) detected
+  /// Internal parallel recursive minimum edit distance with shared memoization
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumMtEph.rs:54: 4 spawn(s) detected
+  /// Internal parallel recursive subset sum with shared memoization
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap49/SubsetSumMtPer.rs:44: 4 spawn(s) detected
+  /// Internal parallel recursive subset sum with shared memoization
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainMtEph.rs:72: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among split choices
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/MatrixChainMtPer.rs:64: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among split choices
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeMtEph.rs:65: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among root choices
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap50/OptBinSearchTreeMtPer.rs:58: 4 spawn(s) detected
+  /// Parallel reduction to find minimum cost among root choices
+  → Potential threads at depth 5: 1024 (4^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPMtEph.rs:110: 6 spawn(s) detected
+  /// Recursive helper with parallel branch exploration
+  → Potential threads at depth 5: 7776 (6^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap51/TopDownDPMtPer.rs:112: 6 spawn(s) detected
+  /// Recursive helper with parallel branch exploration
+  → Potential threads at depth 5: 7776 (6^5)
+  ⚠️  CRITICAL: Exponential thread explosion detected!
+  📋 RECOMMENDATION: Replace raw spawning with rayon thread pool
+     - Use rayon::join() instead of manual spawn()
+     - Use .par_iter() for collections
+     - Thread pool automatically limits parallelism
+
+
+================================================================================
+Test files named TestXxxMt not importing Mt modules:
+(These files should import and test the Mt implementation)
+================================================================================
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap52/TestEdgeSetGraphMtEph.rs: No Mt module imported
+
+================================================================================
+SUMMARY:
+  St files with threading: 0
+  Mt files without threading: 35
+  Mt files with thresholds: 22
+  Mt files with thread explosion risk: 15
+  Test Mt files not importing Mt: 1
+  Total violations: 73

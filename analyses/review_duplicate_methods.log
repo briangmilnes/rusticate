@@ -1,0 +1,42 @@
+================================================================================
+DUPLICATE METHODS REVIEW
+================================================================================
+
+Duplicate method 'get_search_dirs' in /home/milnes/projects/rusticate/src/args.rs:
+/home/milnes/projects/rusticate/src/args.rs:286: pub fn get_search_dirs(&self) -> Vec<PathBuf> {
+/home/milnes/projects/rusticate/src/args.rs:394: pub fn get_search_dirs(base: &PathBuf) -> Vec<PathBuf> {
+
+================================================================================
+SUMMARY:
+  Total files with duplicates: 1
+  Total duplicate names: 1
+
+Completed in 92ms
+================================================================================
+DUPLICATE METHODS REVIEW
+================================================================================
+
+Duplicate method 'get_search_dirs' in /home/milnes/projects/rusticate/src/args.rs:
+/home/milnes/projects/rusticate/src/args.rs:285: pub fn get_search_dirs(&self) -> Vec<PathBuf> {
+/home/milnes/projects/rusticate/src/args.rs:393: pub fn get_search_dirs(base: &PathBuf) -> Vec<PathBuf> {
+
+================================================================================
+SUMMARY:
+  Total files with duplicates: 1
+  Total duplicate names: 1
+
+Completed in 127ms
+================================================================================
+DUPLICATE METHODS REVIEW
+================================================================================
+
+Duplicate method 'get_search_dirs' in /home/milnes/projects/rusticate/src/args.rs:
+/home/milnes/projects/rusticate/src/args.rs:285: pub fn get_search_dirs(&self) -> Vec<PathBuf> {
+/home/milnes/projects/rusticate/src/args.rs:393: pub fn get_search_dirs(base: &PathBuf) -> Vec<PathBuf> {
+
+================================================================================
+SUMMARY:
+  Total files with duplicates: 1
+  Total duplicate names: 1
+
+Completed in 71ms

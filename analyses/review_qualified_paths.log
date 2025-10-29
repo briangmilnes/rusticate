@@ -1,0 +1,822 @@
+✗ Qualified Path Organization violations found:
+
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:33 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:34 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:117 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:118 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:197 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:198 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:227 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:228 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:239 - 'std::time::Duration' should be imported
+    std::thread::sleep(std::time::Duration::from_nanos(100));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:255 - 'std::time::Duration' should be imported
+    std::thread::sleep(std::time::Duration::from_nanos(100));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:271 - 'std::time::Duration' should be imported
+    std::thread::sleep(std::time::Duration::from_nanos(100));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:294 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:295 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:33 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:34 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:117 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:118 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:197 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:198 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:227 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:228 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:33 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:34 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:103 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:104 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:158 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:159 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:188 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:189 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStEph.rs:14 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(500));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStEph.rs:15 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_secs(3));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStPer.rs:14 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(500));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStPer.rs:15 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_secs(3));
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap05/RelationStEph.rs:110 - 'std::fmt::Debug' should be imported
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result { std::fmt::Debug::fmt(&self.pairs, f) }
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap05/RelationStEph.rs:114 - 'std::fmt::Display' should be imported
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result { std::fmt::Display::fmt(&self.pairs, f) }
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap18/LinkedListStPer.rs:228 - 'std::collections::HashSet' should be imported
+    let mut seen = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqMtPer.rs:203 - 'std::sync::Mutex' should be imported
+    .map(|_| Arc::new(std::sync::Mutex::new(None)))
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs:223 - 'std::sync::Arc<F>' should be imported
+    fn filter_parallel<T: StTInMtT + Ord, F>(link: &Link<T>, predicate: &std::sync::Arc<F>) -> Vec<T>
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs:230 - 'std::sync::Arc' should be imported
+    let pred_left = std::sync::Arc::clone(predicate);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs:231 - 'std::sync::Arc' should be imported
+    let pred_right = std::sync::Arc::clone(predicate);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs:250 - 'std::sync::Arc<F>' should be imported
+    fn reduce_parallel<T: StTInMtT + Ord, F>(link: &Link<T>, op: &std::sync::Arc<F>, identity: T) -> T
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs:257 - 'std::sync::Arc' should be imported
+    let op_left = std::sync::Arc::clone(op);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs:258 - 'std::sync::Arc' should be imported
+    let op_right = std::sync::Arc::clone(op);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs:379 - 'std::sync::Arc' should be imported
+    let predicate = std::sync::Arc::new(predicate);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTAVLMtEph.rs:389 - 'std::sync::Arc' should be imported
+    let op = std::sync::Arc::new(op);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs:266 - 'std::sync::Arc<F>' should be imported
+    fn filter_parallel<T: StTInMtT + Ord, F>(link: &Link<T>, predicate: &std::sync::Arc<F>) -> Vec<T>
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs:273 - 'std::sync::Arc' should be imported
+    let pred_left = std::sync::Arc::clone(predicate);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs:274 - 'std::sync::Arc' should be imported
+    let pred_right = std::sync::Arc::clone(predicate);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs:293 - 'std::sync::Arc<F>' should be imported
+    fn reduce_parallel<T: StTInMtT + Ord, F>(link: &Link<T>, op: &std::sync::Arc<F>, identity: T) -> T
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs:300 - 'std::sync::Arc' should be imported
+    let op_left = std::sync::Arc::clone(op);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs:301 - 'std::sync::Arc' should be imported
+    let op_right = std::sync::Arc::clone(op);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs:425 - 'std::sync::Arc' should be imported
+    let predicate = std::sync::Arc::new(predicate);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTRBMtEph.rs:435 - 'std::sync::Arc' should be imported
+    let op = std::sync::Arc::new(op);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs:166 - 'std::sync::Arc<F>' should be imported
+    fn filter_parallel<T: StTInMtT + Ord, F>(link: &Link<T>, predicate: &std::sync::Arc<F>) -> Vec<T>
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs:173 - 'std::sync::Arc' should be imported
+    let pred_left = std::sync::Arc::clone(predicate);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs:174 - 'std::sync::Arc' should be imported
+    let pred_right = std::sync::Arc::clone(predicate);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs:193 - 'std::sync::Arc<F>' should be imported
+    fn reduce_parallel<T: StTInMtT + Ord, F>(link: &Link<T>, op: &std::sync::Arc<F>, identity: T) -> T
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs:200 - 'std::sync::Arc' should be imported
+    let op_left = std::sync::Arc::clone(op);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs:201 - 'std::sync::Arc' should be imported
+    let op_right = std::sync::Arc::clone(op);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs:328 - 'std::sync::Arc' should be imported
+    let predicate = std::sync::Arc::new(predicate);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSplayMtEph.rs:338 - 'std::sync::Arc' should be imported
+    let op = std::sync::Arc::new(op);
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTParaTreapMtEph.rs:35 - 'std::collections::hash_map::DefaultHasher' should be imported
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTParaTreapMtEph.rs:35 - 'std::collections::hash_map' should be imported
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:153 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:162 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:171 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:182 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:187 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:192 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedTableMtPer.rs:74 - 'std::cmp::Ordering::Equal' should be imported
+    std::cmp::Ordering::Equal => return Some(mid_val.clone()),
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedTableMtPer.rs:74 - 'std::cmp::Ordering' should be imported
+    std::cmp::Ordering::Equal => return Some(mid_val.clone()),
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedTableMtPer.rs:75 - 'std::cmp::Ordering::Less' should be imported
+    std::cmp::Ordering::Less => right = mid,
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedTableMtPer.rs:75 - 'std::cmp::Ordering' should be imported
+    std::cmp::Ordering::Less => right = mid,
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedTableMtPer.rs:76 - 'std::cmp::Ordering::Greater' should be imported
+    std::cmp::Ordering::Greater => left = mid + 1,
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap43/OrderedTableMtPer.rs:76 - 'std::cmp::Ordering' should be imported
+    std::cmp::Ordering::Greater => left = mid + 1,
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap65/UnionFindStEph.rs:96 - 'std::collections::HashSet' should be imported
+    let mut roots = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap66/BoruvkaMtEph.rs:59 - 'std::fmt::Display' should be imported
+    impl<V: std::fmt::Display> std::fmt::Display for LabeledEdge<V> {
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap66/BoruvkaMtEph.rs:59 - 'std::fmt::Display' should be imported
+    impl<V: std::fmt::Display> std::fmt::Display for LabeledEdge<V> {
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap66/BoruvkaMtEph.rs:60 - 'std::fmt::Formatter<'_>' should be imported
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap66/BoruvkaStEph.rs:55 - 'std::fmt::Display' should be imported
+    impl<V: std::fmt::Display> std::fmt::Display for LabeledEdge<V> {
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap66/BoruvkaStEph.rs:55 - 'std::fmt::Display' should be imported
+    impl<V: std::fmt::Display> std::fmt::Display for LabeledEdge<V> {
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap66/BoruvkaStEph.rs:56 - 'std::fmt::Formatter<'_>' should be imported
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestDirGraphMtEph.rs:441 - 'std::sync::RwLock' should be imported
+    let graphs = Arc::new(std::sync::RwLock::new(vec![
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap17/TestMathSeq.rs:145 - 'std::collections::HashMap<i32, usize>' should be imported
+    let counts: std::collections::HashMap<i32, usize> = multiset.into_iter().collect();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap19/TestArraySeqMtEphSlice.rs:192 - 'std::sync::Mutex' should be imported
+    let seq = Arc::new(std::sync::Mutex::new(ArraySeqMtEphSliceS::new(8, 0)));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap42/TestTableMtEph.rs:315 - 'std::time::Duration' should be imported
+    std::thread::sleep(std::time::Duration::from_millis(1));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap43/TestAugOrderedTableMtEph.rs:64 - 'std::sync::Mutex' should be imported
+    let table = Arc::new(std::sync::Mutex::new(AugOrderedTableMtEph::empty(sum_reducer, 0)));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap43/TestAugOrderedTableMtEph.rs:154 - 'std::sync::Mutex' should be imported
+    let table = Arc::new(std::sync::Mutex::new(AugOrderedTableMtEph::empty(max_reducer, 0)));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap43/TestAugOrderedTableMtEph.rs:444 - 'std::sync::Mutex' should be imported
+    let table = Arc::new(std::sync::Mutex::new(AugOrderedTableMtEph::empty(sum_reducer, 0)));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestDocumentIndex.rs:427 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestDocumentIndex.rs:436 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestDocumentIndex.rs:441 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestDocumentIndex.rs:446 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestExample44_1.rs:288 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestExample44_1.rs:297 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestExample44_1.rs:302 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap66/TestBoruvkaStEph.rs:238 - 'std::collections::HashMap' should be imported
+    let bridges = std::collections::HashMap::new();
+  APAS-AI-copy/apas-ai/apas-ai/tests/TestTypes.rs:354 - 'std::cmp::Ordering::Less' should be imported
+    let o: O = std::cmp::Ordering::Less;
+  APAS-AI-copy/apas-ai/apas-ai/tests/TestTypes.rs:354 - 'std::cmp::Ordering' should be imported
+    let o: O = std::cmp::Ordering::Less;
+  APAS-AI-copy/apas-ai/experiments/src/FunctionTypes.rs:102 - 'std::path::Path' should be imported
+    std::path::Path::new(path).exists()
+  APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:16 - 'std::cell::RefCell<std::collections::HashMap<String, String>>' should be imported
+    data: std::cell::RefCell<std::collections::HashMap<String, String>>,
+  APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:16 - 'std::collections::HashMap<String, String>' should be imported
+    data: std::cell::RefCell<std::collections::HashMap<String, String>>,
+  APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:22 - 'std::cell::RefCell' should be imported
+    data: std::cell::RefCell::new(std::collections::HashMap::new()),
+  APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:22 - 'std::collections::HashMap' should be imported
+    data: std::cell::RefCell::new(std::collections::HashMap::new()),
+  APAS-AI-copy/apas-ai/experiments/src/TraitAsDocumentation.rs:101 - 'std::path::Path' should be imported
+    std::path::Path::new(path).exists()
+  APAS-AI-copy/apas-ai/experiments/src/WhyNotAlias.rs:80 - 'std::result::Result<T, String>' should be imported
+    pub type Result<T> = std::result::Result<T, String>;
+  APAS-AI-copy/apas-ai/experiments/src/WhyNotAlias.rs:87 - 'std::collections::HashMap<K, V>' should be imported
+    pub type Cache<K, V> = std::collections::HashMap<K, V>;
+  APAS-AI-copy/experiments/src/FunctionTypes.rs:102 - 'std::path::Path' should be imported
+    std::path::Path::new(path).exists()
+  APAS-AI-copy/experiments/src/SwappableModule.rs:16 - 'std::cell::RefCell<std::collections::HashMap<String, String>>' should be imported
+    data: std::cell::RefCell<std::collections::HashMap<String, String>>,
+  APAS-AI-copy/experiments/src/SwappableModule.rs:16 - 'std::collections::HashMap<String, String>' should be imported
+    data: std::cell::RefCell<std::collections::HashMap<String, String>>,
+  APAS-AI-copy/experiments/src/SwappableModule.rs:22 - 'std::cell::RefCell' should be imported
+    data: std::cell::RefCell::new(std::collections::HashMap::new()),
+  APAS-AI-copy/experiments/src/SwappableModule.rs:22 - 'std::collections::HashMap' should be imported
+    data: std::cell::RefCell::new(std::collections::HashMap::new()),
+  APAS-AI-copy/experiments/src/TraitAsDocumentation.rs:101 - 'std::path::Path' should be imported
+    std::path::Path::new(path).exists()
+  APAS-AI-copy/experiments/src/WhyNotAlias.rs:80 - 'std::result::Result<T, String>' should be imported
+    pub type Result<T> = std::result::Result<T, String>;
+  APAS-AI-copy/experiments/src/WhyNotAlias.rs:87 - 'std::collections::HashMap<K, V>' should be imported
+    pub type Cache<K, V> = std::collections::HashMap<K, V>;
+  src/analyzer.rs:33 - 'std::fmt::Display' should be imported
+    impl std::fmt::Display for Issue {
+  src/analyzer.rs:34 - 'std::fmt::Formatter<'_>' should be imported
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+  src/args.rs:246 - 'std::path::Path' should be imported
+    let name = std::path::Path::new(program_name)
+  src/args.rs:352 - 'std::path::Path' should be imported
+    fn search_dir(dir: &std::path::Path, files: &mut Vec<PathBuf>) {
+  src/bin/compile_src_tests_benches_run_tests.rs:29 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/compile_src_tests_benches_run_tests.rs:76 - 'std::path::Path' should be imported
+    let name = std::path::Path::new(program_name)
+  src/bin/fix.rs:55 - 'std::path::Path' should be imported
+    .unwrap_or_else(|| std::path::Path::new("."));
+  src/bin/fix_import_order.rs:203 - 'std::cmp::Ordering::Equal' should be imported
+    std::cmp::Ordering::Equal => {
+  src/bin/fix_import_order.rs:203 - 'std::cmp::Ordering' should be imported
+    std::cmp::Ordering::Equal => {
+  src/bin/fix_import_order.rs:205 - 'std::cmp::Ordering::Less' should be imported
+    (ImportSection::Internal, true, false) => std::cmp::Ordering::Less,
+  src/bin/fix_import_order.rs:205 - 'std::cmp::Ordering' should be imported
+    (ImportSection::Internal, true, false) => std::cmp::Ordering::Less,
+  src/bin/fix_import_order.rs:206 - 'std::cmp::Ordering::Greater' should be imported
+    (ImportSection::Internal, false, true) => std::cmp::Ordering::Greater,
+  src/bin/fix_import_order.rs:206 - 'std::cmp::Ordering' should be imported
+    (ImportSection::Internal, false, true) => std::cmp::Ordering::Greater,
+  src/bin/fix_non_wildcard_uses.rs:22 - 'std::error::Error' should be imported
+    fn fix_file(file_path: &PathBuf) -> Result<usize, Box<dyn std::error::Error>> {
+  src/bin/fix_non_wildcard_uses.rs:367 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/fix_stub_delegation.rs:92 - 'std::error::Error' should be imported
+    fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::error::Error>> {
+  src/bin/fix_stub_delegation.rs:323 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/fix_test_trait_imports.rs:21 - 'std::error::Error' should be imported
+    fn process_file(file_path: &Path) -> Result<bool, Box<dyn std::error::Error>> {
+  src/bin/fix_test_trait_imports.rs:146 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/fix_unnecessary_ufcs.rs:187 - 'std::collections::HashMap<TextRange, String>' should be imported
+    fn rewrite_node(node: &SyntaxNode, ufcs_map: &std::collections::HashMap<TextRange, String>) -> String {
+  src/bin/fix_unnecessary_ufcs.rs:223 - 'std::collections::HashMap' should be imported
+    let mut ufcs_map = std::collections::HashMap::new();
+  src/bin/parse.rs:45 - 'std::path::Path' should be imported
+    .unwrap_or_else(|| std::path::Path::new("."));
+  src/bin/review_comment_placement.rs:291 - 'std::path::Path' should be imported
+    .unwrap_or(std::path::Path::new("."));
+  src/bin/review_import_order.rs:295 - 'std::collections::HashSet<_>' should be imported
+    let unique_files: std::collections::HashSet<_> = all_violations.iter().map(|v| &v.file).collect();
+  src/bin/review_inherent_and_transitive_mt.rs:144 - 'std::collections::HashSet<String>' should be imported
+    let mut parallel_names: std::collections::HashSet<String> = methods.iter().map(|m| m.name.clone()).collect();
+  src/bin/review_internal_method_impls.rs:57 - 'std::path::Path' should be imported
+    fn check_file(file_path: &std::path::Path, source: &str) -> Result<Vec<InherentImpl>> {
+  src/bin/review_module_encapsulation.rs:185 - 'std::collections::HashSet<_>' should be imported
+    let unique_files: std::collections::HashSet<_> = all_violations.iter().map(|v| &v.file).collect();
+  src/bin/review_no_extern_crate.rs:107 - 'std::collections::HashSet<_>' should be imported
+    let unique_files: std::collections::HashSet<_> = all_violations.iter().map(|v| &v.file).collect();
+  src/bin/review_non_wildcard_uses.rs:189 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/review_public_only_inherent_impls.rs:39 - 'std::path::Path' should be imported
+    fn check_file(file_path: &std::path::Path, source: &str) -> Result<Vec<PublicOnlyImpl>> {
+  src/bin/review_test_functions.rs:826 - 'std::collections::HashSet<String>' should be imported
+    let mut tested: std::collections::HashSet<String> = test_call_counts.keys().cloned().collect();
+  src/bin/review_test_functions.rs:1044 - 'std::collections::HashSet<(String, String)>' should be imported
+    manual_impls: &std::collections::HashSet<(String, String)>,
+  src/bin/review_test_functions.rs:1077 - 'std::collections::HashSet<(String, String)>' should be imported
+    fn find_manual_impls(file_path: &Path) -> Result<std::collections::HashSet<(String, String)>> {
+  src/bin/review_test_functions.rs:1083 - 'std::collections::HashSet' should be imported
+    let mut manual_impls = std::collections::HashSet::new();
+  src/bin/review_test_functions.rs:1162 - 'std::collections::HashSet' should be imported
+    let mut all_manual_impls = std::collections::HashSet::new();
+  src/bin/review_typeclasses.rs:90 - 'std::collections::HashMap<String, String>' should be imported
+    method_bodies: std::collections::HashMap<String, String>,
+  src/bin/review_typeclasses.rs:91 - 'std::collections::HashMap<String, Vec<String>>' should be imported
+    method_param_types: std::collections::HashMap<String, Vec<String>>,  // method_name -> param types (excluding self)
+  src/bin/review_typeclasses.rs:363 - 'std::collections::HashMap' should be imported
+    let mut method_bodies = std::collections::HashMap::new();
+  src/bin/review_typeclasses.rs:364 - 'std::collections::HashMap' should be imported
+    let mut method_param_types = std::collections::HashMap::new();
+  src/bin/review_typeclasses.rs:930 - 'std::collections::HashMap<String, Vec<MethodOccurrence>>' should be imported
+    let mut method_occurrences: std::collections::HashMap<String, Vec<MethodOccurrence>> = std::collections::HashMap::new();
+  src/bin/review_typeclasses.rs:930 - 'std::collections::HashMap' should be imported
+    let mut method_occurrences: std::collections::HashMap<String, Vec<MethodOccurrence>> = std::collections::HashMap::new();
+
+Total violations: 156
+
+Use 'use' statements at the top to import types, then use short names.
+✗ Qualified Path Organization violations found:
+
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:33 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:34 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:117 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:118 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:197 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:198 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:227 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:228 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:239 - 'std::time::Duration' should be imported
+    std::thread::sleep(std::time::Duration::from_nanos(100));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:255 - 'std::time::Duration' should be imported
+    std::thread::sleep(std::time::Duration::from_nanos(100));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:271 - 'std::time::Duration' should be imported
+    std::thread::sleep(std::time::Duration::from_nanos(100));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:294 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:295 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:33 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:34 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:117 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:118 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:197 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:198 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:227 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:228 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:33 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:34 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:103 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:104 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:158 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:159 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:188 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:189 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStEph.rs:15 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(500));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStEph.rs:16 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_secs(3));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStPer.rs:15 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(500));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStPer.rs:16 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_secs(3));
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap05/RelationStEph.rs:109 - 'std::fmt::Debug' should be imported
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result { std::fmt::Debug::fmt(&self.pairs, f) }
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap05/RelationStEph.rs:113 - 'std::fmt::Display' should be imported
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result { std::fmt::Display::fmt(&self.pairs, f) }
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap18/LinkedListStPer.rs:257 - 'std::collections::HashSet' should be imported
+    let mut seen = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTParaTreapMtEph.rs:37 - 'std::collections::hash_map::DefaultHasher' should be imported
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTParaTreapMtEph.rs:37 - 'std::collections::hash_map' should be imported
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:152 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:161 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:170 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:181 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:186 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:191 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedDoubleHashing.rs:161 - 'std::collections::HashSet' should be imported
+    let mut probe_positions = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedQuadraticProbing.rs:191 - 'std::collections::HashSet' should be imported
+    let mut probe_sequences = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:415 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap65/UnionFindStEph.rs:155 - 'std::collections::HashSet' should be imported
+    let mut roots = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap65/UnionFindStEph.rs:216 - 'std::collections::HashSet' should be imported
+    let mut roots = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestDirGraphMtEph.rs:442 - 'std::sync::RwLock' should be imported
+    let graphs = Arc::new(std::sync::RwLock::new(vec![
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap19/TestArraySeqMtEphSlice.rs:192 - 'std::sync::Mutex' should be imported
+    let seq = Arc::new(std::sync::Mutex::new(ArraySeqMtEphSliceS::new(8, 0)));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:1056 - 'std::sync::RwLock' should be imported
+    let shared_set = Arc::new(std::sync::RwLock::new(BSTSetAVLMt::empty()));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:1182 - 'std::sync::RwLock' should be imported
+    let shared_data = Arc::new(std::sync::RwLock::new(vec![
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:1287 - 'std::sync::RwLock' should be imported
+    let shared_sets = Arc::new(std::sync::RwLock::new(vec![
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap42/TestTableMtEph.rs:315 - 'std::time::Duration' should be imported
+    std::thread::sleep(std::time::Duration::from_millis(1));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap43/TestAugOrderedTableMtEph.rs:64 - 'std::sync::Mutex' should be imported
+    let table = Arc::new(std::sync::Mutex::new(AugOrderedTableMtEph::empty(sum_reducer, 0)));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap43/TestAugOrderedTableMtEph.rs:154 - 'std::sync::Mutex' should be imported
+    let table = Arc::new(std::sync::Mutex::new(AugOrderedTableMtEph::empty(max_reducer, 0)));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap43/TestAugOrderedTableMtEph.rs:444 - 'std::sync::Mutex' should be imported
+    let table = Arc::new(std::sync::Mutex::new(AugOrderedTableMtEph::empty(sum_reducer, 0)));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestDocumentIndex.rs:393 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestDocumentIndex.rs:402 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestDocumentIndex.rs:407 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestDocumentIndex.rs:412 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestExample44_1.rs:287 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestExample44_1.rs:296 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestExample44_1.rs:301 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap47/TestHashFunctionTraits.rs:275 - 'std::collections::HashSet' should be imported
+    let mut seen_hashes = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/experiments/src/FunctionTypes.rs:102 - 'std::path::Path' should be imported
+    std::path::Path::new(path).exists()
+  APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:16 - 'std::cell::RefCell<std::collections::HashMap<String, String>>' should be imported
+    data: std::cell::RefCell<std::collections::HashMap<String, String>>,
+  APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:16 - 'std::collections::HashMap<String, String>' should be imported
+    data: std::cell::RefCell<std::collections::HashMap<String, String>>,
+  APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:22 - 'std::cell::RefCell' should be imported
+    data: std::cell::RefCell::new(std::collections::HashMap::new()),
+  APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:22 - 'std::collections::HashMap' should be imported
+    data: std::cell::RefCell::new(std::collections::HashMap::new()),
+  APAS-AI-copy/apas-ai/experiments/src/TraitAsDocumentation.rs:101 - 'std::path::Path' should be imported
+    std::path::Path::new(path).exists()
+  APAS-AI-copy/apas-ai/experiments/src/WhyNotAlias.rs:80 - 'std::result::Result<T, String>' should be imported
+    pub type Result<T> = std::result::Result<T, String>;
+  APAS-AI-copy/apas-ai/experiments/src/WhyNotAlias.rs:87 - 'std::collections::HashMap<K, V>' should be imported
+    pub type Cache<K, V> = std::collections::HashMap<K, V>;
+  APAS-AI-copy/experiments/src/FunctionTypes.rs:102 - 'std::path::Path' should be imported
+    std::path::Path::new(path).exists()
+  APAS-AI-copy/experiments/src/SwappableModule.rs:16 - 'std::cell::RefCell<std::collections::HashMap<String, String>>' should be imported
+    data: std::cell::RefCell<std::collections::HashMap<String, String>>,
+  APAS-AI-copy/experiments/src/SwappableModule.rs:16 - 'std::collections::HashMap<String, String>' should be imported
+    data: std::cell::RefCell<std::collections::HashMap<String, String>>,
+  APAS-AI-copy/experiments/src/SwappableModule.rs:22 - 'std::cell::RefCell' should be imported
+    data: std::cell::RefCell::new(std::collections::HashMap::new()),
+  APAS-AI-copy/experiments/src/SwappableModule.rs:22 - 'std::collections::HashMap' should be imported
+    data: std::cell::RefCell::new(std::collections::HashMap::new()),
+  APAS-AI-copy/experiments/src/TraitAsDocumentation.rs:101 - 'std::path::Path' should be imported
+    std::path::Path::new(path).exists()
+  APAS-AI-copy/experiments/src/WhyNotAlias.rs:80 - 'std::result::Result<T, String>' should be imported
+    pub type Result<T> = std::result::Result<T, String>;
+  APAS-AI-copy/experiments/src/WhyNotAlias.rs:87 - 'std::collections::HashMap<K, V>' should be imported
+    pub type Cache<K, V> = std::collections::HashMap<K, V>;
+  src/analyzer.rs:33 - 'std::fmt::Display' should be imported
+    impl std::fmt::Display for Issue {
+  src/analyzer.rs:34 - 'std::fmt::Formatter<'_>' should be imported
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+  src/args.rs:245 - 'std::path::Path' should be imported
+    let name = std::path::Path::new(program_name)
+  src/args.rs:351 - 'std::path::Path' should be imported
+    fn search_dir(dir: &std::path::Path, files: &mut Vec<PathBuf>) {
+  src/bin/compile_src_tests_benches_run_tests.rs:29 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/compile_src_tests_benches_run_tests.rs:76 - 'std::path::Path' should be imported
+    let name = std::path::Path::new(program_name)
+  src/bin/fix.rs:54 - 'std::path::Path' should be imported
+    .unwrap_or_else(|| std::path::Path::new("."));
+  src/bin/fix_import_order.rs:203 - 'std::cmp::Ordering::Equal' should be imported
+    std::cmp::Ordering::Equal => {
+  src/bin/fix_import_order.rs:203 - 'std::cmp::Ordering' should be imported
+    std::cmp::Ordering::Equal => {
+  src/bin/fix_import_order.rs:205 - 'std::cmp::Ordering::Less' should be imported
+    (ImportSection::Internal, true, false) => std::cmp::Ordering::Less,
+  src/bin/fix_import_order.rs:205 - 'std::cmp::Ordering' should be imported
+    (ImportSection::Internal, true, false) => std::cmp::Ordering::Less,
+  src/bin/fix_import_order.rs:206 - 'std::cmp::Ordering::Greater' should be imported
+    (ImportSection::Internal, false, true) => std::cmp::Ordering::Greater,
+  src/bin/fix_import_order.rs:206 - 'std::cmp::Ordering' should be imported
+    (ImportSection::Internal, false, true) => std::cmp::Ordering::Greater,
+  src/bin/fix_non_wildcard_uses.rs:22 - 'std::error::Error' should be imported
+    fn fix_file(file_path: &PathBuf) -> Result<usize, Box<dyn std::error::Error>> {
+  src/bin/fix_non_wildcard_uses.rs:367 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/fix_stub_delegation.rs:92 - 'std::error::Error' should be imported
+    fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::error::Error>> {
+  src/bin/fix_stub_delegation.rs:323 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/fix_test_trait_imports.rs:21 - 'std::error::Error' should be imported
+    fn process_file(file_path: &Path) -> Result<bool, Box<dyn std::error::Error>> {
+  src/bin/fix_test_trait_imports.rs:146 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/fix_unnecessary_ufcs.rs:182 - 'std::collections::HashMap<TextRange, String>' should be imported
+    fn rewrite_node(node: &SyntaxNode, ufcs_map: &std::collections::HashMap<TextRange, String>) -> String {
+  src/bin/fix_unnecessary_ufcs.rs:218 - 'std::collections::HashMap' should be imported
+    let mut ufcs_map = std::collections::HashMap::new();
+  src/bin/parse.rs:44 - 'std::path::Path' should be imported
+    .unwrap_or_else(|| std::path::Path::new("."));
+  src/bin/review_comment_placement.rs:291 - 'std::path::Path' should be imported
+    .unwrap_or(std::path::Path::new("."));
+  src/bin/review_import_order.rs:295 - 'std::collections::HashSet<_>' should be imported
+    let unique_files: std::collections::HashSet<_> = all_violations.iter().map(|v| &v.file).collect();
+  src/bin/review_inherent_and_transitive_mt.rs:144 - 'std::collections::HashSet<String>' should be imported
+    let mut parallel_names: std::collections::HashSet<String> = methods.iter().map(|m| m.name.clone()).collect();
+  src/bin/review_internal_method_impls.rs:57 - 'std::path::Path' should be imported
+    fn check_file(file_path: &std::path::Path, source: &str) -> Result<Vec<InherentImpl>> {
+  src/bin/review_module_encapsulation.rs:185 - 'std::collections::HashSet<_>' should be imported
+    let unique_files: std::collections::HashSet<_> = all_violations.iter().map(|v| &v.file).collect();
+  src/bin/review_no_extern_crate.rs:107 - 'std::collections::HashSet<_>' should be imported
+    let unique_files: std::collections::HashSet<_> = all_violations.iter().map(|v| &v.file).collect();
+  src/bin/review_non_wildcard_uses.rs:189 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/review_public_only_inherent_impls.rs:39 - 'std::path::Path' should be imported
+    fn check_file(file_path: &std::path::Path, source: &str) -> Result<Vec<PublicOnlyImpl>> {
+  src/bin/review_test_functions.rs:841 - 'std::collections::HashSet<String>' should be imported
+    let mut tested: std::collections::HashSet<String> = test_call_counts.keys().cloned().collect();
+  src/bin/review_test_functions.rs:1059 - 'std::collections::HashSet<(String, String)>' should be imported
+    manual_impls: &std::collections::HashSet<(String, String)>,
+  src/bin/review_test_functions.rs:1092 - 'std::collections::HashSet<(String, String)>' should be imported
+    fn find_manual_impls(file_path: &Path) -> Result<std::collections::HashSet<(String, String)>> {
+  src/bin/review_test_functions.rs:1098 - 'std::collections::HashSet' should be imported
+    let mut manual_impls = std::collections::HashSet::new();
+  src/bin/review_test_functions.rs:1177 - 'std::collections::HashSet' should be imported
+    let mut all_manual_impls = std::collections::HashSet::new();
+  src/bin/review_typeclasses.rs:90 - 'std::collections::HashMap<String, String>' should be imported
+    method_bodies: std::collections::HashMap<String, String>,
+  src/bin/review_typeclasses.rs:91 - 'std::collections::HashMap<String, Vec<String>>' should be imported
+    method_param_types: std::collections::HashMap<String, Vec<String>>,  // method_name -> param types (excluding self)
+  src/bin/review_typeclasses.rs:363 - 'std::collections::HashMap' should be imported
+    let mut method_bodies = std::collections::HashMap::new();
+  src/bin/review_typeclasses.rs:364 - 'std::collections::HashMap' should be imported
+    let mut method_param_types = std::collections::HashMap::new();
+  src/bin/review_typeclasses.rs:928 - 'std::collections::HashMap<String, Vec<MethodOccurrence>>' should be imported
+    let mut method_occurrences: std::collections::HashMap<String, Vec<MethodOccurrence>> = std::collections::HashMap::new();
+  src/bin/review_typeclasses.rs:928 - 'std::collections::HashMap' should be imported
+    let mut method_occurrences: std::collections::HashMap<String, Vec<MethodOccurrence>> = std::collections::HashMap::new();
+
+Total violations: 123
+
+Use 'use' statements at the top to import types, then use short names.
+✗ Qualified Path Organization violations found:
+
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:33 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:34 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:117 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:118 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:197 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:198 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:227 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:228 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:239 - 'std::time::Duration' should be imported
+    std::thread::sleep(std::time::Duration::from_nanos(100));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:255 - 'std::time::Duration' should be imported
+    std::thread::sleep(std::time::Duration::from_nanos(100));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:271 - 'std::time::Duration' should be imported
+    std::thread::sleep(std::time::Duration::from_nanos(100));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:294 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableMtEph.rs:295 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:33 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:34 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:117 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:118 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:197 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:198 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:227 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStEph.rs:228 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:33 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:34 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:103 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:104 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:158 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:159 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:188 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(50));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap42/BenchTableStPer.rs:189 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_millis(150));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStEph.rs:15 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(500));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStEph.rs:16 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_secs(3));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStPer.rs:15 - 'std::time::Duration' should be imported
+    group.warm_up_time(std::time::Duration::from_millis(500));
+  APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStPer.rs:16 - 'std::time::Duration' should be imported
+    group.measurement_time(std::time::Duration::from_secs(3));
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap05/RelationStEph.rs:109 - 'std::fmt::Debug' should be imported
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result { std::fmt::Debug::fmt(&self.pairs, f) }
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap05/RelationStEph.rs:113 - 'std::fmt::Display' should be imported
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result { std::fmt::Display::fmt(&self.pairs, f) }
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap18/LinkedListStPer.rs:257 - 'std::collections::HashSet' should be imported
+    let mut seen = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTParaTreapMtEph.rs:37 - 'std::collections::hash_map::DefaultHasher' should be imported
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTParaTreapMtEph.rs:37 - 'std::collections::hash_map' should be imported
+    let mut hasher = std::collections::hash_map::DefaultHasher::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:152 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:161 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:170 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:181 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:186 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap42/Example42_1.rs:191 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedDoubleHashing.rs:161 - 'std::collections::HashSet' should be imported
+    let mut probe_positions = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap47/AdvancedQuadraticProbing.rs:191 - 'std::collections::HashSet' should be imported
+    let mut probe_sequences = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:415 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap65/UnionFindStEph.rs:155 - 'std::collections::HashSet' should be imported
+    let mut roots = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/apas-ai/src/Chap65/UnionFindStEph.rs:216 - 'std::collections::HashSet' should be imported
+    let mut roots = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestDirGraphMtEph.rs:442 - 'std::sync::RwLock' should be imported
+    let graphs = Arc::new(std::sync::RwLock::new(vec![
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap19/TestArraySeqMtEphSlice.rs:192 - 'std::sync::Mutex' should be imported
+    let seq = Arc::new(std::sync::Mutex::new(ArraySeqMtEphSliceS::new(8, 0)));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:1056 - 'std::sync::RwLock' should be imported
+    let shared_set = Arc::new(std::sync::RwLock::new(BSTSetAVLMt::empty()));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:1182 - 'std::sync::RwLock' should be imported
+    let shared_data = Arc::new(std::sync::RwLock::new(vec![
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:1287 - 'std::sync::RwLock' should be imported
+    let shared_sets = Arc::new(std::sync::RwLock::new(vec![
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap42/TestTableMtEph.rs:315 - 'std::time::Duration' should be imported
+    std::thread::sleep(std::time::Duration::from_millis(1));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap43/TestAugOrderedTableMtEph.rs:64 - 'std::sync::Mutex' should be imported
+    let table = Arc::new(std::sync::Mutex::new(AugOrderedTableMtEph::empty(sum_reducer, 0)));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap43/TestAugOrderedTableMtEph.rs:154 - 'std::sync::Mutex' should be imported
+    let table = Arc::new(std::sync::Mutex::new(AugOrderedTableMtEph::empty(max_reducer, 0)));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap43/TestAugOrderedTableMtEph.rs:444 - 'std::sync::Mutex' should be imported
+    let table = Arc::new(std::sync::Mutex::new(AugOrderedTableMtEph::empty(sum_reducer, 0)));
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestDocumentIndex.rs:393 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestDocumentIndex.rs:402 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestDocumentIndex.rs:407 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestDocumentIndex.rs:412 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestExample44_1.rs:287 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestExample44_1.rs:296 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap44/TestExample44_1.rs:301 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  APAS-AI-copy/apas-ai/apas-ai/tests/Chap47/TestHashFunctionTraits.rs:275 - 'std::collections::HashSet' should be imported
+    let mut seen_hashes = std::collections::HashSet::new();
+  APAS-AI-copy/apas-ai/experiments/src/FunctionTypes.rs:102 - 'std::path::Path' should be imported
+    std::path::Path::new(path).exists()
+  APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:16 - 'std::cell::RefCell<std::collections::HashMap<String, String>>' should be imported
+    data: std::cell::RefCell<std::collections::HashMap<String, String>>,
+  APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:16 - 'std::collections::HashMap<String, String>' should be imported
+    data: std::cell::RefCell<std::collections::HashMap<String, String>>,
+  APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:22 - 'std::cell::RefCell' should be imported
+    data: std::cell::RefCell::new(std::collections::HashMap::new()),
+  APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:22 - 'std::collections::HashMap' should be imported
+    data: std::cell::RefCell::new(std::collections::HashMap::new()),
+  APAS-AI-copy/apas-ai/experiments/src/TraitAsDocumentation.rs:101 - 'std::path::Path' should be imported
+    std::path::Path::new(path).exists()
+  APAS-AI-copy/apas-ai/experiments/src/WhyNotAlias.rs:80 - 'std::result::Result<T, String>' should be imported
+    pub type Result<T> = std::result::Result<T, String>;
+  APAS-AI-copy/apas-ai/experiments/src/WhyNotAlias.rs:87 - 'std::collections::HashMap<K, V>' should be imported
+    pub type Cache<K, V> = std::collections::HashMap<K, V>;
+  APAS-AI-copy/experiments/src/FunctionTypes.rs:102 - 'std::path::Path' should be imported
+    std::path::Path::new(path).exists()
+  APAS-AI-copy/experiments/src/SwappableModule.rs:16 - 'std::cell::RefCell<std::collections::HashMap<String, String>>' should be imported
+    data: std::cell::RefCell<std::collections::HashMap<String, String>>,
+  APAS-AI-copy/experiments/src/SwappableModule.rs:16 - 'std::collections::HashMap<String, String>' should be imported
+    data: std::cell::RefCell<std::collections::HashMap<String, String>>,
+  APAS-AI-copy/experiments/src/SwappableModule.rs:22 - 'std::cell::RefCell' should be imported
+    data: std::cell::RefCell::new(std::collections::HashMap::new()),
+  APAS-AI-copy/experiments/src/SwappableModule.rs:22 - 'std::collections::HashMap' should be imported
+    data: std::cell::RefCell::new(std::collections::HashMap::new()),
+  APAS-AI-copy/experiments/src/TraitAsDocumentation.rs:101 - 'std::path::Path' should be imported
+    std::path::Path::new(path).exists()
+  APAS-AI-copy/experiments/src/WhyNotAlias.rs:80 - 'std::result::Result<T, String>' should be imported
+    pub type Result<T> = std::result::Result<T, String>;
+  APAS-AI-copy/experiments/src/WhyNotAlias.rs:87 - 'std::collections::HashMap<K, V>' should be imported
+    pub type Cache<K, V> = std::collections::HashMap<K, V>;
+  src/analyzer.rs:33 - 'std::fmt::Display' should be imported
+    impl std::fmt::Display for Issue {
+  src/analyzer.rs:34 - 'std::fmt::Formatter<'_>' should be imported
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+  src/args.rs:245 - 'std::path::Path' should be imported
+    let name = std::path::Path::new(program_name)
+  src/args.rs:351 - 'std::path::Path' should be imported
+    fn search_dir(dir: &std::path::Path, files: &mut Vec<PathBuf>) {
+  src/bin/compile_src_tests_benches_run_tests.rs:29 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/compile_src_tests_benches_run_tests.rs:76 - 'std::path::Path' should be imported
+    let name = std::path::Path::new(program_name)
+  src/bin/fix.rs:54 - 'std::path::Path' should be imported
+    .unwrap_or_else(|| std::path::Path::new("."));
+  src/bin/fix_import_order.rs:203 - 'std::cmp::Ordering::Equal' should be imported
+    std::cmp::Ordering::Equal => {
+  src/bin/fix_import_order.rs:203 - 'std::cmp::Ordering' should be imported
+    std::cmp::Ordering::Equal => {
+  src/bin/fix_import_order.rs:205 - 'std::cmp::Ordering::Less' should be imported
+    (ImportSection::Internal, true, false) => std::cmp::Ordering::Less,
+  src/bin/fix_import_order.rs:205 - 'std::cmp::Ordering' should be imported
+    (ImportSection::Internal, true, false) => std::cmp::Ordering::Less,
+  src/bin/fix_import_order.rs:206 - 'std::cmp::Ordering::Greater' should be imported
+    (ImportSection::Internal, false, true) => std::cmp::Ordering::Greater,
+  src/bin/fix_import_order.rs:206 - 'std::cmp::Ordering' should be imported
+    (ImportSection::Internal, false, true) => std::cmp::Ordering::Greater,
+  src/bin/fix_non_wildcard_uses.rs:22 - 'std::error::Error' should be imported
+    fn fix_file(file_path: &PathBuf) -> Result<usize, Box<dyn std::error::Error>> {
+  src/bin/fix_non_wildcard_uses.rs:367 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/fix_stub_delegation.rs:92 - 'std::error::Error' should be imported
+    fn process_file(file_path: &PathBuf) -> Result<(usize, usize), Box<dyn std::error::Error>> {
+  src/bin/fix_stub_delegation.rs:323 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/fix_test_trait_imports.rs:21 - 'std::error::Error' should be imported
+    fn process_file(file_path: &Path) -> Result<bool, Box<dyn std::error::Error>> {
+  src/bin/fix_test_trait_imports.rs:146 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/fix_unnecessary_ufcs.rs:182 - 'std::collections::HashMap<TextRange, String>' should be imported
+    fn rewrite_node(node: &SyntaxNode, ufcs_map: &std::collections::HashMap<TextRange, String>) -> String {
+  src/bin/fix_unnecessary_ufcs.rs:218 - 'std::collections::HashMap' should be imported
+    let mut ufcs_map = std::collections::HashMap::new();
+  src/bin/parse.rs:44 - 'std::path::Path' should be imported
+    .unwrap_or_else(|| std::path::Path::new("."));
+  src/bin/review_comment_placement.rs:291 - 'std::path::Path' should be imported
+    .unwrap_or(std::path::Path::new("."));
+  src/bin/review_import_order.rs:295 - 'std::collections::HashSet<_>' should be imported
+    let unique_files: std::collections::HashSet<_> = all_violations.iter().map(|v| &v.file).collect();
+  src/bin/review_inherent_and_transitive_mt.rs:144 - 'std::collections::HashSet<String>' should be imported
+    let mut parallel_names: std::collections::HashSet<String> = methods.iter().map(|m| m.name.clone()).collect();
+  src/bin/review_internal_method_impls.rs:57 - 'std::path::Path' should be imported
+    fn check_file(file_path: &std::path::Path, source: &str) -> Result<Vec<InherentImpl>> {
+  src/bin/review_module_encapsulation.rs:185 - 'std::collections::HashSet<_>' should be imported
+    let unique_files: std::collections::HashSet<_> = all_violations.iter().map(|v| &v.file).collect();
+  src/bin/review_no_extern_crate.rs:107 - 'std::collections::HashSet<_>' should be imported
+    let unique_files: std::collections::HashSet<_> = all_violations.iter().map(|v| &v.file).collect();
+  src/bin/review_non_wildcard_uses.rs:189 - 'std::time::Instant' should be imported
+    let start = std::time::Instant::now();
+  src/bin/review_public_only_inherent_impls.rs:39 - 'std::path::Path' should be imported
+    fn check_file(file_path: &std::path::Path, source: &str) -> Result<Vec<PublicOnlyImpl>> {
+  src/bin/review_test_functions.rs:841 - 'std::collections::HashSet<String>' should be imported
+    let mut tested: std::collections::HashSet<String> = test_call_counts.keys().cloned().collect();
+  src/bin/review_test_functions.rs:1059 - 'std::collections::HashSet<(String, String)>' should be imported
+    manual_impls: &std::collections::HashSet<(String, String)>,
+  src/bin/review_test_functions.rs:1092 - 'std::collections::HashSet<(String, String)>' should be imported
+    fn find_manual_impls(file_path: &Path) -> Result<std::collections::HashSet<(String, String)>> {
+  src/bin/review_test_functions.rs:1098 - 'std::collections::HashSet' should be imported
+    let mut manual_impls = std::collections::HashSet::new();
+  src/bin/review_test_functions.rs:1177 - 'std::collections::HashSet' should be imported
+    let mut all_manual_impls = std::collections::HashSet::new();
+  src/bin/review_typeclasses.rs:90 - 'std::collections::HashMap<String, String>' should be imported
+    method_bodies: std::collections::HashMap<String, String>,
+  src/bin/review_typeclasses.rs:91 - 'std::collections::HashMap<String, Vec<String>>' should be imported
+    method_param_types: std::collections::HashMap<String, Vec<String>>,  // method_name -> param types (excluding self)
+  src/bin/review_typeclasses.rs:363 - 'std::collections::HashMap' should be imported
+    let mut method_bodies = std::collections::HashMap::new();
+  src/bin/review_typeclasses.rs:364 - 'std::collections::HashMap' should be imported
+    let mut method_param_types = std::collections::HashMap::new();
+  src/bin/review_typeclasses.rs:928 - 'std::collections::HashMap<String, Vec<MethodOccurrence>>' should be imported
+    let mut method_occurrences: std::collections::HashMap<String, Vec<MethodOccurrence>> = std::collections::HashMap::new();
+  src/bin/review_typeclasses.rs:928 - 'std::collections::HashMap' should be imported
+    let mut method_occurrences: std::collections::HashMap<String, Vec<MethodOccurrence>> = std::collections::HashMap::new();
+
+Total violations: 123
+
+Use 'use' statements at the top to import types, then use short names.

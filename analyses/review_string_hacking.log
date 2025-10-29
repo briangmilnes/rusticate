@@ -668,3 +668,91 @@ src/bin/fix_binary_logging.rs:249: String hacking detected: new_content[start..]
 Total violations: 1 files checked, 2 violations found
 
 Completed in 1ms
+Entering directory 'src/bin/fix_logging.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'tests/test_review_dispatcher.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'tests/test_review_dispatcher.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate/src'
+
+/home/milnes/projects/rusticate/src/bin/fix_doctests.rs:139: String hacking detected: code.contains("[(") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/fix_doctests.rs:139: String hacking detected: code.contains("(\"") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/review_test_functions.rs:460: String hacking detected: text.contains("{}") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/review_test_functions.rs:463: String hacking detected: text.contains("{:?}") - Use AST traversal instead
+
+Total violations: 817 files checked, 4 violations found
+
+Completed in 767ms
+Entering directory '/home/milnes/projects/rusticate/src'
+
+/home/milnes/projects/rusticate/src/bin/fix_doctests.rs:139: String hacking detected: code.contains("[(") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/fix_doctests.rs:139: String hacking detected: code.contains("(\"") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/review_test_functions.rs:460: String hacking detected: text.contains("{}") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/review_test_functions.rs:463: String hacking detected: text.contains("{:?}") - Use AST traversal instead
+
+Total violations: 817 files checked, 4 violations found
+
+Completed in 505ms
+Entering directory 'src/bin/fix_doctests.rs'
+
+src/bin/fix_doctests.rs:139: String hacking detected: code.contains("[(") - Use AST traversal instead
+src/bin/fix_doctests.rs:139: String hacking detected: code.contains("(\"") - Use AST traversal instead
+
+Total violations: 1 files checked, 2 violations found
+
+Completed in 1ms
+Entering directory '/home/milnes/projects/rusticate/src'
+
+
+Total violations: 817 files checked, 0 violations found
+
+Completed in 560ms
+Entering directory 'tests/test_review_dispatcher.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'tests/test_review_dispatcher.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory 'tests/test_review_dispatcher.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate/src'
+
+
+Total violations: 876 files checked, 0 violations found
+
+Completed in 537ms
+Entering directory '/home/milnes/projects/rusticate/src'
+
+
+Total violations: 876 files checked, 0 violations found
+
+Completed in 877ms
+Entering directory 'src/bin/review.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 0ms

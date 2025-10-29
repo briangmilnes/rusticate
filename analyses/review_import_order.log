@@ -1,0 +1,1448 @@
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found 240 violation(s) (RustRules.md Lines 50, 75-86):
+
+src/args.rs:9: std import after external imports
+  use std::path::PathBuf;
+src/args.rs:9: missing blank line between External and Std imports
+  use std::path::PathBuf;
+src/bin/analyze_review_typeclasses.rs:3: std import after external imports
+  use std::collections::HashMap;
+src/bin/analyze_review_typeclasses.rs:3: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/analyze_review_typeclasses.rs:6: missing blank line between Std and External imports
+  use rusticate::format_number;
+src/bin/analyze_review_typeclasses.rs:7: std import after external imports
+  use std::fs;
+src/bin/analyze_review_typeclasses.rs:7: missing blank line between External and Std imports
+  use std::fs;
+src/bin/compile.rs:2: std import after external imports
+  use std::fs;
+src/bin/compile.rs:2: missing blank line between External and Std imports
+  use std::fs;
+src/bin/compile_and_test.rs:2: std import after external imports
+  use std::fs;
+src/bin/compile_and_test.rs:2: missing blank line between External and Std imports
+  use std::fs;
+src/bin/compile_src_tests_benches_run_tests.rs:1: std import after external imports
+  use std::process::{Command, exit};
+src/bin/compile_src_tests_benches_run_tests.rs:1: missing blank line between External and Std imports
+  use std::process::{Command, exit};
+src/bin/count_as.rs:13: std import after external imports
+  use std::fs;
+src/bin/count_as.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/count_loc.rs:9: std import after external imports
+  use std::fs;
+src/bin/count_loc.rs:9: missing blank line between External and Std imports
+  use std::fs;
+src/bin/count_vec.rs:13: std import after external imports
+  use std::fs;
+src/bin/count_vec.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/count_where.rs:13: std import after external imports
+  use std::fs;
+src/bin/count_where.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix.rs:8: std import after external imports
+  use std::path::PathBuf;
+src/bin/fix.rs:8: missing blank line between External and Std imports
+  use std::path::PathBuf;
+src/bin/fix_chap18_chap19_both.rs:13: std import after external imports
+  use std::fs;
+src/bin/fix_chap18_chap19_both.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_chap18_to_chap19.rs:19: std import after external imports
+  use std::fs;
+src/bin/fix_chap18_to_chap19.rs:19: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_chap18_to_chap19_per.rs:16: std import after external imports
+  use std::fs;
+src/bin/fix_chap18_to_chap19_per.rs:16: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_doctests.rs:12: std import after external imports
+  use std::collections::HashSet;
+src/bin/fix_doctests.rs:12: missing blank line between External and Std imports
+  use std::collections::HashSet;
+src/bin/fix_doctests.rs:16: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, format_number, find_rust_files};
+src/bin/fix_duplicate_method_call_sites.rs:14: std import after external imports
+  use std::fs;
+src/bin/fix_duplicate_method_call_sites.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_duplicate_method_call_sites.rs:17: missing blank line between Std and External imports
+  use rusticate::StandardArgs;
+src/bin/fix_duplicate_methods.rs:13: std import after external imports
+  use std::fs;
+src/bin/fix_duplicate_methods.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_duplicate_methods.rs:16: missing blank line between Std and External imports
+  use ra_ap_syntax::{ast::{self, AstNode, HasName, HasVisibility}, SyntaxKind, SourceFile, Edition};
+src/bin/fix_grouped_imports.rs:19: std import after external imports
+  use std::fs;
+src/bin/fix_grouped_imports.rs:19: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_import_order.rs:17: std import after external imports
+  use std::fs;
+src/bin/fix_import_order.rs:17: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_import_order.rs:19: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files};
+src/bin/fix_logging.rs:12: std import after external imports
+  use std::fs;
+src/bin/fix_logging.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_merge_imports.rs:3: std import after external imports
+  use std::fs;
+src/bin/fix_merge_imports.rs:3: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_min_typing.rs:3: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_min_typing.rs:3: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_no_pub_type.rs:32: std import after external imports
+  use std::fs;
+src/bin/fix_no_pub_type.rs:32: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_no_pub_type.rs:36: missing blank line between Std and External imports
+  use rusticate::StandardArgs;
+src/bin/fix_non_wildcard_uses.rs:1: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_non_wildcard_uses.rs:1: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_non_wildcard_uses.rs:4: missing blank line between Std and External imports
+  use regex::Regex;
+src/bin/fix_our_uses_to_wildcards.rs:16: std import after external imports
+  use std::fs;
+src/bin/fix_our_uses_to_wildcards.rs:16: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_our_uses_to_wildcards.rs:18: missing blank line between Std and External imports
+  use rusticate::{find_rust_files, StandardArgs};
+src/bin/fix_stub_delegation.rs:1: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_stub_delegation.rs:1: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_test_trait_imports.rs:1: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_test_trait_imports.rs:1: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_unnecessary_ufcs.rs:12: std import after external imports
+  use std::fs;
+src/bin/fix_unnecessary_ufcs.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/parse.rs:6: std import after external imports
+  use std::path::PathBuf;
+src/bin/parse.rs:6: missing blank line between External and Std imports
+  use std::path::PathBuf;
+src/bin/review.rs:12: std import after external imports
+  use std::process::{Command, Stdio};
+src/bin/review.rs:12: missing blank line between External and Std imports
+  use std::process::{Command, Stdio};
+src/bin/review_bench_modules.rs:10: std import after external imports
+  use std::process::Command;
+src/bin/review_bench_modules.rs:10: missing blank line between External and Std imports
+  use std::process::Command;
+src/bin/review_chap18_chap19.rs:14: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_chap18_chap19.rs:14: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_comment_placement.rs:12: std import after external imports
+  use std::fs;
+src/bin/review_comment_placement.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_doctests.rs:12: std import after external imports
+  use std::fs;
+src/bin/review_doctests.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_doctests.rs:15: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, format_number, find_rust_files};
+src/bin/review_duplicate_bench_names.rs:10: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_duplicate_bench_names.rs:10: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_duplicate_methods.rs:11: missing blank line between Std and External imports
+  use rusticate::StandardArgs;
+src/bin/review_duplicate_methods.rs:14: std import after external imports
+  use std::fs;
+src/bin/review_duplicate_methods.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_grouped_imports.rs:15: std import after external imports
+  use std::fs;
+src/bin/review_grouped_imports.rs:15: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_impl_order.rs:19: std import after external imports
+  use std::fs;
+src/bin/review_impl_order.rs:19: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_impl_trait_bounds.rs:10: std import after external imports
+  use std::path::Path;
+src/bin/review_impl_trait_bounds.rs:10: missing blank line between External and Std imports
+  use std::path::Path;
+src/bin/review_import_order.rs:19: std import after external imports
+  use std::fs;
+src/bin/review_import_order.rs:19: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_inherent_and_trait_impl.rs:12: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_inherent_and_trait_impl.rs:12: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_inherent_and_trait_impl.rs:15: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes};
+src/bin/review_inherent_and_transitive_mt.rs:13: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_inherent_and_transitive_mt.rs:13: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_inherent_plus_trait_impl.rs:10: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_inherent_plus_trait_impl.rs:10: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_integration_test_structure.rs:14: missing blank line between Std and External imports
+  use anyhow::Result;
+src/bin/review_internal_method_impls.rs:14: std import after external imports
+  use std::fs;
+src/bin/review_internal_method_impls.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_internal_method_impls.rs:16: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes, line_number};
+src/bin/review_logging.rs:14: std import after external imports
+  use std::fs;
+src/bin/review_logging.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_merge_imports.rs:3: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_merge_imports.rs:3: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_min_typing.rs:3: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_min_typing.rs:3: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_minimize_ufcs_call_sites.rs:18: std import after external imports
+  use std::collections::HashSet;
+src/bin/review_minimize_ufcs_call_sites.rs:18: missing blank line between External and Std imports
+  use std::collections::HashSet;
+src/bin/review_module_encapsulation.rs:13: std import after external imports
+  use std::fs;
+src/bin/review_module_encapsulation.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_mt_per.rs:20: std import after external imports
+  use std::fs;
+src/bin/review_mt_per.rs:20: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_no_extern_crate.rs:13: std import after external imports
+  use std::fs;
+src/bin/review_no_extern_crate.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_no_trait_method_duplication.rs:13: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_no_trait_method_duplication.rs:13: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_non_wildcard_uses.rs:1: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_non_wildcard_uses.rs:1: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_pascal_case_filenames.rs:10: std import after external imports
+  use std::path::{Path, PathBuf};
+src/bin/review_pascal_case_filenames.rs:10: missing blank line between External and Std imports
+  use std::path::{Path, PathBuf};
+src/bin/review_public_only_inherent_impls.rs:11: std import after external imports
+  use std::fs;
+src/bin/review_public_only_inherent_impls.rs:11: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_public_only_inherent_impls.rs:13: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes, line_number};
+src/bin/review_qualified_paths.rs:17: std import after external imports
+  use std::path::Path;
+src/bin/review_qualified_paths.rs:17: missing blank line between External and Std imports
+  use std::path::Path;
+src/bin/review_redundant_inherent_impls.rs:13: std import after external imports
+  use std::path::PathBuf;
+src/bin/review_redundant_inherent_impls.rs:13: missing blank line between External and Std imports
+  use std::path::PathBuf;
+src/bin/review_simplifiable_ufcs.rs:13: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_simplifiable_ufcs.rs:13: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_single_trait_impl.rs:14: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_single_trait_impl.rs:14: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_snake_case_filenames.rs:10: std import after external imports
+  use std::path::{Path, PathBuf};
+src/bin/review_snake_case_filenames.rs:10: missing blank line between External and Std imports
+  use std::path::{Path, PathBuf};
+src/bin/review_st_mt_consistency.rs:22: std import after external imports
+  use std::path::Path;
+src/bin/review_st_mt_consistency.rs:22: missing blank line between External and Std imports
+  use std::path::Path;
+src/bin/review_string_hacking.rs:21: std import after external imports
+  use std::fs;
+src/bin/review_string_hacking.rs:21: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_string_hacking.rs:23: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, format_number};
+src/bin/review_struct_file_naming.rs:13: std import after external imports
+  use std::fs;
+src/bin/review_struct_file_naming.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_stt_compliance.rs:11: std import after external imports
+  use std::collections::HashSet;
+src/bin/review_stt_compliance.rs:11: missing blank line between External and Std imports
+  use std::collections::HashSet;
+src/bin/review_stub_delegation.rs:23: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_stub_delegation.rs:23: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_stub_delegation.rs:27: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes, line_number};
+src/bin/review_summary_accuracy.rs:11: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_summary_accuracy.rs:11: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_test_functions.rs:7: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_test_functions.rs:7: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_test_functions.rs:13: missing blank line between Std and External imports
+  use walkdir::WalkDir;
+src/bin/review_test_modules.rs:10: std import after external imports
+  use std::process::Command;
+src/bin/review_test_modules.rs:10: missing blank line between External and Std imports
+  use std::process::Command;
+src/bin/review_trait_bound_mismatches.rs:15: std import after external imports
+  use std::fs;
+src/bin/review_trait_bound_mismatches.rs:15: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_trait_definition_order.rs:16: std import after external imports
+  use std::path::Path;
+src/bin/review_trait_definition_order.rs:16: missing blank line between External and Std imports
+  use std::path::Path;
+src/bin/review_trait_method_conflicts.rs:16: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_trait_method_conflicts.rs:16: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_trait_self_usage.rs:14: std import after external imports
+  use std::path::Path;
+src/bin/review_trait_self_usage.rs:14: missing blank line between External and Std imports
+  use std::path::Path;
+src/bin/review_typeclasses.rs:21: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_typeclasses.rs:21: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_typeclasses.rs:25: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes};
+src/bin/review_unnecessary_ufcs_and_qualified_paths.rs:12: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_unnecessary_ufcs_and_qualified_paths.rs:12: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_variable_naming.rs:13: std import after external imports
+  use std::fs;
+src/bin/review_variable_naming.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_where_clause_simplification.rs:14: std import after external imports
+  use std::fs;
+src/bin/review_where_clause_simplification.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/count_helper.rs:14: missing blank line between Std and External imports
+  use anyhow::Result;
+src/count_helper.rs:15: missing blank line between External and Internal imports
+  use crate::args::args::format_number;
+src/duplicate_methods.rs:12: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/duplicate_methods.rs:12: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/duplicate_methods.rs:14: missing blank line between Std and External imports
+  use anyhow::Result;
+src/duplicate_methods.rs:16: missing blank line between External and Internal imports
+  use crate::find_nodes;
+src/lib.rs:19: std import after external imports
+  use std::path::Path;
+src/lib.rs:19: missing blank line between External and Std imports
+  use std::path::Path;
+src/lib.rs:21: missing blank line between Std and External imports
+  // Re-export commonly used items
+pub use parser::parser::parse_file;
+src/logging.rs:15: missing blank line between Std and External imports
+  use chrono::{Local, DateTime};
+src/tool_runner.rs:14: missing blank line between Std and External imports
+  use anyhow::Result;
+src/tool_runner.rs:15: missing blank line between External and Internal imports
+  use crate::logging::logging::ToolLogger;
+tests/common/mod.rs:5: std import after external imports
+  use std::path::{Path, PathBuf};
+tests/common/mod.rs:5: missing blank line between External and Std imports
+  use std::path::{Path, PathBuf};
+tests/integration/common.rs:5: std import after external imports
+  use std::path::{Path, PathBuf};
+tests/integration/common.rs:5: missing blank line between External and Std imports
+  use std::path::{Path, PathBuf};
+tests/integration/test_review_camelcase.rs:6: std import after external imports
+  use std::process::Command;
+tests/integration/test_review_camelcase.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/integration/test_review_camelcase.rs:7: missing blank line between Std and Internal imports
+  use super::common::{TestContext, parse_number};
+tests/integration/test_review_import_order.rs:10: std import after external imports
+  use std::process::Command;
+tests/integration/test_review_import_order.rs:10: missing blank line between External and Std imports
+  use std::process::Command;
+tests/integration/test_review_module_encapsulation.rs:6: std import after external imports
+  use std::process::Command;
+tests/integration/test_review_module_encapsulation.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/integration/test_review_module_encapsulation.rs:7: missing blank line between Std and Internal imports
+  use super::common::{TestContext, parse_number};
+tests/integration/test_review_no_extern_crate.rs:6: std import after external imports
+  use std::process::Command;
+tests/integration/test_review_no_extern_crate.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/integration/test_review_no_extern_crate.rs:7: missing blank line between Std and Internal imports
+  use super::common::{TestContext, parse_number};
+tests/test_review_bench_modules.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_bench_modules.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_doctests.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_doctests.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_duplicate_bench_names.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_duplicate_bench_names.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_impl_order.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_impl_order.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_import_order.rs:10: std import after external imports
+  use std::process::Command;
+tests/test_review_import_order.rs:10: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_inherent_and_trait_impl.rs:6: missing blank line between Std and External imports
+  use serial_test::serial;
+tests/test_review_integration_test_structure.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_integration_test_structure.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_internal_method_impls.rs:6: missing blank line between Std and External imports
+  use serial_test::serial;
+tests/test_review_minimize_ufcs_call_sites.rs:6: std import after external imports
+  use std::process::Command;
+tests/test_review_minimize_ufcs_call_sites.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_module_encapsulation.rs:6: std import after external imports
+  use std::process::Command;
+tests/test_review_module_encapsulation.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_module_encapsulation.rs:8: missing blank line between Std and External imports
+  use common::{TestContext, parse_number};
+tests/test_review_no_extern_crate.rs:6: std import after external imports
+  use std::process::Command;
+tests/test_review_no_extern_crate.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_no_extern_crate.rs:8: missing blank line between Std and External imports
+  use common::{TestContext, parse_number};
+tests/test_review_pascal_case_filenames.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_pascal_case_filenames.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_pascal_case_filenames.rs:11: missing blank line between Std and External imports
+  use common::{TestContext, parse_number};
+tests/test_review_public_only_inherent_impls.rs:3: std import after external imports
+  use std::process::Command;
+tests/test_review_public_only_inherent_impls.rs:3: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_single_trait_impl.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_single_trait_impl.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_snake_case_filenames.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_snake_case_filenames.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_struct_file_naming.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_struct_file_naming.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_stub_delegation.rs:3: std import after external imports
+  use std::process::Command;
+tests/test_review_stub_delegation.rs:3: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_test_modules.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_test_modules.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_trait_bound_mismatches.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_trait_bound_mismatches.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_variable_naming.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_variable_naming.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_where_clause_simplification.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_where_clause_simplification.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+
+Summary: 120 files checked, 108 files with violations, 240 total violations
+Completed in 160ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found 236 violation(s) (RustRules.md Lines 50, 75-86):
+
+src/args.rs:9: std import after external imports
+  use std::path::PathBuf;
+src/args.rs:9: missing blank line between External and Std imports
+  use std::path::PathBuf;
+src/bin/analyze_review_typeclasses.rs:3: std import after external imports
+  use std::collections::HashMap;
+src/bin/analyze_review_typeclasses.rs:3: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/analyze_review_typeclasses.rs:6: missing blank line between Std and External imports
+  use rusticate::format_number;
+src/bin/compile.rs:2: std import after external imports
+  use std::fs;
+src/bin/compile.rs:2: missing blank line between External and Std imports
+  use std::fs;
+src/bin/compile_and_test.rs:2: std import after external imports
+  use std::fs;
+src/bin/compile_and_test.rs:2: missing blank line between External and Std imports
+  use std::fs;
+src/bin/compile_src_tests_benches_run_tests.rs:1: std import after external imports
+  use std::process::{Command, exit};
+src/bin/compile_src_tests_benches_run_tests.rs:1: missing blank line between External and Std imports
+  use std::process::{Command, exit};
+src/bin/count_as.rs:13: std import after external imports
+  use std::fs;
+src/bin/count_as.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/count_loc.rs:9: std import after external imports
+  use std::fs;
+src/bin/count_loc.rs:9: missing blank line between External and Std imports
+  use std::fs;
+src/bin/count_vec.rs:13: std import after external imports
+  use std::fs;
+src/bin/count_vec.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/count_where.rs:13: std import after external imports
+  use std::fs;
+src/bin/count_where.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix.rs:8: std import after external imports
+  use std::path::PathBuf;
+src/bin/fix.rs:8: missing blank line between External and Std imports
+  use std::path::PathBuf;
+src/bin/fix_chap18_chap19_both.rs:13: std import after external imports
+  use std::fs;
+src/bin/fix_chap18_chap19_both.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_chap18_to_chap19.rs:19: std import after external imports
+  use std::fs;
+src/bin/fix_chap18_to_chap19.rs:19: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_chap18_to_chap19_per.rs:16: std import after external imports
+  use std::fs;
+src/bin/fix_chap18_to_chap19_per.rs:16: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_doctests.rs:12: std import after external imports
+  use std::collections::HashSet;
+src/bin/fix_doctests.rs:12: missing blank line between External and Std imports
+  use std::collections::HashSet;
+src/bin/fix_doctests.rs:16: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, format_number, find_rust_files};
+src/bin/fix_duplicate_method_call_sites.rs:14: std import after external imports
+  use std::fs;
+src/bin/fix_duplicate_method_call_sites.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_duplicate_method_call_sites.rs:17: missing blank line between Std and External imports
+  use rusticate::StandardArgs;
+src/bin/fix_duplicate_methods.rs:13: std import after external imports
+  use std::fs;
+src/bin/fix_duplicate_methods.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_duplicate_methods.rs:16: missing blank line between Std and External imports
+  use ra_ap_syntax::{ast::{self, AstNode, HasName, HasVisibility}, SyntaxKind, SourceFile, Edition};
+src/bin/fix_grouped_imports.rs:19: std import after external imports
+  use std::fs;
+src/bin/fix_grouped_imports.rs:19: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_import_order.rs:17: std import after external imports
+  use std::fs;
+src/bin/fix_import_order.rs:17: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_import_order.rs:19: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files};
+src/bin/fix_logging.rs:12: std import after external imports
+  use std::fs;
+src/bin/fix_logging.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_merge_imports.rs:3: std import after external imports
+  use std::fs;
+src/bin/fix_merge_imports.rs:3: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_min_typing.rs:3: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_min_typing.rs:3: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_no_pub_type.rs:32: std import after external imports
+  use std::fs;
+src/bin/fix_no_pub_type.rs:32: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_no_pub_type.rs:36: missing blank line between Std and External imports
+  use rusticate::StandardArgs;
+src/bin/fix_non_wildcard_uses.rs:1: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_non_wildcard_uses.rs:1: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_non_wildcard_uses.rs:4: missing blank line between Std and External imports
+  use regex::Regex;
+src/bin/fix_our_uses_to_wildcards.rs:16: std import after external imports
+  use std::fs;
+src/bin/fix_our_uses_to_wildcards.rs:16: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_our_uses_to_wildcards.rs:18: missing blank line between Std and External imports
+  use rusticate::{find_rust_files, StandardArgs};
+src/bin/fix_stub_delegation.rs:1: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_stub_delegation.rs:1: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_test_trait_imports.rs:1: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_test_trait_imports.rs:1: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_unnecessary_ufcs.rs:12: std import after external imports
+  use std::fs;
+src/bin/fix_unnecessary_ufcs.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/parse.rs:6: std import after external imports
+  use std::path::PathBuf;
+src/bin/parse.rs:6: missing blank line between External and Std imports
+  use std::path::PathBuf;
+src/bin/review.rs:12: std import after external imports
+  use std::process::{Command, Stdio};
+src/bin/review.rs:12: missing blank line between External and Std imports
+  use std::process::{Command, Stdio};
+src/bin/review_bench_modules.rs:10: std import after external imports
+  use std::process::Command;
+src/bin/review_bench_modules.rs:10: missing blank line between External and Std imports
+  use std::process::Command;
+src/bin/review_chap18_chap19.rs:14: std import after external imports
+  use std::fs;
+src/bin/review_chap18_chap19.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_comment_placement.rs:12: std import after external imports
+  use std::fs;
+src/bin/review_comment_placement.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_doctests.rs:12: std import after external imports
+  use std::fs;
+src/bin/review_doctests.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_doctests.rs:15: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, format_number, find_rust_files};
+src/bin/review_duplicate_bench_names.rs:10: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_duplicate_bench_names.rs:10: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_duplicate_methods.rs:10: missing blank line between Std and External imports
+  use rusticate::StandardArgs;
+src/bin/review_grouped_imports.rs:15: std import after external imports
+  use std::fs;
+src/bin/review_grouped_imports.rs:15: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_impl_order.rs:19: std import after external imports
+  use std::fs;
+src/bin/review_impl_order.rs:19: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_impl_trait_bounds.rs:10: std import after external imports
+  use std::time::Instant;
+src/bin/review_impl_trait_bounds.rs:10: missing blank line between External and Std imports
+  use std::time::Instant;
+src/bin/review_import_order.rs:19: std import after external imports
+  use std::fs;
+src/bin/review_import_order.rs:19: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_inherent_and_trait_impl.rs:12: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_inherent_and_trait_impl.rs:12: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_inherent_and_trait_impl.rs:15: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes};
+src/bin/review_inherent_and_transitive_mt.rs:13: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_inherent_and_transitive_mt.rs:13: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_inherent_plus_trait_impl.rs:10: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_inherent_plus_trait_impl.rs:10: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_integration_test_structure.rs:14: missing blank line between Std and External imports
+  use anyhow::Result;
+src/bin/review_internal_method_impls.rs:14: std import after external imports
+  use std::fs;
+src/bin/review_internal_method_impls.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_internal_method_impls.rs:16: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes, line_number};
+src/bin/review_logging.rs:14: std import after external imports
+  use std::fs;
+src/bin/review_logging.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_merge_imports.rs:3: std import after external imports
+  use std::fs;
+src/bin/review_merge_imports.rs:3: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_min_typing.rs:3: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_min_typing.rs:3: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_minimize_ufcs_call_sites.rs:18: std import after external imports
+  use std::collections::HashSet;
+src/bin/review_minimize_ufcs_call_sites.rs:18: missing blank line between External and Std imports
+  use std::collections::HashSet;
+src/bin/review_module_encapsulation.rs:13: std import after external imports
+  use std::fs;
+src/bin/review_module_encapsulation.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_mt_per.rs:20: std import after external imports
+  use std::fs;
+src/bin/review_mt_per.rs:20: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_no_extern_crate.rs:13: std import after external imports
+  use std::fs;
+src/bin/review_no_extern_crate.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_no_trait_method_duplication.rs:13: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_no_trait_method_duplication.rs:13: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_non_wildcard_uses.rs:1: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_non_wildcard_uses.rs:1: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_pascal_case_filenames.rs:10: std import after external imports
+  use std::path::{Path, PathBuf};
+src/bin/review_pascal_case_filenames.rs:10: missing blank line between External and Std imports
+  use std::path::{Path, PathBuf};
+src/bin/review_public_only_inherent_impls.rs:11: std import after external imports
+  use std::fs;
+src/bin/review_public_only_inherent_impls.rs:11: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_public_only_inherent_impls.rs:13: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes, line_number};
+src/bin/review_qualified_paths.rs:17: std import after external imports
+  use std::path::Path;
+src/bin/review_qualified_paths.rs:17: missing blank line between External and Std imports
+  use std::path::Path;
+src/bin/review_redundant_inherent_impls.rs:13: std import after external imports
+  use std::path::PathBuf;
+src/bin/review_redundant_inherent_impls.rs:13: missing blank line between External and Std imports
+  use std::path::PathBuf;
+src/bin/review_simplifiable_ufcs.rs:13: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_simplifiable_ufcs.rs:13: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_single_trait_impl.rs:14: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_single_trait_impl.rs:14: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_snake_case_filenames.rs:10: std import after external imports
+  use std::path::{Path, PathBuf};
+src/bin/review_snake_case_filenames.rs:10: missing blank line between External and Std imports
+  use std::path::{Path, PathBuf};
+src/bin/review_st_mt_consistency.rs:22: std import after external imports
+  use std::path::Path;
+src/bin/review_st_mt_consistency.rs:22: missing blank line between External and Std imports
+  use std::path::Path;
+src/bin/review_string_hacking.rs:21: std import after external imports
+  use std::fs;
+src/bin/review_string_hacking.rs:21: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_string_hacking.rs:23: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, format_number};
+src/bin/review_struct_file_naming.rs:13: std import after external imports
+  use std::fs;
+src/bin/review_struct_file_naming.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_stt_compliance.rs:11: std import after external imports
+  use std::collections::HashSet;
+src/bin/review_stt_compliance.rs:11: missing blank line between External and Std imports
+  use std::collections::HashSet;
+src/bin/review_stub_delegation.rs:23: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_stub_delegation.rs:23: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_stub_delegation.rs:27: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes, line_number};
+src/bin/review_summary_accuracy.rs:11: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_summary_accuracy.rs:11: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_test_functions.rs:7: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_test_functions.rs:7: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_test_functions.rs:13: missing blank line between Std and External imports
+  use walkdir::WalkDir;
+src/bin/review_test_modules.rs:10: std import after external imports
+  use std::process::Command;
+src/bin/review_test_modules.rs:10: missing blank line between External and Std imports
+  use std::process::Command;
+src/bin/review_trait_bound_mismatches.rs:15: std import after external imports
+  use std::fs;
+src/bin/review_trait_bound_mismatches.rs:15: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_trait_definition_order.rs:16: std import after external imports
+  use std::path::Path;
+src/bin/review_trait_definition_order.rs:16: missing blank line between External and Std imports
+  use std::path::Path;
+src/bin/review_trait_method_conflicts.rs:16: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_trait_method_conflicts.rs:16: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_trait_self_usage.rs:14: std import after external imports
+  use std::path::Path;
+src/bin/review_trait_self_usage.rs:14: missing blank line between External and Std imports
+  use std::path::Path;
+src/bin/review_typeclasses.rs:21: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_typeclasses.rs:21: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_typeclasses.rs:25: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes};
+src/bin/review_unnecessary_ufcs_and_qualified_paths.rs:12: std import after external imports
+  use std::fs;
+src/bin/review_unnecessary_ufcs_and_qualified_paths.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_variable_naming.rs:13: std import after external imports
+  use std::fs;
+src/bin/review_variable_naming.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_where_clause_simplification.rs:14: std import after external imports
+  use std::fs;
+src/bin/review_where_clause_simplification.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/count_helper.rs:14: missing blank line between Std and External imports
+  use anyhow::Result;
+src/count_helper.rs:15: missing blank line between External and Internal imports
+  use crate::args::args::format_number;
+src/duplicate_methods.rs:12: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/duplicate_methods.rs:12: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/duplicate_methods.rs:14: missing blank line between Std and External imports
+  use anyhow::Result;
+src/duplicate_methods.rs:16: missing blank line between External and Internal imports
+  use crate::find_nodes;
+src/lib.rs:19: std import after external imports
+  use std::path::Path;
+src/lib.rs:19: missing blank line between External and Std imports
+  use std::path::Path;
+src/lib.rs:21: missing blank line between Std and External imports
+  // Re-export commonly used items
+pub use parser::parser::parse_file;
+src/logging.rs:15: missing blank line between Std and External imports
+  use chrono::{Local, DateTime};
+src/tool_runner.rs:14: missing blank line between Std and External imports
+  use anyhow::Result;
+src/tool_runner.rs:15: missing blank line between External and Internal imports
+  use crate::logging::logging::ToolLogger;
+tests/common/mod.rs:5: std import after external imports
+  use std::path::{Path, PathBuf};
+tests/common/mod.rs:5: missing blank line between External and Std imports
+  use std::path::{Path, PathBuf};
+tests/integration/common.rs:5: std import after external imports
+  use std::path::{Path, PathBuf};
+tests/integration/common.rs:5: missing blank line between External and Std imports
+  use std::path::{Path, PathBuf};
+tests/integration/test_review_camelcase.rs:6: std import after external imports
+  use std::process::Command;
+tests/integration/test_review_camelcase.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/integration/test_review_camelcase.rs:7: missing blank line between Std and Internal imports
+  use super::common::{TestContext, parse_number};
+tests/integration/test_review_import_order.rs:10: std import after external imports
+  use std::process::Command;
+tests/integration/test_review_import_order.rs:10: missing blank line between External and Std imports
+  use std::process::Command;
+tests/integration/test_review_module_encapsulation.rs:6: std import after external imports
+  use std::process::Command;
+tests/integration/test_review_module_encapsulation.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/integration/test_review_module_encapsulation.rs:7: missing blank line between Std and Internal imports
+  use super::common::{TestContext, parse_number};
+tests/integration/test_review_no_extern_crate.rs:6: std import after external imports
+  use std::process::Command;
+tests/integration/test_review_no_extern_crate.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/integration/test_review_no_extern_crate.rs:7: missing blank line between Std and Internal imports
+  use super::common::{TestContext, parse_number};
+tests/test_review_bench_modules.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_bench_modules.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_doctests.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_doctests.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_duplicate_bench_names.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_duplicate_bench_names.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_impl_order.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_impl_order.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_import_order.rs:10: std import after external imports
+  use std::process::Command;
+tests/test_review_import_order.rs:10: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_inherent_and_trait_impl.rs:6: missing blank line between Std and External imports
+  use serial_test::serial;
+tests/test_review_integration_test_structure.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_integration_test_structure.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_internal_method_impls.rs:6: missing blank line between Std and External imports
+  use serial_test::serial;
+tests/test_review_minimize_ufcs_call_sites.rs:6: std import after external imports
+  use std::process::Command;
+tests/test_review_minimize_ufcs_call_sites.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_module_encapsulation.rs:6: std import after external imports
+  use std::process::Command;
+tests/test_review_module_encapsulation.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_module_encapsulation.rs:8: missing blank line between Std and External imports
+  use common::{TestContext, parse_number};
+tests/test_review_no_extern_crate.rs:6: std import after external imports
+  use std::process::Command;
+tests/test_review_no_extern_crate.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_no_extern_crate.rs:8: missing blank line between Std and External imports
+  use common::{TestContext, parse_number};
+tests/test_review_pascal_case_filenames.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_pascal_case_filenames.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_pascal_case_filenames.rs:11: missing blank line between Std and External imports
+  use common::{TestContext, parse_number};
+tests/test_review_public_only_inherent_impls.rs:3: std import after external imports
+  use std::process::Command;
+tests/test_review_public_only_inherent_impls.rs:3: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_single_trait_impl.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_single_trait_impl.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_snake_case_filenames.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_snake_case_filenames.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_struct_file_naming.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_struct_file_naming.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_stub_delegation.rs:3: std import after external imports
+  use std::process::Command;
+tests/test_review_stub_delegation.rs:3: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_test_modules.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_test_modules.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_trait_bound_mismatches.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_trait_bound_mismatches.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_variable_naming.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_variable_naming.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_where_clause_simplification.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_where_clause_simplification.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+
+Summary: 120 files checked, 108 files with violations, 236 total violations
+Completed in 223ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found 236 violation(s) (RustRules.md Lines 50, 75-86):
+
+src/args.rs:9: std import after external imports
+  use std::path::PathBuf;
+src/args.rs:9: missing blank line between External and Std imports
+  use std::path::PathBuf;
+src/bin/analyze_review_typeclasses.rs:3: std import after external imports
+  use std::collections::HashMap;
+src/bin/analyze_review_typeclasses.rs:3: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/analyze_review_typeclasses.rs:6: missing blank line between Std and External imports
+  use rusticate::format_number;
+src/bin/compile.rs:2: std import after external imports
+  use std::fs;
+src/bin/compile.rs:2: missing blank line between External and Std imports
+  use std::fs;
+src/bin/compile_and_test.rs:2: std import after external imports
+  use std::fs;
+src/bin/compile_and_test.rs:2: missing blank line between External and Std imports
+  use std::fs;
+src/bin/compile_src_tests_benches_run_tests.rs:1: std import after external imports
+  use std::process::{Command, exit};
+src/bin/compile_src_tests_benches_run_tests.rs:1: missing blank line between External and Std imports
+  use std::process::{Command, exit};
+src/bin/count_as.rs:13: std import after external imports
+  use std::fs;
+src/bin/count_as.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/count_loc.rs:9: std import after external imports
+  use std::fs;
+src/bin/count_loc.rs:9: missing blank line between External and Std imports
+  use std::fs;
+src/bin/count_vec.rs:13: std import after external imports
+  use std::fs;
+src/bin/count_vec.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/count_where.rs:13: std import after external imports
+  use std::fs;
+src/bin/count_where.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix.rs:8: std import after external imports
+  use std::path::PathBuf;
+src/bin/fix.rs:8: missing blank line between External and Std imports
+  use std::path::PathBuf;
+src/bin/fix_chap18_chap19_both.rs:13: std import after external imports
+  use std::fs;
+src/bin/fix_chap18_chap19_both.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_chap18_to_chap19.rs:19: std import after external imports
+  use std::fs;
+src/bin/fix_chap18_to_chap19.rs:19: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_chap18_to_chap19_per.rs:16: std import after external imports
+  use std::fs;
+src/bin/fix_chap18_to_chap19_per.rs:16: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_doctests.rs:12: std import after external imports
+  use std::collections::HashSet;
+src/bin/fix_doctests.rs:12: missing blank line between External and Std imports
+  use std::collections::HashSet;
+src/bin/fix_doctests.rs:16: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, format_number, find_rust_files};
+src/bin/fix_duplicate_method_call_sites.rs:14: std import after external imports
+  use std::fs;
+src/bin/fix_duplicate_method_call_sites.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_duplicate_method_call_sites.rs:17: missing blank line between Std and External imports
+  use rusticate::StandardArgs;
+src/bin/fix_duplicate_methods.rs:13: std import after external imports
+  use std::fs;
+src/bin/fix_duplicate_methods.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_duplicate_methods.rs:16: missing blank line between Std and External imports
+  use ra_ap_syntax::{ast::{self, AstNode, HasName, HasVisibility}, SyntaxKind, SourceFile, Edition};
+src/bin/fix_grouped_imports.rs:19: std import after external imports
+  use std::fs;
+src/bin/fix_grouped_imports.rs:19: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_import_order.rs:17: std import after external imports
+  use std::fs;
+src/bin/fix_import_order.rs:17: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_import_order.rs:19: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files};
+src/bin/fix_logging.rs:12: std import after external imports
+  use std::fs;
+src/bin/fix_logging.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_merge_imports.rs:3: std import after external imports
+  use std::fs;
+src/bin/fix_merge_imports.rs:3: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_min_typing.rs:3: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_min_typing.rs:3: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_no_pub_type.rs:32: std import after external imports
+  use std::fs;
+src/bin/fix_no_pub_type.rs:32: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_no_pub_type.rs:36: missing blank line between Std and External imports
+  use rusticate::StandardArgs;
+src/bin/fix_non_wildcard_uses.rs:1: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_non_wildcard_uses.rs:1: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_non_wildcard_uses.rs:4: missing blank line between Std and External imports
+  use regex::Regex;
+src/bin/fix_our_uses_to_wildcards.rs:16: std import after external imports
+  use std::fs;
+src/bin/fix_our_uses_to_wildcards.rs:16: missing blank line between External and Std imports
+  use std::fs;
+src/bin/fix_our_uses_to_wildcards.rs:18: missing blank line between Std and External imports
+  use rusticate::{find_rust_files, StandardArgs};
+src/bin/fix_stub_delegation.rs:1: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_stub_delegation.rs:1: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_test_trait_imports.rs:1: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_test_trait_imports.rs:1: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/fix_unnecessary_ufcs.rs:12: std import after external imports
+  use std::fs;
+src/bin/fix_unnecessary_ufcs.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/parse.rs:6: std import after external imports
+  use std::path::PathBuf;
+src/bin/parse.rs:6: missing blank line between External and Std imports
+  use std::path::PathBuf;
+src/bin/review.rs:12: std import after external imports
+  use std::process::{Command, Stdio};
+src/bin/review.rs:12: missing blank line between External and Std imports
+  use std::process::{Command, Stdio};
+src/bin/review_bench_modules.rs:10: std import after external imports
+  use std::process::Command;
+src/bin/review_bench_modules.rs:10: missing blank line between External and Std imports
+  use std::process::Command;
+src/bin/review_chap18_chap19.rs:14: std import after external imports
+  use std::fs;
+src/bin/review_chap18_chap19.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_comment_placement.rs:12: std import after external imports
+  use std::fs;
+src/bin/review_comment_placement.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_doctests.rs:12: std import after external imports
+  use std::fs;
+src/bin/review_doctests.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_doctests.rs:15: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, format_number, find_rust_files};
+src/bin/review_duplicate_bench_names.rs:10: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_duplicate_bench_names.rs:10: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_duplicate_methods.rs:10: missing blank line between Std and External imports
+  use rusticate::StandardArgs;
+src/bin/review_grouped_imports.rs:15: std import after external imports
+  use std::fs;
+src/bin/review_grouped_imports.rs:15: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_impl_order.rs:19: std import after external imports
+  use std::fs;
+src/bin/review_impl_order.rs:19: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_impl_trait_bounds.rs:10: std import after external imports
+  use std::time::Instant;
+src/bin/review_impl_trait_bounds.rs:10: missing blank line between External and Std imports
+  use std::time::Instant;
+src/bin/review_import_order.rs:19: std import after external imports
+  use std::fs;
+src/bin/review_import_order.rs:19: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_inherent_and_trait_impl.rs:12: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_inherent_and_trait_impl.rs:12: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_inherent_and_trait_impl.rs:15: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes};
+src/bin/review_inherent_and_transitive_mt.rs:13: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_inherent_and_transitive_mt.rs:13: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_inherent_plus_trait_impl.rs:10: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_inherent_plus_trait_impl.rs:10: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_integration_test_structure.rs:14: missing blank line between Std and External imports
+  use anyhow::Result;
+src/bin/review_internal_method_impls.rs:14: std import after external imports
+  use std::fs;
+src/bin/review_internal_method_impls.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_internal_method_impls.rs:16: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes, line_number};
+src/bin/review_logging.rs:14: std import after external imports
+  use std::fs;
+src/bin/review_logging.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_merge_imports.rs:3: std import after external imports
+  use std::fs;
+src/bin/review_merge_imports.rs:3: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_min_typing.rs:3: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_min_typing.rs:3: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_minimize_ufcs_call_sites.rs:18: std import after external imports
+  use std::collections::HashSet;
+src/bin/review_minimize_ufcs_call_sites.rs:18: missing blank line between External and Std imports
+  use std::collections::HashSet;
+src/bin/review_module_encapsulation.rs:13: std import after external imports
+  use std::fs;
+src/bin/review_module_encapsulation.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_mt_per.rs:20: std import after external imports
+  use std::fs;
+src/bin/review_mt_per.rs:20: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_no_extern_crate.rs:13: std import after external imports
+  use std::fs;
+src/bin/review_no_extern_crate.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_no_trait_method_duplication.rs:13: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_no_trait_method_duplication.rs:13: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_non_wildcard_uses.rs:1: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_non_wildcard_uses.rs:1: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_pascal_case_filenames.rs:10: std import after external imports
+  use std::path::{Path, PathBuf};
+src/bin/review_pascal_case_filenames.rs:10: missing blank line between External and Std imports
+  use std::path::{Path, PathBuf};
+src/bin/review_public_only_inherent_impls.rs:11: std import after external imports
+  use std::fs;
+src/bin/review_public_only_inherent_impls.rs:11: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_public_only_inherent_impls.rs:13: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes, line_number};
+src/bin/review_qualified_paths.rs:17: std import after external imports
+  use std::path::Path;
+src/bin/review_qualified_paths.rs:17: missing blank line between External and Std imports
+  use std::path::Path;
+src/bin/review_redundant_inherent_impls.rs:13: std import after external imports
+  use std::path::PathBuf;
+src/bin/review_redundant_inherent_impls.rs:13: missing blank line between External and Std imports
+  use std::path::PathBuf;
+src/bin/review_simplifiable_ufcs.rs:13: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_simplifiable_ufcs.rs:13: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_single_trait_impl.rs:14: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_single_trait_impl.rs:14: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_snake_case_filenames.rs:10: std import after external imports
+  use std::path::{Path, PathBuf};
+src/bin/review_snake_case_filenames.rs:10: missing blank line between External and Std imports
+  use std::path::{Path, PathBuf};
+src/bin/review_st_mt_consistency.rs:22: std import after external imports
+  use std::path::Path;
+src/bin/review_st_mt_consistency.rs:22: missing blank line between External and Std imports
+  use std::path::Path;
+src/bin/review_string_hacking.rs:21: std import after external imports
+  use std::fs;
+src/bin/review_string_hacking.rs:21: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_string_hacking.rs:23: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, format_number};
+src/bin/review_struct_file_naming.rs:13: std import after external imports
+  use std::fs;
+src/bin/review_struct_file_naming.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_stt_compliance.rs:11: std import after external imports
+  use std::collections::HashSet;
+src/bin/review_stt_compliance.rs:11: missing blank line between External and Std imports
+  use std::collections::HashSet;
+src/bin/review_stub_delegation.rs:23: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_stub_delegation.rs:23: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_stub_delegation.rs:27: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes, line_number};
+src/bin/review_summary_accuracy.rs:11: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_summary_accuracy.rs:11: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_test_functions.rs:7: std import after external imports
+  use std::collections::HashMap;
+src/bin/review_test_functions.rs:7: missing blank line between External and Std imports
+  use std::collections::HashMap;
+src/bin/review_test_functions.rs:13: missing blank line between Std and External imports
+  use walkdir::WalkDir;
+src/bin/review_test_modules.rs:10: std import after external imports
+  use std::process::Command;
+src/bin/review_test_modules.rs:10: missing blank line between External and Std imports
+  use std::process::Command;
+src/bin/review_trait_bound_mismatches.rs:15: std import after external imports
+  use std::fs;
+src/bin/review_trait_bound_mismatches.rs:15: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_trait_definition_order.rs:16: std import after external imports
+  use std::path::Path;
+src/bin/review_trait_definition_order.rs:16: missing blank line between External and Std imports
+  use std::path::Path;
+src/bin/review_trait_method_conflicts.rs:16: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_trait_method_conflicts.rs:16: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_trait_self_usage.rs:14: std import after external imports
+  use std::path::Path;
+src/bin/review_trait_self_usage.rs:14: missing blank line between External and Std imports
+  use std::path::Path;
+src/bin/review_typeclasses.rs:21: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_typeclasses.rs:21: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/bin/review_typeclasses.rs:25: missing blank line between Std and External imports
+  use rusticate::{StandardArgs, find_rust_files, format_number, find_nodes};
+src/bin/review_unnecessary_ufcs_and_qualified_paths.rs:12: std import after external imports
+  use std::fs;
+src/bin/review_unnecessary_ufcs_and_qualified_paths.rs:12: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_variable_naming.rs:13: std import after external imports
+  use std::fs;
+src/bin/review_variable_naming.rs:13: missing blank line between External and Std imports
+  use std::fs;
+src/bin/review_where_clause_simplification.rs:14: std import after external imports
+  use std::fs;
+src/bin/review_where_clause_simplification.rs:14: missing blank line between External and Std imports
+  use std::fs;
+src/count_helper.rs:14: missing blank line between Std and External imports
+  use anyhow::Result;
+src/count_helper.rs:15: missing blank line between External and Internal imports
+  use crate::args::args::format_number;
+src/duplicate_methods.rs:12: std import after external imports
+  use std::collections::{HashMap, HashSet};
+src/duplicate_methods.rs:12: missing blank line between External and Std imports
+  use std::collections::{HashMap, HashSet};
+src/duplicate_methods.rs:14: missing blank line between Std and External imports
+  use anyhow::Result;
+src/duplicate_methods.rs:16: missing blank line between External and Internal imports
+  use crate::find_nodes;
+src/lib.rs:19: std import after external imports
+  use std::path::Path;
+src/lib.rs:19: missing blank line between External and Std imports
+  use std::path::Path;
+src/lib.rs:21: missing blank line between Std and External imports
+  // Re-export commonly used items
+pub use parser::parser::parse_file;
+src/logging.rs:15: missing blank line between Std and External imports
+  use chrono::{Local, DateTime};
+src/tool_runner.rs:14: missing blank line between Std and External imports
+  use anyhow::Result;
+src/tool_runner.rs:15: missing blank line between External and Internal imports
+  use crate::logging::logging::ToolLogger;
+tests/common/mod.rs:5: std import after external imports
+  use std::path::{Path, PathBuf};
+tests/common/mod.rs:5: missing blank line between External and Std imports
+  use std::path::{Path, PathBuf};
+tests/integration/common.rs:5: std import after external imports
+  use std::path::{Path, PathBuf};
+tests/integration/common.rs:5: missing blank line between External and Std imports
+  use std::path::{Path, PathBuf};
+tests/integration/test_review_camelcase.rs:6: std import after external imports
+  use std::process::Command;
+tests/integration/test_review_camelcase.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/integration/test_review_camelcase.rs:7: missing blank line between Std and Internal imports
+  use super::common::{TestContext, parse_number};
+tests/integration/test_review_import_order.rs:10: std import after external imports
+  use std::process::Command;
+tests/integration/test_review_import_order.rs:10: missing blank line between External and Std imports
+  use std::process::Command;
+tests/integration/test_review_module_encapsulation.rs:6: std import after external imports
+  use std::process::Command;
+tests/integration/test_review_module_encapsulation.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/integration/test_review_module_encapsulation.rs:7: missing blank line between Std and Internal imports
+  use super::common::{TestContext, parse_number};
+tests/integration/test_review_no_extern_crate.rs:6: std import after external imports
+  use std::process::Command;
+tests/integration/test_review_no_extern_crate.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/integration/test_review_no_extern_crate.rs:7: missing blank line between Std and Internal imports
+  use super::common::{TestContext, parse_number};
+tests/test_review_bench_modules.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_bench_modules.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_doctests.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_doctests.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_duplicate_bench_names.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_duplicate_bench_names.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_impl_order.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_impl_order.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_import_order.rs:10: std import after external imports
+  use std::process::Command;
+tests/test_review_import_order.rs:10: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_inherent_and_trait_impl.rs:6: missing blank line between Std and External imports
+  use serial_test::serial;
+tests/test_review_integration_test_structure.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_integration_test_structure.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_internal_method_impls.rs:6: missing blank line between Std and External imports
+  use serial_test::serial;
+tests/test_review_minimize_ufcs_call_sites.rs:6: std import after external imports
+  use std::process::Command;
+tests/test_review_minimize_ufcs_call_sites.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_module_encapsulation.rs:6: std import after external imports
+  use std::process::Command;
+tests/test_review_module_encapsulation.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_module_encapsulation.rs:8: missing blank line between Std and External imports
+  use common::{TestContext, parse_number};
+tests/test_review_no_extern_crate.rs:6: std import after external imports
+  use std::process::Command;
+tests/test_review_no_extern_crate.rs:6: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_no_extern_crate.rs:8: missing blank line between Std and External imports
+  use common::{TestContext, parse_number};
+tests/test_review_pascal_case_filenames.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_pascal_case_filenames.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_pascal_case_filenames.rs:11: missing blank line between Std and External imports
+  use common::{TestContext, parse_number};
+tests/test_review_public_only_inherent_impls.rs:3: std import after external imports
+  use std::process::Command;
+tests/test_review_public_only_inherent_impls.rs:3: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_single_trait_impl.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_single_trait_impl.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_snake_case_filenames.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_snake_case_filenames.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_struct_file_naming.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_struct_file_naming.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_stub_delegation.rs:3: std import after external imports
+  use std::process::Command;
+tests/test_review_stub_delegation.rs:3: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_test_modules.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_test_modules.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_trait_bound_mismatches.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_trait_bound_mismatches.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_variable_naming.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_variable_naming.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+tests/test_review_where_clause_simplification.rs:9: std import after external imports
+  use std::process::Command;
+tests/test_review_where_clause_simplification.rs:9: missing blank line between External and Std imports
+  use std::process::Command;
+
+Summary: 120 files checked, 108 files with violations, 236 total violations
+Completed in 107ms
