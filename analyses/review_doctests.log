@@ -34,3 +34,9 @@ Entering directory 'src/bin'
 
 Summary: 0 doctest(s) failed
 Completed in 0ms
+Entering directory 'src/bin'
+
+✓ All doctests parse correctly
+
+Summary: 0 doctest(s) failed
+Completed in 0ms

@@ -1941,3 +1941,14 @@ count_vec.rs:13: missing blank line between External and Std imports
 
 Summary: 2 files checked, 2 files with violations, 4 total violations
 Completed in 1ms
+Entering directory 'src/bin'
+
+✗ Found 2 violation(s) (RustRules.md Lines 50, 75-86):
+
+count_as.rs:13: std import after external imports
+  use std::fs;
+count_as.rs:13: missing blank line between External and Std imports
+  use std::fs;
+
+Summary: 1 files checked, 1 files with violations, 2 total violations
+Completed in 0ms

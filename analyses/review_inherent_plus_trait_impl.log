@@ -8,3 +8,5 @@
 ✓ All structs use trait impl only (no inherent+trait duplication)!
 
 ✓ All structs use trait impl only (no inherent+trait duplication)!
+
+✓ All structs use trait impl only (no inherent+trait duplication)!

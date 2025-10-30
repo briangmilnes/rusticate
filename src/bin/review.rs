@@ -166,6 +166,9 @@ fn main() -> Result<()> {
         return Ok(());
     }
     
+    // Clear the log file at the start of each run
+    let _ = fs::write("analyses/rusticate-review.log", "");
+    
     // Get remaining args to pass through
     let passthrough_args: Vec<String> = args.iter().skip(2).cloned().collect();
     
