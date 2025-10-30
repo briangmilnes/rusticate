@@ -96,13 +96,12 @@ rusticate-review string-hacking -c
 rusticate-review test-functions -f src/lib.rs
 ```
 
-**Three-Level Logging:**
+**Dual Logging:**
 1. **stdout** - Real-time output as tools run
-2. **`analyses/rusticate-review.log`** - Summary log (which tools ran, timing, warnings)
-3. **`analyses/rusticate-review-full.log`** - Comprehensive log with ALL output from ALL tools
-4. **`analyses/review_<tool>.log`** - Individual tool logs (unchanged)
+2. **`analyses/rusticate-review.log`** - Complete log with ALL output from ALL tools (tool details + timing + summary)
+3. **`analyses/review_<tool>.log`** - Individual tool logs (when tools run standalone)
 
-The comprehensive log makes it easy to review findings from a full `rusticate-review all -c` run without scrolling through terminal output.
+The comprehensive review log captures everything so you can easily review findings from a full `rusticate-review all -c` run without scrolling through terminal output.
 
 ### 5. Deterministic Output
 - File lists are sorted
@@ -165,6 +164,7 @@ Tools that detect issues but don't modify code. All output to `analyses/tool-nam
 | `review-merge-imports` | Find mergeable single-line imports from same module |
 | `review-import-order` | Check import statement ordering |
 | `review-no-extern-crate` | Detect deprecated `extern crate` usage |
+| `review-pub-mod` | Check for `pub mod X {}` declarations (general Rust) |
 | `review-non-wildcard-uses` | Analyze non-wildcard `use` statements |
 | `review-module-encapsulation` | Check module visibility and encapsulation |
 
@@ -312,6 +312,12 @@ Tools that automatically modify code. **Always run tests after fixing!**
 | `fix-chap18-to-chap19` | Migrate imports from Chap18 to Chap19 |
 | `fix-chap18-to-chap19-per` | Migrate `ArraySeqStPer` imports |
 | `fix-chap18-chap19-both` | Remove Chap18 imports when Chap19 exists |
+
+#### Module Structure
+
+| Tool | Description |
+|------|-------------|
+| `fix-pub-mod` | Add missing `pub mod X {}` declarations (general Rust) |
 
 #### General
 

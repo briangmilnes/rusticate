@@ -54,6 +54,10 @@ name = "rusticate-review-no-extern-crate"
 path = "src/bin/review_no_extern_crate.rs"
 
 [[bin]]
+name = "rusticate-review-pub-mod"
+path = "src/bin/review_pub_mod.rs"
+
+[[bin]]
 name = "rusticate-review-pascal-case-filenames"
 path = "src/bin/review_pascal_case_filenames.rs"
 
@@ -304,6 +308,10 @@ path = "src/bin/analyze_review_typeclasses.rs"
 [[bin]]
 name = "rusticate-fix-no-pub-type"
 path = "src/bin/fix_no_pub_type.rs"
+
+[[bin]]
+name = "rusticate-fix-pub-mod"
+path = "src/bin/fix_pub_mod.rs"
 
 # Counting/metrics tools
 [[bin]]

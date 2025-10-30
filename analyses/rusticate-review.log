@@ -1,241 +1,40 @@
-Running all review tools...
-
-
-=== Running bench-modules ===
-
-=== Running comment-placement ===
-
-=== Running doctests ===
-
-=== Running duplicate-bench-names ===
-
-=== Running duplicate-methods ===
-
-=== Running impl-order ===
-
-=== Running impl-trait-bounds ===
-
-=== Running import-order ===
-Warning: import-order exited with status exit status: 1
-
-=== Running inherent-and-trait-impl ===
-
-=== Running inherent-plus-trait-impl ===
-
-=== Running integration-test-structure ===
-
-=== Running internal-method-impls ===
-
-=== Running logging ===
-
-=== Running minimize-ufcs-call-sites ===
-
-=== Running module-encapsulation ===
-
-=== Running no-extern-crate ===
-
-=== Running non-wildcard-uses ===
-
-=== Running no-trait-method-duplication ===
-
-=== Running pascal-case-filenames ===
-Warning: pascal-case-filenames exited with status exit status: 1
-
-=== Running public-only-inherent-impls ===
-
-=== Running qualified-paths ===
-
-=== Running redundant-inherent-impls ===
-
-=== Running single-trait-impl ===
-
-=== Running snake-case-filenames ===
-
-=== Running st-mt-consistency ===
-
-=== Running string-hacking ===
-
-=== Running struct-file-naming ===
-
-=== Running stt-compliance ===
-
-=== Running stub-delegation ===
-
-=== Running test-modules ===
-
-=== Running trait-bound-mismatches ===
-
-=== Running trait-definition-order ===
-
-=== Running trait-method-conflicts ===
-
-=== Running trait-self-usage ===
 
 === Running typeclasses ===
+Entering directory 'src/bin'
+
+count_as.rs:1: missing module - BUG
+count_as.rs:1:	no pub data type (struct, enum, or type alias) - BUG
+count_as.rs:1:	no pub trait - BUG
+count_as.rs:1:	no Trait impl - BUG
+count_as.rs:1:	no duplicate method names
+count_as.rs:1:	no fixes known
+count_as.rs:1:	Module summary: 4 BUGs, 0 WARNINGs, 0 OKs, 0 fixes
+
+================================================================================
+SUMMARY:
+  Total modules analyzed: 1
+  Clean modules (no bugs or warnings): 0
+  Modules with no known fixes: 1
+  Total OKs: 0
+  Total WARNINGs: 0
+  Total BUGs: 4
+  Total fixes recommended: 0
+
+================================================================================
+PARETO ANALYSIS: BUGS
+================================================================================
+1      ( 25.0%, cumulative  25.0%): no pub data type (struct, enum, or type alias)
+1      ( 25.0%, cumulative  50.0%): missing module
+1      ( 25.0%, cumulative  75.0%): no pub trait
+1      ( 25.0%, cumulative 100.0%): no Trait impl
+0      (  0.0%, cumulative 100.0%): inherent impl with only internal methods/functions
+0      (  0.0%, cumulative 100.0%): inherent impl with pub methods
+0      (  0.0%, cumulative 100.0%): duplicate method
+0      (  0.0%, cumulative 100.0%): method with unused self parameter
+--------------------------------------------------------------------------------
+TOTAL BUGS: 4
+
+Completed in 1ms
 Warning: typeclasses exited with status exit status: 1
 
-=== Running variable-naming ===
-
-=== Running where-clause-simplification ===
-
-=== Summary ===
-Ran 37 review tools
-All tools completed successfully
-
-Completed in 1197ms
-
-=== Running bench-modules ===
-
-=== Running string-hacking ===
-
 Completed in 2ms
-
-=== Running logging ===
-
-Completed in 160ms
-
-Completed in 245ms
-
-=== Running comment-placement ===
-
-Completed in 2ms
-
-=== Running doctests ===
-
-Completed in 2ms
-
-=== Running duplicate-bench-names ===
-
-Completed in 2ms
-
-=== Running duplicate-methods ===
-
-Completed in 2ms
-
-=== Running impl-order ===
-
-Completed in 1ms
-
-=== Running impl-trait-bounds ===
-
-Completed in 1ms
-
-=== Running import-order ===
-
-Completed in 1ms
-
-=== Running inherent-and-trait-impl ===
-
-Completed in 1ms
-
-=== Running inherent-plus-trait-impl ===
-
-Completed in 1ms
-
-=== Running integration-test-structure ===
-
-Completed in 1ms
-
-=== Running internal-method-impls ===
-
-Completed in 1ms
-
-=== Running logging ===
-
-Completed in 1ms
-
-=== Running minimize-ufcs-call-sites ===
-
-Completed in 1ms
-
-=== Running module-encapsulation ===
-
-Completed in 1ms
-
-=== Running no-extern-crate ===
-
-Completed in 2ms
-
-=== Running non-wildcard-uses ===
-
-Completed in 1ms
-
-=== Running no-trait-method-duplication ===
-
-Completed in 1ms
-
-=== Running pascal-case-filenames ===
-
-Completed in 2ms
-
-=== Running public-only-inherent-impls ===
-
-Completed in 2ms
-
-=== Running qualified-paths ===
-
-Completed in 2ms
-
-=== Running redundant-inherent-impls ===
-
-Completed in 2ms
-
-=== Running single-trait-impl ===
-
-Completed in 2ms
-
-=== Running snake-case-filenames ===
-
-Completed in 1ms
-
-=== Running st-mt-consistency ===
-
-Completed in 2ms
-
-=== Running string-hacking ===
-
-Completed in 3ms
-
-=== Running struct-file-naming ===
-
-Completed in 1ms
-
-=== Running stt-compliance ===
-
-Completed in 1ms
-
-=== Running stub-delegation ===
-
-Completed in 1ms
-
-=== Running test-modules ===
-
-Completed in 295ms
-
-=== Running trait-bound-mismatches ===
-
-Completed in 1ms
-
-=== Running trait-definition-order ===
-
-Completed in 1ms
-
-=== Running trait-method-conflicts ===
-
-Completed in 10ms
-
-=== Running trait-self-usage ===
-
-Completed in 1ms
-
-=== Running typeclasses ===
-
-Completed in 1ms
-
-=== Running variable-naming ===
-
-Completed in 1ms
-
-=== Running where-clause-simplification ===
-
-Completed in 1ms

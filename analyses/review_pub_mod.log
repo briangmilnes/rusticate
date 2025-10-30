@@ -1,0 +1,66 @@
+Entering directory 'src'
+
+✓ All non-binary modules have pub mod declarations
+Completed in 0ms
+Entering directory 'src/bin'
+
+✓ All non-binary modules have pub mod declarations
+Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found 34 file(s) missing pub mod declarations:
+
+src/duplicate_methods.rs:1: missing pub mod declaration
+tests/common/mod.rs:1: missing pub mod declaration
+tests/integration/common.rs:1: missing pub mod declaration
+tests/integration/mod.rs:1: missing pub mod declaration
+tests/integration/test_review_camelcase.rs:1: missing pub mod declaration
+tests/integration/test_review_import_order.rs:1: missing pub mod declaration
+tests/integration/test_review_module_encapsulation.rs:1: missing pub mod declaration
+tests/integration/test_review_no_extern_crate.rs:1: missing pub mod declaration
+tests/test_analyzer.rs:1: missing pub mod declaration
+tests/test_fixer.rs:1: missing pub mod declaration
+tests/test_parser.rs:1: missing pub mod declaration
+tests/test_review_bench_modules.rs:1: missing pub mod declaration
+tests/test_review_dispatcher.rs:1: missing pub mod declaration
+tests/test_review_doctests.rs:1: missing pub mod declaration
+tests/test_review_duplicate_bench_names.rs:1: missing pub mod declaration
+tests/test_review_impl_order.rs:1: missing pub mod declaration
+tests/test_review_import_order.rs:1: missing pub mod declaration
+tests/test_review_inherent_and_trait_impl.rs:1: missing pub mod declaration
+tests/test_review_integration_test_structure.rs:1: missing pub mod declaration
+tests/test_review_internal_method_impls.rs:1: missing pub mod declaration
+tests/test_review_minimize_ufcs_call_sites.rs:1: missing pub mod declaration
+tests/test_review_module_encapsulation.rs:1: missing pub mod declaration
+tests/test_review_no_extern_crate.rs:1: missing pub mod declaration
+tests/test_review_pascal_case_filenames.rs:1: missing pub mod declaration
+tests/test_review_public_only_inherent_impls.rs:1: missing pub mod declaration
+tests/test_review_single_trait_impl.rs:1: missing pub mod declaration
+tests/test_review_snake_case_filenames.rs:1: missing pub mod declaration
+tests/test_review_struct_file_naming.rs:1: missing pub mod declaration
+tests/test_review_stub_delegation.rs:1: missing pub mod declaration
+tests/test_review_test_modules.rs:1: missing pub mod declaration
+tests/test_review_trait_bound_mismatches.rs:1: missing pub mod declaration
+tests/test_review_variable_naming.rs:1: missing pub mod declaration
+tests/test_review_where_clause_simplification.rs:1: missing pub mod declaration
+tests/test_visitor.rs:1: missing pub mod declaration
+
+Summary: 122 files checked, 34 missing pub mod
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found 4 file(s) missing pub mod declarations:
+
+src/duplicate_methods.rs:1: missing pub mod declaration
+tests/common/mod.rs:1: missing pub mod declaration
+tests/integration/common.rs:1: missing pub mod declaration
+tests/integration/mod.rs:1: missing pub mod declaration
+
+Summary: 122 files checked, 4 missing pub mod
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found 2 file(s) missing pub mod declarations:
+
+src/duplicate_methods.rs:1: missing pub mod declaration
+tests/integration/common.rs:1: missing pub mod declaration
+
+Summary: 122 files checked, 2 missing pub mod
