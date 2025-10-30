@@ -16,3 +16,15 @@ Entering directory '/home/milnes/projects/rusticate'
 
 Summary: 120 files checked, 0 violations
 Completed in 83ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✓ Struct/File Naming: No violations found
+
+Summary: 120 files checked, 0 violations
+Completed in 128ms
+Entering directory 'src/bin'
+
+✓ Struct/File Naming: No violations found
+
+Summary: 2 files checked, 0 violations
+Completed in 1ms

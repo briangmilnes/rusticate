@@ -145,3 +145,59 @@ src/visitor.rs:
     Has derives: none
     Missing: Clone, Display, Debug, Eq
 
+Analyzing 87 source files for StT compliance...
+================================================================================
+
+StT requirements: Eq + Clone + Display + Debug + Sized
+
+✗ Found 7 struct(s) that don't satisfy StT:
+
+Summary by missing trait:
+  Missing Clone:   5
+  Missing Display: 6
+  Missing Debug:   4
+  Missing Eq:      7
+
+================================================================================
+Detailed list:
+
+src/duplicate_methods.rs:
+  Line 19: MethodLocation
+    Has derives: Clone, Debug
+    Missing: Display, Eq
+  Line 30: DuplicateIssue
+    Has derives: Debug
+    Missing: Clone, Display, Eq
+
+src/analyzer.rs:
+  Line 10: Issue
+    Has derives: Clone, Debug, Deserialize, Serialize
+    Missing: Eq
+
+src/args.rs:
+  Line 11: StandardArgs
+    Has derives: none
+    Missing: Clone, Display, Debug, Eq
+
+src/logging.rs:
+  Line 18: ToolLogger
+    Has derives: none
+    Missing: Clone, Display, Debug, Eq
+
+src/tool_runner.rs:
+  Line 17: ToolConfig
+    Has derives: none
+    Missing: Clone, Display, Debug, Eq
+
+src/visitor.rs:
+  Line 8: IssueVisitor
+    Has derives: none
+    Missing: Clone, Display, Debug, Eq
+
+Analyzing 0 source files for StT compliance...
+================================================================================
+
+StT requirements: Eq + Clone + Display + Debug + Sized
+
+
+✓ All public structs satisfy StT requirements!

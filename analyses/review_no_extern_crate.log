@@ -16,3 +16,15 @@ Entering directory '/home/milnes/projects/rusticate'
 
 Summary: 120 files checked, 0 files with violations, 0 total violations
 Completed in 70ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✓ No 'extern crate' usage found
+
+Summary: 120 files checked, 0 files with violations, 0 total violations
+Completed in 71ms
+Entering directory 'src/bin'
+
+✓ No 'extern crate' usage found
+
+Summary: 2 files checked, 0 files with violations, 0 total violations
+Completed in 1ms

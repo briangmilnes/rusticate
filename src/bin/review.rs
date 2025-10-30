@@ -14,10 +14,10 @@ use std::process::{Command, Stdio};
 use std::time::Instant;
 use std::env;
 use std::fs;
+use std::io::Write;
 
 macro_rules! log {
     ($($arg:tt)*) => {{
-        use std::io::Write;
         let msg = format!($($arg)*);
         println!("{}", msg);
         if let Ok(mut file) = fs::OpenOptions::new()
@@ -28,6 +28,17 @@ macro_rules! log {
             let _ = writeln!(file, "{}", msg);
         }
     }};
+}
+
+fn log_full(msg: &str) {
+    // Log only to comprehensive log file (stdout is handled separately)
+    if let Ok(mut file) = fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open("analyses/rusticate-review-full.log")
+    {
+        let _ = write!(file, "{}", msg);
+    }
 }
 
 fn get_available_review_tools() -> Vec<&'static str> {
@@ -82,17 +93,33 @@ fn run_review_tool(tool_name: &str, args: &[String]) -> Result<()> {
         .join(&binary_name);
     
     log!("\n=== Running {tool_name} ===");
+    log_full(&format!("\n=== Running {tool_name} ===\n"));
     
-    let status = Command::new(&exe_path)
+    // Capture stdout and stderr
+    let output = Command::new(&exe_path)
         .args(args)
         .stdin(Stdio::inherit())
-        .stdout(Stdio::inherit())
-        .stderr(Stdio::inherit())
-        .status()
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .output()
         .with_context(|| format!("Failed to run {binary_name}"))?;
     
-    if !status.success() {
-        log!("Warning: {tool_name} exited with status {status}");
+    // Write captured output to terminal and comprehensive log
+    let stdout_str = String::from_utf8_lossy(&output.stdout);
+    let stderr_str = String::from_utf8_lossy(&output.stderr);
+    
+    print!("{stdout_str}");
+    log_full(&stdout_str);
+    
+    if !stderr_str.is_empty() {
+        eprint!("{stderr_str}");
+        log_full(&stderr_str);
+    }
+    
+    if !output.status.success() {
+        let warning = format!("Warning: {tool_name} exited with status {}\n", output.status);
+        log!("{}", warning.trim());
+        log_full(&warning);
     }
     
     Ok(())
@@ -147,13 +174,17 @@ fn main() -> Result<()> {
     if tool_or_command == "all" {
         log!("Running all review tools...");
         log!("");
+        log_full("RUSTICATE COMPREHENSIVE REVIEW - ALL TOOLS\n");
+        log_full("===========================================\n\n");
         
         let tools = get_available_review_tools();
         let mut failed_tools = Vec::new();
         
         for tool in &tools {
             if let Err(e) = run_review_tool(tool, &passthrough_args) {
-                log!("Error running {tool}: {e}");
+                let err_msg = format!("Error running {tool}: {e}");
+                log!("{err_msg}");
+                log_full(&format!("\nERROR: {err_msg}\n"));
                 failed_tools.push(*tool);
             }
         }
@@ -161,15 +192,22 @@ fn main() -> Result<()> {
         log!("");
         log!("=== Summary ===");
         log!("Ran {} review tools", tools.len());
+        log_full(&format!("\n===========================================\n"));
+        log_full(&format!("SUMMARY: Ran {} review tools\n", tools.len()));
         
         if !failed_tools.is_empty() {
             log!("Failed tools ({}):", failed_tools.len());
+            log_full(&format!("Failed tools ({}):\n", failed_tools.len()));
             for tool in failed_tools {
                 log!("  - {tool}");
+                log_full(&format!("  - {tool}\n"));
             }
+            log_full("===========================================\n");
             std::process::exit(1);
         } else {
             log!("All tools completed successfully");
+            log_full("All tools completed successfully\n");
+            log_full("===========================================\n");
         }
     } else {
         // Run specific tool
@@ -189,8 +227,10 @@ fn main() -> Result<()> {
         run_review_tool(tool_or_command, &passthrough_args)?;
     }
     
+    let completion = format!("Completed in {}ms\n", start.elapsed().as_millis());
     log!("");
     log!("Completed in {}ms", start.elapsed().as_millis());
+    log_full(&format!("\n{completion}"));
     
     Ok(())
 }

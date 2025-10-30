@@ -16,3 +16,15 @@ Entering directory '/home/milnes/projects/rusticate'
 
 Summary: 120 files checked, 0 files with violations
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✓ All files follow snake_case naming convention
+
+Summary: 120 files checked, 0 files with violations
+Completed in 0ms
+Entering directory 'src/bin'
+
+✓ All files follow snake_case naming convention
+
+Summary: 2 files checked, 0 files with violations
+Completed in 0ms

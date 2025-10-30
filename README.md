@@ -37,7 +37,7 @@ Python will be sent back to the family estate for not working well!
 - **Automatic Fixes:** Many review tools have corresponding fix tools
 - **Emacs Integration:** All output is Emacs-clickable for easy navigation
 - **Consistent Interface:** Standard arguments across all tools
-- **Dual Logging:** Output to both stdout and `analyses/` directory
+- **Comprehensive Logging:** Three-level logging system (stdout, per-tool logs, comprehensive log)
 - **Deterministic Output:** Sorted file lists and error messages for CI/CD
 
 ### Use Cases
@@ -84,7 +84,27 @@ Output format:
 path/to/file.rs:LINE:  Description of issue
 ```
 
-### 4. Deterministic Output
+### 4. Review Tool Dispatcher
+Run all review tools at once or individually through a single interface:
+
+```bash
+# Run all review tools
+rusticate-review all -c
+
+# Run specific tool
+rusticate-review string-hacking -c
+rusticate-review test-functions -f src/lib.rs
+```
+
+**Three-Level Logging:**
+1. **stdout** - Real-time output as tools run
+2. **`analyses/rusticate-review.log`** - Summary log (which tools ran, timing, warnings)
+3. **`analyses/rusticate-review-full.log`** - Comprehensive log with ALL output from ALL tools
+4. **`analyses/review_<tool>.log`** - Individual tool logs (unchanged)
+
+The comprehensive log makes it easy to review findings from a full `rusticate-review all -c` run without scrolling through terminal output.
+
+### 5. Deterministic Output
 - File lists are sorted
 - Error messages are sorted by file path and line number
 - Consistent for CI/CD and version control

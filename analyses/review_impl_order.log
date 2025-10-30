@@ -16,3 +16,13 @@ Entering directory '/home/milnes/projects/rusticate'
 
 Summary: 87 files checked, 0 violations
 Completed in 68ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✓ All implementations are in correct order
+
+Summary: 87 files checked, 0 violations
+Completed in 68ms
+Entering directory 'src/bin'
+
+✓ No src/ directories to check
+Completed in 0ms

@@ -16,3 +16,13 @@ Entering directory '/home/milnes/projects/rusticate'
 
 Summary: 87 files checked, 0 potential issues
 Completed in 81ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✓ No potential trait bound mismatches found
+
+Summary: 87 files checked, 0 potential issues
+Completed in 72ms
+Entering directory 'src/bin'
+
+✓ No src/ directories to check
+Completed in 0ms

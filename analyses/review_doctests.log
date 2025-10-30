@@ -16,3 +16,21 @@ Entering directory '/home/milnes/projects/rusticate'
 
 Summary: 0 doctest(s) failed
 Completed in 3ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✓ All doctests parse correctly
+
+Summary: 0 doctest(s) failed
+Completed in 2ms
+Entering directory 'src/bin'
+
+✓ All doctests parse correctly
+
+Summary: 0 doctest(s) failed
+Completed in 0ms
+Entering directory 'src/bin'
+
+✓ All doctests parse correctly
+
+Summary: 0 doctest(s) failed
+Completed in 0ms

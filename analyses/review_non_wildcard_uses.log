@@ -1163,3 +1163,551 @@ Files affected: 241/876
 
 ✗ Found 377 non-wildcard use statements in 241 file(s)
 Completed in 768ms
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap03/BenchInsertionSortSt.rs:5: (a) use apas_ai::Chap03::InsertionSortSt::InsertionSortSt::InsertionSortStTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap05/BenchMappingStEph.rs:9: (b) use apas_ai::{PairLit, SetLit};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap05/BenchRelationStEph.rs:8: (b) use apas_ai::{PairLit, SetLit};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap06/BenchLabDirGraphStEph.rs:8: (b) use apas_ai::{LabDirGraphStEphLit, SetLit};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap06/BenchLabUnDirGraphStEph.rs:8: (b) use apas_ai::{LabUnDirGraphStEphLit, SetLit};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap11/BenchFibonacciMt.rs:5: (c) use apas_ai::Chap11::FibonacciMt::FibonacciMt::{fib, FibonacciMtTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap18/BenchArraySeqStEphChap18.rs:6: (c) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::ArraySeqStEphS;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap18/BenchArraySeqStEphChap18.rs:7: (a) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::ArraySeqStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap19/BenchArraySeqStEphChap19.rs:6: (c) use apas_ai::Chap19::ArraySeqStEph::ArraySeqStEph::ArraySeqStEphS;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap19/BenchArraySeqStEphChap19.rs:7: (a) use apas_ai::Chap19::ArraySeqStEph::ArraySeqStEph::ArraySeqStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap26/BenchChapter26Mt.rs:5: (c) use apas_ai::Chap18::ArraySeqMtPer::ArraySeqMtPer::{ArraySeqMtPerS, ArraySeqMtPerTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap26/BenchChapter26Mt.rs:6: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap26/BenchDivConReduceMt.rs:7: (c) use apas_ai::Chap18::ArraySeqMtPer::ArraySeqMtPer::{ArraySeqMtPerS, ArraySeqMtPerTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap26/BenchDivConReduceMt.rs:8: (a) use apas_ai::Chap26::DivConReduceMt::DivConReduceMt::DivConReduceMtTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap26/BenchDivConReduceSt.rs:7: (c) use apas_ai::Chap19::ArraySeqStPer::ArraySeqStPer::{ArraySeqStPerS, ArraySeqStPerTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap26/BenchDivConReduceSt.rs:8: (a) use apas_ai::Chap26::DivConReduceSt::DivConReduceSt::DivConReduceStTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap26/BenchMergeSortMt.rs:7: (c) use apas_ai::Chap18::ArraySeqMtPer::ArraySeqMtPer::{ArraySeqMtPerS, ArraySeqMtPerTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap26/BenchMergeSortMt.rs:8: (a) use apas_ai::Chap26::MergeSortMt::MergeSortMt::MergeSortMtTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap26/BenchMergeSortSt.rs:7: (c) use apas_ai::Chap19::ArraySeqStPer::ArraySeqStPer::{ArraySeqStPerS, ArraySeqStPerTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap26/BenchMergeSortSt.rs:8: (a) use apas_ai::Chap26::MergeSortSt::MergeSortSt::MergeSortStTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap27/BenchReduceContractMtEph.rs:8: (c) use apas_ai::Chap18::ArraySeqMtEph::ArraySeqMtEph::{ArraySeqMtEphS, ArraySeqMtEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap27/BenchReduceContractMtEph.rs:9: (a) use apas_ai::Chap27::ReduceContractMtEph::ReduceContractMtEph::ReduceContractMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap27/BenchReduceContractStEph.rs:7: (c) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::{ArraySeqStEphS, ArraySeqStEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap27/BenchReduceContractStEph.rs:8: (a) use apas_ai::Chap27::ReduceContractStEph::ReduceContractStEph::ReduceContractStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap27/BenchScanContractMtEph.rs:8: (c) use apas_ai::Chap18::ArraySeqMtEph::ArraySeqMtEph::{ArraySeqMtEphS, ArraySeqMtEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap27/BenchScanContractMtEph.rs:9: (a) use apas_ai::Chap27::ScanContractMtEph::ScanContractMtEph::ScanContractMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap27/BenchScanContractStEph.rs:7: (c) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::{ArraySeqStEphS, ArraySeqStEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap27/BenchScanContractStEph.rs:8: (a) use apas_ai::Chap27::ScanContractStEph::ScanContractStEph::ScanContractStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumBruteStEph.rs:7: (c) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::{ArraySeqStEphS, ArraySeqStEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumBruteStEph.rs:8: (a) use apas_ai::Chap28::MaxContigSubSumBruteStEph::MaxContigSubSumBruteStEph::MaxContigSubSumBruteTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumDivConMtEph.rs:6: (c) use apas_ai::Chap18::ArraySeqMtEph::ArraySeqMtEph::{ArraySeqMtEphS, ArraySeqMtEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumDivConMtEph.rs:7: (a) use apas_ai::Chap28::MaxContigSubSumDivConMtEph::MaxContigSubSumDivConMtEph::MaxContigSubSumDivConMtTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumDivConOptMtEph.rs:6: (c) use apas_ai::Chap18::ArraySeqMtEph::ArraySeqMtEph::{ArraySeqMtEphS, ArraySeqMtEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumDivConOptMtEph.rs:7: (a) use apas_ai::Chap28::MaxContigSubSumDivConOptMtEph::MaxContigSubSumDivConOptMtEph::MaxContigSubSumDivConOptMtTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumDivConOptStEph.rs:6: (c) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::{ArraySeqStEphS, ArraySeqStEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumDivConOptStEph.rs:7: (a) use apas_ai::Chap28::MaxContigSubSumDivConOptStEph::MaxContigSubSumDivConOptStEph::MaxContigSubSumDivConOptTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumDivConStEph.rs:6: (c) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::{ArraySeqStEphS, ArraySeqStEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumDivConStEph.rs:7: (a) use apas_ai::Chap28::MaxContigSubSumDivConStEph::MaxContigSubSumDivConStEph::MaxContigSubSumDivConTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumOptMtEph.rs:6: (c) use apas_ai::Chap18::ArraySeqMtEph::ArraySeqMtEph::{ArraySeqMtEphS, ArraySeqMtEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumOptMtEph.rs:7: (a) use apas_ai::Chap28::MaxContigSubSumOptMtEph::MaxContigSubSumOptMtEph::MaxContigSubSumOptMtTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumOptStEph.rs:6: (c) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::{ArraySeqStEphS, ArraySeqStEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumOptStEph.rs:7: (a) use apas_ai::Chap28::MaxContigSubSumOptStEph::MaxContigSubSumOptStEph::MaxContigSubSumOptTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumReducedStEph.rs:7: (c) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::{ArraySeqStEphS, ArraySeqStEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap28/BenchMaxContigSubSumReducedStEph.rs:8: (a) use apas_ai::Chap28::MaxContigSubSumReducedStEph::MaxContigSubSumReducedStEph::MaxContigSubSumReducedTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap35/BenchOrderStatSelectMtEph.rs:6: (c) use apas_ai::Chap18::ArraySeqMtEph::ArraySeqMtEph::{ArraySeqMtEphS, ArraySeqMtEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap35/BenchOrderStatSelectMtEph.rs:7: (a) use apas_ai::Chap35::OrderStatSelectMtEph::OrderStatSelectMtEph::OrderStatSelectMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap35/BenchOrderStatSelectMtPer.rs:6: (c) use apas_ai::Chap18::ArraySeqMtPer::ArraySeqMtPer::{ArraySeqMtPerS, ArraySeqMtPerTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap35/BenchOrderStatSelectMtPer.rs:7: (a) use apas_ai::Chap35::OrderStatSelectMtPer::OrderStatSelectMtPer::OrderStatSelectMtPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap35/BenchOrderStatSelectStEph.rs:6: (c) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::{ArraySeqStEphS, ArraySeqStEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap35/BenchOrderStatSelectStEph.rs:7: (a) use apas_ai::Chap35::OrderStatSelectStEph::OrderStatSelectStEph::OrderStatSelectStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap35/BenchOrderStatSelectStPer.rs:7: (c) use apas_ai::Chap19::ArraySeqStPer::ArraySeqStPer::{ArraySeqStPerS, ArraySeqStPerTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap35/BenchOrderStatSelectStPer.rs:8: (a) use apas_ai::Chap35::OrderStatSelectStPer::OrderStatSelectStPer::OrderStatSelectStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap36/BenchChapter36Mt.rs:5: (a) use apas_ai::Chap36::QuickSortMt::Chapter36Mt::Chapter36MtTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap36/BenchChapter36Mt.rs:6: (!) use apas_ai::{ArraySeqMtEphSLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap36/BenchChapter36St.rs:5: (a) use apas_ai::Chap36::QuickSortSt::Chapter36St::Chapter36StTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap36/BenchChapter36St.rs:6: (b) use apas_ai::{ArraySeqStEphSLit, Chap18::ArraySeqStEph::ArraySeqStEph::ArraySeqStEphS};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchAVLTreeSeqStPer.rs:7: (a) use apas_ai::Chap37::AVLTreeSeqStPer::AVLTreeSeqStPer::AVLTreeSeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchAVLTreeSeqStPerChap37Build.rs:7: (c) use apas_ai::Chap37::AVLTreeSeqStPer::AVLTreeSeqStPer::AVLTreeSeqStPerS;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchAVLTreeSeqStPerChap37Build.rs:8: (a) use apas_ai::Chap37::AVLTreeSeqStPer::AVLTreeSeqStPer::AVLTreeSeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchAVLTreeSeqStPerChap37Ops.rs:5: (a) use apas_ai::Chap37::AVLTreeSeqStPer::AVLTreeSeqStPer::AVLTreeSeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTAVLMtEph.rs:5: (c) use apas_ai::Chap37::BSTAVLMtEph::BSTAVLMtEph::{BSTAVLMtEphTrait, BSTreeAVL};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTAVLMtEph.rs:6: (!) use apas_ai::{BSTAVLMtEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTAVLStEph.rs:5: (c) use apas_ai::Chap37::BSTAVLStEph::BSTAVLStEph::{BSTAVLStEphTrait, BSTreeAVL};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTAVLStEph.rs:6: (!) use apas_ai::{BSTAVLStEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTBBAlphaMtEph.rs:5: (a) use apas_ai::Chap37::BSTBBAlphaMtEph::BSTBBAlphaMtEph::BSTBBAlphaMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTBBAlphaMtEph.rs:6: (c) use apas_ai::Chap37::BSTBBAlphaMtEph::BSTBBAlphaMtEph::BSTreeBBAlpha;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTBBAlphaMtEph.rs:7: (!) use apas_ai::{BSTBBAlphaMtEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTBBAlphaStEph.rs:5: (a) use apas_ai::Chap37::BSTBBAlphaStEph::BSTBBAlphaStEph::BSTBBAlphaStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTBBAlphaStEph.rs:6: (c) use apas_ai::Chap37::BSTBBAlphaStEph::BSTBBAlphaStEph::BSTreeBBAlpha;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTBBAlphaStEph.rs:7: (!) use apas_ai::{BSTBBAlphaStEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTPlainMtEph.rs:5: (c) use apas_ai::Chap37::BSTPlainMtEph::BSTPlainMtEph::{BSTPlainMtEphTrait, BSTree};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTPlainMtEph.rs:6: (!) use apas_ai::{BSTPlainMtEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTPlainStEph.rs:5: (c) use apas_ai::Chap37::BSTPlainStEph::BSTPlainStEph::{BSTPlainStEphTrait, BSTree};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTPlainStEph.rs:6: (!) use apas_ai::{BSTPlainStEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTRBMtEph.rs:5: (c) use apas_ai::Chap37::BSTRBMtEph::BSTRBMtEph::{BSTRBMtEphTrait, BSTreeRB};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTRBMtEph.rs:6: (!) use apas_ai::{BSTRBMtEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTRBStEph.rs:5: (c) use apas_ai::Chap37::BSTRBStEph::BSTRBStEph::{BSTRBStEphTrait, BSTreeRB};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTRBStEph.rs:6: (!) use apas_ai::{BSTRBStEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTSplayMtEph.rs:5: (c) use apas_ai::Chap37::BSTSplayMtEph::BSTSplayMtEph::{BSTSplayMtEphTrait, BSTreeSplay};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTSplayMtEph.rs:6: (!) use apas_ai::{BSTSplayMtEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTSplayStEph.rs:5: (c) use apas_ai::Chap37::BSTSplayStEph::BSTSplayStEph::{BSTSplayStEphTrait, BSTreeSplay};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap37/BenchBSTSplayStEph.rs:6: (!) use apas_ai::{BSTSplayStEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap39/BenchBSTTreapMtEph.rs:5: (c) use apas_ai::Chap39::BSTTreapMtEph::BSTTreapMtEph::{BSTTreapMtEphTrait, BSTreeTreap};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap39/BenchBSTTreapMtEph.rs:6: (!) use apas_ai::{BSTTreapMtEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap39/BenchBSTTreapStEph.rs:5: (c) use apas_ai::Chap39::BSTTreapStEph::BSTTreapStEph::{BSTTreapStEphTrait, BSTreeTreap};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap39/BenchBSTTreapStEph.rs:6: (!) use apas_ai::{BSTTreapStEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap40/BenchBSTKeyValueStEph.rs:5: (c) use apas_ai::Chap40::BSTKeyValueStEph::BSTKeyValueStEph::{BSTKeyValueStEphTrait, BSTreeKeyValue};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap40/BenchBSTKeyValueStEph.rs:6: (!) use apas_ai::{BSTKeyValueStEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap40/BenchBSTReducedStEph.rs:6: (!) use apas_ai::{BSTReducedStEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap40/BenchBSTSizeStEph.rs:5: (c) use apas_ai::Chap40::BSTSizeStEph::BSTSizeStEph::{BSTSizeStEphTrait, BSTreeSize};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap40/BenchBSTSizeStEph.rs:6: (!) use apas_ai::{BSTSizeStEphLit, *};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap41/BenchAVLTreeSetStEph.rs:8: (c) use apas_ai::Chap37::AVLTreeSeqStEph::AVLTreeSeqStEph::AVLTreeSeqStEphS;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap41/BenchAVLTreeSetStPer.rs:8: (c) use apas_ai::Chap37::AVLTreeSeqStPer::AVLTreeSeqStPer::AVLTreeSeqStPerS;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap41/BenchAVLTreeSetStPer.rs:172: (a) use apas_ai::Chap37::AVLTreeSeqStPer::AVLTreeSeqStPer::AVLTreeSeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap41/BenchArraySetEnumMtEph.rs:8: (c) use apas_ai::Chap19::ArraySeqMtEph::ArraySeqMtEph::ArraySeqMtEphS;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap41/BenchArraySetStEph.rs:8: (c) use apas_ai::Chap19::ArraySeqStEph::ArraySeqStEph::ArraySeqStEphS;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap47/BenchAdvancedDoubleHashing.rs:7: (c) use apas_ai::Chap47::AdvancedDoubleHashing::AdvancedDoubleHashing::AdvancedDoubleHashingStrategy;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap47/BenchAdvancedDoubleHashing.rs:8: (c) use apas_ai::Chap47::FlatHashTable::FlatHashTable::FlatHashTable;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap47/BenchAdvancedDoubleHashing.rs:9: (c) use apas_ai::Chap47::HashFunctionTraits::HashFunctionTraits::DefaultHashFunction;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap47/BenchAdvancedLinearProbing.rs:7: (c) use apas_ai::Chap47::AdvancedLinearProbing::AdvancedLinearProbing::AdvancedLinearProbingStrategy;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap47/BenchAdvancedLinearProbing.rs:8: (c) use apas_ai::Chap47::FlatHashTable::FlatHashTable::FlatHashTable;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap47/BenchAdvancedLinearProbing.rs:9: (c) use apas_ai::Chap47::HashFunctionTraits::HashFunctionTraits::DefaultHashFunction;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap47/BenchAdvancedQuadraticProbing.rs:7: (c) use apas_ai::Chap47::AdvancedQuadraticProbing::AdvancedQuadraticProbing::AdvancedQuadraticProbingStrategy;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap47/BenchAdvancedQuadraticProbing.rs:8: (c) use apas_ai::Chap47::FlatHashTable::FlatHashTable::FlatHashTable;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap47/BenchAdvancedQuadraticProbing.rs:9: (c) use apas_ai::Chap47::HashFunctionTraits::HashFunctionTraits::DefaultHashFunction;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap49/BenchMinEditDistMtEph.rs:7: (!) use apas_ai::{Chap49::MinEditDistMtEph::MinEditDistMtEph::*, MinEditDistMtEphLit};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap49/BenchMinEditDistMtPer.rs:7: (!) use apas_ai::{Chap49::MinEditDistMtPer::MinEditDistMtPer::*, MinEditDistMtPerLit};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap49/BenchMinEditDistStEph.rs:7: (!) use apas_ai::{Chap49::MinEditDistStEph::MinEditDistStEph::*, MinEditDistStEphLit};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap49/BenchMinEditDistStPer.rs:7: (!) use apas_ai::{Chap49::MinEditDistStPer::MinEditDistStPer::*, MinEditDistStPerLit};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap49/BenchSubsetSumMtEph.rs:7: (!) use apas_ai::{Chap49::SubsetSumMtEph::SubsetSumMtEph::*, SubsetSumMtEphLit};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap49/BenchSubsetSumMtPer.rs:7: (!) use apas_ai::{Chap49::SubsetSumMtPer::SubsetSumMtPer::*, SubsetSumMtPerLit};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap49/BenchSubsetSumStEph.rs:7: (!) use apas_ai::{Chap49::SubsetSumStEph::SubsetSumStEph::*, SubsetSumStEphLit};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap49/BenchSubsetSumStPer.rs:7: (!) use apas_ai::{Chap49::SubsetSumStPer::SubsetSumStPer::*, SubsetSumStPerLit};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchMatrixChainStEph.rs:3: (c) use apas_ai::Chap50::MatrixChainStEph::MatrixChainStEph::{
+    MatrixChainStEphS, MatrixChainStEphTrait, MatrixDim as MatrixChainStEphMatrixDim,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchMatrixChainStPer.rs:7: (c) use apas_ai::Chap50::MatrixChainStPer::MatrixChainStPer::{MatrixChainStPerS, MatrixChainStPerTrait, MatrixDim};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStEph.rs:3: (!) use apas_ai::{
+    prob,
+    Chap50::{OptBinSearchTreeStEph::OptBinSearchTreeStEph::*, Probability::Probability::Probability},
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap50/BenchOptBinSearchTreeStPer.rs:3: (!) use apas_ai::{
+    prob,
+    Chap50::{OptBinSearchTreeStPer::OptBinSearchTreeStPer::*, Probability::Probability::Probability},
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap54/BenchBFSMtEph.rs:6: (c) use apas_ai::Chap18::ArraySeqMtEph::ArraySeqMtEph::{ArraySeqMtEphS, ArraySeqMtEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap54/BenchBFSMtEph.rs:7: (c) use apas_ai::Chap54::BFSMtEph::BFSMtEph;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap54/BenchBFSMtPer.rs:6: (c) use apas_ai::Chap18::ArraySeqMtPer::ArraySeqMtPer::{ArraySeqMtPerS, ArraySeqMtPerTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap54/BenchBFSMtPer.rs:7: (c) use apas_ai::Chap54::BFSMtPer::BFSMtPer;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap54/BenchBFSStEph.rs:6: (c) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::{ArraySeqStEphS, ArraySeqStEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap54/BenchBFSStEph.rs:7: (c) use apas_ai::Chap54::BFSStEph::BFSStEph;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap54/BenchBFSStPer.rs:6: (c) use apas_ai::Chap19::ArraySeqStPer::ArraySeqStPer::{ArraySeqStPerS, ArraySeqStPerTrait};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap54/BenchBFSStPer.rs:7: (c) use apas_ai::Chap54::BFSStPer::BFSStPer;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap56/BenchPathWeightUtilsStEph.rs:4: (c) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::ArraySeqStEphS;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap56/BenchPathWeightUtilsStEph.rs:5: (c) use apas_ai::Chap19::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerS;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap56/BenchPathWeightUtilsStEph.rs:6: (c) use apas_ai::Chap56::PathWeightUtilsStEph::PathWeightUtilsStEph::{
+    path_weight_float, path_weight_int, validate_subpath_property_float, validate_subpath_property_int,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap56/BenchPathWeightUtilsStPer.rs:4: (c) use apas_ai::Chap19::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerS;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap56/BenchPathWeightUtilsStPer.rs:5: (c) use apas_ai::Chap56::PathWeightUtilsStPer::PathWeightUtilsStPer::{
+    path_weight_float, path_weight_int, validate_subpath_property_float, validate_subpath_property_int,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap56/BenchSSSPResultStEphFloat.rs:9: (c) use apas_ai::Chap56::SSSPResultStEphFloat::SSSPResultStEphFloat::SSSPResultStEphFloat;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap56/BenchSSSPResultStEphInt.rs:8: (c) use apas_ai::Chap56::SSSPResultStEphInt::SSSPResultStEphInt::SSSPResultStEphInt;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap57/BenchDijkstraStEphFloat.rs:7: (c) use apas_ai::Chap05::SetStEph::SetStEph;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap57/BenchDijkstraStEphFloat.rs:8: (c) use apas_ai::Chap06::WeightedDirGraphStEphFloat::WeightedDirGraphStEphFloat::WeightedDirGraphStEphFloat;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap57/BenchDijkstraStEphFloat.rs:9: (b) use apas_ai::Chap57::DijkstraStEphFloat::DijkstraStEphFloat::dijkstra;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap57/BenchDijkstraStEphFloat.rs:11: (c) use apas_ai::Types::Types::OrderedF64;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap57/BenchDijkstraStEphInt.rs:7: (c) use apas_ai::Chap05::SetStEph::SetStEph;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap57/BenchDijkstraStEphInt.rs:8: (c) use apas_ai::Chap06::WeightedDirGraphStEphInt::WeightedDirGraphStEphInt::WeightedDirGraphStEphInt;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap57/BenchDijkstraStEphInt.rs:9: (b) use apas_ai::Chap57::DijkstraStEphInt::DijkstraStEphInt::dijkstra;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap57/BenchStackStEph.rs:8: (c) use apas_ai::Chap57::StackStEph::StackStEph::StackStEph;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap58/BenchBellmanFordStEphFloat.rs:7: (c) use apas_ai::Chap05::SetStEph::SetStEph;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap58/BenchBellmanFordStEphFloat.rs:8: (c) use apas_ai::Chap06::WeightedDirGraphStEphFloat::WeightedDirGraphStEphFloat::WeightedDirGraphStEphFloat;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap58/BenchBellmanFordStEphFloat.rs:9: (b) use apas_ai::Chap58::BellmanFordStEphFloat::BellmanFordStEphFloat::bellman_ford;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap58/BenchBellmanFordStEphFloat.rs:11: (c) use apas_ai::Types::Types::OrderedF64;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap58/BenchBellmanFordStEphInt.rs:7: (c) use apas_ai::Chap05::SetStEph::SetStEph;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap58/BenchBellmanFordStEphInt.rs:8: (c) use apas_ai::Chap06::WeightedDirGraphStEphInt::WeightedDirGraphStEphInt::WeightedDirGraphStEphInt;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap58/BenchBellmanFordStEphInt.rs:9: (b) use apas_ai::Chap58::BellmanFordStEphInt::BellmanFordStEphInt::bellman_ford;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap59/BenchJohnsonMtEphFloat.rs:7: (b) use apas_ai::Chap59::JohnsonMtEphFloat::JohnsonMtEphFloat::johnson_apsp;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap59/BenchJohnsonMtEphFloat.rs:9: (c) use apas_ai::Types::Types::OrderedF64;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap59/BenchJohnsonMtEphInt.rs:7: (b) use apas_ai::Chap59::JohnsonMtEphInt::JohnsonMtEphInt::johnson_apsp;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap59/BenchJohnsonStEphFloat.rs:7: (b) use apas_ai::Chap59::JohnsonStEphFloat::JohnsonStEphFloat::johnson_apsp;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap59/BenchJohnsonStEphFloat.rs:9: (c) use apas_ai::Types::Types::OrderedF64;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap59/BenchJohnsonStEphInt.rs:7: (b) use apas_ai::Chap59::JohnsonStEphInt::JohnsonStEphInt::johnson_apsp;
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap61/BenchEdgeContractionMtEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphMtEph::UnDirGraphMtEph::*,
+    Chap61::EdgeContractionMtEph::EdgeContractionMtEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap61/BenchEdgeContractionStEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphStEph::UnDirGraphStEph::*,
+    Chap61::EdgeContractionStEph::EdgeContractionStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap61/BenchVertexMatchingMtEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphMtEph::UnDirGraphMtEph::*,
+    Chap61::VertexMatchingMtEph::VertexMatchingMtEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap61/BenchVertexMatchingStEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphStEph::UnDirGraphStEph::*,
+    Chap61::VertexMatchingStEph::VertexMatchingStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap62/BenchStarContractionMtEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphMtEph::UnDirGraphMtEph::*,
+    Chap62::StarContractionMtEph::StarContractionMtEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap62/BenchStarContractionStEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphStEph::UnDirGraphStEph::*,
+    Chap62::StarContractionStEph::StarContractionStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap62/BenchStarPartitionMtEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphMtEph::UnDirGraphMtEph::*,
+    Chap62::StarPartitionMtEph::StarPartitionMtEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap62/BenchStarPartitionStEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphStEph::UnDirGraphStEph::*,
+    Chap62::StarPartitionStEph::StarPartitionStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap63/BenchConnectivityMtEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphMtEph::UnDirGraphMtEph::*,
+    Chap63::ConnectivityMtEph::ConnectivityMtEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap63/BenchConnectivityStEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphStEph::UnDirGraphStEph::*,
+    Chap63::ConnectivityStEph::ConnectivityStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap64/BenchSpanTreeMtEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphMtEph::UnDirGraphMtEph::*,
+    Chap64::SpanTreeMtEph::SpanTreeMtEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap64/BenchSpanTreeStEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphStEph::UnDirGraphStEph::*,
+    Chap64::SpanTreeStEph::SpanTreeStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap64/BenchTSPApproxMtEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::LabUnDirGraphMtEph::LabUnDirGraphMtEph::*,
+    Chap64::TSPApproxMtEph::TSPApproxMtEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap64/BenchTSPApproxStEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::LabUnDirGraphStEph::LabUnDirGraphStEph::*,
+    Chap64::TSPApproxStEph::TSPApproxStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/benches/Chap65/BenchUnionFindStEph.rs:7: (c) use apas_ai::Chap65::UnionFindStEph::UnionFindStEph::UnionFindStEph;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap03/TestInsertionSortSt.rs:1: (a) use apas_ai::Chap03::InsertionSortSt::InsertionSortSt::InsertionSortStTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap05/TestMappingStEph.rs:8: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap05/TestRelationStEph.rs:7: (!) // macro import
+use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestLabDirGraphStEph.rs:6: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestLabUnDirGraphMtEph.rs:6: (a) use apas_ai::Chap06::LabUnDirGraphMtEph::LabUnDirGraphMtEph::LabUnDirGraphMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestLabUnDirGraphStEph.rs:5: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestLabUnDirGraphStEph.rs:261: (a) use apas_ai::Chap06::LabUnDirGraphStEph::LabUnDirGraphStEph::LabUnDirGraphStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestUnDirGraphMtEph.rs:6: (a) use apas_ai::Chap06::UnDirGraphMtEph::UnDirGraphMtEph::UnDirGraphMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestWeightedDirGraphMtEphFloat.rs:11: (a) use apas_ai::Chap06::LabDirGraphMtEph::LabDirGraphMtEph::LabDirGraphMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestWeightedDirGraphMtEphInt.rs:6: (a) use apas_ai::Chap06::LabDirGraphMtEph::LabDirGraphMtEph::LabDirGraphMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestWeightedDirGraphStEphFloat.rs:8: (a) use apas_ai::Chap06::LabDirGraphStEph::LabDirGraphStEph::LabDirGraphStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestWeightedDirGraphStEphInt.rs:4: (a) use apas_ai::Chap06::LabDirGraphStEph::LabDirGraphStEph::LabDirGraphStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestWeightedDirGraphStEphInt.rs:7: (b) use apas_ai::{SetLit, WeightedDirGraphStEphIntLit};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestWeightedUnDirGraphMtEphFloat.rs:11: (a) use apas_ai::Chap06::LabUnDirGraphMtEph::LabUnDirGraphMtEph::LabUnDirGraphMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestWeightedUnDirGraphMtEphInt.rs:6: (a) use apas_ai::Chap06::LabUnDirGraphMtEph::LabUnDirGraphMtEph::LabUnDirGraphMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestWeightedUnDirGraphStEphFloat.rs:8: (a) use apas_ai::Chap06::LabUnDirGraphStEph::LabUnDirGraphStEph::LabUnDirGraphStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap06/TestWeightedUnDirGraphStEphInt.rs:3: (a) use apas_ai::Chap06::LabUnDirGraphStEph::LabUnDirGraphStEph::LabUnDirGraphStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap18/TestArraySeqMacro.rs:1: (c) use apas_ai::ArraySeqS;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap18/TestArraySeqMacro.rs:2: (c) use apas_ai::Chap18::ArraySeq::ArraySeq::{ArraySeq, ArraySeqS};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap18/TestArraySeqStEphMacro.rs:2: (a) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::ArraySeqStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap18/TestArraySeqStPerChap18.rs:4: (c) use apas_ai::Types::Types::Pair;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap18/TestArraySeqStPerMacro.rs:2: (c) use apas_ai::Chap18::ArraySeqStPer::ArraySeqStPer::{ArraySeqStPerS, ArraySeqStPerS as Seq, ArraySeqStPerTrait};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap21/TestAlgorithm_21_2.rs:5: (b) use apas_ai::{ArraySeqStPerSLit, PairLit};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap21/TestAlgorithm_21_6.rs:6: (b) use apas_ai::{ArraySeqStPerSLit, PairLit};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap21/TestExercise_21_7.rs:5: (b) use apas_ai::{ArraySeqStPerSLit, PairLit};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap26/TestDivConReduceMt.rs:4: (a) use apas_ai::Chap26::DivConReduceMt::DivConReduceMt::DivConReduceMtTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap26/TestDivConReduceSt.rs:4: (a) use apas_ai::Chap26::DivConReduceSt::DivConReduceSt::DivConReduceStTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap26/TestMergeSortMt.rs:4: (a) use apas_ai::Chap26::MergeSortMt::MergeSortMt::MergeSortMtTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap26/TestMergeSortSt.rs:4: (a) use apas_ai::Chap26::MergeSortSt::MergeSortSt::MergeSortStTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap27/TestReduceContractMtEph.rs:6: (a) use apas_ai::Chap27::ReduceContractMtEph::ReduceContractMtEph::ReduceContractMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap27/TestReduceContractStEph.rs:4: (a) use apas_ai::Chap27::ReduceContractStEph::ReduceContractStEph::ReduceContractStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap27/TestScanContractMtEph.rs:6: (a) use apas_ai::Chap27::ScanContractMtEph::ScanContractMtEph::ScanContractMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap27/TestScanContractStEph.rs:4: (a) use apas_ai::Chap27::ScanContractStEph::ScanContractStEph::ScanContractStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap28/TestMaxContigSubSumBruteStEph.rs:4: (a) use apas_ai::Chap28::MaxContigSubSumBruteStEph::MaxContigSubSumBruteStEph::MaxContigSubSumBruteTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap28/TestMaxContigSubSumDivConMtEph.rs:4: (a) use apas_ai::Chap28::MaxContigSubSumDivConMtEph::MaxContigSubSumDivConMtEph::MaxContigSubSumDivConMtTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap28/TestMaxContigSubSumDivConOptMtEph.rs:4: (a) use apas_ai::Chap28::MaxContigSubSumDivConOptMtEph::MaxContigSubSumDivConOptMtEph::MaxContigSubSumDivConOptMtTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap28/TestMaxContigSubSumDivConOptStEph.rs:4: (a) use apas_ai::Chap28::MaxContigSubSumDivConOptStEph::MaxContigSubSumDivConOptStEph::MaxContigSubSumDivConOptTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap28/TestMaxContigSubSumDivConStEph.rs:4: (a) use apas_ai::Chap28::MaxContigSubSumDivConStEph::MaxContigSubSumDivConStEph::MaxContigSubSumDivConTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap28/TestMaxContigSubSumOptMtEph.rs:4: (a) use apas_ai::Chap28::MaxContigSubSumOptMtEph::MaxContigSubSumOptMtEph::MaxContigSubSumOptMtTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap28/TestMaxContigSubSumOptStEph.rs:4: (a) use apas_ai::Chap28::MaxContigSubSumOptStEph::MaxContigSubSumOptStEph::MaxContigSubSumOptTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap28/TestMaxContigSubSumReducedStEph.rs:4: (a) use apas_ai::Chap28::MaxContigSubSumReducedStEph::MaxContigSubSumReducedStEph::MaxContigSubSumReducedTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap35/TestOrderStatSelectMtEph.rs:4: (a) use apas_ai::Chap35::OrderStatSelectMtEph::OrderStatSelectMtEph::OrderStatSelectMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap35/TestOrderStatSelectMtPer.rs:4: (a) use apas_ai::Chap35::OrderStatSelectMtPer::OrderStatSelectMtPer::OrderStatSelectMtPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap35/TestOrderStatSelectStEph.rs:4: (a) use apas_ai::Chap35::OrderStatSelectStEph::OrderStatSelectStEph::OrderStatSelectStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap35/TestOrderStatSelectStPer.rs:4: (a) use apas_ai::Chap35::OrderStatSelectStPer::OrderStatSelectStPer::OrderStatSelectStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap36/TestChapter36Mt.rs:6: (a) use apas_ai::Chap36::QuickSortMt::Chapter36Mt::Chapter36MtTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap36/TestChapter36MtSlice.rs:6: (a) use apas_ai::Chap36::QuickSortMtSlice::Chapter36MtSlice::Chapter36MtSliceTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap36/TestChapter36St.rs:4: (a) use apas_ai::Chap36::QuickSortSt::Chapter36St::Chapter36StTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap36/TestChapter36St.rs:6: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestAVLTreeSeq.rs:3: (c) use apas_ai::Chap18::ArraySeq::ArraySeq::ArraySeq;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestAVLTreeSeqStEph18.rs:6: (c) use apas_ai::Chap37::AVLTreeSeqStEph;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestAVLTreeSeqStEph18.rs:7: (c) use apas_ai::Chap37::AVLTreeSeqStEph::AVLTreeSeqStEph::AVLTreeSeqStEphS;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestAVLTreeSeqStEphChap37.rs:4: (c) use apas_ai::Chap37::AVLTreeSeqStEph::AVLTreeSeqStEph::AVLTreeSeqStEphS;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestAVLTreeSeqStPer18.rs:4: (c) use apas_ai::ArraySeqStPerS;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestAVLTreeSeqStPer19.rs:3: (c) use apas_ai::Chap37::AVLTreeSeqStPer;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTBBAlphaStEph.rs:3: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTMtEph.rs:9: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTRBStEph.rs:3: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetAVLMtEph.rs:4: (a) use apas_ai::Chap18::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetAVLMtEph.rs:5: (a) use apas_ai::Chap37::BSTAVLMtEph::BSTAVLMtEph::BSTAVLMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetBBAlphaMtEph.rs:4: (a) use apas_ai::Chap18::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetBBAlphaMtEph.rs:5: (a) use apas_ai::Chap37::BSTBBAlphaMtEph::BSTBBAlphaMtEph::BSTBBAlphaMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:1: (c) use apas_ai::Chap18::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerS;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:3: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:330: (c) use apas_ai::Chap37::BSTSetPlainMtEph::BSTSetPlainMtEph::BSTSetPlainMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:384: (c) use apas_ai::Chap37::BSTSetAVLMtEph::BSTSetAVLMtEph::BSTSetAVLMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:419: (c) use apas_ai::Chap37::BSTSetRBMtEph::BSTSetRBMtEph::BSTSetRBMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:456: (c) use apas_ai::Chap37::BSTSetBBAlphaMtEph::BSTSetBBAlphaMtEph::BSTSetBBAlphaMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:491: (c) use apas_ai::Chap39::BSTSetTreapMtEph::BSTSetTreapMtEph::BSTSetTreapMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:527: (c) use apas_ai::Chap37::BSTSetSplayMtEph::BSTSetSplayMtEph::BSTSetSplayMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:638: (c) use apas_ai::Chap37::BSTSetPlainMtEph::BSTSetPlainMtEph::BSTSetPlainMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:712: (c) use apas_ai::Chap37::BSTSetAVLMtEph::BSTSetAVLMtEph::BSTSetAVLMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:762: (c) use apas_ai::Chap37::BSTSetRBMtEph::BSTSetRBMtEph::BSTSetRBMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:811: (c) use apas_ai::Chap37::BSTSetBBAlphaMtEph::BSTSetBBAlphaMtEph::BSTSetBBAlphaMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:867: (c) use apas_ai::Chap39::BSTSetTreapMtEph::BSTSetTreapMtEph::BSTSetTreapMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:921: (c) use apas_ai::Chap37::BSTSetSplayMtEph::BSTSetSplayMtEph::BSTSetSplayMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:1048: (c) use apas_ai::Chap37::BSTSetAVLMtEph::BSTSetAVLMtEph::BSTSetAVLMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:1172: (c) use apas_ai::Chap37::BSTSetRBMtEph::BSTSetRBMtEph::BSTSetRBMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetMtEph.rs:1281: (c) use apas_ai::Chap37::BSTSetAVLMtEph::BSTSetAVLMtEph::BSTSetAVLMt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetPlainMtEph.rs:4: (a) use apas_ai::Chap18::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetPlainMtEph.rs:5: (a) use apas_ai::Chap37::BSTPlainMtEph::BSTPlainMtEph::BSTPlainMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetRBMtEph.rs:4: (a) use apas_ai::Chap18::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetRBMtEph.rs:5: (a) use apas_ai::Chap37::BSTRBMtEph::BSTRBMtEph::BSTRBMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetSplayMtEph.rs:4: (a) use apas_ai::Chap18::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap37/TestBSTSetSplayMtEph.rs:6: (a) use apas_ai::Chap37::BSTSplayMtEph::BSTSplayMtEph::BSTSplayMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap38/TestBSTParaMtEph.rs:3: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap38/TestBSTParaStEph.rs:5: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap39/TestBSTSetTreapMtEph.rs:4: (a) use apas_ai::Chap18::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap39/TestBSTSetTreapMtEph.rs:6: (a) use apas_ai::Chap39::BSTTreapMtEph::BSTTreapMtEph::BSTTreapMtEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap40/TestBSTKeyValueStEph.rs:3: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap40/TestBSTReducedStEph.rs:3: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap40/TestBSTSizeStEph.rs:3: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap41/TestAVLTreeSetMtPer.rs:4: (c) use apas_ai::Chap37::AVLTreeSeqMtPer::AVLTreeSeqMtPer::AVLTreeSeqMtPerS;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap41/TestAVLTreeSetStEph.rs:4: (c) use apas_ai::Chap37::AVLTreeSeqStEph::AVLTreeSeqStEph::AVLTreeSeqStEphS;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap41/TestAVLTreeSetStEph.rs:5: (a) use apas_ai::Chap37::AVLTreeSeqStEph::AVLTreeSeqStEph::AVLTreeSeqStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap41/TestAVLTreeSetStEph.rs:8: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap41/TestAVLTreeSetStPer.rs:4: (a) use apas_ai::Chap37::AVLTreeSeqStPer::AVLTreeSeqStPer::AVLTreeSeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap41/TestAVLTreeSetStPer.rs:6: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap41/TestArraySetEnumMtEph.rs:4: (c) use apas_ai::Chap19::ArraySeqMtEph::ArraySeqMtEph::ArraySeqMtEphS;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap41/TestArraySetStEph.rs:7: (!) use apas_ai::*;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap43/TestExample43_1.rs:3: (b) use apas_ai::Chap43::Example43_1::Example43_1::run_example43_1;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap43/TestOrderedTableMtPer.rs:3: (a) use apas_ai::Chap41::ArraySetStEph::ArraySetStEph::ArraySetStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap43/TestOrderedTableStPer.rs:3: (a) use apas_ai::Chap37::AVLTreeSeqStPer::AVLTreeSeqStPer::AVLTreeSeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap45/TestBalancedTreePQ.rs:6: (a) use apas_ai::Chap19::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap45/TestBinaryHeapPQ.rs:114: (a) use apas_ai::Chap18::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap45/TestBinaryHeapPQ.rs:303: (c) use apas_ai::Chap18::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerS;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap45/TestBinaryHeapPQ.rs:304: (a) use apas_ai::Chap18::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap45/TestHeapsortExample.rs:176: (a) use apas_ai::Chap18::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap45/TestHeapsortExample.rs:184: (a) use apas_ai::Chap37::AVLTreeSeqStPer::AVLTreeSeqStPer::AVLTreeSeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap45/TestSortedListPQ.rs:3: (a) use apas_ai::Chap18::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap45/TestUnsortedListPQ.rs:3: (a) use apas_ai::Chap19::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap47/TestAdvancedDoubleHashing.rs:12: (c) use apas_ai::Chap47::AdvancedDoubleHashing::AdvancedDoubleHashing::{
+    example_double_hashing_analysis, example_probe_sequence_analysis, AdvancedDoubleHashingStrategy,
+    DoubleHashingMetrics, RelativePrimeValidator,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap47/TestAdvancedDoubleHashing.rs:16: (c) use apas_ai::Chap47::FlatHashTable::FlatHashTable::{Entry, FlatHashTable, ProbeSequence};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap47/TestAdvancedDoubleHashing.rs:17: (c) use apas_ai::Chap47::HashFunctionTraits::HashFunctionTraits::DefaultHashFunction;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap47/TestClusteringAnalysis.rs:12: (c) use apas_ai::Chap47::AdvancedDoubleHashing::AdvancedDoubleHashing::AdvancedDoubleHashingStrategy;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap47/TestClusteringAnalysis.rs:13: (c) use apas_ai::Chap47::AdvancedLinearProbing::AdvancedLinearProbing::AdvancedLinearProbingStrategy;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap47/TestClusteringAnalysis.rs:14: (c) use apas_ai::Chap47::AdvancedQuadraticProbing::AdvancedQuadraticProbing::AdvancedQuadraticProbingStrategy;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap47/TestClusteringAnalysis.rs:15: (c) use apas_ai::Chap47::ClusteringAnalysis::ClusteringAnalysis::{
+    example_comprehensive_clustering_analysis, example_load_factor_impact_analysis, ClusteringAnalyzer,
+    ClusteringComparison, ClusteringPerformanceImpact, ClusteringSeverity, ComprehensiveClusteringAnalysis,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap47/TestClusteringAnalysis.rs:19: (c) use apas_ai::Chap47::FlatHashTable::FlatHashTable::{Entry, FlatHashTable};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap47/TestClusteringAnalysis.rs:20: (c) use apas_ai::Chap47::HashFunctionTraits::HashFunctionTraits::DefaultHashFunction;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap47/TestProbeSequenceExamples.rs:14: (c) use apas_ai::Chap47::ProbeSequenceExamples::ProbeSequenceExamples::{
+    comprehensive_probe_sequence_comparison, example_47_4_linear_probing_clustering,
+    example_47_5_quadratic_probing_prime_table, example_47_6_double_hashing_optimal, load_factor_impact_analysis,
+    prime_vs_composite_table_comparison, ProbeSequenceAnalyzer, ProbeSequenceVisualization, TextbookExampleResults,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap50/TestOBSTMtEph.rs:22: (c) use apas_ai::Chap50::Probability::Probability::Probability;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap50/TestOBSTMtEph.rs:92: (c) use apas_ai::Chap50::Probability::Probability::Probability;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap50/TestOBSTMtEph.rs:141: (c) use apas_ai::Chap50::Probability::Probability::Probability;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap50/TestOBSTMtEph.rs:156: (c) use apas_ai::Chap50::Probability::Probability::Probability;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap50/TestOBSTMtEph.rs:189: (c) use apas_ai::Chap50::Probability::Probability::Probability;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap50/TestOBSTMtEph.rs:220: (c) use apas_ai::Chap50::Probability::Probability::Probability;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap50/TestOBSTMtPer.rs:4: (c) use apas_ai::Chap50::Probability::Probability::Probability;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap50/TestOptBinSearchTreeStEph.rs:4: (c) use apas_ai::Chap50::Probability::Probability::Probability;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap50/TestOptBinSearchTreeStEph.rs:5: (b) use apas_ai::{prob, OBSTStEphLit};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap50/TestOptBinSearchTreeStPer.rs:3: (b) use apas_ai::prob;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap50/TestOptBinSearchTreeStPer.rs:5: (c) use apas_ai::Chap50::Probability::Probability::Probability;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap50/TestProbability.rs:169: (b) use apas_ai::prob;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap53/TestGraphSearchStPer.rs:4: (a) use apas_ai::Chap37::AVLTreeSeqStPer::AVLTreeSeqStPer::AVLTreeSeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap53/TestPQMinMtEph.rs:3: (a) use apas_ai::Chap37::AVLTreeSeqStEph::AVLTreeSeqStEph::AVLTreeSeqStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap53/TestPQMinMtPer.rs:3: (a) use apas_ai::Chap37::AVLTreeSeqMtPer::AVLTreeSeqMtPer::AVLTreeSeqMtPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap53/TestPQMinStEph.rs:3: (a) use apas_ai::Chap37::AVLTreeSeqStEph::AVLTreeSeqStEph::AVLTreeSeqStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap53/TestPQMinStPer.rs:3: (a) use apas_ai::Chap37::AVLTreeSeqStPer::AVLTreeSeqStPer::AVLTreeSeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap54/TestBFSMtEph.rs:4: (c) use apas_ai::Chap54::BFSMtEph::BFSMtEph;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap54/TestBFSMtPer.rs:4: (c) use apas_ai::Chap54::BFSMtPer::BFSMtPer;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap54/TestBFSStEph.rs:4: (c) use apas_ai::Chap54::BFSStEph::BFSStEph;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap54/TestBFSStPer.rs:4: (c) use apas_ai::Chap54::BFSStPer::BFSStPer;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap55/TestDFSStEph.rs:3: (c) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::{ArraySeqStEphS, ArraySeqStEphTrait};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap55/TestDFSStEph.rs:5: (b) use apas_ai::Chap55::DFSStEph::DFSStEph::dfs;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap55/TestDFSStPer.rs:3: (c) use apas_ai::Chap19::ArraySeqStPer::ArraySeqStPer::{ArraySeqStPerS, ArraySeqStPerTrait};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap55/TestDFSStPer.rs:5: (b) use apas_ai::Chap55::DFSStPer::DFSStPer::dfs;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap55/TestSCCStEph.rs:4: (a) use apas_ai::Chap37::AVLTreeSeqStEph::AVLTreeSeqStEph::AVLTreeSeqStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap55/TestSCCStPer.rs:4: (a) use apas_ai::Chap37::AVLTreeSeqStPer::AVLTreeSeqStPer::AVLTreeSeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap55/TestTopoSortStEph.rs:4: (a) use apas_ai::Chap37::AVLTreeSeqStEph::AVLTreeSeqStEph::AVLTreeSeqStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap55/TestTopoSortStPer.rs:4: (a) use apas_ai::Chap37::AVLTreeSeqStPer::AVLTreeSeqStPer::AVLTreeSeqStPerTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap56/TestAllPairsResultStEphFloat.rs:6: (c) use apas_ai::Chap56::AllPairsResultStEphFloat::AllPairsResultStEphFloat::AllPairsResultStEphFloat;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap56/TestAllPairsResultStEphInt.rs:4: (c) use apas_ai::Chap56::AllPairsResultStEphInt::AllPairsResultStEphInt::AllPairsResultStEphInt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap56/TestAllPairsResultStPerFloat.rs:6: (c) use apas_ai::Chap56::AllPairsResultStPerFloat::AllPairsResultStPerFloat::AllPairsResultStPerFloat;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap56/TestAllPairsResultStPerInt.rs:4: (c) use apas_ai::Chap56::AllPairsResultStPerInt::AllPairsResultStPerInt::AllPairsResultStPerInt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap56/TestPathWeightUtilsStEph.rs:6: (c) use apas_ai::Chap18::ArraySeqStEph::ArraySeqStEph::ArraySeqStEphS;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap56/TestPathWeightUtilsStEph.rs:7: (c) use apas_ai::Chap19::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerS;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap56/TestPathWeightUtilsStPer.rs:6: (c) use apas_ai::Chap19::ArraySeqStPer::ArraySeqStPer::ArraySeqStPerS;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap56/TestSSSPResultStEphFloat.rs:6: (c) use apas_ai::Chap56::SSSPResultStEphFloat::SSSPResultStEphFloat::SSSPResultStEphFloat;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap56/TestSSSPResultStEphInt.rs:4: (c) use apas_ai::Chap56::SSSPResultStEphInt::SSSPResultStEphInt::SSSPResultStEphInt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap56/TestSSSPResultStPerFloat.rs:6: (c) use apas_ai::Chap56::SSSPResultStPerFloat::SSSPResultStPerFloat::SSSPResultStPerFloat;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap56/TestSSSPResultStPerInt.rs:4: (c) use apas_ai::Chap56::SSSPResultStPerInt::SSSPResultStPerInt::SSSPResultStPerInt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap57/TestDijkstraStEphFloat.rs:6: (c) use apas_ai::Chap06::WeightedDirGraphStEphFloat::WeightedDirGraphStEphFloat::WeightedDirGraphStEphFloat;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap57/TestDijkstraStEphFloat.rs:7: (b) use apas_ai::Chap57::DijkstraStEphFloat::DijkstraStEphFloat::dijkstra;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap57/TestDijkstraStEphInt.rs:5: (c) use apas_ai::Chap06::WeightedDirGraphStEphInt::WeightedDirGraphStEphInt::WeightedDirGraphStEphInt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap57/TestDijkstraStEphInt.rs:6: (b) use apas_ai::Chap57::DijkstraStEphInt::DijkstraStEphInt::dijkstra;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap57/TestStackStEph.rs:4: (c) use apas_ai::Chap57::StackStEph::StackStEph::StackStEph;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap58/TestBellmanFordStEphFloat.rs:5: (c) use apas_ai::Chap06::WeightedDirGraphStEphFloat::WeightedDirGraphStEphFloat::WeightedDirGraphStEphFloat;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap58/TestBellmanFordStEphFloat.rs:6: (b) use apas_ai::Chap58::BellmanFordStEphFloat::BellmanFordStEphFloat::bellman_ford;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap58/TestBellmanFordStEphInt.rs:5: (c) use apas_ai::Chap06::WeightedDirGraphStEphInt::WeightedDirGraphStEphInt::WeightedDirGraphStEphInt;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap58/TestBellmanFordStEphInt.rs:6: (b) use apas_ai::Chap58::BellmanFordStEphInt::BellmanFordStEphInt::bellman_ford;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap59/TestJohnsonMtEphFloat.rs:3: (b) use apas_ai::Chap59::JohnsonMtEphFloat::JohnsonMtEphFloat::johnson_apsp;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap59/TestJohnsonMtEphInt.rs:3: (b) use apas_ai::Chap59::JohnsonMtEphInt::JohnsonMtEphInt::johnson_apsp;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap59/TestJohnsonStEphFloat.rs:3: (b) use apas_ai::Chap59::JohnsonStEphFloat::JohnsonStEphFloat::johnson_apsp;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap59/TestJohnsonStEphInt.rs:3: (b) use apas_ai::Chap59::JohnsonStEphInt::JohnsonStEphInt::johnson_apsp;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap61/TestEdgeContractionMtEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphMtEph::UnDirGraphMtEph::*,
+    Chap61::EdgeContractionMtEph::EdgeContractionMtEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap61/TestEdgeContractionStEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphStEph::UnDirGraphStEph::*,
+    Chap61::EdgeContractionStEph::EdgeContractionStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap61/TestVertexMatchingMtEph.rs:5: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphMtEph::UnDirGraphMtEph::*,
+    Chap61::VertexMatchingMtEph::VertexMatchingMtEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap61/TestVertexMatchingStEph.rs:5: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphStEph::UnDirGraphStEph::*,
+    Chap61::VertexMatchingStEph::VertexMatchingStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap62/TestStarContractionMtEph.rs:5: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphMtEph::UnDirGraphMtEph::*,
+    Chap62::StarContractionMtEph::StarContractionMtEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap62/TestStarContractionStEph.rs:5: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphStEph::UnDirGraphStEph::*,
+    Chap62::StarContractionStEph::StarContractionStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap62/TestStarPartitionMtEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphMtEph::UnDirGraphMtEph::*,
+    Chap62::StarPartitionMtEph::StarPartitionMtEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap62/TestStarPartitionStEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphStEph::UnDirGraphStEph::*,
+    Chap62::StarPartitionStEph::StarPartitionStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap63/TestConnectivityMtEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphMtEph::UnDirGraphMtEph::*,
+    Chap63::ConnectivityMtEph::ConnectivityMtEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap63/TestConnectivityStEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphStEph::UnDirGraphStEph::*,
+    Chap63::ConnectivityStEph::ConnectivityStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap64/TestSpanTreeMtEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphMtEph::UnDirGraphMtEph::*,
+    Chap62::StarPartitionMtEph::StarPartitionMtEph::*, Chap64::SpanTreeMtEph::SpanTreeMtEph::*, SetLit,
+    Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap64/TestSpanTreeStEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::UnDirGraphStEph::UnDirGraphStEph::*,
+    Chap64::SpanTreeStEph::SpanTreeStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap64/TestTSPApproxMtEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::LabUnDirGraphMtEph::LabUnDirGraphMtEph::*,
+    Chap64::TSPApproxMtEph::TSPApproxMtEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap64/TestTSPApproxStEph.rs:3: (!) use apas_ai::{
+    Chap05::SetStEph::SetStEph::*, Chap06::LabUnDirGraphStEph::LabUnDirGraphStEph::*,
+    Chap64::TSPApproxStEph::TSPApproxStEph::*, SetLit, Types::Types::*,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap65/TestUnionFindStEph.rs:5: (c) use apas_ai::Chap65::UnionFindStEph::UnionFindStEph::UnionFindStEph;
+APAS-AI-copy/apas-ai/apas-ai/tests/Chap65/TestUnionFindStEph.rs:298: (a) use apas_ai::Chap65::UnionFindStEph::UnionFindStEph::UnionFindStEphTrait;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:3: (b) use apas_ai::{ArraySeqStPerSLit};
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:35: (c) // Verify all chapter modules can be imported without compilation errors
+    use apas_ai::Chap03;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:37: (c) use apas_ai::Chap05;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:38: (c) use apas_ai::Chap06;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:39: (c) use apas_ai::Chap11;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:40: (c) use apas_ai::Chap12;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:41: (c) use apas_ai::Chap17;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:42: (c) use apas_ai::Chap18;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:43: (c) use apas_ai::Chap19;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:44: (c) use apas_ai::Chap23;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:45: (c) use apas_ai::Chap36;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:46: (c) use apas_ai::Chap37;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:47: (c) use apas_ai::Chap38;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestLibIntegration.rs:48: (c) use apas_ai::Chap39;
+APAS-AI-copy/apas-ai/apas-ai/tests/TestMatrixChain.rs:3: (c) use apas_ai::Chap50::MatrixChainStEph::MatrixChainStEph::{
+    MatrixChainStEphS, MatrixChainStEphTrait, MatrixDim as MatrixChainStEphMatrixDim,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/TestMinEditDist.rs:3: (!) use apas_ai::{
+    ArraySeqMtEphSLit, ArraySeqStEphS, ArraySeqStPerS, Chap49::MinEditDistMtEph::MinEditDistMtEph::*,
+    Chap49::MinEditDistMtPer::MinEditDistMtPer::*, Chap49::MinEditDistStEph::MinEditDistStEph::*,
+    Chap49::MinEditDistStPer::MinEditDistStPer::*, MinEditDistMtEphLit, MinEditDistMtPerLit, MinEditDistStEphLit,
+    MinEditDistStPerLit, Types::Types::*
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/TestOptBinSearchTree.rs:3: (b) use apas_ai::{
+    Chap50::{
+        OptBinSearchTreeStEph::OptBinSearchTreeStEph::{KeyProb as OBSTStEphKeyProb, OBSTStEphS, OBSTStEphTrait},
+        OptBinSearchTreeStPer::OptBinSearchTreeStPer::{KeyProb as OBSTStPerKeyProb, OBSTStPerS, OBSTStPerTrait},
+        Probability::Probability::Probability,
+    },
+    OBSTStPerLit, prob,
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/TestSubsetSum.rs:3: (!) use apas_ai::{
+    ArraySeqMtEphSLit, ArraySeqStEphS, ArraySeqStPerS, Chap49::SubsetSumMtEph::SubsetSumMtEph::*,
+    Chap49::SubsetSumMtPer::SubsetSumMtPer::*, Chap49::SubsetSumStEph::SubsetSumStEph::*,
+    Chap49::SubsetSumStPer::SubsetSumStPer::*, SubsetSumMtEphLit, SubsetSumMtPerLit, SubsetSumStEphLit,
+    SubsetSumStPerLit, Types::Types::*
+};
+APAS-AI-copy/apas-ai/apas-ai/tests/TestTypes.rs:7: (b) use apas_ai::{EdgeLit, PairLit, EdgeList, PairList, ParaPair};
+
+================================================================================
+PARETO: BY VIOLATION TYPE
+================================================================================
+169    ( 44.8%, cumulative  44.8%): (c) single type import
+100    ( 26.5%, cumulative  71.4%): (a) single trait import
+74     ( 19.6%, cumulative  91.0%): (!) BOGUS top-level wildcard
+34     (  9.0%, cumulative 100.0%): (b) single function import
+
+================================================================================
+PARETO: BY DIRECTORY
+================================================================================
+209    ( 55.4%, cumulative  55.4%): tests [!:33, a:69, b:21, c:86]
+168    ( 44.6%, cumulative 100.0%): benches [!:41, a:31, b:13, c:83]
+0      (  0.0%, cumulative 100.0%): src [!:0, a:0, b:0, c:0]
+
+--------------------------------------------------------------------------------
+Total non-wildcard uses: 377
+Files affected: 241/876
+
+✗ Found 377 non-wildcard use statements in 241 file(s)
+Completed in 368ms
+================================================================================
+PARETO: BY VIOLATION TYPE
+================================================================================
+0      (  0.0%, cumulative   0.0%): (!) BOGUS top-level wildcard
+0      (  0.0%, cumulative   0.0%): (a) single trait import
+0      (  0.0%, cumulative   0.0%): (b) single function import
+0      (  0.0%, cumulative   0.0%): (c) single type import
+
+================================================================================
+PARETO: BY DIRECTORY
+================================================================================
+0      (  0.0%, cumulative   0.0%): benches [!:0, a:0, b:0, c:0]
+0      (  0.0%, cumulative   0.0%): src [!:0, a:0, b:0, c:0]
+0      (  0.0%, cumulative   0.0%): tests [!:0, a:0, b:0, c:0]
+
+--------------------------------------------------------------------------------
+Total non-wildcard uses: 0
+Files affected: 0/2
+
+✓ All apas_ai imports use wildcard imports
+Completed in 1ms

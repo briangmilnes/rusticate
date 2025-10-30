@@ -23,22 +23,18 @@ Warning: import-order exited with status exit status: 1
 === Running inherent-plus-trait-impl ===
 
 === Running integration-test-structure ===
-Warning: integration-test-structure exited with status exit status: 1
 
 === Running internal-method-impls ===
-Warning: internal-method-impls exited with status exit status: 1
 
 === Running logging ===
 
 === Running minimize-ufcs-call-sites ===
 
 === Running module-encapsulation ===
-Warning: module-encapsulation exited with status exit status: 1
 
 === Running no-extern-crate ===
 
 === Running non-wildcard-uses ===
-Warning: non-wildcard-uses exited with status exit status: 1
 
 === Running no-trait-method-duplication ===
 
@@ -46,7 +42,6 @@ Warning: non-wildcard-uses exited with status exit status: 1
 Warning: pascal-case-filenames exited with status exit status: 1
 
 === Running public-only-inherent-impls ===
-Warning: public-only-inherent-impls exited with status exit status: 1
 
 === Running qualified-paths ===
 
@@ -65,7 +60,6 @@ Warning: public-only-inherent-impls exited with status exit status: 1
 === Running stt-compliance ===
 
 === Running stub-delegation ===
-Warning: stub-delegation exited with status exit status: 1
 
 === Running test-modules ===
 
@@ -81,13 +75,167 @@ Warning: stub-delegation exited with status exit status: 1
 Warning: typeclasses exited with status exit status: 1
 
 === Running variable-naming ===
-Warning: variable-naming exited with status exit status: 1
 
 === Running where-clause-simplification ===
-Warning: where-clause-simplification exited with status exit status: 1
 
 === Summary ===
 Ran 37 review tools
 All tools completed successfully
 
-Completed in 8788ms
+Completed in 1197ms
+
+=== Running bench-modules ===
+
+=== Running string-hacking ===
+
+Completed in 2ms
+
+=== Running logging ===
+
+Completed in 160ms
+
+Completed in 245ms
+
+=== Running comment-placement ===
+
+Completed in 2ms
+
+=== Running doctests ===
+
+Completed in 2ms
+
+=== Running duplicate-bench-names ===
+
+Completed in 2ms
+
+=== Running duplicate-methods ===
+
+Completed in 2ms
+
+=== Running impl-order ===
+
+Completed in 1ms
+
+=== Running impl-trait-bounds ===
+
+Completed in 1ms
+
+=== Running import-order ===
+
+Completed in 1ms
+
+=== Running inherent-and-trait-impl ===
+
+Completed in 1ms
+
+=== Running inherent-plus-trait-impl ===
+
+Completed in 1ms
+
+=== Running integration-test-structure ===
+
+Completed in 1ms
+
+=== Running internal-method-impls ===
+
+Completed in 1ms
+
+=== Running logging ===
+
+Completed in 1ms
+
+=== Running minimize-ufcs-call-sites ===
+
+Completed in 1ms
+
+=== Running module-encapsulation ===
+
+Completed in 1ms
+
+=== Running no-extern-crate ===
+
+Completed in 2ms
+
+=== Running non-wildcard-uses ===
+
+Completed in 1ms
+
+=== Running no-trait-method-duplication ===
+
+Completed in 1ms
+
+=== Running pascal-case-filenames ===
+
+Completed in 2ms
+
+=== Running public-only-inherent-impls ===
+
+Completed in 2ms
+
+=== Running qualified-paths ===
+
+Completed in 2ms
+
+=== Running redundant-inherent-impls ===
+
+Completed in 2ms
+
+=== Running single-trait-impl ===
+
+Completed in 2ms
+
+=== Running snake-case-filenames ===
+
+Completed in 1ms
+
+=== Running st-mt-consistency ===
+
+Completed in 2ms
+
+=== Running string-hacking ===
+
+Completed in 3ms
+
+=== Running struct-file-naming ===
+
+Completed in 1ms
+
+=== Running stt-compliance ===
+
+Completed in 1ms
+
+=== Running stub-delegation ===
+
+Completed in 1ms
+
+=== Running test-modules ===
+
+Completed in 295ms
+
+=== Running trait-bound-mismatches ===
+
+Completed in 1ms
+
+=== Running trait-definition-order ===
+
+Completed in 1ms
+
+=== Running trait-method-conflicts ===
+
+Completed in 10ms
+
+=== Running trait-self-usage ===
+
+Completed in 1ms
+
+=== Running typeclasses ===
+
+Completed in 1ms
+
+=== Running variable-naming ===
+
+Completed in 1ms
+
+=== Running where-clause-simplification ===
+
+Completed in 1ms
