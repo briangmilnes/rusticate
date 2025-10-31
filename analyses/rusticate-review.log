@@ -1,5 +1,205 @@
+Running all 38 review tools...
 
-[1/1] Running string-hacking
+
+[1/38] Running bench-modules
+✓ All benchmark modules compile successfully
+Completed in 98ms
+
+[2/38] Running comment-placement
+Entering directory 'src/bin'
+
+No comment placement issues found.
+Completed in 0ms
+
+[3/38] Running doctests
+Entering directory 'src/bin'
+
+✓ All doctests parse correctly
+
+Summary: 0 doctest(s) failed
+Completed in 0ms
+
+[4/38] Running duplicate-bench-names
+✓ All 0 benchmark names are unique in Cargo.toml
+Completed in 0ms
+
+[5/38] Running duplicate-methods
+================================================================================
+DUPLICATE METHODS REVIEW
+================================================================================
+
+✓ No duplicate methods found!
+================================================================================
+SUMMARY:
+  Total files with duplicates: 0
+  Total duplicate names: 0
+
+Completed in 0ms
+
+[6/38] Running impl-order
+Entering directory 'src/bin'
+
+✓ No src/ directories to check
+Completed in 0ms
+
+[7/38] Running impl-trait-bounds
+INHERENT IMPL BLOCKS WITH TRAIT BOUNDS COMPARISON
+================================================================================
+
+================================================================================
+SUMMARY
+================================================================================
+Total impl blocks with generics: 0
+  With trait definitions: 0
+  Without trait definitions: 0
+
+Completed in 0ms
+
+[8/38] Running import-order
+Entering directory 'src/bin'
+
+✗ Found 2 violation(s) (RustRules.md Lines 50, 75-86):
+
+count_as.rs:13: std import after external imports
+  use std::fs;
+count_as.rs:13: missing blank line between External and Std imports
+  use std::fs;
+
+Summary: 1 files checked, 1 files with violations, 2 total violations
+Completed in 0ms
+Warning: import-order exited with status exit status: 1
+
+[9/38] Running inherent-and-trait-impl
+Entering directory 'src/bin'
+
+
+✓ No issues found in 1 file(s)
+Completed in 0ms
+
+[10/38] Running inherent-plus-trait-impl
+
+✓ All structs use trait impl only (no inherent+trait duplication)!
+
+Completed in 0ms
+
+[11/38] Running integration-test-structure
+Entering directory 'src/bin'
+
+✓ No tests/ directory found
+Completed in 0ms
+
+[12/38] Running internal-method-impls
+Entering directory 'src/bin'
+
+✓ No problematic inherent impls found in 1 file(s)
+Completed in 0ms
+
+[13/38] Running logging
+Partial logging:
+  src/bin/count_as.rs: missing analyses/ logging
+
+Summary: 1 files checked, 0 with complete logging, 1 with issues
+Completed in 0ms
+
+[14/38] Running minimize-ufcs-call-sites
+Entering directory 'src/bin'
+✓ No UFCS at call sites (outside impl/trait)
+Summary: 1 files checked, 0 files with violations, 0 total violations
+Completed in 0ms
+
+[15/38] Running module-encapsulation
+Entering directory 'src/bin'
+
+✓ No src/ directories to check
+Completed in 0ms
+
+[16/38] Running no-extern-crate
+Entering directory 'src/bin'
+
+✓ No 'extern crate' usage found
+
+Summary: 1 files checked, 0 files with violations, 0 total violations
+Completed in 0ms
+
+[17/38] Running non-wildcard-uses
+================================================================================
+PARETO: BY VIOLATION TYPE
+================================================================================
+0      (  0.0%, cumulative   0.0%): (b) single function import
+0      (  0.0%, cumulative   0.0%): (a) single trait import
+0      (  0.0%, cumulative   0.0%): (!) BOGUS top-level wildcard
+0      (  0.0%, cumulative   0.0%): (c) single type import
+
+================================================================================
+PARETO: BY DIRECTORY
+================================================================================
+0      (  0.0%, cumulative   0.0%): benches [!:0, a:0, b:0, c:0]
+0      (  0.0%, cumulative   0.0%): src [!:0, a:0, b:0, c:0]
+0      (  0.0%, cumulative   0.0%): tests [!:0, a:0, b:0, c:0]
+
+--------------------------------------------------------------------------------
+Total non-wildcard uses: 0
+Files affected: 0/1
+
+✓ All apas_ai imports use wildcard imports
+Completed in 0ms
+
+[18/38] Running no-trait-method-duplication
+✓ No Trait Method Duplication: PASS
+
+Completed in 0ms
+
+[19/38] Running pascal-case-filenames
+Entering directory 'src/bin'
+
+✗ Found 1 violation(s):
+
+count_as.rs:1: File 'count_as.rs' uses snake_case (underscore), should be PascalCase
+
+Summary: 1 files checked, 1 files with violations
+Completed in 0ms
+Warning: pascal-case-filenames exited with status exit status: 1
+
+[20/38] Running pub-mod
+Entering directory 'src/bin'
+
+✓ All non-binary modules have pub mod declarations
+Completed in 0ms
+
+[21/38] Running public-only-inherent-impls
+Entering directory 'src/bin'
+
+✓ No public-only inherent impls found in 1 file(s)
+Completed in 0ms
+
+[22/38] Running qualified-paths
+✓ Qualified Path Organization: No violations found (RustRules.md)
+
+Completed in 0ms
+
+[23/38] Running redundant-inherent-impls
+No redundant inherent impls found.
+
+[24/38] Running single-trait-impl
+Entering directory 'src/bin'
+
+✓ No src/ directories to check
+Completed in 0ms
+
+[25/38] Running snake-case-filenames
+Entering directory 'src/bin'
+
+✓ All files follow snake_case naming convention
+
+Summary: 1 files checked, 0 files with violations
+Completed in 0ms
+
+[26/38] Running st-mt-consistency
+✓ St/Mt Consistency: All files properly implement single/multi-threading
+
+Completed in 0ms
+
+[27/38] Running string-hacking
 Entering directory 'src/bin/count_as.rs'
 
 
@@ -7,4 +207,113 @@ Total violations: 1 files checked, 0 violations found
 
 Completed in 0ms
 
+[28/38] Running struct-file-naming
+Entering directory 'src/bin'
+
+✓ Struct/File Naming: No violations found
+
+Summary: 1 files checked, 0 violations
+Completed in 0ms
+
+[29/38] Running stt-compliance
+Analyzing 0 source files for StT compliance...
+================================================================================
+
+StT requirements: Eq + Clone + Display + Debug + Sized
+
+
+✓ All public structs satisfy StT requirements!
+
+Completed in 0ms
+
+[30/38] Running stub-delegation
+Entering directory 'src/bin'
+
+✓ No stub delegation found in 1 file(s)
+Completed in 0ms
+
+[31/38] Running test-modules
+✓ All test modules compile successfully
+Completed in 127ms
+
+[32/38] Running trait-bound-mismatches
+Entering directory 'src/bin'
+
+✓ No src/ directories to check
+Completed in 0ms
+
+[33/38] Running trait-definition-order
+✓ All trait definitions are in correct order
+
+Completed in 0ms
+
+[34/38] Running trait-method-conflicts
+Analyzing 33 test/benchmark files for trait method conflicts...
+================================================================================
+
+✓ No trait method conflicts detected!
+All test/benchmark files are safe for trait default implementation refactor.
+
+Completed in 4ms
+
+[35/38] Running trait-self-usage
+Reviewing 1 Rust files for trait Self usage...
+✓ Trait Self Usage: No violations found
+
+Completed in 0ms
+
+[36/38] Running typeclasses
+Entering directory 'src/bin'
+
+count_as.rs:1: missing module - BUG
+count_as.rs:1:	no pub data type (struct, enum, or type alias) - BUG
+count_as.rs:1:	no pub trait - BUG
+count_as.rs:1:	no Trait impl - BUG
+count_as.rs:1:	no duplicate method names
+count_as.rs:1:	no fixes known
+count_as.rs:1:	Module summary: 4 BUGs, 0 WARNINGs, 0 OKs, 0 fixes
+
+================================================================================
+SUMMARY:
+  Total modules analyzed: 1
+  Clean modules (no bugs or warnings): 0
+  Modules with no known fixes: 1
+  Total OKs: 0
+  Total WARNINGs: 0
+  Total BUGs: 4
+  Total fixes recommended: 0
+
+================================================================================
+PARETO ANALYSIS: BUGS
+================================================================================
+1      ( 25.0%, cumulative  25.0%): no pub trait
+1      ( 25.0%, cumulative  50.0%): no Trait impl
+1      ( 25.0%, cumulative  75.0%): missing module
+1      ( 25.0%, cumulative 100.0%): no pub data type (struct, enum, or type alias)
+0      (  0.0%, cumulative 100.0%): duplicate method
+0      (  0.0%, cumulative 100.0%): inherent impl with pub methods
+0      (  0.0%, cumulative 100.0%): inherent impl with only internal methods/functions
+0      (  0.0%, cumulative 100.0%): method with unused self parameter
+--------------------------------------------------------------------------------
+TOTAL BUGS: 4
+
 Completed in 1ms
+Warning: typeclasses exited with status exit status: 1
+
+[37/38] Running variable-naming
+Entering directory 'src/bin'
+
+✓ No src/ directories to check
+Completed in 0ms
+
+[38/38] Running where-clause-simplification
+Entering directory 'src/bin'
+
+✓ No src/ directories to check
+Completed in 0ms
+
+=== Summary ===
+Ran 38 review tools
+All tools completed successfully
+
+Completed in 275ms

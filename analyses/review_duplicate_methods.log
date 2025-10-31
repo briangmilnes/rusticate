@@ -120,3 +120,28 @@ SUMMARY:
   Total duplicate names: 0
 
 Completed in 0ms
+================================================================================
+DUPLICATE METHODS REVIEW
+================================================================================
+
+Duplicate method 'get_search_dirs' in /home/milnes/projects/rusticate/src/args.rs:
+/home/milnes/projects/rusticate/src/args.rs:285: pub fn get_search_dirs(&self) -> Vec<PathBuf> {
+/home/milnes/projects/rusticate/src/args.rs:393: pub fn get_search_dirs(base: &PathBuf) -> Vec<PathBuf> {
+
+================================================================================
+SUMMARY:
+  Total files with duplicates: 1
+  Total duplicate names: 1
+
+Completed in 68ms
+================================================================================
+DUPLICATE METHODS REVIEW
+================================================================================
+
+✓ No duplicate methods found!
+================================================================================
+SUMMARY:
+  Total files with duplicates: 0
+  Total duplicate names: 0
+
+Completed in 0ms

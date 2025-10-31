@@ -487,3 +487,364 @@ Entering directory 'src/bin'
 
 No comment placement issues found.
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+/home/milnes/projects/rusticate/src/args.rs:223:	comment not in proper context: // Skip directories that should be excluded
+/home/milnes/projects/rusticate/src/bin/compile_src_tests_benches_run_tests.rs:98:	comment not in proper context: // Extract module name from path like "src/Chap37/BSTSetSplayMtEph.rs"
+/home/milnes/projects/rusticate/src/bin/compile_src_tests_benches_run_tests.rs:135:	comment not in proper context: // Step 1: Compile src (full lib)
+/home/milnes/projects/rusticate/src/bin/compile_src_tests_benches_run_tests.rs:174:	comment not in proper context: // For directory, compile entire lib, then compile/run tests for that directory
+/home/milnes/projects/rusticate/src/bin/count_loc.rs:53:	comment not in proper context: // Helper to print, ignoring broken pipe errors
+/home/milnes/projects/rusticate/src/bin/fix_chap18_chap19_both.rs:145:	comment not in proper context: // PATH_TYPE should have a PATH child with the type name
+/home/milnes/projects/rusticate/src/bin/fix_chap18_chap19_both.rs:177:	comment not in proper context: // Use AST to parse UFCS: <Type as Trait>::function
+/home/milnes/projects/rusticate/src/bin/fix_chap18_chap19_both.rs:309:	comment not in proper context: // Setup logging to analyses/fix_chap18_chap19_both.log
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19.rs:38:	comment not in proper context: // Check if any NAME_REF in the path ends with "Eph"
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19.rs:53:	comment not in proper context: // Check if the use statement imports RedefinableTrait
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19.rs:68:	comment not in proper context: // Only process files in Chap20+
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19_per.rs:50:	comment not in proper context: // Check if the use path contains "ArraySeqStPer"
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19_per.rs:65:	comment not in proper context: // Check if the file uses ArraySeqStPerRedefinableTrait via AST
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19_per.rs:79:	comment not in proper context: // Only process files in Chap20+
+/home/milnes/projects/rusticate/src/bin/fix_doctests.rs:43:	comment not in proper context: // Returns: (line_number, byte_offset_after_rust_marker, code_content)
+/home/milnes/projects/rusticate/src/bin/fix_grouped_imports.rs:42:	comment not in proper context: // Walk up to find the path before the USE_TREE_LIST
+/home/milnes/projects/rusticate/src/bin/fix_grouped_imports.rs:57:	comment not in proper context: // Get the use tree
+/home/milnes/projects/rusticate/src/bin/fix_grouped_imports.rs:118:	comment not in proper context: // Find the start of the line containing this offset
+/home/milnes/projects/rusticate/src/bin/fix_import_order.rs:52:	comment not in proper context: // Extract path after "use " and before trailing semicolon
+/home/milnes/projects/rusticate/src/bin/fix_logging.rs:96:	comment not in proper context: // Check if this is a println! macro (not eprintln!)
+/home/milnes/projects/rusticate/src/bin/fix_logging.rs:106:	comment not in proper context: // Check if this node is a println! macro call that should be replaced
+/home/milnes/projects/rusticate/src/bin/fix_logging.rs:151:	comment not in proper context: // First, rewrite the AST to replace println! with log!
+/home/milnes/projects/rusticate/src/bin/fix_min_typing.rs:115:	comment not in proper context: // Check if this is a LET statement we should rewrite
+/home/milnes/projects/rusticate/src/bin/fix_min_typing.rs:350:	comment not in proper context: // Look for pattern: TypeName::something
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:149:	comment not in proper context: // Parse the type as a Rust type expression
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:303:	comment not in proper context: // Check for explicit import
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:380:	comment not in proper context: // Step 1: Analyze the module to determine the transformation
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:587:	comment not in proper context: // First check: if module already has pub struct, pub enum, or pub type, no type alias needed
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:835:	comment not in proper context: // Use AST to find proper insertion point after all use statements
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:904:	comment not in proper context: // src/ChapXX/ModuleName.rs -> tests/ChapXX/TestModuleName.rs
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:947:	comment not in proper context: // src/ChapXX/ModuleName.rs -> benches/ChapXX/BenchModuleName.rs
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1057:	comment not in proper context: // Transform call sites from Module::method(arg1, arg2) to arg1.method(arg2)
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1135:	comment not in proper context: // Parse the source module and extract trait method names
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1168:	comment not in proper context: // Check if there's already an impl Trait for T block
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1192:	comment not in proper context: // Check if there's already an inherent impl T block
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1222:	comment not in proper context: // Create impl T block by converting standalone pub fn to method
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1300:	comment not in proper context: // Check if there are any standalone pub fn declarations that match trait methods
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1462:	comment not in proper context: // Step D: Remove standalone pub fn that duplicate trait methods
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1632:	comment not in proper context: // Step C: Create impl Trait for T block by moving pub fn implementations
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1806:	comment not in proper context: // Step B: Transform trait method signatures from fn(n: N) -> R to fn(&self) -> R
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1901:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1946:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1996:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:2052:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:2122:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_non_wildcard_uses.rs:23:	comment not in proper context: // Skip TestLibIntegration.rs - it tests module structure and should not be modified
+/home/milnes/projects/rusticate/src/bin/fix_non_wildcard_uses.rs:306:	comment not in proper context: // Extract module name from path like "apas_ai::ChapXX::ModuleName::ModuleName"
+/home/milnes/projects/rusticate/src/bin/fix_non_wildcard_uses.rs:332:	comment not in proper context: // Extract module path from AST path, excluding the last segment
+/home/milnes/projects/rusticate/src/bin/fix_pub_mod.rs:46:	comment not in proper context: // Parse source and find MODULE node with pub visibility
+/home/milnes/projects/rusticate/src/bin/fix_unnecessary_ufcs.rs:48:	comment not in proper context: // Build replacement text by emitting AST nodes
+/home/milnes/projects/rusticate/src/bin/fix_unnecessary_ufcs.rs:183:	comment not in proper context: // If this node is in our replacement map, emit the replacement
+/home/milnes/projects/rusticate/src/bin/review.rs:34:	comment not in proper context: // Log tool output to both stdout and file
+/home/milnes/projects/rusticate/src/bin/review.rs:46:	comment not in proper context: // Only tools that are actually built (in Cargo.toml)
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:51:	comment not in proper context: // Check if any NAME_REF in the path ends with "Eph"
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:66:	comment not in proper context: // Check if any NAME_REF in the path ends with "Per"
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:92:	comment not in proper context: // Returns (eph_count, per_count)
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:139:	comment not in proper context: // Check if this is a PATH_EXPR with a PATH that contains an AS_KW (UFCS pattern)
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:255:	comment not in proper context: // Find the first UFCS pattern in the line
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:301:	comment not in proper context: // Parse: <Type as Trait>::method from the callee text
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:351:	comment not in proper context: // Setup logging to analyses/review_chap18_chap19.log
+/home/milnes/projects/rusticate/src/bin/review_comment_placement.rs:150:	comment not in proper context: // Check if there's code before the comment on the same line
+/home/milnes/projects/rusticate/src/bin/review_comment_placement.rs:163:	comment not in proper context: // Check if this comment is the first meaningful item INSIDE the block
+/home/milnes/projects/rusticate/src/bin/review_grouped_imports.rs:39:	comment not in proper context: // Check if this use statement has a USE_TREE_LIST (grouped imports)
+/home/milnes/projects/rusticate/src/bin/review_import_order.rs:55:	comment not in proper context: // Extract the path after "use " and before any trailing tokens
+/home/milnes/projects/rusticate/src/bin/review_inherent_and_trait_impl.rs:124:	comment not in proper context: // Extract base type name from "Foo<T>" -> "Foo"
+/home/milnes/projects/rusticate/src/bin/review_inherent_and_transitive_mt.rs:65:	comment not in proper context: // Check for parallel operations in this node
+/home/milnes/projects/rusticate/src/bin/review_inherent_and_transitive_mt.rs:564:	comment not in proper context: // Extract module name from path like src/Chap06/DirGraphMtEph.rs -> Chap06/DirGraphMtEph
+/home/milnes/projects/rusticate/src/bin/review_min_typing.rs:59:	comment not in proper context: // Look for pattern: TypeName::something
+/home/milnes/projects/rusticate/src/bin/review_minimize_ufcs_call_sites.rs:57:	comment not in proper context: // UFCS patterns have PATH nodes with a generic_arg_list containing AS_KW
+/home/milnes/projects/rusticate/src/bin/review_mt_per.rs:62:	comment not in proper context: // Convert *MtPer.rs to *MtEph.rs
+/home/milnes/projects/rusticate/src/bin/review_no_trait_method_duplication.rs:113:	comment not in proper context: // Handle cases like:
+/home/milnes/projects/rusticate/src/bin/review_non_wildcard_uses.rs:50:	comment not in proper context: // Get the final segment of the path being imported
+/home/milnes/projects/rusticate/src/bin/review_non_wildcard_uses.rs:70:	comment not in proper context: // Skip imports with "as" renames - these are legitimate type aliases
+/home/milnes/projects/rusticate/src/bin/review_non_wildcard_uses.rs:125:	comment not in proper context: // Check if it's "use apas_ai::*;" (only 2 segments with wildcard)
+/home/milnes/projects/rusticate/src/bin/review_pub_mod.rs:43:	comment not in proper context: // Parse source and find MODULE node with pub visibility
+/home/milnes/projects/rusticate/src/bin/review_simplifiable_ufcs.rs:30:	comment not in proper context: // Parse "<Type as Trait>::method" from text
+/home/milnes/projects/rusticate/src/bin/review_simplifiable_ufcs.rs:73:	comment not in proper context: // Check if this is a PATH_EXPR with a PATH that contains an AS_KW (UFCS pattern)
+/home/milnes/projects/rusticate/src/bin/review_st_mt_consistency.rs:90:	comment not in proper context: // Check if test file imports an Mt module
+/home/milnes/projects/rusticate/src/bin/review_st_mt_consistency.rs:146:	comment not in proper context: // Check for actual parallel operations, not just imports
+/home/milnes/projects/rusticate/src/bin/review_stt_compliance.rs:61:	comment not in proper context: // Look for: impl Trait for StructName
+/home/milnes/projects/rusticate/src/bin/review_test_functions.rs:22:	comment not in proper context: // Create analyses/ directory if it doesn't exist
+/home/milnes/projects/rusticate/src/bin/review_test_functions.rs:840:	comment not in proper context: // Build a set of tested function names (directly tested)
+/home/milnes/projects/rusticate/src/bin/review_test_functions.rs:1037:	comment not in proper context: // Returns (method_name, trait_name) pairs
+/home/milnes/projects/rusticate/src/bin/review_trait_definition_order.rs:45:	comment not in proper context: // Skip specific files/dirs
+/home/milnes/projects/rusticate/src/bin/review_trait_method_conflicts.rs:63:	comment not in proper context: // Check if this is a wildcard import
+/home/milnes/projects/rusticate/src/bin/review_trait_method_conflicts.rs:132:	comment not in proper context: // Convert Chap05::SetStEph to src/Chap05/SetStEph.rs
+/home/milnes/projects/rusticate/src/bin/review_typeclasses.rs:115:	comment not in proper context: // Parse source and find MODULE node with pub visibility
+/home/milnes/projects/rusticate/src/bin/review_typeclasses.rs:144:	comment not in proper context: // Parse the body and check if it contains trait method calls or UFCS
+/home/milnes/projects/rusticate/src/bin/review_unnecessary_ufcs_and_qualified_paths.rs:42:	comment not in proper context: // Check for STAR token in the use tree
+/home/milnes/projects/rusticate/src/bin/review_unnecessary_ufcs_and_qualified_paths.rs:93:	comment not in proper context: // Check if this node contains an AS_KW token
+/home/milnes/projects/rusticate/src/fixer.rs:11:	comment not in proper context: // For now, we just return the original source
+/home/milnes/projects/rusticate/src/lib.rs:21:	comment not in proper context: // Re-export commonly used items
+/home/milnes/projects/rusticate/src/logging.rs:66:	comment not in proper context: // Create directory structure: logs/<tool-name>/<YYYY-MM-DD>
+/home/milnes/projects/rusticate/src/logging.rs:85:	comment not in proper context: // Always print to stdout
+/home/milnes/projects/rusticate/src/logging.rs:126:	comment not in proper context: // Flush the log file on drop
+/home/milnes/projects/rusticate/src/parser.rs:11:	comment not in proper context: // Use Edition2021 as default
+/home/milnes/projects/rusticate/tests/integration/test_review_camelcase.rs:13:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/integration/test_review_import_order.rs:95:	comment not in proper context: // Rusticate itself should have correct import order
+/home/milnes/projects/rusticate/tests/integration/test_review_module_encapsulation.rs:13:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/integration/test_review_no_extern_crate.rs:13:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:17:	comment not in proper context: // Only tools that are actually built (in Cargo.toml)
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:100:	comment not in proper context: // Test that each review tool binary exists
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:113:	comment not in proper context: // Test that dispatcher can invoke each review tool
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:137:	comment not in proper context: // Test that each review tool can be run directly with --help
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:163:	comment not in proper context: // Test a few specific tools with actual arguments
+/home/milnes/projects/rusticate/tests/test_review_doctests.rs:17:	comment not in proper context: // No git commit for this tool - it's a new Rusticate-only tool
+/home/milnes/projects/rusticate/tests/test_review_import_order.rs:95:	comment not in proper context: // TODO: Fix import order in Rusticate itself
+/home/milnes/projects/rusticate/tests/test_review_inherent_and_trait_impl.rs:11:	comment not in proper context: // Get project root
+/home/milnes/projects/rusticate/tests/test_review_module_encapsulation.rs:14:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/test_review_no_extern_crate.rs:14:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/test_review_pascal_case_filenames.rs:17:	comment not in proper context: // Python script was named "camelcase" but actually enforces PascalCase
+/home/milnes/projects/rusticate/tests/test_review_public_only_inherent_impls.rs:9:	comment not in proper context: // Get binary path
+/home/milnes/projects/rusticate/tests/test_review_snake_case_filenames.rs:18:	comment not in proper context: // APAS uses PascalCase, so should find many violations when checking for snake_case
+/home/milnes/projects/rusticate/tests/test_review_stub_delegation.rs:9:	comment not in proper context: // Get binary path
+
+Total issues: 114
+Completed in 91ms
+Entering directory '/home/milnes/projects/rusticate'
+
+/home/milnes/projects/rusticate/src/args.rs:223:	comment not in proper context: // Skip directories that should be excluded
+/home/milnes/projects/rusticate/src/bin/compile_src_tests_benches_run_tests.rs:98:	comment not in proper context: // Extract module name from path like "src/Chap37/BSTSetSplayMtEph.rs"
+/home/milnes/projects/rusticate/src/bin/compile_src_tests_benches_run_tests.rs:135:	comment not in proper context: // Step 1: Compile src (full lib)
+/home/milnes/projects/rusticate/src/bin/compile_src_tests_benches_run_tests.rs:174:	comment not in proper context: // For directory, compile entire lib, then compile/run tests for that directory
+/home/milnes/projects/rusticate/src/bin/count_loc.rs:53:	comment not in proper context: // Helper to print, ignoring broken pipe errors
+/home/milnes/projects/rusticate/src/bin/fix_chap18_chap19_both.rs:145:	comment not in proper context: // PATH_TYPE should have a PATH child with the type name
+/home/milnes/projects/rusticate/src/bin/fix_chap18_chap19_both.rs:177:	comment not in proper context: // Use AST to parse UFCS: <Type as Trait>::function
+/home/milnes/projects/rusticate/src/bin/fix_chap18_chap19_both.rs:309:	comment not in proper context: // Setup logging to analyses/fix_chap18_chap19_both.log
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19.rs:38:	comment not in proper context: // Check if any NAME_REF in the path ends with "Eph"
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19.rs:53:	comment not in proper context: // Check if the use statement imports RedefinableTrait
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19.rs:68:	comment not in proper context: // Only process files in Chap20+
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19_per.rs:50:	comment not in proper context: // Check if the use path contains "ArraySeqStPer"
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19_per.rs:65:	comment not in proper context: // Check if the file uses ArraySeqStPerRedefinableTrait via AST
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19_per.rs:79:	comment not in proper context: // Only process files in Chap20+
+/home/milnes/projects/rusticate/src/bin/fix_doctests.rs:43:	comment not in proper context: // Returns: (line_number, byte_offset_after_rust_marker, code_content)
+/home/milnes/projects/rusticate/src/bin/fix_grouped_imports.rs:42:	comment not in proper context: // Walk up to find the path before the USE_TREE_LIST
+/home/milnes/projects/rusticate/src/bin/fix_grouped_imports.rs:57:	comment not in proper context: // Get the use tree
+/home/milnes/projects/rusticate/src/bin/fix_grouped_imports.rs:118:	comment not in proper context: // Find the start of the line containing this offset
+/home/milnes/projects/rusticate/src/bin/fix_import_order.rs:52:	comment not in proper context: // Extract path after "use " and before trailing semicolon
+/home/milnes/projects/rusticate/src/bin/fix_logging.rs:96:	comment not in proper context: // Check if this is a println! macro (not eprintln!)
+/home/milnes/projects/rusticate/src/bin/fix_logging.rs:106:	comment not in proper context: // Check if this node is a println! macro call that should be replaced
+/home/milnes/projects/rusticate/src/bin/fix_logging.rs:151:	comment not in proper context: // First, rewrite the AST to replace println! with log!
+/home/milnes/projects/rusticate/src/bin/fix_min_typing.rs:115:	comment not in proper context: // Check if this is a LET statement we should rewrite
+/home/milnes/projects/rusticate/src/bin/fix_min_typing.rs:350:	comment not in proper context: // Look for pattern: TypeName::something
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:149:	comment not in proper context: // Parse the type as a Rust type expression
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:303:	comment not in proper context: // Check for explicit import
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:380:	comment not in proper context: // Step 1: Analyze the module to determine the transformation
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:587:	comment not in proper context: // First check: if module already has pub struct, pub enum, or pub type, no type alias needed
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:835:	comment not in proper context: // Use AST to find proper insertion point after all use statements
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:904:	comment not in proper context: // src/ChapXX/ModuleName.rs -> tests/ChapXX/TestModuleName.rs
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:947:	comment not in proper context: // src/ChapXX/ModuleName.rs -> benches/ChapXX/BenchModuleName.rs
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1057:	comment not in proper context: // Transform call sites from Module::method(arg1, arg2) to arg1.method(arg2)
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1135:	comment not in proper context: // Parse the source module and extract trait method names
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1168:	comment not in proper context: // Check if there's already an impl Trait for T block
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1192:	comment not in proper context: // Check if there's already an inherent impl T block
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1222:	comment not in proper context: // Create impl T block by converting standalone pub fn to method
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1300:	comment not in proper context: // Check if there are any standalone pub fn declarations that match trait methods
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1462:	comment not in proper context: // Step D: Remove standalone pub fn that duplicate trait methods
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1632:	comment not in proper context: // Step C: Create impl Trait for T block by moving pub fn implementations
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1806:	comment not in proper context: // Step B: Transform trait method signatures from fn(n: N) -> R to fn(&self) -> R
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1901:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1946:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1996:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:2052:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:2122:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_non_wildcard_uses.rs:23:	comment not in proper context: // Skip TestLibIntegration.rs - it tests module structure and should not be modified
+/home/milnes/projects/rusticate/src/bin/fix_non_wildcard_uses.rs:306:	comment not in proper context: // Extract module name from path like "apas_ai::ChapXX::ModuleName::ModuleName"
+/home/milnes/projects/rusticate/src/bin/fix_non_wildcard_uses.rs:332:	comment not in proper context: // Extract module path from AST path, excluding the last segment
+/home/milnes/projects/rusticate/src/bin/fix_pub_mod.rs:46:	comment not in proper context: // Parse source and find MODULE node with pub visibility
+/home/milnes/projects/rusticate/src/bin/fix_unnecessary_ufcs.rs:48:	comment not in proper context: // Build replacement text by emitting AST nodes
+/home/milnes/projects/rusticate/src/bin/fix_unnecessary_ufcs.rs:183:	comment not in proper context: // If this node is in our replacement map, emit the replacement
+/home/milnes/projects/rusticate/src/bin/review.rs:34:	comment not in proper context: // Log tool output to both stdout and file
+/home/milnes/projects/rusticate/src/bin/review.rs:46:	comment not in proper context: // Only tools that are actually built (in Cargo.toml)
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:51:	comment not in proper context: // Check if any NAME_REF in the path ends with "Eph"
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:66:	comment not in proper context: // Check if any NAME_REF in the path ends with "Per"
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:92:	comment not in proper context: // Returns (eph_count, per_count)
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:139:	comment not in proper context: // Check if this is a PATH_EXPR with a PATH that contains an AS_KW (UFCS pattern)
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:255:	comment not in proper context: // Find the first UFCS pattern in the line
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:301:	comment not in proper context: // Parse: <Type as Trait>::method from the callee text
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:351:	comment not in proper context: // Setup logging to analyses/review_chap18_chap19.log
+/home/milnes/projects/rusticate/src/bin/review_comment_placement.rs:150:	comment not in proper context: // Check if there's code before the comment on the same line
+/home/milnes/projects/rusticate/src/bin/review_comment_placement.rs:163:	comment not in proper context: // Check if this comment is the first meaningful item INSIDE the block
+/home/milnes/projects/rusticate/src/bin/review_grouped_imports.rs:39:	comment not in proper context: // Check if this use statement has a USE_TREE_LIST (grouped imports)
+/home/milnes/projects/rusticate/src/bin/review_import_order.rs:55:	comment not in proper context: // Extract the path after "use " and before any trailing tokens
+/home/milnes/projects/rusticate/src/bin/review_inherent_and_trait_impl.rs:124:	comment not in proper context: // Extract base type name from "Foo<T>" -> "Foo"
+/home/milnes/projects/rusticate/src/bin/review_inherent_and_transitive_mt.rs:65:	comment not in proper context: // Check for parallel operations in this node
+/home/milnes/projects/rusticate/src/bin/review_inherent_and_transitive_mt.rs:564:	comment not in proper context: // Extract module name from path like src/Chap06/DirGraphMtEph.rs -> Chap06/DirGraphMtEph
+/home/milnes/projects/rusticate/src/bin/review_min_typing.rs:59:	comment not in proper context: // Look for pattern: TypeName::something
+/home/milnes/projects/rusticate/src/bin/review_minimize_ufcs_call_sites.rs:57:	comment not in proper context: // UFCS patterns have PATH nodes with a generic_arg_list containing AS_KW
+/home/milnes/projects/rusticate/src/bin/review_mt_per.rs:62:	comment not in proper context: // Convert *MtPer.rs to *MtEph.rs
+/home/milnes/projects/rusticate/src/bin/review_no_trait_method_duplication.rs:113:	comment not in proper context: // Handle cases like:
+/home/milnes/projects/rusticate/src/bin/review_non_wildcard_uses.rs:50:	comment not in proper context: // Get the final segment of the path being imported
+/home/milnes/projects/rusticate/src/bin/review_non_wildcard_uses.rs:70:	comment not in proper context: // Skip imports with "as" renames - these are legitimate type aliases
+/home/milnes/projects/rusticate/src/bin/review_non_wildcard_uses.rs:125:	comment not in proper context: // Check if it's "use apas_ai::*;" (only 2 segments with wildcard)
+/home/milnes/projects/rusticate/src/bin/review_pub_mod.rs:43:	comment not in proper context: // Parse source and find MODULE node with pub visibility
+/home/milnes/projects/rusticate/src/bin/review_simplifiable_ufcs.rs:30:	comment not in proper context: // Parse "<Type as Trait>::method" from text
+/home/milnes/projects/rusticate/src/bin/review_simplifiable_ufcs.rs:73:	comment not in proper context: // Check if this is a PATH_EXPR with a PATH that contains an AS_KW (UFCS pattern)
+/home/milnes/projects/rusticate/src/bin/review_st_mt_consistency.rs:90:	comment not in proper context: // Check if test file imports an Mt module
+/home/milnes/projects/rusticate/src/bin/review_st_mt_consistency.rs:146:	comment not in proper context: // Check for actual parallel operations, not just imports
+/home/milnes/projects/rusticate/src/bin/review_stt_compliance.rs:61:	comment not in proper context: // Look for: impl Trait for StructName
+/home/milnes/projects/rusticate/src/bin/review_test_functions.rs:22:	comment not in proper context: // Create analyses/ directory if it doesn't exist
+/home/milnes/projects/rusticate/src/bin/review_test_functions.rs:840:	comment not in proper context: // Build a set of tested function names (directly tested)
+/home/milnes/projects/rusticate/src/bin/review_test_functions.rs:1037:	comment not in proper context: // Returns (method_name, trait_name) pairs
+/home/milnes/projects/rusticate/src/bin/review_trait_definition_order.rs:45:	comment not in proper context: // Skip specific files/dirs
+/home/milnes/projects/rusticate/src/bin/review_trait_method_conflicts.rs:63:	comment not in proper context: // Check if this is a wildcard import
+/home/milnes/projects/rusticate/src/bin/review_trait_method_conflicts.rs:132:	comment not in proper context: // Convert Chap05::SetStEph to src/Chap05/SetStEph.rs
+/home/milnes/projects/rusticate/src/bin/review_typeclasses.rs:115:	comment not in proper context: // Parse source and find MODULE node with pub visibility
+/home/milnes/projects/rusticate/src/bin/review_typeclasses.rs:144:	comment not in proper context: // Parse the body and check if it contains trait method calls or UFCS
+/home/milnes/projects/rusticate/src/bin/review_unnecessary_ufcs_and_qualified_paths.rs:42:	comment not in proper context: // Check for STAR token in the use tree
+/home/milnes/projects/rusticate/src/bin/review_unnecessary_ufcs_and_qualified_paths.rs:93:	comment not in proper context: // Check if this node contains an AS_KW token
+/home/milnes/projects/rusticate/src/fixer.rs:11:	comment not in proper context: // For now, we just return the original source
+/home/milnes/projects/rusticate/src/lib.rs:21:	comment not in proper context: // Re-export commonly used items
+/home/milnes/projects/rusticate/src/logging.rs:66:	comment not in proper context: // Create directory structure: logs/<tool-name>/<YYYY-MM-DD>
+/home/milnes/projects/rusticate/src/logging.rs:85:	comment not in proper context: // Always print to stdout
+/home/milnes/projects/rusticate/src/logging.rs:126:	comment not in proper context: // Flush the log file on drop
+/home/milnes/projects/rusticate/src/parser.rs:11:	comment not in proper context: // Use Edition2021 as default
+/home/milnes/projects/rusticate/tests/integration/test_review_camelcase.rs:13:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/integration/test_review_import_order.rs:95:	comment not in proper context: // Rusticate itself should have correct import order
+/home/milnes/projects/rusticate/tests/integration/test_review_module_encapsulation.rs:13:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/integration/test_review_no_extern_crate.rs:13:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:17:	comment not in proper context: // Only tools that are actually built (in Cargo.toml)
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:100:	comment not in proper context: // Test that each review tool binary exists
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:113:	comment not in proper context: // Test that dispatcher can invoke each review tool
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:137:	comment not in proper context: // Test that each review tool can be run directly with --help
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:163:	comment not in proper context: // Test a few specific tools with actual arguments
+/home/milnes/projects/rusticate/tests/test_review_doctests.rs:17:	comment not in proper context: // No git commit for this tool - it's a new Rusticate-only tool
+/home/milnes/projects/rusticate/tests/test_review_import_order.rs:95:	comment not in proper context: // TODO: Fix import order in Rusticate itself
+/home/milnes/projects/rusticate/tests/test_review_inherent_and_trait_impl.rs:11:	comment not in proper context: // Get project root
+/home/milnes/projects/rusticate/tests/test_review_module_encapsulation.rs:14:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/test_review_no_extern_crate.rs:14:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/test_review_pascal_case_filenames.rs:17:	comment not in proper context: // Python script was named "camelcase" but actually enforces PascalCase
+/home/milnes/projects/rusticate/tests/test_review_public_only_inherent_impls.rs:9:	comment not in proper context: // Get binary path
+/home/milnes/projects/rusticate/tests/test_review_snake_case_filenames.rs:18:	comment not in proper context: // APAS uses PascalCase, so should find many violations when checking for snake_case
+/home/milnes/projects/rusticate/tests/test_review_stub_delegation.rs:9:	comment not in proper context: // Get binary path
+
+Total issues: 114
+Completed in 98ms
+Entering directory '/home/milnes/projects/rusticate'
+
+/home/milnes/projects/rusticate/src/args.rs:223:	comment not in proper context: // Skip directories that should be excluded
+/home/milnes/projects/rusticate/src/bin/compile_src_tests_benches_run_tests.rs:98:	comment not in proper context: // Extract module name from path like "src/Chap37/BSTSetSplayMtEph.rs"
+/home/milnes/projects/rusticate/src/bin/compile_src_tests_benches_run_tests.rs:135:	comment not in proper context: // Step 1: Compile src (full lib)
+/home/milnes/projects/rusticate/src/bin/compile_src_tests_benches_run_tests.rs:174:	comment not in proper context: // For directory, compile entire lib, then compile/run tests for that directory
+/home/milnes/projects/rusticate/src/bin/count_loc.rs:53:	comment not in proper context: // Helper to print, ignoring broken pipe errors
+/home/milnes/projects/rusticate/src/bin/fix_chap18_chap19_both.rs:145:	comment not in proper context: // PATH_TYPE should have a PATH child with the type name
+/home/milnes/projects/rusticate/src/bin/fix_chap18_chap19_both.rs:177:	comment not in proper context: // Use AST to parse UFCS: <Type as Trait>::function
+/home/milnes/projects/rusticate/src/bin/fix_chap18_chap19_both.rs:309:	comment not in proper context: // Setup logging to analyses/fix_chap18_chap19_both.log
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19.rs:38:	comment not in proper context: // Check if any NAME_REF in the path ends with "Eph"
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19.rs:53:	comment not in proper context: // Check if the use statement imports RedefinableTrait
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19.rs:68:	comment not in proper context: // Only process files in Chap20+
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19_per.rs:50:	comment not in proper context: // Check if the use path contains "ArraySeqStPer"
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19_per.rs:65:	comment not in proper context: // Check if the file uses ArraySeqStPerRedefinableTrait via AST
+/home/milnes/projects/rusticate/src/bin/fix_chap18_to_chap19_per.rs:79:	comment not in proper context: // Only process files in Chap20+
+/home/milnes/projects/rusticate/src/bin/fix_doctests.rs:43:	comment not in proper context: // Returns: (line_number, byte_offset_after_rust_marker, code_content)
+/home/milnes/projects/rusticate/src/bin/fix_grouped_imports.rs:42:	comment not in proper context: // Walk up to find the path before the USE_TREE_LIST
+/home/milnes/projects/rusticate/src/bin/fix_grouped_imports.rs:57:	comment not in proper context: // Get the use tree
+/home/milnes/projects/rusticate/src/bin/fix_grouped_imports.rs:118:	comment not in proper context: // Find the start of the line containing this offset
+/home/milnes/projects/rusticate/src/bin/fix_import_order.rs:52:	comment not in proper context: // Extract path after "use " and before trailing semicolon
+/home/milnes/projects/rusticate/src/bin/fix_logging.rs:96:	comment not in proper context: // Check if this is a println! macro (not eprintln!)
+/home/milnes/projects/rusticate/src/bin/fix_logging.rs:106:	comment not in proper context: // Check if this node is a println! macro call that should be replaced
+/home/milnes/projects/rusticate/src/bin/fix_logging.rs:151:	comment not in proper context: // First, rewrite the AST to replace println! with log!
+/home/milnes/projects/rusticate/src/bin/fix_min_typing.rs:115:	comment not in proper context: // Check if this is a LET statement we should rewrite
+/home/milnes/projects/rusticate/src/bin/fix_min_typing.rs:350:	comment not in proper context: // Look for pattern: TypeName::something
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:149:	comment not in proper context: // Parse the type as a Rust type expression
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:303:	comment not in proper context: // Check for explicit import
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:380:	comment not in proper context: // Step 1: Analyze the module to determine the transformation
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:587:	comment not in proper context: // First check: if module already has pub struct, pub enum, or pub type, no type alias needed
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:835:	comment not in proper context: // Use AST to find proper insertion point after all use statements
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:904:	comment not in proper context: // src/ChapXX/ModuleName.rs -> tests/ChapXX/TestModuleName.rs
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:947:	comment not in proper context: // src/ChapXX/ModuleName.rs -> benches/ChapXX/BenchModuleName.rs
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1057:	comment not in proper context: // Transform call sites from Module::method(arg1, arg2) to arg1.method(arg2)
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1135:	comment not in proper context: // Parse the source module and extract trait method names
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1168:	comment not in proper context: // Check if there's already an impl Trait for T block
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1192:	comment not in proper context: // Check if there's already an inherent impl T block
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1222:	comment not in proper context: // Create impl T block by converting standalone pub fn to method
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1300:	comment not in proper context: // Check if there are any standalone pub fn declarations that match trait methods
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1462:	comment not in proper context: // Step D: Remove standalone pub fn that duplicate trait methods
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1632:	comment not in proper context: // Step C: Create impl Trait for T block by moving pub fn implementations
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1806:	comment not in proper context: // Step B: Transform trait method signatures from fn(n: N) -> R to fn(&self) -> R
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1901:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1946:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:1996:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:2052:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_no_pub_type.rs:2122:	comment not in proper context: // HARDCODED for InsertionSortSt
+/home/milnes/projects/rusticate/src/bin/fix_non_wildcard_uses.rs:23:	comment not in proper context: // Skip TestLibIntegration.rs - it tests module structure and should not be modified
+/home/milnes/projects/rusticate/src/bin/fix_non_wildcard_uses.rs:306:	comment not in proper context: // Extract module name from path like "apas_ai::ChapXX::ModuleName::ModuleName"
+/home/milnes/projects/rusticate/src/bin/fix_non_wildcard_uses.rs:332:	comment not in proper context: // Extract module path from AST path, excluding the last segment
+/home/milnes/projects/rusticate/src/bin/fix_pub_mod.rs:46:	comment not in proper context: // Parse source and find MODULE node with pub visibility
+/home/milnes/projects/rusticate/src/bin/fix_unnecessary_ufcs.rs:48:	comment not in proper context: // Build replacement text by emitting AST nodes
+/home/milnes/projects/rusticate/src/bin/fix_unnecessary_ufcs.rs:183:	comment not in proper context: // If this node is in our replacement map, emit the replacement
+/home/milnes/projects/rusticate/src/bin/review.rs:34:	comment not in proper context: // Log tool output to both stdout and file
+/home/milnes/projects/rusticate/src/bin/review.rs:46:	comment not in proper context: // Only tools that are actually built (in Cargo.toml)
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:51:	comment not in proper context: // Check if any NAME_REF in the path ends with "Eph"
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:66:	comment not in proper context: // Check if any NAME_REF in the path ends with "Per"
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:92:	comment not in proper context: // Returns (eph_count, per_count)
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:139:	comment not in proper context: // Check if this is a PATH_EXPR with a PATH that contains an AS_KW (UFCS pattern)
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:255:	comment not in proper context: // Find the first UFCS pattern in the line
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:301:	comment not in proper context: // Parse: <Type as Trait>::method from the callee text
+/home/milnes/projects/rusticate/src/bin/review_chap18_chap19.rs:351:	comment not in proper context: // Setup logging to analyses/review_chap18_chap19.log
+/home/milnes/projects/rusticate/src/bin/review_comment_placement.rs:150:	comment not in proper context: // Check if there's code before the comment on the same line
+/home/milnes/projects/rusticate/src/bin/review_comment_placement.rs:163:	comment not in proper context: // Check if this comment is the first meaningful item INSIDE the block
+/home/milnes/projects/rusticate/src/bin/review_grouped_imports.rs:39:	comment not in proper context: // Check if this use statement has a USE_TREE_LIST (grouped imports)
+/home/milnes/projects/rusticate/src/bin/review_import_order.rs:55:	comment not in proper context: // Extract the path after "use " and before any trailing tokens
+/home/milnes/projects/rusticate/src/bin/review_inherent_and_trait_impl.rs:124:	comment not in proper context: // Extract base type name from "Foo<T>" -> "Foo"
+/home/milnes/projects/rusticate/src/bin/review_inherent_and_transitive_mt.rs:65:	comment not in proper context: // Check for parallel operations in this node
+/home/milnes/projects/rusticate/src/bin/review_inherent_and_transitive_mt.rs:564:	comment not in proper context: // Extract module name from path like src/Chap06/DirGraphMtEph.rs -> Chap06/DirGraphMtEph
+/home/milnes/projects/rusticate/src/bin/review_min_typing.rs:59:	comment not in proper context: // Look for pattern: TypeName::something
+/home/milnes/projects/rusticate/src/bin/review_minimize_ufcs_call_sites.rs:57:	comment not in proper context: // UFCS patterns have PATH nodes with a generic_arg_list containing AS_KW
+/home/milnes/projects/rusticate/src/bin/review_mt_per.rs:62:	comment not in proper context: // Convert *MtPer.rs to *MtEph.rs
+/home/milnes/projects/rusticate/src/bin/review_no_trait_method_duplication.rs:113:	comment not in proper context: // Handle cases like:
+/home/milnes/projects/rusticate/src/bin/review_non_wildcard_uses.rs:50:	comment not in proper context: // Get the final segment of the path being imported
+/home/milnes/projects/rusticate/src/bin/review_non_wildcard_uses.rs:70:	comment not in proper context: // Skip imports with "as" renames - these are legitimate type aliases
+/home/milnes/projects/rusticate/src/bin/review_non_wildcard_uses.rs:125:	comment not in proper context: // Check if it's "use apas_ai::*;" (only 2 segments with wildcard)
+/home/milnes/projects/rusticate/src/bin/review_pub_mod.rs:43:	comment not in proper context: // Parse source and find MODULE node with pub visibility
+/home/milnes/projects/rusticate/src/bin/review_simplifiable_ufcs.rs:30:	comment not in proper context: // Parse "<Type as Trait>::method" from text
+/home/milnes/projects/rusticate/src/bin/review_simplifiable_ufcs.rs:73:	comment not in proper context: // Check if this is a PATH_EXPR with a PATH that contains an AS_KW (UFCS pattern)
+/home/milnes/projects/rusticate/src/bin/review_st_mt_consistency.rs:90:	comment not in proper context: // Check if test file imports an Mt module
+/home/milnes/projects/rusticate/src/bin/review_st_mt_consistency.rs:146:	comment not in proper context: // Check for actual parallel operations, not just imports
+/home/milnes/projects/rusticate/src/bin/review_stt_compliance.rs:61:	comment not in proper context: // Look for: impl Trait for StructName
+/home/milnes/projects/rusticate/src/bin/review_test_functions.rs:22:	comment not in proper context: // Create analyses/ directory if it doesn't exist
+/home/milnes/projects/rusticate/src/bin/review_test_functions.rs:840:	comment not in proper context: // Build a set of tested function names (directly tested)
+/home/milnes/projects/rusticate/src/bin/review_test_functions.rs:1037:	comment not in proper context: // Returns (method_name, trait_name) pairs
+/home/milnes/projects/rusticate/src/bin/review_trait_definition_order.rs:45:	comment not in proper context: // Skip specific files/dirs
+/home/milnes/projects/rusticate/src/bin/review_trait_method_conflicts.rs:63:	comment not in proper context: // Check if this is a wildcard import
+/home/milnes/projects/rusticate/src/bin/review_trait_method_conflicts.rs:132:	comment not in proper context: // Convert Chap05::SetStEph to src/Chap05/SetStEph.rs
+/home/milnes/projects/rusticate/src/bin/review_typeclasses.rs:115:	comment not in proper context: // Parse source and find MODULE node with pub visibility
+/home/milnes/projects/rusticate/src/bin/review_typeclasses.rs:144:	comment not in proper context: // Parse the body and check if it contains trait method calls or UFCS
+/home/milnes/projects/rusticate/src/bin/review_unnecessary_ufcs_and_qualified_paths.rs:42:	comment not in proper context: // Check for STAR token in the use tree
+/home/milnes/projects/rusticate/src/bin/review_unnecessary_ufcs_and_qualified_paths.rs:93:	comment not in proper context: // Check if this node contains an AS_KW token
+/home/milnes/projects/rusticate/src/fixer.rs:11:	comment not in proper context: // For now, we just return the original source
+/home/milnes/projects/rusticate/src/lib.rs:21:	comment not in proper context: // Re-export commonly used items
+/home/milnes/projects/rusticate/src/logging.rs:66:	comment not in proper context: // Create directory structure: logs/<tool-name>/<YYYY-MM-DD>
+/home/milnes/projects/rusticate/src/logging.rs:85:	comment not in proper context: // Always print to stdout
+/home/milnes/projects/rusticate/src/logging.rs:126:	comment not in proper context: // Flush the log file on drop
+/home/milnes/projects/rusticate/src/parser.rs:11:	comment not in proper context: // Use Edition2021 as default
+/home/milnes/projects/rusticate/tests/integration/test_review_camelcase.rs:13:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/integration/test_review_import_order.rs:95:	comment not in proper context: // Rusticate itself should have correct import order
+/home/milnes/projects/rusticate/tests/integration/test_review_module_encapsulation.rs:13:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/integration/test_review_no_extern_crate.rs:13:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:17:	comment not in proper context: // Only tools that are actually built (in Cargo.toml)
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:100:	comment not in proper context: // Test that each review tool binary exists
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:113:	comment not in proper context: // Test that dispatcher can invoke each review tool
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:137:	comment not in proper context: // Test that each review tool can be run directly with --help
+/home/milnes/projects/rusticate/tests/test_review_dispatcher.rs:163:	comment not in proper context: // Test a few specific tools with actual arguments
+/home/milnes/projects/rusticate/tests/test_review_doctests.rs:17:	comment not in proper context: // No git commit for this tool - it's a new Rusticate-only tool
+/home/milnes/projects/rusticate/tests/test_review_import_order.rs:95:	comment not in proper context: // TODO: Fix import order in Rusticate itself
+/home/milnes/projects/rusticate/tests/test_review_inherent_and_trait_impl.rs:11:	comment not in proper context: // Get project root
+/home/milnes/projects/rusticate/tests/test_review_module_encapsulation.rs:14:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/test_review_no_extern_crate.rs:14:	comment not in proper context: // Ensure APAS is at the correct commit (from Python script comment)
+/home/milnes/projects/rusticate/tests/test_review_pascal_case_filenames.rs:17:	comment not in proper context: // Python script was named "camelcase" but actually enforces PascalCase
+/home/milnes/projects/rusticate/tests/test_review_public_only_inherent_impls.rs:9:	comment not in proper context: // Get binary path
+/home/milnes/projects/rusticate/tests/test_review_snake_case_filenames.rs:18:	comment not in proper context: // APAS uses PascalCase, so should find many violations when checking for snake_case
+/home/milnes/projects/rusticate/tests/test_review_stub_delegation.rs:9:	comment not in proper context: // Get binary path
+
+Total issues: 114
+Completed in 97ms
+Entering directory 'src/bin'
+
+No comment placement issues found.
+Completed in 0ms

@@ -124,3 +124,26 @@ Entering directory 'src/bin'
 
 ✓ No src/ directories to check
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found 6 violation(s):
+
+src/duplicate_methods.rs:35: fn outside pub mod
+  
+src/duplicate_methods.rs:40: fn outside pub mod
+  
+src/duplicate_methods.rs:61: fn outside pub mod
+  
+src/duplicate_methods.rs:74: fn outside pub mod
+  
+src/duplicate_methods.rs:18: struct outside pub mod
+  
+src/duplicate_methods.rs:29: struct outside pub mod
+  
+
+Summary: 89 files checked, 1 files with violations, 6 total violations
+Completed in 8ms
+Entering directory 'src/bin'
+
+✓ No src/ directories to check
+Completed in 0ms

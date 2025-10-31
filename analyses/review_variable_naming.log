@@ -86,3 +86,26 @@ Entering directory 'src/bin'
 
 ✓ No src/ directories to check
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found prohibited variable names (RustRules.md Lines 22-26):
+
+src/bin/review_variable_naming.rs:42: rock band name: led_zeppelin
+  "led_zeppelin", "pink_floyd", "the_beatles", "rolling_stones",
+src/bin/review_variable_naming.rs:43: rock band name: queen
+  "queen", "ac_dc", "metallica", "nirvana", "radiohead",
+src/bin/review_variable_naming.rs:44: rock band name: stairway_to_heaven
+  "stairway_to_heaven", "bohemian_rhapsody", "hotel_california",
+src/bin/review_variable_naming.rs:61: temp variable: temp_
+  if line.contains("temp_") {
+src/bin/review_variable_naming.rs:64: temp variable: temp_
+  if word.starts_with("temp_") {
+
+Fix: Use descriptive names like 'entries', 'result_vec', 'filtered_data'.
+
+Summary: 89 files checked, 5 violations
+Completed in 7ms
+Entering directory 'src/bin'
+
+✓ No src/ directories to check
+Completed in 0ms

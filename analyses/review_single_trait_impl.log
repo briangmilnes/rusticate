@@ -34,3 +34,13 @@ Entering directory 'src/bin'
 
 ✓ No src/ directories to check
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✓ All traits have single implementations!
+
+Summary: 89 files checked, 0 violations
+Completed in 67ms
+Entering directory 'src/bin'
+
+✓ No src/ directories to check
+Completed in 0ms

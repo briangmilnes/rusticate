@@ -168,3 +168,54 @@ Entering directory 'src/bin'
 
 ✓ No public-only inherent impls found in 1 file(s)
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap05/RelationStEph.rs:54: inherent impl with only public methods (move to trait impl)
+  impl RelationStEph { FromVec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap05/SetStEph.rs:103: inherent impl with only public methods (move to trait impl)
+  impl SetStEph { empty, singleton, size, mem, union, intersection, partition, insert, iter, FromVec }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap23/BalBinTreeStEph.rs:50: inherent impl with only public methods (move to trait impl)
+  impl BalBinTree { leaf, node, is_leaf, in_order, pre_order, height, size }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStEph.rs:69: inherent impl with only public methods (move to trait impl)
+  impl AVLTreeSeqStEphS { new_root, new, update, from_vec, to_arrayseq, iter, push_back, contains_value, insert_value, delete_value }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStPer.rs:239: inherent impl with only public methods (move to trait impl)
+  impl AVLTreeSeqStPerS { to_arrayseq, iter }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/DoubleHashing.rs:18: inherent impl with only public methods (move to trait impl)
+  impl DoubleHashingStrategy { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:88: inherent impl with only public methods (move to trait impl)
+  impl PolynomialHashFunction { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:119: inherent impl with only public methods (move to trait impl)
+  impl UniversalIntegerHashFunction { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:167: inherent impl with only public methods (move to trait impl)
+  impl UniversalIntegerHashFamily { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/HashFunctionTraits.rs:267: inherent impl with only public methods (move to trait impl)
+  impl HashTableStats { new, with_collision_stats }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47/LinearProbing.rs:17: inherent impl with only public methods (move to trait impl)
+  impl LinearProbingStrategy { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47clean/StructChainedHashTable.rs:25: inherent impl with only public methods (move to trait impl)
+  impl ChainList { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinMtEph.rs:38: inherent impl with only public methods (move to trait impl)
+  impl ClosurePriority { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinMtPer.rs:32: inherent impl with only public methods (move to trait impl)
+  impl ClosurePriority { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinStEph.rs:28: inherent impl with only public methods (move to trait impl)
+  impl ClosurePriority { new }
+APAS-AI-copy/apas-ai/apas-ai/src/Chap53/PQMinStPer.rs:34: inherent impl with only public methods (move to trait impl)
+  impl ClosurePriority { new }
+APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:19: inherent impl with only public methods (move to trait impl)
+  impl MemoryStorage { new }
+APAS-AI-copy/apas-ai/experiments/src/SwappableModule.rs:71: inherent impl with only public methods (move to trait impl)
+  impl UserManager { new, create_user, get_user_email, delete_user }
+APAS-AI-copy/experiments/src/M1.rs:17: inherent impl with only public methods (move to trait impl)
+  impl M1 { method2 }
+APAS-AI-copy/experiments/src/SwappableModule.rs:19: inherent impl with only public methods (move to trait impl)
+  impl MemoryStorage { new }
+APAS-AI-copy/experiments/src/SwappableModule.rs:71: inherent impl with only public methods (move to trait impl)
+  impl UserManager { new, create_user, get_user_email, delete_user }
+
+✗ Found 21 inherent impl(s) with only public methods in 878 file(s)
+Completed in 441ms
+Entering directory 'src/bin'
+
+✓ No public-only inherent impls found in 1 file(s)
+Completed in 0ms
