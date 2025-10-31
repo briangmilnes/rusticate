@@ -86,7 +86,7 @@ fn get_available_review_tools() -> Vec<&'static str> {
     ]
 }
 
-fn run_review_tool(tool_name: &str, args: &[String]) -> Result<()> {
+fn run_review_tool(tool_name: &str, args: &[String], index: usize, total: usize) -> Result<()> {
     let binary_name = format!("rusticate-review-{tool_name}");
     let exe_path = env::current_exe()
         .context("Failed to get current executable path")?
@@ -94,7 +94,7 @@ fn run_review_tool(tool_name: &str, args: &[String]) -> Result<()> {
         .context("Failed to get parent directory")?
         .join(&binary_name);
     
-    log!("\n=== Running {tool_name} ===");
+    log!("\n[{}/{}] Running {tool_name}", index, total);
     
     // Capture stdout and stderr
     let output = Command::new(&exe_path)
@@ -173,14 +173,16 @@ fn main() -> Result<()> {
     let passthrough_args: Vec<String> = args.iter().skip(2).cloned().collect();
     
     if tool_or_command == "all" {
-        log!("Running all review tools...");
+        let tools = get_available_review_tools();
+        let total = tools.len();
+        log!("Running all {} review tools...", total);
         log!("");
         
-        let tools = get_available_review_tools();
         let mut failed_tools = Vec::new();
         
-        for tool in &tools {
-            if let Err(e) = run_review_tool(tool, &passthrough_args) {
+        for (i, tool) in tools.iter().enumerate() {
+            let index = i + 1;  // 1-based indexing for display
+            if let Err(e) = run_review_tool(tool, &passthrough_args, index, total) {
                 log!("Error running {tool}: {e}");
                 failed_tools.push(*tool);
             }
@@ -214,7 +216,7 @@ fn main() -> Result<()> {
             std::process::exit(1);
         }
         
-        run_review_tool(tool_or_command, &passthrough_args)?;
+        run_review_tool(tool_or_command, &passthrough_args, 1, 1)?;
     }
     
     log!("");

@@ -201,3 +201,17 @@ StT requirements: Eq + Clone + Display + Debug + Sized
 
 
 ✓ All public structs satisfy StT requirements!
+Analyzing 0 source files for StT compliance...
+================================================================================
+
+StT requirements: Eq + Clone + Display + Debug + Sized
+
+
+✓ All public structs satisfy StT requirements!
+Analyzing 0 source files for StT compliance...
+================================================================================
+
+StT requirements: Eq + Clone + Display + Debug + Sized
+
+
+✓ All public structs satisfy StT requirements!

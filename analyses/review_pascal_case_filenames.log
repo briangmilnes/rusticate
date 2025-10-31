@@ -503,3 +503,19 @@ count_vec.rs:1: File 'count_vec.rs' uses snake_case (underscore), should be Pasc
 
 Summary: 2 files checked, 2 files with violations
 Completed in 0ms
+Entering directory 'src/bin'
+
+✗ Found 1 violation(s):
+
+count_as.rs:1: File 'count_as.rs' uses snake_case (underscore), should be PascalCase
+
+Summary: 1 files checked, 1 files with violations
+Completed in 0ms
+Entering directory 'src/bin'
+
+✗ Found 1 violation(s):
+
+count_as.rs:1: File 'count_as.rs' uses snake_case (underscore), should be PascalCase
+
+Summary: 1 files checked, 1 files with violations
+Completed in 0ms

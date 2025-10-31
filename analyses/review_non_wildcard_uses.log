@@ -1711,3 +1711,45 @@ Files affected: 0/2
 
 ✓ All apas_ai imports use wildcard imports
 Completed in 1ms
+================================================================================
+PARETO: BY VIOLATION TYPE
+================================================================================
+0      (  0.0%, cumulative   0.0%): (b) single function import
+0      (  0.0%, cumulative   0.0%): (c) single type import
+0      (  0.0%, cumulative   0.0%): (!) BOGUS top-level wildcard
+0      (  0.0%, cumulative   0.0%): (a) single trait import
+
+================================================================================
+PARETO: BY DIRECTORY
+================================================================================
+0      (  0.0%, cumulative   0.0%): benches [!:0, a:0, b:0, c:0]
+0      (  0.0%, cumulative   0.0%): src [!:0, a:0, b:0, c:0]
+0      (  0.0%, cumulative   0.0%): tests [!:0, a:0, b:0, c:0]
+
+--------------------------------------------------------------------------------
+Total non-wildcard uses: 0
+Files affected: 0/1
+
+✓ All apas_ai imports use wildcard imports
+Completed in 1ms
+================================================================================
+PARETO: BY VIOLATION TYPE
+================================================================================
+0      (  0.0%, cumulative   0.0%): (!) BOGUS top-level wildcard
+0      (  0.0%, cumulative   0.0%): (b) single function import
+0      (  0.0%, cumulative   0.0%): (a) single trait import
+0      (  0.0%, cumulative   0.0%): (c) single type import
+
+================================================================================
+PARETO: BY DIRECTORY
+================================================================================
+0      (  0.0%, cumulative   0.0%): benches [!:0, a:0, b:0, c:0]
+0      (  0.0%, cumulative   0.0%): src [!:0, a:0, b:0, c:0]
+0      (  0.0%, cumulative   0.0%): tests [!:0, a:0, b:0, c:0]
+
+--------------------------------------------------------------------------------
+Total non-wildcard uses: 0
+Files affected: 0/1
+
+✓ All apas_ai imports use wildcard imports
+Completed in 0ms

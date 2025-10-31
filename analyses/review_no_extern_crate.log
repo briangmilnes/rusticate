@@ -28,3 +28,15 @@ Entering directory 'src/bin'
 
 Summary: 2 files checked, 0 files with violations, 0 total violations
 Completed in 1ms
+Entering directory 'src/bin'
+
+✓ No 'extern crate' usage found
+
+Summary: 1 files checked, 0 files with violations, 0 total violations
+Completed in 0ms
+Entering directory 'src/bin'
+
+✓ No 'extern crate' usage found
+
+Summary: 1 files checked, 0 files with violations, 0 total violations
+Completed in 0ms

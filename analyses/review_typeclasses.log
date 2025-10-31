@@ -103,3 +103,73 @@ PARETO ANALYSIS: BUGS
 TOTAL BUGS: 4
 
 Completed in 0ms
+Entering directory 'src/bin'
+
+count_as.rs:1: missing module - BUG
+count_as.rs:1:	no pub data type (struct, enum, or type alias) - BUG
+count_as.rs:1:	no pub trait - BUG
+count_as.rs:1:	no Trait impl - BUG
+count_as.rs:1:	no duplicate method names
+count_as.rs:1:	no fixes known
+count_as.rs:1:	Module summary: 4 BUGs, 0 WARNINGs, 0 OKs, 0 fixes
+
+================================================================================
+SUMMARY:
+  Total modules analyzed: 1
+  Clean modules (no bugs or warnings): 0
+  Modules with no known fixes: 1
+  Total OKs: 0
+  Total WARNINGs: 0
+  Total BUGs: 4
+  Total fixes recommended: 0
+
+================================================================================
+PARETO ANALYSIS: BUGS
+================================================================================
+1      ( 25.0%, cumulative  25.0%): no pub data type (struct, enum, or type alias)
+1      ( 25.0%, cumulative  50.0%): missing module
+1      ( 25.0%, cumulative  75.0%): no pub trait
+1      ( 25.0%, cumulative 100.0%): no Trait impl
+0      (  0.0%, cumulative 100.0%): duplicate method
+0      (  0.0%, cumulative 100.0%): method with unused self parameter
+0      (  0.0%, cumulative 100.0%): inherent impl with only internal methods/functions
+0      (  0.0%, cumulative 100.0%): inherent impl with pub methods
+--------------------------------------------------------------------------------
+TOTAL BUGS: 4
+
+Completed in 2ms
+Entering directory 'src/bin'
+
+count_as.rs:1: missing module - BUG
+count_as.rs:1:	no pub data type (struct, enum, or type alias) - BUG
+count_as.rs:1:	no pub trait - BUG
+count_as.rs:1:	no Trait impl - BUG
+count_as.rs:1:	no duplicate method names
+count_as.rs:1:	no fixes known
+count_as.rs:1:	Module summary: 4 BUGs, 0 WARNINGs, 0 OKs, 0 fixes
+
+================================================================================
+SUMMARY:
+  Total modules analyzed: 1
+  Clean modules (no bugs or warnings): 0
+  Modules with no known fixes: 1
+  Total OKs: 0
+  Total WARNINGs: 0
+  Total BUGs: 4
+  Total fixes recommended: 0
+
+================================================================================
+PARETO ANALYSIS: BUGS
+================================================================================
+1      ( 25.0%, cumulative  25.0%): no pub trait
+1      ( 25.0%, cumulative  50.0%): no Trait impl
+1      ( 25.0%, cumulative  75.0%): missing module
+1      ( 25.0%, cumulative 100.0%): no pub data type (struct, enum, or type alias)
+0      (  0.0%, cumulative 100.0%): method with unused self parameter
+0      (  0.0%, cumulative 100.0%): inherent impl with pub methods
+0      (  0.0%, cumulative 100.0%): duplicate method
+0      (  0.0%, cumulative 100.0%): inherent impl with only internal methods/functions
+--------------------------------------------------------------------------------
+TOTAL BUGS: 4
+
+Completed in 1ms
