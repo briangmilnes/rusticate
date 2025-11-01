@@ -110,8 +110,8 @@ name = "rusticate-review-variable-naming"
 path = "src/bin/review_variable_naming.rs"
 
 [[bin]]
-name = "rusticate-review-struct-file-naming"
-path = "src/bin/review_struct_file_naming.rs"
+name = "rusticate-review-APAS-struct-file-naming"
+path = "src/bin/review_APAS_struct_file_naming.rs"
 
 [[bin]]
 name = "rusticate-review-bench-modules"
@@ -162,8 +162,8 @@ name = "rusticate-review-trait-definition-order"
 path = "src/bin/review_trait_definition_order.rs"
 
 [[bin]]
-name = "rusticate-review-stt-compliance"
-path = "src/bin/review_stt_compliance.rs"
+name = "rusticate-review-APAS-stt-compliance"
+path = "src/bin/review_APAS_stt_compliance.rs"
 
 [[bin]]
 name = "rusticate-review-inherent-plus-trait-impl"
@@ -178,8 +178,8 @@ name = "rusticate-review-impl-trait-bounds"
 path = "src/bin/review_impl_trait_bounds.rs"
 
 [[bin]]
-name = "rusticate-review-st-mt-consistency"
-path = "src/bin/review_st_mt_consistency.rs"
+name = "rusticate-review-APAS-st-mt-consistency"
+path = "src/bin/review_APAS_st_mt_consistency.rs"
 
 [[bin]]
 name = "review-min-typing"
@@ -194,14 +194,6 @@ name = "review-mt-per"
 path = "src/bin/review_mt_per.rs"
 
 [[bin]]
-name = "review-st-mt-consistency"
-path = "src/bin/review_st_mt_consistency.rs"
-
-[[bin]]
-name = "review-chap18-chap19"
-path = "src/bin/review_chap18_chap19.rs"
-
-[[bin]]
 name = "review-simplifiable-ufcs"
 path = "src/bin/review_simplifiable_ufcs.rs"
 
@@ -212,10 +204,6 @@ path = "src/bin/review_unnecessary_ufcs_and_qualified_paths.rs"
 [[bin]]
 name = "fix-unnecessary-ufcs"
 path = "src/bin/fix_unnecessary_ufcs.rs"
-
-[[bin]]
-name = "review-inherent-and-transitive-mt"
-path = "src/bin/review_inherent_and_transitive_mt.rs"
 
 [[bin]]
 name = "review-grouped-imports"
@@ -234,16 +222,16 @@ name = "fix-grouped-imports"
 path = "src/bin/fix_grouped_imports.rs"
 
 [[bin]]
-name = "fix-chap18-chap19-both"
-path = "src/bin/fix_chap18_chap19_both.rs"
+name = "fix-APAS-chap18-chap19-both"
+path = "src/bin/fix_APAS_chap18_chap19_both.rs"
 
 [[bin]]
-name = "fix-chap18-to-chap19"
-path = "src/bin/fix_chap18_to_chap19.rs"
+name = "fix-APAS-chap18-to-chap19"
+path = "src/bin/fix_APAS_chap18_to_chap19.rs"
 
 [[bin]]
-name = "fix-chap18-to-chap19-per"
-path = "src/bin/fix_chap18_to_chap19_per.rs"
+name = "fix-APAS-chap18-to-chap19-per"
+path = "src/bin/fix_APAS_chap18_to_chap19_per.rs"
 
 [[bin]]
 name = "fix-logging"

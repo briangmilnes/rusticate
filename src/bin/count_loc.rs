@@ -51,7 +51,6 @@ fn find_script_files(dir: &Path) -> Vec<PathBuf> {
     files
 }
 
-// Helper to print, ignoring broken pipe errors
 fn print_line(s: &str) -> io::Result<()> {
     let mut stdout = io::stdout();
     writeln!(stdout, "{s}")?;

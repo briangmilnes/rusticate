@@ -14,6 +14,8 @@ pub mod args {
         pub paths: Vec<PathBuf>,
         /// Whether any path is a module search result
         pub is_module_search: bool,
+        /// Project-specific features to enable (e.g., "apas")
+        pub project: Option<String>,
     }
 
     impl StandardArgs {
@@ -42,12 +44,14 @@ pub mod args {
                 return Ok(StandardArgs { 
                     paths: vec![current_dir],
                     is_module_search: false,
+                    project: None,
                 });
             }
             
             let mut i = 1;
             let mut paths = Vec::new();
             let mut is_module_search = false;
+            let mut project = None;
             
             while i < args.len() {
                 match args[i].as_str() {
@@ -106,6 +110,14 @@ pub mod args {
                         is_module_search = true;
                         i += 1;
                     }
+                    "--project" | "-p" => {
+                        i += 1;
+                        if i >= args.len() {
+                            return Err(anyhow::anyhow!("--project requires a project name"));
+                        }
+                        project = Some(args[i].clone());
+                        i += 1;
+                    }
                     "--help" | "-h" => {
                         Self::print_usage(&args[0]);
                         std::process::exit(0);
@@ -124,7 +136,7 @@ pub mod args {
                 return Err(anyhow::anyhow!("No paths specified"));
             }
             
-            Ok(StandardArgs { paths, is_module_search })
+            Ok(StandardArgs { paths, is_module_search, project })
         }
         
         /// Find a module by name in src/, and its corresponding test and bench files
@@ -215,6 +227,7 @@ pub mod args {
             Ok(StandardArgs { 
                 paths: found_paths,
                 is_module_search: true,
+                project: None,
             })
         }
         
@@ -254,6 +267,7 @@ pub mod args {
             println!("  -d, --dir DIR [DIR...]     Analyze specific directories");
             println!("  -f, --file FILE            Analyze a single file");
             println!("  -m, --module NAME          Find module in src/ and its tests/benches");
+            println!("  -p, --project NAME         Enable project-specific tools (e.g., 'apas')");
             println!("  -h, --help                 Show this help message");
             println!();
             println!("Examples:");

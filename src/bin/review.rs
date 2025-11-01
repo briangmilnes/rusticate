@@ -43,7 +43,7 @@ fn log_tool_output(msg: &str) {
 }
 
 fn get_available_review_tools() -> Vec<&'static str> {
-    // Only tools that are actually built (in Cargo.toml)
+    // Only general (non-project-specific) tools
     vec![
         "bench-modules",
         "comment-placement",
@@ -70,10 +70,7 @@ fn get_available_review_tools() -> Vec<&'static str> {
         "redundant-inherent-impls",
         "single-trait-impl",
         "snake-case-filenames",
-        "st-mt-consistency",
         "string-hacking",
-        "struct-file-naming",
-        "stt-compliance",
         "stub-delegation",
         "test-modules",
         "trait-bound-mismatches",
@@ -84,6 +81,27 @@ fn get_available_review_tools() -> Vec<&'static str> {
         "variable-naming",
         "where-clause-simplification",
     ]
+}
+
+fn get_apas_review_tools() -> Vec<&'static str> {
+    // APAS-specific tools (require -p apas)
+    vec![
+        "APAS-chap18-chap19",
+        "APAS-inherent-transitive-mt",
+        "APAS-st-mt-consistency",
+        "APAS-struct-file-naming",
+        "APAS-stt-compliance",
+    ]
+}
+
+fn parse_project_flag(args: &[String]) -> Option<String> {
+    // Parse -p/--project flag from args
+    for i in 0..args.len() {
+        if (args[i] == "-p" || args[i] == "--project") && i + 1 < args.len() {
+            return Some(args[i + 1].clone());
+        }
+    }
+    None
 }
 
 fn run_review_tool(tool_name: &str, args: &[String], index: usize, total: usize) -> Result<()> {
@@ -135,18 +153,24 @@ fn print_usage() {
     eprintln!("  -d, --dir DIR [DIR...]     Analyze specific directories");
     eprintln!("  -f, --file FILE            Analyze a single file");
     eprintln!("  -m, --module NAME          Find module and analyze");
+    eprintln!("  -p, --project NAME         Enable project-specific tools (e.g., 'apas')");
     eprintln!("  -h, --help                 Show this help");
     eprintln!();
-    eprintln!("Available tools:");
+    eprintln!("Available general tools:");
     for tool in get_available_review_tools() {
         eprintln!("  {tool}");
     }
     eprintln!();
+    eprintln!("APAS-specific tools (use -p apas):");
+    for tool in get_apas_review_tools() {
+        eprintln!("  {tool}");
+    }
+    eprintln!();
     eprintln!("Examples:");
-    eprintln!("  rusticate-review all -c                    # Run all review tools");
+    eprintln!("  rusticate-review all -c                    # Run all general review tools");
+    eprintln!("  rusticate-review all -c -p apas            # Run all tools including APAS-specific");
     eprintln!("  rusticate-review string-hacking -c         # Check for string hacking");
-    eprintln!("  rusticate-review logging -d src/bin        # Check logging in binaries");
-    eprintln!("  rusticate-review test-functions -m ArraySeq # Check test coverage for module");
+    eprintln!("  rusticate-review APAS-st-mt-consistency -c -p apas  # Run APAS tool");
 }
 
 fn main() -> Result<()> {
@@ -169,13 +193,25 @@ fn main() -> Result<()> {
     // Clear the log file at the start of each run
     let _ = fs::write("analyses/rusticate-review.log", "");
     
-    // Get remaining args to pass through
+    // Get remaining args to pass through and check for -p/--project flag
     let passthrough_args: Vec<String> = args.iter().skip(2).cloned().collect();
+    let project = parse_project_flag(&passthrough_args);
     
     if tool_or_command == "all" {
-        let tools = get_available_review_tools();
+        let mut tools = get_available_review_tools();
+        
+        // Add APAS-specific tools if -p apas is specified
+        let include_apas = project.as_deref() == Some("apas");
+        if include_apas {
+            tools.extend(get_apas_review_tools());
+        }
+        
         let total = tools.len();
-        log!("Running all {} review tools...", total);
+        log!("Running all {} review tools{}", total, 
+             if include_apas { " (including APAS-specific)" } else { "" });
+        if !include_apas {
+            log!("(Use -p apas to include {} APAS-specific tools)", get_apas_review_tools().len());
+        }
         log!("");
         
         let mut failed_tools = Vec::new();
@@ -203,13 +239,27 @@ fn main() -> Result<()> {
         }
     } else {
         // Run specific tool
-        let available_tools = get_available_review_tools();
+        let mut available_tools = get_available_review_tools();
+        let apas_tools = get_apas_review_tools();
+        let include_apas = project.as_deref() == Some("apas");
+        
+        if include_apas {
+            available_tools.extend(apas_tools.iter().copied());
+        }
+        
         if !available_tools.contains(&tool_or_command.as_str()) {
             eprintln!("Error: Unknown review tool '{tool_or_command}'");
             eprintln!();
-            eprintln!("Available tools:");
-            for tool in available_tools {
+            eprintln!("Available general tools:");
+            for tool in get_available_review_tools() {
                 eprintln!("  {tool}");
+            }
+            if !apas_tools.is_empty() {
+                eprintln!();
+                eprintln!("APAS-specific tools (use -p apas):");
+                for tool in apas_tools {
+                    eprintln!("  {tool}");
+                }
             }
             eprintln!();
             eprintln!("Or use 'all' to run all review tools");
