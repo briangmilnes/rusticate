@@ -52,3 +52,18 @@ Entering directory 'src/bin'
 
 Summary: 1 files checked, 0 files with violations
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found 8 violation(s):
+
+src/bin/fix_APAS_chap18_chap19_both.rs:1: File 'fix_APAS_chap18_chap19_both.rs' contains uppercase letters, should be snake_case
+src/bin/fix_APAS_chap18_to_chap19.rs:1: File 'fix_APAS_chap18_to_chap19.rs' contains uppercase letters, should be snake_case
+src/bin/fix_APAS_chap18_to_chap19_per.rs:1: File 'fix_APAS_chap18_to_chap19_per.rs' contains uppercase letters, should be snake_case
+src/bin/review_APAS_chap18_chap19.rs:1: File 'review_APAS_chap18_chap19.rs' contains uppercase letters, should be snake_case
+src/bin/review_APAS_inherent_transitive_mt.rs:1: File 'review_APAS_inherent_transitive_mt.rs' contains uppercase letters, should be snake_case
+src/bin/review_APAS_st_mt_consistency.rs:1: File 'review_APAS_st_mt_consistency.rs' contains uppercase letters, should be snake_case
+src/bin/review_APAS_struct_file_naming.rs:1: File 'review_APAS_struct_file_naming.rs' contains uppercase letters, should be snake_case
+src/bin/review_APAS_stt_compliance.rs:1: File 'review_APAS_stt_compliance.rs' contains uppercase letters, should be snake_case
+
+Summary: 122 files checked, 8 files with violations
+Completed in 0ms

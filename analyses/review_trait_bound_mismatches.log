@@ -44,3 +44,9 @@ Entering directory 'src/bin'
 
 ✓ No src/ directories to check
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✓ No potential trait bound mismatches found
+
+Summary: 89 files checked, 0 potential issues
+Completed in 87ms

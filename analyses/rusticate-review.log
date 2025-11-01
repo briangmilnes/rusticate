@@ -3,18 +3,4 @@ Running all 40 review tools (including APAS-specific)
 
 [1/40] Running bench-modules
 ✓ All benchmark modules compile successfully
-Completed in 140ms
-
-[2/40] Running comment-placement
-Entering directory 'src/bin'
-
-No comment placement issues found.
-Completed in 0ms
-
-[3/40] Running doctests
-Entering directory 'src/bin'
-
-✓ All doctests parse correctly
-
-Summary: 0 doctest(s) failed
-Completed in 0ms
+Completed in 86ms

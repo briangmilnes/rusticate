@@ -84,7 +84,7 @@ fn get_available_review_tools() -> Vec<&'static str> {
 }
 
 fn get_apas_review_tools() -> Vec<&'static str> {
-    // APAS-specific tools (require -p apas)
+    // APAS-specific tools (require -p APAS)
     vec![
         "APAS-chap18-chap19",
         "APAS-inherent-transitive-mt",
@@ -153,7 +153,7 @@ fn print_usage() {
     eprintln!("  -d, --dir DIR [DIR...]     Analyze specific directories");
     eprintln!("  -f, --file FILE            Analyze a single file");
     eprintln!("  -m, --module NAME          Find module and analyze");
-    eprintln!("  -p, --project NAME         Enable project-specific tools (e.g., 'apas')");
+    eprintln!("  -p, --project NAME         Enable project-specific tools (e.g., 'APAS')");
     eprintln!("  -h, --help                 Show this help");
     eprintln!();
     eprintln!("Available general tools:");
@@ -161,16 +161,16 @@ fn print_usage() {
         eprintln!("  {tool}");
     }
     eprintln!();
-    eprintln!("APAS-specific tools (use -p apas):");
+    eprintln!("APAS-specific tools (use -p APAS):");
     for tool in get_apas_review_tools() {
         eprintln!("  {tool}");
     }
     eprintln!();
     eprintln!("Examples:");
     eprintln!("  rusticate-review all -c                    # Run all general review tools");
-    eprintln!("  rusticate-review all -c -p apas            # Run all tools including APAS-specific");
+    eprintln!("  rusticate-review all -c -p APAS            # Run all tools including APAS-specific");
     eprintln!("  rusticate-review string-hacking -c         # Check for string hacking");
-    eprintln!("  rusticate-review APAS-st-mt-consistency -c -p apas  # Run APAS tool");
+    eprintln!("  rusticate-review APAS-st-mt-consistency -c -p APAS  # Run APAS tool");
 }
 
 fn main() -> Result<()> {
@@ -200,8 +200,8 @@ fn main() -> Result<()> {
     if tool_or_command == "all" {
         let mut tools = get_available_review_tools();
         
-        // Add APAS-specific tools if -p apas is specified
-        let include_apas = project.as_deref() == Some("apas");
+        // Add APAS-specific tools if -p APAS is specified
+        let include_apas = project.as_deref() == Some("APAS");
         if include_apas {
             tools.extend(get_apas_review_tools());
         }
@@ -210,7 +210,7 @@ fn main() -> Result<()> {
         log!("Running all {} review tools{}", total, 
              if include_apas { " (including APAS-specific)" } else { "" });
         if !include_apas {
-            log!("(Use -p apas to include {} APAS-specific tools)", get_apas_review_tools().len());
+            log!("(Use -p APAS to include {} APAS-specific tools)", get_apas_review_tools().len());
         }
         log!("");
         
@@ -241,7 +241,7 @@ fn main() -> Result<()> {
         // Run specific tool
         let mut available_tools = get_available_review_tools();
         let apas_tools = get_apas_review_tools();
-        let include_apas = project.as_deref() == Some("apas");
+        let include_apas = project.as_deref() == Some("APAS");
         
         if include_apas {
             available_tools.extend(apas_tools.iter().copied());
@@ -256,7 +256,7 @@ fn main() -> Result<()> {
             }
             if !apas_tools.is_empty() {
                 eprintln!();
-                eprintln!("APAS-specific tools (use -p apas):");
+                eprintln!("APAS-specific tools (use -p APAS):");
                 for tool in apas_tools {
                     eprintln!("  {tool}");
                 }

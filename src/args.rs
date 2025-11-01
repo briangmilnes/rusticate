@@ -267,7 +267,7 @@ pub mod args {
             println!("  -d, --dir DIR [DIR...]     Analyze specific directories");
             println!("  -f, --file FILE            Analyze a single file");
             println!("  -m, --module NAME          Find module in src/ and its tests/benches");
-            println!("  -p, --project NAME         Enable project-specific tools (e.g., 'apas')");
+            println!("  -p, --project NAME         Enable project-specific tools (e.g., 'APAS')");
             println!("  -h, --help                 Show this help message");
             println!();
             println!("Examples:");

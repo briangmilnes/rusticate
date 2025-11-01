@@ -84,3 +84,11 @@ Entering directory 'src/bin'
 
 ✓ All non-binary modules have pub mod declarations
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found 2 file(s) missing pub mod declarations:
+
+src/duplicate_methods.rs:1: missing pub mod declaration
+tests/integration/common.rs:1: missing pub mod declaration
+
+Summary: 122 files checked, 2 missing pub mod

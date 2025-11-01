@@ -52,3 +52,9 @@ Entering directory 'src/bin'
 
 Summary: 1 files checked, 0 files with violations, 0 total violations
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✓ No 'extern crate' usage found
+
+Summary: 122 files checked, 0 files with violations, 0 total violations
+Completed in 66ms

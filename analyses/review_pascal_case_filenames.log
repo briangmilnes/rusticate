@@ -653,3 +653,129 @@ count_as.rs:1: File 'count_as.rs' uses snake_case (underscore), should be Pascal
 
 Summary: 1 files checked, 1 files with violations
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found 119 violation(s):
+
+src/analyzer.rs:1: File 'analyzer.rs' starts with lowercase (camelCase), should be PascalCase
+src/args.rs:1: File 'args.rs' starts with lowercase (camelCase), should be PascalCase
+src/ast_utils.rs:1: File 'ast_utils.rs' uses snake_case (underscore), should be PascalCase
+src/bin/analyze_review_typeclasses.rs:1: File 'analyze_review_typeclasses.rs' uses snake_case (underscore), should be PascalCase
+src/bin/compile.rs:1: File 'compile.rs' starts with lowercase (camelCase), should be PascalCase
+src/bin/compile_and_test.rs:1: File 'compile_and_test.rs' uses snake_case (underscore), should be PascalCase
+src/bin/compile_src_tests_benches_run_tests.rs:1: File 'compile_src_tests_benches_run_tests.rs' uses snake_case (underscore), should be PascalCase
+src/bin/count_as.rs:1: File 'count_as.rs' uses snake_case (underscore), should be PascalCase
+src/bin/count_loc.rs:1: File 'count_loc.rs' uses snake_case (underscore), should be PascalCase
+src/bin/count_vec.rs:1: File 'count_vec.rs' uses snake_case (underscore), should be PascalCase
+src/bin/count_where.rs:1: File 'count_where.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix.rs:1: File 'fix.rs' starts with lowercase (camelCase), should be PascalCase
+src/bin/fix_APAS_chap18_chap19_both.rs:1: File 'fix_APAS_chap18_chap19_both.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_APAS_chap18_to_chap19.rs:1: File 'fix_APAS_chap18_to_chap19.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_APAS_chap18_to_chap19_per.rs:1: File 'fix_APAS_chap18_to_chap19_per.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_doctests.rs:1: File 'fix_doctests.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_duplicate_method_call_sites.rs:1: File 'fix_duplicate_method_call_sites.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_duplicate_methods.rs:1: File 'fix_duplicate_methods.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_grouped_imports.rs:1: File 'fix_grouped_imports.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_import_order.rs:1: File 'fix_import_order.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_logging.rs:1: File 'fix_logging.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_merge_imports.rs:1: File 'fix_merge_imports.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_min_typing.rs:1: File 'fix_min_typing.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_no_pub_type.rs:1: File 'fix_no_pub_type.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_non_wildcard_uses.rs:1: File 'fix_non_wildcard_uses.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_our_uses_to_wildcards.rs:1: File 'fix_our_uses_to_wildcards.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_pub_mod.rs:1: File 'fix_pub_mod.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_stub_delegation.rs:1: File 'fix_stub_delegation.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_test_trait_imports.rs:1: File 'fix_test_trait_imports.rs' uses snake_case (underscore), should be PascalCase
+src/bin/fix_unnecessary_ufcs.rs:1: File 'fix_unnecessary_ufcs.rs' uses snake_case (underscore), should be PascalCase
+src/bin/parse.rs:1: File 'parse.rs' starts with lowercase (camelCase), should be PascalCase
+src/bin/review.rs:1: File 'review.rs' starts with lowercase (camelCase), should be PascalCase
+src/bin/review_APAS_chap18_chap19.rs:1: File 'review_APAS_chap18_chap19.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_APAS_inherent_transitive_mt.rs:1: File 'review_APAS_inherent_transitive_mt.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_APAS_st_mt_consistency.rs:1: File 'review_APAS_st_mt_consistency.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_APAS_struct_file_naming.rs:1: File 'review_APAS_struct_file_naming.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_APAS_stt_compliance.rs:1: File 'review_APAS_stt_compliance.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_bench_modules.rs:1: File 'review_bench_modules.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_comment_placement.rs:1: File 'review_comment_placement.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_doctests.rs:1: File 'review_doctests.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_duplicate_bench_names.rs:1: File 'review_duplicate_bench_names.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_duplicate_methods.rs:1: File 'review_duplicate_methods.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_grouped_imports.rs:1: File 'review_grouped_imports.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_impl_order.rs:1: File 'review_impl_order.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_impl_trait_bounds.rs:1: File 'review_impl_trait_bounds.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_import_order.rs:1: File 'review_import_order.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_inherent_and_trait_impl.rs:1: File 'review_inherent_and_trait_impl.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_inherent_plus_trait_impl.rs:1: File 'review_inherent_plus_trait_impl.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_integration_test_structure.rs:1: File 'review_integration_test_structure.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_internal_method_impls.rs:1: File 'review_internal_method_impls.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_logging.rs:1: File 'review_logging.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_merge_imports.rs:1: File 'review_merge_imports.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_min_typing.rs:1: File 'review_min_typing.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_minimize_ufcs_call_sites.rs:1: File 'review_minimize_ufcs_call_sites.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_module_encapsulation.rs:1: File 'review_module_encapsulation.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_mt_per.rs:1: File 'review_mt_per.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_no_extern_crate.rs:1: File 'review_no_extern_crate.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_no_trait_method_duplication.rs:1: File 'review_no_trait_method_duplication.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_non_wildcard_uses.rs:1: File 'review_non_wildcard_uses.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_pascal_case_filenames.rs:1: File 'review_pascal_case_filenames.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_pub_mod.rs:1: File 'review_pub_mod.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_public_only_inherent_impls.rs:1: File 'review_public_only_inherent_impls.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_qualified_paths.rs:1: File 'review_qualified_paths.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_redundant_inherent_impls.rs:1: File 'review_redundant_inherent_impls.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_simplifiable_ufcs.rs:1: File 'review_simplifiable_ufcs.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_single_trait_impl.rs:1: File 'review_single_trait_impl.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_snake_case_filenames.rs:1: File 'review_snake_case_filenames.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_string_hacking.rs:1: File 'review_string_hacking.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_stub_delegation.rs:1: File 'review_stub_delegation.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_summary_accuracy.rs:1: File 'review_summary_accuracy.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_test_functions.rs:1: File 'review_test_functions.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_test_modules.rs:1: File 'review_test_modules.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_trait_bound_mismatches.rs:1: File 'review_trait_bound_mismatches.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_trait_definition_order.rs:1: File 'review_trait_definition_order.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_trait_method_conflicts.rs:1: File 'review_trait_method_conflicts.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_trait_self_usage.rs:1: File 'review_trait_self_usage.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_typeclasses.rs:1: File 'review_typeclasses.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_unnecessary_ufcs_and_qualified_paths.rs:1: File 'review_unnecessary_ufcs_and_qualified_paths.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_variable_naming.rs:1: File 'review_variable_naming.rs' uses snake_case (underscore), should be PascalCase
+src/bin/review_where_clause_simplification.rs:1: File 'review_where_clause_simplification.rs' uses snake_case (underscore), should be PascalCase
+src/bin/rusticate.rs:1: File 'rusticate.rs' starts with lowercase (camelCase), should be PascalCase
+src/count_helper.rs:1: File 'count_helper.rs' uses snake_case (underscore), should be PascalCase
+src/duplicate_methods.rs:1: File 'duplicate_methods.rs' uses snake_case (underscore), should be PascalCase
+src/fixer.rs:1: File 'fixer.rs' starts with lowercase (camelCase), should be PascalCase
+src/logging.rs:1: File 'logging.rs' starts with lowercase (camelCase), should be PascalCase
+src/parser.rs:1: File 'parser.rs' starts with lowercase (camelCase), should be PascalCase
+src/tool_runner.rs:1: File 'tool_runner.rs' uses snake_case (underscore), should be PascalCase
+src/visitor.rs:1: File 'visitor.rs' starts with lowercase (camelCase), should be PascalCase
+tests/integration/common.rs:1: File 'common.rs' starts with lowercase (camelCase), should be PascalCase
+tests/integration/test_review_camelcase.rs:1: File 'test_review_camelcase.rs' uses snake_case (underscore), should be PascalCase
+tests/integration/test_review_import_order.rs:1: File 'test_review_import_order.rs' uses snake_case (underscore), should be PascalCase
+tests/integration/test_review_module_encapsulation.rs:1: File 'test_review_module_encapsulation.rs' uses snake_case (underscore), should be PascalCase
+tests/integration/test_review_no_extern_crate.rs:1: File 'test_review_no_extern_crate.rs' uses snake_case (underscore), should be PascalCase
+tests/test_analyzer.rs:1: File 'test_analyzer.rs' uses snake_case (underscore), should be PascalCase
+tests/test_fixer.rs:1: File 'test_fixer.rs' uses snake_case (underscore), should be PascalCase
+tests/test_parser.rs:1: File 'test_parser.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_bench_modules.rs:1: File 'test_review_bench_modules.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_dispatcher.rs:1: File 'test_review_dispatcher.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_doctests.rs:1: File 'test_review_doctests.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_duplicate_bench_names.rs:1: File 'test_review_duplicate_bench_names.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_impl_order.rs:1: File 'test_review_impl_order.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_import_order.rs:1: File 'test_review_import_order.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_inherent_and_trait_impl.rs:1: File 'test_review_inherent_and_trait_impl.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_integration_test_structure.rs:1: File 'test_review_integration_test_structure.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_internal_method_impls.rs:1: File 'test_review_internal_method_impls.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_minimize_ufcs_call_sites.rs:1: File 'test_review_minimize_ufcs_call_sites.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_module_encapsulation.rs:1: File 'test_review_module_encapsulation.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_no_extern_crate.rs:1: File 'test_review_no_extern_crate.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_pascal_case_filenames.rs:1: File 'test_review_pascal_case_filenames.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_public_only_inherent_impls.rs:1: File 'test_review_public_only_inherent_impls.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_single_trait_impl.rs:1: File 'test_review_single_trait_impl.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_snake_case_filenames.rs:1: File 'test_review_snake_case_filenames.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_struct_file_naming.rs:1: File 'test_review_struct_file_naming.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_stub_delegation.rs:1: File 'test_review_stub_delegation.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_test_modules.rs:1: File 'test_review_test_modules.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_trait_bound_mismatches.rs:1: File 'test_review_trait_bound_mismatches.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_variable_naming.rs:1: File 'test_review_variable_naming.rs' uses snake_case (underscore), should be PascalCase
+tests/test_review_where_clause_simplification.rs:1: File 'test_review_where_clause_simplification.rs' uses snake_case (underscore), should be PascalCase
+tests/test_visitor.rs:1: File 'test_visitor.rs' uses snake_case (underscore), should be PascalCase
+
+Summary: 122 files checked, 119 files with violations
+Completed in 2ms

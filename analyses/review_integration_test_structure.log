@@ -88,3 +88,17 @@ Entering directory 'src/bin'
 
 ✓ No tests/ directory found
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✗ Found #[cfg(test)] in integration tests (RustRules.md Lines 292-298):
+
+tests/test_review_inherent_and_trait_impl.rs:3: #[cfg(test)] in integration test
+  #[cfg(test)]
+tests/test_review_internal_method_impls.rs:3: #[cfg(test)] in integration test
+  #[cfg(test)]
+
+Fix: Remove #[cfg(test)] modules from integration tests.
+Integration tests should have #[test] functions at root level.
+
+Summary: 33 files checked, 2 violations
+Completed in 1ms

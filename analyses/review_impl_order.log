@@ -52,3 +52,9 @@ Entering directory 'src/bin'
 
 ✓ No src/ directories to check
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+✓ All implementations are in correct order
+
+Summary: 89 files checked, 0 violations
+Completed in 69ms

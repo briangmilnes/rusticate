@@ -434,3 +434,107 @@ Entering directory 'src/bin'
 
 ✓ No stub delegation found in 1 file(s)
 Completed in 0ms
+Entering directory '/home/milnes/projects/rusticate'
+
+APAS-AI-copy/apas-ai/apas-ai/src/Chap05/SetStEph.rs:103: SetStEph - inherent impl with 10 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap05/SetStEph.rs:172: SetStEph - trait impl SetStEphTrait<T> with 10 overlapping methods
+  IDENTICAL (10): empty:f, size:m, intersection:m, insert:m, FromVec:f, union:m, mem:m, singleton:f, iter:m, partition:m
+APAS-AI-copy/apas-ai/apas-ai/src/Chap12/Exercise12_1.rs:29: SpinLock - inherent impl with 3 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap12/Exercise12_1.rs:66: SpinLock - trait impl SpinLockTrait with 3 overlapping methods
+  DIFFERENT (3): lock:m (11.6%), unlock:m (16.3%), new:f (26.6%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeq.rs:112: ArraySeqS - inherent impl with 10 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeq.rs:187: ArraySeqS - trait impl ArraySeq<T> with 10 overlapping methods
+  DIFFERENT (10): new:f (27.1%), length:m (28.0%), singleton:f (57.6%), isSingleton:m (23.3%), subseq:m (12.0%), set:m (22.1%), isEmpty:m (34.6%), nth:m (32.1%), empty:f (48.5%), update:m (24.1%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqMtEph.rs:22: ArraySeqMtEphS - inherent impl with 7 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqMtEph.rs:171: ArraySeqMtEphS - trait impl ArraySeqMtEphTrait<T> with 7 overlapping methods
+  DIFFERENT (7): new:f (58.8%), length:m (18.8%), singleton:f (63.2%), nth_cloned:m (21.1%), set:m (14.4%), subseq_copy:m (12.0%), empty:f (33.8%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqMtPer.rs:24: ArraySeqMtPerS - inherent impl with 6 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqMtPer.rs:194: ArraySeqMtPerS - trait impl ArraySeqMtPerTrait<T> with 6 overlapping methods
+  DIFFERENT (6): empty:f (41.5%), length:m (26.7%), new:f (18.5%), nth:m (27.3%), subseq_copy:m (12.8%), singleton:f (63.2%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqStEph.rs:21: ArraySeqStEphS - inherent impl with 9 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqStEph.rs:180: ArraySeqStEphS - trait impl ArraySeqStEphTrait<T> with 9 overlapping methods
+  DIFFERENT (9): update:m (16.2%), set:m (20.9%), singleton:f (27.3%), subseq:m (13.0%), inject:m (10.5%), length:m (26.7%), empty:f (17.9%), nth:m (27.3%), new:f (26.8%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqStPer.rs:20: ArraySeqStPerS - inherent impl with 6 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/ArraySeqStPer.rs:142: ArraySeqStPerS - trait impl ArraySeqStPerTrait<T> with 6 overlapping methods
+  DIFFERENT (6): length:m (26.7%), empty:f (17.9%), new:f (29.3%), singleton:f (30.3%), nth:m (27.3%), subseq_copy:m (11.3%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/LinkedListStEph.rs:25: LinkedListStEphS - inherent impl with 7 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/LinkedListStEph.rs:254: LinkedListStEphS - trait impl LinkedListStEphTrait<T> with 7 overlapping methods
+  DIFFERENT (7): subseq_copy:m (8.9%), new:f (60.4%), singleton:f (65.0%), nth:m (18.3%), length:m (18.8%), empty:f (57.1%), set:m (19.6%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/LinkedListStPer.rs:97: LinkedListStPerS - inherent impl with 6 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap18/LinkedListStPer.rs:174: LinkedListStPerS - trait impl LinkedListStPerTrait<T> with 6 overlapping methods
+  DIFFERENT (6): singleton:f (65.0%), new:f (60.4%), nth:m (18.3%), subseq_copy:m (8.9%), empty:f (57.1%), length:m (21.9%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap23/BalBinTreeStEph.rs:50: BalBinTree - inherent impl with 7 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap23/BalBinTreeStEph.rs:109: BalBinTree - trait impl BalBinTreeStEphTrait<T> with 7 overlapping methods
+  HIGH SIMILARITY (1): leaf:f (85.0%)
+  DIFFERENT (6): node:f (57.1%), in_order:m (7.0%), pre_order:m (7.2%), is_leaf:m (27.7%), height:m (17.6%), size:m (21.9%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap23/PrimTreeSeqSt.rs:62: PrimTreeSeqStS - inherent impl with 8 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap23/PrimTreeSeqSt.rs:125: PrimTreeSeqStS - trait impl PrimTreeSeqStTrait<T> with 8 overlapping methods
+  IDENTICAL (8): empty:f, length:m, into_vec:m, as_slice:m, join:f, expose:m, singleton:f, from_vec:f
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeq.rs:92: AVLTreeS - inherent impl with 1 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeq.rs:201: AVLTreeS - trait impl AVLTreeSeq<T> with 1 overlapping methods
+  DIFFERENT (1): new:f (68.2%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStEph.rs:69: AVLTreeSeqStEphS - inherent impl with 1 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/AVLTreeSeqStEph.rs:146: AVLTreeSeqStEphS - trait impl AVLTreeSeqStEphTrait<T> with 1 overlapping methods
+  DIFFERENT (1): new:f (53.3%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTBBAlphaStEph.rs:69: BSTBBAlphaStEph - inherent impl with 4 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTBBAlphaStEph.rs:217: BSTBBAlphaStEph - trait impl BSTBBAlphaStEphTrait<T> with 4 overlapping methods
+  IDENTICAL (3): height:m, in_order:m, pre_order:m
+  DIFFERENT (1): insert:m (27.5%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetAVLMtEph.rs:62: BSTSetAVLMtEph - inherent impl with 20 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetAVLMtEph.rs:221: BSTSetAVLMtEph - trait impl BSTSetAVLMtEphTrait<T> with 20 overlapping methods
+  IDENTICAL (9): maximum:m, is_empty:m, find:m, contains:m, size:m, insert:m, iter_in_order:m, minimum:m, as_tree:m
+  STUB DELEGATION (2): empty:f, singleton:f
+  DIFFERENT (9): difference:m (12.5%), union:m (14.2%), split:m (8.4%), intersection:m (13.0%), join_m:f (14.1%), delete:m (13.0%), join_pair:f (14.3%), filter:m (16.2%), reduce:m (20.5%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetBBAlphaMtEph.rs:62: BSTSetBBAlphaMtEph - inherent impl with 20 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetBBAlphaMtEph.rs:221: BSTSetBBAlphaMtEph - trait impl BSTSetBBAlphaMtEphTrait<T> with 20 overlapping methods
+  IDENTICAL (9): contains:m, maximum:m, minimum:m, insert:m, iter_in_order:m, as_tree:m, size:m, is_empty:m, find:m
+  STUB DELEGATION (2): singleton:f, empty:f
+  DIFFERENT (9): delete:m (14.4%), difference:m (12.9%), join_m:f (14.7%), filter:m (16.2%), union:m (14.9%), intersection:m (13.4%), split:m (8.4%), join_pair:f (14.9%), reduce:m (19.2%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetPlainMtEph.rs:62: BSTSetPlainMtEph - inherent impl with 20 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetPlainMtEph.rs:221: BSTSetPlainMtEph - trait impl BSTSetPlainMtEphTrait<T> with 20 overlapping methods
+  IDENTICAL (16): minimum:m, find:m, maximum:m, delete:m, difference:m, contains:m, insert:m, union:m, split:m, join_pair:f, is_empty:m, as_tree:m, intersection:m, size:m, join_m:f, iter_in_order:m
+  STUB DELEGATION (4): filter:m, empty:f, reduce:m, singleton:f
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetRBMtEph.rs:62: BSTSetRBMtEph - inherent impl with 20 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetRBMtEph.rs:221: BSTSetRBMtEph - trait impl BSTSetRBMtEphTrait<T> with 20 overlapping methods
+  IDENTICAL (9): is_empty:m, contains:m, iter_in_order:m, maximum:m, find:m, minimum:m, insert:m, as_tree:m, size:m
+  STUB DELEGATION (2): singleton:f, empty:f
+  DIFFERENT (9): join_pair:f (14.3%), difference:m (12.5%), filter:m (16.2%), reduce:m (20.5%), union:m (14.2%), intersection:m (13.0%), join_m:f (14.1%), split:m (8.0%), delete:m (13.0%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetSplayMtEph.rs:62: BSTSetSplayMtEph - inherent impl with 20 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap37/BSTSetSplayMtEph.rs:221: BSTSetSplayMtEph - trait impl BSTSetSplayMtEphTrait<T> with 20 overlapping methods
+  IDENTICAL (9): size:m, is_empty:m, minimum:m, find:m, iter_in_order:m, maximum:m, insert:m, as_tree:m, contains:m
+  STUB DELEGATION (2): singleton:f, empty:f
+  DIFFERENT (9): delete:m (15.1%), union:m (14.9%), reduce:m (19.2%), filter:m (16.2%), join_m:f (14.7%), split:m (8.4%), intersection:m (13.4%), join_pair:f (14.9%), difference:m (12.9%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap38/BSTParaMtEph.rs:84: ParamBST - inherent impl with 1 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap38/BSTParaMtEph.rs:286: ParamBST - trait impl ParamBSTTrait<T> with 1 overlapping methods
+  DIFFERENT (1): join_mid:f (10.9%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap38/BSTParaStEph.rs:62: ParamBST - inherent impl with 1 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap38/BSTParaStEph.rs:149: ParamBST - trait impl ParamBSTTrait<T> with 1 overlapping methods
+  DIFFERENT (1): join_mid:f (10.9%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTParaTreapMtEph.rs:67: ParamTreap - inherent impl with 1 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTParaTreapMtEph.rs:342: ParamTreap - trait impl ParamTreapTrait<T> with 1 overlapping methods
+  DIFFERENT (1): join_mid:f (14.7%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTSetTreapMtEph.rs:62: BSTSetTreapMtEph - inherent impl with 20 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap39/BSTSetTreapMtEph.rs:221: BSTSetTreapMtEph - trait impl BSTSetTreapMtEphTrait<T> with 20 overlapping methods
+  IDENTICAL (9): insert:m, contains:m, is_empty:m, minimum:m, iter_in_order:m, size:m, maximum:m, as_tree:m, find:m
+  STUB DELEGATION (2): empty:f, singleton:f
+  DIFFERENT (9): difference:m (13.4%), split:m (9.1%), filter:m (17.6%), reduce:m (21.9%), intersection:m (13.9%), join_pair:f (15.6%), join_m:f (15.3%), delete:m (14.4%), union:m (15.5%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47clean/StructChainedHashTable.rs:25: ChainList - inherent impl with 1 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap47clean/StructChainedHashTable.rs:29: ChainList - trait impl EntryTrait<Key, Value> with 1 overlapping methods
+  DIFFERENT (1): new:f (54.5%)
+APAS-AI-copy/apas-ai/apas-ai/src/Chap65/UnionFindStEph.rs:45: UnionFindStEph - inherent impl with 6 overlapping methods
+APAS-AI-copy/apas-ai/apas-ai/src/Chap65/UnionFindStEph.rs:165: UnionFindStEph - trait impl UnionFindStEphTrait<V> with 6 overlapping methods
+  IDENTICAL (4): new:f, num_sets:m, insert:m, equals:m
+  DIFFERENT (2): find:m (77.1%), union:m (76.8%)
+
+================================================================================
+PARETO ANALYSIS: DUPLICATION PATTERNS
+================================================================================
+114    ( 53.0%, cumulative  53.0%): DIFFERENT (<80% similar)
+86     ( 40.0%, cumulative  93.0%): IDENTICAL (exact duplication)
+14     (  6.5%, cumulative  99.5%): STUB DELEGATION (one calls other)
+1      (  0.5%, cumulative 100.0%): HIGH SIMILARITY (>80%)
+--------------------------------------------------------------------------------
+TOTAL OVERLAPPING: 215 (153 methods :m, 62 functions :f)
+
+✗ Found 25 stub delegation violations in 878 file(s)
+Completed in 455ms
