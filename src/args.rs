@@ -20,9 +20,42 @@ pub mod args {
         pub language: String,
         /// Repository scan mode - find all Cargo projects recursively
         pub repositories: Option<PathBuf>,
+        /// Source directory names to search (default: ["src", "source"])
+        pub src_dirs: Vec<String>,
+        /// Test directory names to search (default: comprehensive list)
+        pub test_dirs: Vec<String>,
+        /// Bench directory names to search (default: ["benches", "bench", "benchmark"])
+        pub bench_dirs: Vec<String>,
     }
 
     impl StandardArgs {
+        /// Get default source directory names
+        fn default_src_dirs() -> Vec<String> {
+            vec!["src".to_string(), "source".to_string()]
+        }
+        
+        /// Get default test directory names (comprehensive for Verus codebases)
+        fn default_test_dirs() -> Vec<String> {
+            vec![
+                "tests".to_string(),
+                "test".to_string(),
+                "e2e".to_string(),
+                "unit_tests".to_string(),
+                "conformance_tests".to_string(),
+                "rust_verify_test".to_string(),
+                "std_test".to_string(),
+            ]
+        }
+        
+        /// Get default bench directory names
+        fn default_bench_dirs() -> Vec<String> {
+            vec![
+                "benches".to_string(),
+                "bench".to_string(),
+                "benchmark".to_string(),
+            ]
+        }
+        
         /// Parse standard arguments from command line
         /// 
         /// Usage: tool [OPTIONS]
@@ -51,6 +84,9 @@ pub mod args {
                     project: None,
                     language: "Rust".to_string(),
                     repositories: None,
+                    src_dirs: Self::default_src_dirs(),
+                    test_dirs: Self::default_test_dirs(),
+                    bench_dirs: Self::default_bench_dirs(),
                 });
             }
             
@@ -60,6 +96,9 @@ pub mod args {
             let mut project = None;
             let mut language = "Rust".to_string();
             let mut repositories = None;
+            let mut src_dirs = Self::default_src_dirs();
+            let mut test_dirs = Self::default_test_dirs();
+            let mut bench_dirs = Self::default_bench_dirs();
             
             while i < args.len() {
                 match args[i].as_str() {
@@ -149,6 +188,30 @@ pub mod args {
                         repositories = Some(repo_path);
                         i += 1;
                     }
+                    "--test-dirs" | "-t" => {
+                        i += 1;
+                        if i >= args.len() {
+                            return Err(anyhow::anyhow!("--test-dirs requires a comma-separated list"));
+                        }
+                        test_dirs = args[i].split(',').map(|s| s.trim().to_string()).collect();
+                        i += 1;
+                    }
+                    "--bench-dirs" | "-b" => {
+                        i += 1;
+                        if i >= args.len() {
+                            return Err(anyhow::anyhow!("--bench-dirs requires a comma-separated list"));
+                        }
+                        bench_dirs = args[i].split(',').map(|s| s.trim().to_string()).collect();
+                        i += 1;
+                    }
+                    "--src-dirs" => {
+                        i += 1;
+                        if i >= args.len() {
+                            return Err(anyhow::anyhow!("--src-dirs requires a comma-separated list"));
+                        }
+                        src_dirs = args[i].split(',').map(|s| s.trim().to_string()).collect();
+                        i += 1;
+                    }
                     "--help" | "-h" => {
                         Self::print_usage(&args[0]);
                         std::process::exit(0);
@@ -172,7 +235,16 @@ pub mod args {
                 return Err(anyhow::anyhow!("No paths specified"));
             }
             
-            Ok(StandardArgs { paths, is_module_search, project, language, repositories })
+            Ok(StandardArgs { 
+                paths, 
+                is_module_search, 
+                project, 
+                language, 
+                repositories,
+                src_dirs,
+                test_dirs,
+                bench_dirs,
+            })
         }
         
         /// Find a module by name in src/, and its corresponding test and bench files
@@ -266,6 +338,9 @@ pub mod args {
                 project: None,
                 language: "Rust".to_string(),
                 repositories: None,
+                src_dirs: Self::default_src_dirs(),
+                test_dirs: Self::default_test_dirs(),
+                bench_dirs: Self::default_bench_dirs(),
             })
         }
         
@@ -306,9 +381,17 @@ pub mod args {
             println!("  -f, --file FILE            Analyze a single file");
             println!("  -m, --module NAME          Find module in src/ and its tests/benches");
             println!("  -r, --repositories DIR     Scan for all Cargo projects under DIR");
+            println!("  -t, --test-dirs NAMES      Test directory names (comma-separated, replaces defaults)");
+            println!("  -b, --bench-dirs NAMES     Bench directory names (comma-separated, replaces defaults)");
+            println!("      --src-dirs NAMES       Source directory names (comma-separated, replaces defaults)");
             println!("  -p, --project NAME         Enable project-specific tools (e.g., 'APAS')");
             println!("  -l, --language NAME        Language variant: 'Rust' (default) or 'Verus'");
             println!("  -h, --help                 Show this help message");
+            println!();
+            println!("Default directory names:");
+            println!("  src:   src, source");
+            println!("  tests: tests, test, e2e, unit_tests, conformance_tests, rust_verify_test, std_test");
+            println!("  bench: benches, bench, benchmark");
             println!();
             println!("Examples:");
             println!("  {name}                           # Analyze codebase (src/, tests/, benches/)");
@@ -318,6 +401,7 @@ pub mod args {
             println!("  {name} -f src/lib.rs             # Analyze single file");
             println!("  {name} -m ArraySeqStEph          # Analyze module + tests + benches");
             println!("  {name} -r ~/projects/repos       # Analyze all Cargo projects in directory");
+            println!("  {name} -r ~/repos -t tests,test  # Custom test directories");
         }
 
         /// Get all paths

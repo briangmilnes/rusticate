@@ -309,7 +309,7 @@ fn count_verus_project(_args: &StandardArgs, base_dir: &Path, search_dirs: &[Pat
     Ok(())
 }
 
-fn count_repositories(repo_dir: &PathBuf, language: &str, start: Instant) -> Result<()> {
+fn count_repositories(repo_dir: &PathBuf, language: &str, src_dirs: &[String], test_dirs: &[String], bench_dirs: &[String], start: Instant) -> Result<()> {
     let projects = StandardArgs::find_cargo_projects(repo_dir);
     
     if projects.is_empty() {
@@ -318,6 +318,13 @@ fn count_repositories(repo_dir: &PathBuf, language: &str, start: Instant) -> Res
     }
     
     let is_verus = language == "Verus";
+    
+    // Print which directories we're searching for
+    println!("Searching for directories:");
+    println!("  src:   {}", src_dirs.join(", "));
+    println!("  tests: {}", test_dirs.join(", "));
+    println!("  bench: {}", bench_dirs.join(", "));
+    println!();
     
     // Store per-project results
     let mut all_results = Vec::new();
@@ -335,15 +342,32 @@ fn count_repositories(repo_dir: &PathBuf, language: &str, start: Instant) -> Res
         );
         println!();
         
-        // Get search dirs for this project
-        let src_dir = project.join("src");
-        let tests_dir = project.join("tests");
-        let benches_dir = project.join("benches");
-        
+        // Get search dirs for this project by checking all configured directory names
         let mut search_dirs = Vec::new();
-        if src_dir.exists() { search_dirs.push(src_dir); }
-        if tests_dir.exists() { search_dirs.push(tests_dir); }
-        if benches_dir.exists() { search_dirs.push(benches_dir); }
+        
+        // Check for source directories
+        for src_name in src_dirs {
+            let dir = project.join(src_name);
+            if dir.exists() && dir.is_dir() {
+                search_dirs.push(dir);
+            }
+        }
+        
+        // Check for test directories
+        for test_name in test_dirs {
+            let dir = project.join(test_name);
+            if dir.exists() && dir.is_dir() {
+                search_dirs.push(dir);
+            }
+        }
+        
+        // Check for bench directories
+        for bench_name in bench_dirs {
+            let dir = project.join(bench_name);
+            if dir.exists() && dir.is_dir() {
+                search_dirs.push(dir);
+            }
+        }
         
         if search_dirs.is_empty() {
             println!("  (No src/tests/benches directories found)");
@@ -435,7 +459,14 @@ fn main() -> Result<()> {
     
     // Handle repository scanning mode
     if let Some(repo_dir) = &args.repositories {
-        return count_repositories(repo_dir, &args.language, start);
+        return count_repositories(
+            repo_dir, 
+            &args.language,
+            &args.src_dirs,
+            &args.test_dirs,
+            &args.bench_dirs,
+            start
+        );
     }
     
     let base_dir = args.base_dir();
