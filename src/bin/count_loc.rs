@@ -6,7 +6,8 @@
 //! Provides LOC metrics for the project
 
 use anyhow::Result;
-use rusticate::{StandardArgs, format_number, find_rust_files};
+use rusticate::{StandardArgs, format_number, find_rust_files, parse_source};
+use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SyntaxNode};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::io::{self, Write};
@@ -27,9 +28,134 @@ macro_rules! log {
         }
     }};
 }
+
+#[derive(Debug, Default, Clone, Copy)]
+struct VerusLocCounts {
+    spec: usize,
+    proof: usize,
+    exec: usize,
+    total: usize,
+}
+
 fn count_lines_in_file(path: &Path) -> Result<usize> {
     let content = fs::read_to_string(path)?;
     Ok(content.lines().count())
+}
+
+fn count_verus_lines_in_file(path: &Path) -> Result<VerusLocCounts> {
+    let content = fs::read_to_string(path)?;
+    
+    let mut counts = VerusLocCounts::default();
+    counts.total = content.lines().count();
+    
+    // Verus code is inside verus! {} macro, which the AST parser won't expand
+    // So we need to do text-based analysis
+    
+    let lines: Vec<&str> = content.lines().collect();
+    let mut i = 0;
+    
+    while i < lines.len() {
+        let line = lines[i].trim();
+        
+        // Skip empty lines and comments
+        if line.is_empty() || line.starts_with("//") || line.starts_with("/*") {
+            i += 1;
+            continue;
+        }
+        
+        // Check for function declarations
+        if line.contains(" fn ") || line.starts_with("fn ") || line.starts_with("pub fn") {
+            // Determine function type based on modifiers
+            let is_spec = line.contains("spec fn") || line.contains("spec(");
+            let is_proof = line.contains("proof fn");
+            
+            // Count lines in this function by finding the matching closing brace
+            let func_start = i;
+            let func_lines = count_function_lines(&lines, i);
+            
+            if is_spec {
+                counts.spec += func_lines;
+            } else if is_proof {
+                counts.proof += func_lines;
+            } else {
+                counts.exec += func_lines;
+                
+                // Check if this exec function has proof blocks inside
+                let proof_lines = count_proof_blocks_in_range(&lines, i, i + func_lines);
+                if proof_lines > 0 {
+                    counts.proof += proof_lines;
+                    counts.exec -= proof_lines; // Don't double-count
+                }
+            }
+            
+            i += func_lines;
+        } else {
+            i += 1;
+        }
+    }
+    
+    Ok(counts)
+}
+
+fn count_function_lines(lines: &[&str], start: usize) -> usize {
+    // Find the opening brace and count until matching closing brace
+    let mut brace_count = 0;
+    let mut found_open = false;
+    
+    for (offset, line) in lines[start..].iter().enumerate() {
+        for ch in line.chars() {
+            if ch == '{' {
+                brace_count += 1;
+                found_open = true;
+            } else if ch == '}' {
+                brace_count -= 1;
+                if found_open && brace_count == 0 {
+                    return offset + 1;
+                }
+            }
+        }
+    }
+    
+    // If we didn't find a matching brace, count until end
+    1
+}
+
+fn count_proof_blocks_in_range(lines: &[&str], start: usize, end: usize) -> usize {
+    let mut proof_lines = 0;
+    let mut i = start;
+    
+    while i < end && i < lines.len() {
+        let line = lines[i].trim();
+        if line.starts_with("proof {") || line == "proof" && i + 1 < lines.len() && lines[i + 1].trim().starts_with('{') {
+            // Count lines in this proof block
+            let block_lines = count_function_lines(lines, i);
+            proof_lines += block_lines;
+            i += block_lines;
+        } else {
+            i += 1;
+        }
+    }
+    
+    proof_lines
+}
+
+fn count_proof_blocks_in_node(node: &SyntaxNode) -> usize {
+    let mut proof_lines = 0;
+    
+    // Look for "proof { ... }" blocks by finding BLOCK_EXPR preceded by "proof" identifier
+    for child in node.descendants() {
+        if child.kind() == SyntaxKind::BLOCK_EXPR {
+            let text = child.text().to_string();
+            // Check if this looks like a proof block
+            if let Some(prev) = child.prev_sibling_or_token() {
+                if prev.to_string().trim() == "proof" {
+                    proof_lines += text.lines().count();
+                }
+            }
+        }
+    }
+    
+    proof_lines
 }
 
 fn find_script_files(dir: &Path) -> Vec<PathBuf> {
@@ -57,11 +183,65 @@ fn print_line(s: &str) -> io::Result<()> {
     Ok(())
 }
 
+fn count_verus_project(_args: &StandardArgs, base_dir: &Path, search_dirs: &[PathBuf], start: std::time::Instant) -> Result<()> {
+    let rust_files = find_rust_files(search_dirs);
+    
+    let mut total_spec = 0;
+    let mut total_proof = 0;
+    let mut total_exec = 0;
+    let mut total_lines = 0;
+    
+    println!("Verus LOC (Spec/Proof/Exec)");
+    println!();
+    
+    for file in &rust_files {
+        if let Ok(counts) = count_verus_lines_in_file(file) {
+            if let Ok(rel_path) = file.strip_prefix(base_dir) {
+                println!("{:>8}/{:>8}/{:>8} {}", 
+                    format_number(counts.spec),
+                    format_number(counts.proof), 
+                    format_number(counts.exec),
+                    rel_path.display()
+                );
+            } else {
+                println!("{:>8}/{:>8}/{:>8} {}", 
+                    format_number(counts.spec),
+                    format_number(counts.proof),
+                    format_number(counts.exec),
+                    file.display()
+                );
+            }
+            total_spec += counts.spec;
+            total_proof += counts.proof;
+            total_exec += counts.exec;
+            total_lines += counts.total;
+        }
+    }
+    
+    println!();
+    println!("{:>8}/{:>8}/{:>8} total", 
+        format_number(total_spec),
+        format_number(total_proof),
+        format_number(total_exec)
+    );
+    println!("{:>8} total lines", format_number(total_lines));
+    println!();
+    println!("{} files analyzed in {}ms", rust_files.len(), start.elapsed().as_millis());
+    
+    Ok(())
+}
+
 fn main() -> Result<()> {
     let start = Instant::now();
     let args = StandardArgs::parse()?;
     let base_dir = args.base_dir();
     let search_dirs = args.get_search_dirs();
+    let is_verus = args.language == "Verus";
+    
+    // If Verus mode, use different counting
+    if is_verus {
+        return count_verus_project(&args, &base_dir, &search_dirs, start);
+    }
     
     // Categorize search directories
     let mut src_dirs = Vec::new();

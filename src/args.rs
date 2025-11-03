@@ -16,6 +16,8 @@ pub mod args {
         pub is_module_search: bool,
         /// Project-specific features to enable (e.g., "apas")
         pub project: Option<String>,
+        /// Language variant (e.g., "Rust", "Verus")
+        pub language: String,
     }
 
     impl StandardArgs {
@@ -45,6 +47,7 @@ pub mod args {
                     paths: vec![current_dir],
                     is_module_search: false,
                     project: None,
+                    language: "Rust".to_string(),
                 });
             }
             
@@ -52,6 +55,7 @@ pub mod args {
             let mut paths = Vec::new();
             let mut is_module_search = false;
             let mut project = None;
+            let mut language = "Rust".to_string();
             
             while i < args.len() {
                 match args[i].as_str() {
@@ -118,6 +122,14 @@ pub mod args {
                         project = Some(args[i].clone());
                         i += 1;
                     }
+                    "--language" | "-l" => {
+                        i += 1;
+                        if i >= args.len() {
+                            return Err(anyhow::anyhow!("--language requires a language name"));
+                        }
+                        language = args[i].clone();
+                        i += 1;
+                    }
                     "--help" | "-h" => {
                         Self::print_usage(&args[0]);
                         std::process::exit(0);
@@ -136,7 +148,7 @@ pub mod args {
                 return Err(anyhow::anyhow!("No paths specified"));
             }
             
-            Ok(StandardArgs { paths, is_module_search, project })
+            Ok(StandardArgs { paths, is_module_search, project, language })
         }
         
         /// Find a module by name in src/, and its corresponding test and bench files
@@ -228,6 +240,7 @@ pub mod args {
                 paths: found_paths,
                 is_module_search: true,
                 project: None,
+                language: "Rust".to_string(),
             })
         }
         
@@ -268,6 +281,7 @@ pub mod args {
             println!("  -f, --file FILE            Analyze a single file");
             println!("  -m, --module NAME          Find module in src/ and its tests/benches");
             println!("  -p, --project NAME         Enable project-specific tools (e.g., 'APAS')");
+            println!("  -l, --language NAME        Language variant: 'Rust' (default) or 'Verus'");
             println!("  -h, --help                 Show this help message");
             println!();
             println!("Examples:");
