@@ -421,25 +421,73 @@ fn count_repositories(repo_dir: &PathBuf, language: &str, src_dirs: &[String], t
         }
     }
     
-    // Print summary
-    println!("=== GRAND TOTAL ({} projects) ===", projects.len());
-    println!();
-    
+    // Print summary - separate Verus and non-Verus projects if in Verus mode
     if is_verus {
-        let total_spec: usize = all_results.iter().map(|(_, s, _, _, _, _)| s).sum();
-        let total_proof: usize = all_results.iter().map(|(_, _, p, _, _, _)| p).sum();
-        let total_exec: usize = all_results.iter().map(|(_, _, _, e, _, _)| e).sum();
-        let total_lines: usize = all_results.iter().map(|(_, _, _, _, t, _)| t).sum();
-        let total_files: usize = all_results.iter().map(|(_, _, _, _, _, f)| f).sum();
+        // Separate into Verus projects (have spec/proof/exec) and non-Verus projects
+        let verus_projects: Vec<_> = all_results.iter()
+            .filter(|(_, s, p, e, _, _)| *s > 0 || *p > 0 || *e > 0)
+            .collect();
+        let non_verus_projects: Vec<_> = all_results.iter()
+            .filter(|(_, s, p, e, _, _)| *s == 0 && *p == 0 && *e == 0)
+            .collect();
         
-        println!("  {:>8} spec / {:>8} proof / {:>8} exec",
-            format_number(total_spec),
-            format_number(total_proof),
-            format_number(total_exec)
+        if !verus_projects.is_empty() {
+            println!("=== VERUS PROJECTS ({} projects) ===", verus_projects.len());
+            println!();
+            
+            let total_spec: usize = verus_projects.iter().map(|(_, s, _, _, _, _)| *s).sum();
+            let total_proof: usize = verus_projects.iter().map(|(_, _, p, _, _, _)| *p).sum();
+            let total_exec: usize = verus_projects.iter().map(|(_, _, _, e, _, _)| *e).sum();
+            let total_lines: usize = verus_projects.iter().map(|(_, _, _, _, t, _)| *t).sum();
+            let total_files: usize = verus_projects.iter().map(|(_, _, _, _, _, f)| *f).sum();
+            
+            println!("  {:>8} spec / {:>8} proof / {:>8} exec",
+                format_number(total_spec),
+                format_number(total_proof),
+                format_number(total_exec)
+            );
+            println!("  {:>8} total lines", format_number(total_lines));
+            println!("  {} files in {} projects", total_files, verus_projects.len());
+            println!();
+        }
+        
+        if !non_verus_projects.is_empty() {
+            println!("=== NON-VERUS PROJECTS ({} projects) ===", non_verus_projects.len());
+            println!();
+            
+            let total_lines: usize = non_verus_projects.iter().map(|(_, _, _, _, t, _)| *t).sum();
+            let total_files: usize = non_verus_projects.iter().map(|(_, _, _, _, _, f)| *f).sum();
+            
+            println!("  {:>8} total lines (plain Rust)", format_number(total_lines));
+            println!("  {} files in {} projects", total_files, non_verus_projects.len());
+            println!();
+        }
+        
+        // Overall grand total
+        println!("=== GRAND TOTAL ({} projects: {} Verus + {} non-Verus) ===", 
+            projects.len(),
+            verus_projects.len(),
+            non_verus_projects.len()
         );
-        println!("  {:>8} total lines", format_number(total_lines));
-        println!("  {} files in {} projects", total_files, projects.len());
+        println!();
+        
+        let grand_total_spec: usize = all_results.iter().map(|(_, s, _, _, _, _)| s).sum();
+        let grand_total_proof: usize = all_results.iter().map(|(_, _, p, _, _, _)| p).sum();
+        let grand_total_exec: usize = all_results.iter().map(|(_, _, _, e, _, _)| e).sum();
+        let grand_total_lines: usize = all_results.iter().map(|(_, _, _, _, t, _)| t).sum();
+        let grand_total_files: usize = all_results.iter().map(|(_, _, _, _, _, f)| f).sum();
+        
+        println!("  {:>8} spec / {:>8} proof / {:>8} exec (Verus)",
+            format_number(grand_total_spec),
+            format_number(grand_total_proof),
+            format_number(grand_total_exec)
+        );
+        println!("  {:>8} total lines", format_number(grand_total_lines));
+        println!("  {} files in {} projects", grand_total_files, projects.len());
     } else {
+        println!("=== GRAND TOTAL ({} projects) ===", projects.len());
+        println!();
+        
         let total_loc: usize = all_results.iter().map(|(_, _, _, _, t, _)| t).sum();
         let total_files: usize = all_results.iter().map(|(_, _, _, _, _, f)| f).sum();
         
