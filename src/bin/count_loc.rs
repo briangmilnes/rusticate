@@ -44,118 +44,196 @@ fn count_lines_in_file(path: &Path) -> Result<usize> {
 
 fn count_verus_lines_in_file(path: &Path) -> Result<VerusLocCounts> {
     let content = fs::read_to_string(path)?;
+    let source_file = parse_source(&content)?;
+    let root = source_file.syntax();
     
     let mut counts = VerusLocCounts::default();
     counts.total = content.lines().count();
     
-    // Verus code is inside verus! {} macro, which the AST parser won't expand
-    // So we need to do text-based analysis
-    
-    let lines: Vec<&str> = content.lines().collect();
-    let mut i = 0;
-    
-    while i < lines.len() {
-        let line = lines[i].trim();
-        
-        // Skip empty lines and comments
-        if line.is_empty() || line.starts_with("//") || line.starts_with("/*") {
-            i += 1;
-            continue;
-        }
-        
-        // Check for function declarations
-        if line.contains(" fn ") || line.starts_with("fn ") || line.starts_with("pub fn") {
-            // Determine function type based on modifiers
-            let is_spec = line.contains("spec fn") || line.contains("spec(");
-            let is_proof = line.contains("proof fn");
-            
-            // Count lines in this function by finding the matching closing brace
-            let func_start = i;
-            let func_lines = count_function_lines(&lines, i);
-            
-            if is_spec {
-                counts.spec += func_lines;
-            } else if is_proof {
-                counts.proof += func_lines;
-            } else {
-                counts.exec += func_lines;
-                
-                // Check if this exec function has proof blocks inside
-                let proof_lines = count_proof_blocks_in_range(&lines, i, i + func_lines);
-                if proof_lines > 0 {
-                    counts.proof += proof_lines;
-                    counts.exec -= proof_lines; // Don't double-count
+    // Find verus! macro calls and analyze their token tree
+    for node in root.descendants() {
+        if node.kind() == SyntaxKind::MACRO_CALL {
+            if let Some(macro_call) = ast::MacroCall::cast(node.clone()) {
+                // Check if this is a verus! macro
+                if let Some(path) = macro_call.path() {
+                    if path.to_string() == "verus" {
+                        // Extract the token tree and walk it directly
+                        if let Some(token_tree) = macro_call.token_tree() {
+                            let tree_start: usize = token_tree.syntax().text_range().start().into();
+                            analyze_verus_token_tree(token_tree.syntax(), &content, tree_start, &mut counts);
+                        }
+                    }
                 }
             }
-            
-            i += func_lines;
-        } else {
-            i += 1;
         }
     }
     
     Ok(counts)
 }
 
-fn count_function_lines(lines: &[&str], start: usize) -> usize {
-    // Find the opening brace and count until matching closing brace
+fn analyze_verus_token_tree(tree: &SyntaxNode, content: &str, _tree_start: usize, counts: &mut VerusLocCounts) {
+    // Walk the token tree looking for FN tokens
+    // Collect preceding IDENT tokens to determine function type
+    
+    let mut i = 0;
+    let tokens: Vec<_> = tree.descendants_with_tokens()
+        .filter_map(|n| n.into_token())
+        .collect();
+    
+    while i < tokens.len() {
+        let token = &tokens[i];
+        
+        // Look for "fn" keyword
+        if token.kind() == SyntaxKind::FN_KW {
+            // Look backwards for modifiers: spec, proof, global, layout, exec, open, closed, tracked
+            let mut is_spec = false;
+            let mut is_proof = false;
+            let mut is_global = false;
+            let mut is_layout = false;
+            
+            // Check the 10 tokens before "fn" for Verus modifiers
+            let start_idx = if i >= 10 { i - 10 } else { 0 };
+            for j in start_idx..i {
+                if tokens[j].kind() == SyntaxKind::IDENT {
+                    let text = tokens[j].text();
+                    match text {
+                        "spec" => is_spec = true,
+                        "proof" => is_proof = true,
+                        "global" => is_global = true,
+                        "layout" => is_layout = true,
+                        _ => {}
+                    }
+                }
+            }
+            
+            // Find the function body by looking for the matching braces
+            let func_lines = count_function_lines_from_tokens(&tokens, i, content);
+            
+            // Categorize the function
+            if is_spec || is_global || is_layout {
+                // spec, global, layout are all specification-level
+                counts.spec += func_lines;
+            } else if is_proof {
+                counts.proof += func_lines;
+            } else {
+                // Regular exec function
+                counts.exec += func_lines;
+                
+                // Look for proof blocks inside exec functions
+                let proof_lines = count_proof_blocks_from_tokens(&tokens, i, content);
+                if proof_lines > 0 {
+                    counts.proof += proof_lines;
+                    counts.exec -= proof_lines;
+                }
+            }
+        }
+        
+        i += 1;
+    }
+}
+
+fn count_function_lines_from_tokens(tokens: &[ra_ap_syntax::SyntaxToken], fn_idx: usize, content: &str) -> usize {
+    // Find the opening brace after the fn token
+    let mut i = fn_idx + 1;
+    while i < tokens.len() && tokens[i].kind() != SyntaxKind::L_CURLY {
+        i += 1;
+    }
+    
+    if i >= tokens.len() {
+        return 1; // No body found
+    }
+    
+    let start_offset: usize = tokens[fn_idx].text_range().start().into();
+    
+    // Find matching closing brace
     let mut brace_count = 0;
-    let mut found_open = false;
-    
-    for (offset, line) in lines[start..].iter().enumerate() {
-        for ch in line.chars() {
-            if ch == '{' {
-                brace_count += 1;
-                found_open = true;
-            } else if ch == '}' {
+    while i < tokens.len() {
+        match tokens[i].kind() {
+            SyntaxKind::L_CURLY => brace_count += 1,
+            SyntaxKind::R_CURLY => {
                 brace_count -= 1;
-                if found_open && brace_count == 0 {
-                    return offset + 1;
+                if brace_count == 0 {
+                    let end_offset: usize = tokens[i].text_range().end().into();
+                    let start_line = content[..start_offset].lines().count();
+                    let end_line = content[..end_offset].lines().count();
+                    return end_line - start_line + 1;
                 }
             }
+            _ => {}
         }
+        i += 1;
     }
     
-    // If we didn't find a matching brace, count until end
-    1
+    1 // Fallback
 }
 
-fn count_proof_blocks_in_range(lines: &[&str], start: usize, end: usize) -> usize {
-    let mut proof_lines = 0;
-    let mut i = start;
+fn count_proof_blocks_from_tokens(tokens: &[ra_ap_syntax::SyntaxToken], fn_idx: usize, content: &str) -> usize {
+    // Look for "proof" IDENT followed by "{"
+    let mut total_lines = 0;
+    let mut i = fn_idx;
     
-    while i < end && i < lines.len() {
-        let line = lines[i].trim();
-        if line.starts_with("proof {") || line == "proof" && i + 1 < lines.len() && lines[i + 1].trim().starts_with('{') {
-            // Count lines in this proof block
-            let block_lines = count_function_lines(lines, i);
-            proof_lines += block_lines;
-            i += block_lines;
-        } else {
-            i += 1;
-        }
+    // Find the end of this function first
+    let mut end_idx = i + 1;
+    while end_idx < tokens.len() && tokens[end_idx].kind() != SyntaxKind::L_CURLY {
+        end_idx += 1;
     }
     
-    proof_lines
-}
-
-fn count_proof_blocks_in_node(node: &SyntaxNode) -> usize {
-    let mut proof_lines = 0;
-    
-    // Look for "proof { ... }" blocks by finding BLOCK_EXPR preceded by "proof" identifier
-    for child in node.descendants() {
-        if child.kind() == SyntaxKind::BLOCK_EXPR {
-            let text = child.text().to_string();
-            // Check if this looks like a proof block
-            if let Some(prev) = child.prev_sibling_or_token() {
-                if prev.to_string().trim() == "proof" {
-                    proof_lines += text.lines().count();
+    let mut brace_count = 0;
+    while end_idx < tokens.len() {
+        match tokens[end_idx].kind() {
+            SyntaxKind::L_CURLY => brace_count += 1,
+            SyntaxKind::R_CURLY => {
+                brace_count -= 1;
+                if brace_count == 0 {
+                    break;
                 }
             }
+            _ => {}
         }
+        end_idx += 1;
     }
     
-    proof_lines
+    // Now search within this range for "proof {" patterns
+    i = fn_idx;
+    while i < end_idx {
+        if tokens[i].kind() == SyntaxKind::IDENT && tokens[i].text() == "proof" {
+            // Look for opening brace
+            let mut j = i + 1;
+            while j < end_idx && tokens[j].kind() == SyntaxKind::WHITESPACE {
+                j += 1;
+            }
+            
+            if j < end_idx && tokens[j].kind() == SyntaxKind::L_CURLY {
+                // Found a proof block - count its lines
+                let block_start: usize = tokens[i].text_range().start().into();
+                let mut block_brace_count = 0;
+                let mut k = j;
+                
+                while k < end_idx {
+                    match tokens[k].kind() {
+                        SyntaxKind::L_CURLY => block_brace_count += 1,
+                        SyntaxKind::R_CURLY => {
+                            block_brace_count -= 1;
+                            if block_brace_count == 0 {
+                                let block_end: usize = tokens[k].text_range().end().into();
+                                let start_line = content[..block_start].lines().count();
+                                let end_line = content[..block_end].lines().count();
+                                total_lines += end_line - start_line + 1;
+                                break;
+                            }
+                        }
+                        _ => {}
+                    }
+                    k += 1;
+                }
+                
+                i = k;
+            }
+        }
+        i += 1;
+    }
+    
+    total_lines
 }
 
 fn find_script_files(dir: &Path) -> Vec<PathBuf> {
