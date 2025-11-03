@@ -441,9 +441,19 @@ pub mod args {
             // Check if this directory has a Cargo.toml
             let cargo_toml = dir.join("Cargo.toml");
             if cargo_toml.exists() && cargo_toml.is_file() {
-                projects.push(dir.clone());
-                // Don't recurse into subdirectories of projects
-                return;
+                // Check if this is a workspace Cargo.toml
+                let is_workspace = std::fs::read_to_string(&cargo_toml)
+                    .map(|content| content.contains("[workspace]"))
+                    .unwrap_or(false);
+                
+                if is_workspace {
+                    // Workspace root - don't add it, but continue recursing to find members
+                    // (workspace roots don't have code, members do)
+                } else {
+                    // Regular project - add it and stop recursing
+                    projects.push(dir.clone());
+                    return;
+                }
             }
             
             // Recurse into subdirectories
