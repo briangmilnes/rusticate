@@ -72,20 +72,31 @@ fn count_verus_lines_in_file(path: &Path) -> Result<VerusLocCounts> {
 }
 
 fn analyze_verus_token_tree(tree: &SyntaxNode, content: &str, _tree_start: usize, counts: &mut VerusLocCounts) {
-    // Walk the token tree looking for FN tokens
-    // Collect preceding IDENT tokens to determine function type
+    // Get the total lines in the verus! {} macro
+    let tree_range = tree.text_range();
+    let tree_start_offset: usize = tree_range.start().into();
+    let tree_end_offset: usize = tree_range.end().into();
     
-    let mut i = 0;
+    let start_line = content[..tree_start_offset].lines().count();
+    let end_line = content[..tree_end_offset].lines().count();
+    let total_verus_lines = end_line - start_line + 1;
+    
+    // By default, everything in verus! {} is exec (structs, enums, impl blocks, default functions)
+    // We need to find spec/proof and subtract from exec
+    let mut spec_lines = 0;
+    let mut proof_lines = 0;
+    
     let tokens: Vec<_> = tree.descendants_with_tokens()
         .filter_map(|n| n.into_token())
         .collect();
     
+    let mut i = 0;
     while i < tokens.len() {
         let token = &tokens[i];
         
-        // Look for "fn" keyword
+        // Look for "fn" keyword to find spec/proof functions
         if token.kind() == SyntaxKind::FN_KW {
-            // Look backwards for modifiers: spec, proof, global, layout, exec, open, closed, tracked
+            // Look backwards for modifiers: spec, proof, global, layout
             let mut is_spec = false;
             let mut is_proof = false;
             let mut is_global = false;
@@ -106,30 +117,31 @@ fn analyze_verus_token_tree(tree: &SyntaxNode, content: &str, _tree_start: usize
                 }
             }
             
-            // Find the function body by looking for the matching braces
-            let func_lines = count_function_lines_from_tokens(&tokens, i, content);
-            
-            // Categorize the function
+            // Only count spec and proof functions (exec is the default)
             if is_spec || is_global || is_layout {
-                // spec, global, layout are all specification-level
-                counts.spec += func_lines;
+                let func_lines = count_function_lines_from_tokens(&tokens, i, content);
+                spec_lines += func_lines;
             } else if is_proof {
-                counts.proof += func_lines;
+                let func_lines = count_function_lines_from_tokens(&tokens, i, content);
+                proof_lines += func_lines;
             } else {
-                // Regular exec function
-                counts.exec += func_lines;
-                
-                // Look for proof blocks inside exec functions
-                let proof_lines = count_proof_blocks_from_tokens(&tokens, i, content);
-                if proof_lines > 0 {
-                    counts.proof += proof_lines;
-                    counts.exec -= proof_lines;
+                // Exec function - also check for proof blocks inside
+                let proof_block_lines = count_proof_blocks_from_tokens(&tokens, i, content);
+                if proof_block_lines > 0 {
+                    proof_lines += proof_block_lines;
                 }
             }
         }
         
         i += 1;
     }
+    
+    // Calculate final counts:
+    // - Total lines in verus! {}
+    // - Subtract spec and proof to get exec
+    counts.spec += spec_lines;
+    counts.proof += proof_lines;
+    counts.exec += total_verus_lines.saturating_sub(spec_lines + proof_lines);
 }
 
 fn count_function_lines_from_tokens(tokens: &[ra_ap_syntax::SyntaxToken], fn_idx: usize, content: &str) -> usize {
