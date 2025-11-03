@@ -390,6 +390,30 @@ review-impl-order -m ArraySeq
 
 Searches for files containing "ArraySeq" in their name.
 
+### `-l <language>` (Language Mode)
+Specify the target language for analysis. Defaults to `Rust`.
+
+```bash
+count-loc -c                           # Rust (default)
+count-loc -l Rust -d src/             # Explicit Rust
+count-loc -l Verus -d ~/verus-code/   # Verus language
+```
+
+**Supported Languages:**
+- **`Rust`** (default) - Standard Rust code
+- **`Verus`** - Verus verification language (distinguishes `spec`/`proof`/`exec` functions)
+
+See [Tools with Verus Support](#tools-with-verus-support) for which tools support Verus analysis.
+
+### `-p <project>` (Project Mode)
+Enable project-specific tools (e.g., APAS-specific checks).
+
+```bash
+rusticate-review all -c -p APAS   # Run all tools including APAS-specific
+```
+
+Currently supports: `APAS` (for APAS-AI project)
+
 ---
 
 ## Tool Reference
@@ -701,6 +725,42 @@ The following tools have been validated on the large-scale [APAS-AI](https://git
 - **Parallel Methods Detected:** 156 inherent, 340+ transitive
 - **Code Transformations:** 500+ automated fixes applied
 - **Zero Regressions:** All fixes validated with `compile-and-test -c`
+
+---
+
+## Tools with Verus Support
+
+The following tools support Verus language analysis via the `-l Verus` flag. Verus is a verification-aware Rust dialect that uses `spec`, `proof`, and `exec` modifiers on functions.
+
+| Tool | Verus Support | Description | Tested On |
+|------|---------------|-------------|-----------|
+| `count-loc` | ✓ Yes | Counts lines of code, distinguishing `spec`/`proof`/`exec` functions and `proof {}` blocks in Verus code | human-eval-verus (264 files, 22K LOC): 866 Spec / 1,295 Proof / 5,185 Exec |
+
+### Usage Example
+
+```bash
+# Count LOC in Verus codebase
+rusticate-count-loc -l Verus -d ~/verus-project/
+
+# Output format for Verus:
+# Verus LOC (Spec/Proof/Exec)
+#   36/  34/  83 filename.rs
+#   ...
+#   866/ 1,295/ 5,185 total
+#   22,329 total lines
+```
+
+### Implementation Details
+
+**Verus Function Modifiers:**
+- `spec fn` → Specification functions (counted as Spec LOC)
+- `proof fn` → Proof functions (counted as Proof LOC)
+- `global fn` → Global specifications (counted as Spec LOC)
+- `layout fn` → Layout specifications (counted as Spec LOC)
+- Regular `fn` → Executable functions (counted as Exec LOC)
+- `proof { }` blocks → Proof blocks within exec functions (counted as Proof LOC)
+
+**AST Parsing:** Walks the `verus! {}` macro's token tree directly, using `SyntaxKind::FN_KW` and `SyntaxKind::IDENT` to identify function types without string hacking.
 
 ---
 
