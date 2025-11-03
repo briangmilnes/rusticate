@@ -309,9 +309,135 @@ fn count_verus_project(_args: &StandardArgs, base_dir: &Path, search_dirs: &[Pat
     Ok(())
 }
 
+fn count_repositories(repo_dir: &PathBuf, language: &str, start: Instant) -> Result<()> {
+    let projects = StandardArgs::find_cargo_projects(repo_dir);
+    
+    if projects.is_empty() {
+        println!("No Cargo projects found in {}", repo_dir.display());
+        return Ok(());
+    }
+    
+    let is_verus = language == "Verus";
+    
+    // Store per-project results
+    let mut all_results = Vec::new();
+    
+    for (idx, project) in projects.iter().enumerate() {
+        let project_name = project.file_name()
+            .and_then(|n| n.to_str())
+            .unwrap_or("unknown");
+        
+        println!("=== Project {}/{}: {} ({}) ===", 
+            idx + 1, 
+            projects.len(), 
+            project_name,
+            project.display()
+        );
+        println!();
+        
+        // Get search dirs for this project
+        let src_dir = project.join("src");
+        let tests_dir = project.join("tests");
+        let benches_dir = project.join("benches");
+        
+        let mut search_dirs = Vec::new();
+        if src_dir.exists() { search_dirs.push(src_dir); }
+        if tests_dir.exists() { search_dirs.push(tests_dir); }
+        if benches_dir.exists() { search_dirs.push(benches_dir); }
+        
+        if search_dirs.is_empty() {
+            println!("  (No src/tests/benches directories found)");
+            println!();
+            continue;
+        }
+        
+        if is_verus {
+            // Count Verus LOC for this project
+            let rust_files = find_rust_files(&search_dirs);
+            let mut spec = 0;
+            let mut proof = 0;
+            let mut exec = 0;
+            let mut total = 0;
+            
+            for file in &rust_files {
+                if let Ok(counts) = count_verus_lines_in_file(file) {
+                    spec += counts.spec;
+                    proof += counts.proof;
+                    exec += counts.exec;
+                    total += counts.total;
+                }
+            }
+            
+            println!("  Verus LOC: {:>8} spec / {:>8} proof / {:>8} exec",
+                format_number(spec),
+                format_number(proof),
+                format_number(exec)
+            );
+            println!("  Total lines: {:>8}", format_number(total));
+            println!("  Files: {}", rust_files.len());
+            println!();
+            
+            all_results.push((project_name.to_string(), spec, proof, exec, total, rust_files.len()));
+        } else {
+            // Count regular Rust LOC for this project
+            let rust_files = find_rust_files(&search_dirs);
+            let mut loc = 0;
+            
+            for file in &rust_files {
+                if let Ok(lines) = count_lines_in_file(file) {
+                    loc += lines;
+                }
+            }
+            
+            println!("  LOC: {:>8}", format_number(loc));
+            println!("  Files: {}", rust_files.len());
+            println!();
+            
+            all_results.push((project_name.to_string(), 0, 0, 0, loc, rust_files.len()));
+        }
+    }
+    
+    // Print summary
+    println!("=== GRAND TOTAL ({} projects) ===", projects.len());
+    println!();
+    
+    if is_verus {
+        let total_spec: usize = all_results.iter().map(|(_, s, _, _, _, _)| s).sum();
+        let total_proof: usize = all_results.iter().map(|(_, _, p, _, _, _)| p).sum();
+        let total_exec: usize = all_results.iter().map(|(_, _, _, e, _, _)| e).sum();
+        let total_lines: usize = all_results.iter().map(|(_, _, _, _, t, _)| t).sum();
+        let total_files: usize = all_results.iter().map(|(_, _, _, _, _, f)| f).sum();
+        
+        println!("  {:>8} spec / {:>8} proof / {:>8} exec",
+            format_number(total_spec),
+            format_number(total_proof),
+            format_number(total_exec)
+        );
+        println!("  {:>8} total lines", format_number(total_lines));
+        println!("  {} files in {} projects", total_files, projects.len());
+    } else {
+        let total_loc: usize = all_results.iter().map(|(_, _, _, _, t, _)| t).sum();
+        let total_files: usize = all_results.iter().map(|(_, _, _, _, _, f)| f).sum();
+        
+        println!("  {:>8} total lines", format_number(total_loc));
+        println!("  {} files in {} projects", total_files, projects.len());
+    }
+    
+    println!();
+    println!("Completed in {}ms", start.elapsed().as_millis());
+    
+    Ok(())
+}
+
 fn main() -> Result<()> {
     let start = Instant::now();
     let args = StandardArgs::parse()?;
+    
+    // Handle repository scanning mode
+    if let Some(repo_dir) = &args.repositories {
+        return count_repositories(repo_dir, &args.language, start);
+    }
+    
     let base_dir = args.base_dir();
     let search_dirs = args.get_search_dirs();
     let is_verus = args.language == "Verus";

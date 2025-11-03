@@ -18,6 +18,8 @@ pub mod args {
         pub project: Option<String>,
         /// Language variant (e.g., "Rust", "Verus")
         pub language: String,
+        /// Repository scan mode - find all Cargo projects recursively
+        pub repositories: Option<PathBuf>,
     }
 
     impl StandardArgs {
@@ -48,6 +50,7 @@ pub mod args {
                     is_module_search: false,
                     project: None,
                     language: "Rust".to_string(),
+                    repositories: None,
                 });
             }
             
@@ -56,6 +59,7 @@ pub mod args {
             let mut is_module_search = false;
             let mut project = None;
             let mut language = "Rust".to_string();
+            let mut repositories = None;
             
             while i < args.len() {
                 match args[i].as_str() {
@@ -130,6 +134,21 @@ pub mod args {
                         language = args[i].clone();
                         i += 1;
                     }
+                    "--repositories" | "-r" => {
+                        i += 1;
+                        if i >= args.len() {
+                            return Err(anyhow::anyhow!("--repositories requires a directory path"));
+                        }
+                        let repo_path = PathBuf::from(&args[i]);
+                        if !repo_path.exists() {
+                            return Err(anyhow::anyhow!("Repository directory not found: {}", repo_path.display()));
+                        }
+                        if !repo_path.is_dir() {
+                            return Err(anyhow::anyhow!("Not a directory: {}", repo_path.display()));
+                        }
+                        repositories = Some(repo_path);
+                        i += 1;
+                    }
                     "--help" | "-h" => {
                         Self::print_usage(&args[0]);
                         std::process::exit(0);
@@ -144,11 +163,16 @@ pub mod args {
                 }
             }
             
-            if paths.is_empty() {
+            // Validate that we have either paths or repositories, but not both
+            if repositories.is_some() && !paths.is_empty() {
+                return Err(anyhow::anyhow!("Cannot use --repositories with other path options"));
+            }
+            
+            if repositories.is_none() && paths.is_empty() {
                 return Err(anyhow::anyhow!("No paths specified"));
             }
             
-            Ok(StandardArgs { paths, is_module_search, project, language })
+            Ok(StandardArgs { paths, is_module_search, project, language, repositories })
         }
         
         /// Find a module by name in src/, and its corresponding test and bench files
@@ -241,6 +265,7 @@ pub mod args {
                 is_module_search: true,
                 project: None,
                 language: "Rust".to_string(),
+                repositories: None,
             })
         }
         
@@ -280,6 +305,7 @@ pub mod args {
             println!("  -d, --dir DIR [DIR...]     Analyze specific directories");
             println!("  -f, --file FILE            Analyze a single file");
             println!("  -m, --module NAME          Find module in src/ and its tests/benches");
+            println!("  -r, --repositories DIR     Scan for all Cargo projects under DIR");
             println!("  -p, --project NAME         Enable project-specific tools (e.g., 'APAS')");
             println!("  -l, --language NAME        Language variant: 'Rust' (default) or 'Verus'");
             println!("  -h, --help                 Show this help message");
@@ -291,6 +317,7 @@ pub mod args {
             println!("  {name} -d src                    # Analyze just src/");
             println!("  {name} -f src/lib.rs             # Analyze single file");
             println!("  {name} -m ArraySeqStEph          # Analyze module + tests + benches");
+            println!("  {name} -r ~/projects/repos       # Analyze all Cargo projects in directory");
         }
 
         /// Get all paths
@@ -306,6 +333,43 @@ pub mod args {
                 self.paths[0].parent().unwrap_or(&self.paths[0]).to_path_buf()
             } else {
                 self.paths[0].clone()
+            }
+        }
+        
+        /// Find all Cargo projects recursively under a directory
+        /// 
+        /// Returns a list of project root directories (directories containing Cargo.toml)
+        pub fn find_cargo_projects(dir: &PathBuf) -> Vec<PathBuf> {
+            let mut projects = Vec::new();
+            Self::find_cargo_projects_recursive(dir, &mut projects);
+            projects.sort();
+            projects
+        }
+        
+        fn find_cargo_projects_recursive(dir: &PathBuf, projects: &mut Vec<PathBuf>) {
+            // Skip excluded directories
+            if let Some(dir_name) = dir.file_name().and_then(|n| n.to_str()) {
+                if dir_name == "target" || dir_name == "attic" || dir_name.starts_with('.') {
+                    return;
+                }
+            }
+            
+            // Check if this directory has a Cargo.toml
+            let cargo_toml = dir.join("Cargo.toml");
+            if cargo_toml.exists() && cargo_toml.is_file() {
+                projects.push(dir.clone());
+                // Don't recurse into subdirectories of projects
+                return;
+            }
+            
+            // Recurse into subdirectories
+            if let Ok(entries) = std::fs::read_dir(dir) {
+                for entry in entries.flatten() {
+                    let path = entry.path();
+                    if path.is_dir() {
+                        Self::find_cargo_projects_recursive(&path, projects);
+                    }
+                }
             }
         }
         
