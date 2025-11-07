@@ -1,6 +1,6 @@
 use anyhow::Result;
 use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SyntaxNode};
-use rusticate::{StandardArgs, parse_source, find_rust_files};
+use rusticate::{StandardArgs, find_rust_files};
 use std::{collections::HashMap, fs, path::{Path, PathBuf}, time::Instant};
 
 macro_rules! log {
@@ -18,12 +18,29 @@ macro_rules! log {
     }};
 }
 
+#[derive(Debug, Clone, PartialEq)]
+enum VerifierAttribute {
+    ExternalBody,
+    ExternalFnSpec,
+    ExternalTraitSpec,
+    ExternalTypeSpec,
+    ExternalTraitExt,
+    External,
+    Opaque,
+}
+
 #[derive(Debug, Default, Clone)]
 struct ProofHoleStats {
     assume_false_count: usize,
     assume_count: usize,
     admit_count: usize,
     external_body_count: usize,
+    external_fn_spec_count: usize,
+    external_trait_spec_count: usize,
+    external_type_spec_count: usize,
+    external_trait_ext_count: usize,
+    external_count: usize,
+    opaque_count: usize,
     total_holes: usize,
 }
 
@@ -56,16 +73,24 @@ fn main() -> Result<()> {
     }
     
     log!("Verus Proof Hole Detection");
-    log!("Looking for: assume(false), assume(), admit(), #[verifier::external_body]");
+    log!("Looking for:");
+    log!("  - assume(false), assume(), admit()");
+    log!("  - external_body, external_fn_specification, external_trait_specification");
+    log!("  - external_type_specification, external_trait_extension, external");
+    log!("  - opaque");
     log!("");
     
     // Collect all Rust files from the specified paths
     let mut all_files: Vec<PathBuf> = Vec::new();
     let base_dir = args.base_dir();
-    let search_dirs = args.get_search_dirs();
     
-    for dir in search_dirs {
-        all_files.extend(find_rust_files(&[dir]));
+    // Handle both file and directory modes
+    for path in &args.paths {
+        if path.is_file() && path.extension().map_or(false, |e| e == "rs") {
+            all_files.push(path.clone());
+        } else if path.is_dir() {
+            all_files.extend(find_rust_files(&[path.clone()]));
+        }
     }
     
     let mut file_stats_map: HashMap<String, FileStats> = HashMap::new();
@@ -96,12 +121,45 @@ fn main() -> Result<()> {
 
 fn analyze_file(path: &Path) -> Result<FileStats> {
     let content = fs::read_to_string(path)?;
-    let source_file = parse_source(&content)?;
-    let root = source_file.syntax();
     
     let mut stats = FileStats::default();
     
-    // Find verus! {} macros
+    // Scan for verifier attributes using text scanning (more reliable than AST for Verus syntax)
+    for line in content.lines() {
+        let trimmed = line.trim();
+        
+        if trimmed.starts_with("#[verifier::") || trimmed.starts_with("#[verifier(") {
+            if trimmed.contains("external_body") {
+                stats.holes.external_body_count += 1;
+                stats.holes.total_holes += 1;
+            } else if trimmed.contains("external_fn_specification") {
+                stats.holes.external_fn_spec_count += 1;
+                stats.holes.total_holes += 1;
+            } else if trimmed.contains("external_trait_specification") {
+                stats.holes.external_trait_spec_count += 1;
+                stats.holes.total_holes += 1;
+            } else if trimmed.contains("external_type_specification") {
+                stats.holes.external_type_spec_count += 1;
+                stats.holes.total_holes += 1;
+            } else if trimmed.contains("external_trait_extension") {
+                stats.holes.external_trait_ext_count += 1;
+                stats.holes.total_holes += 1;
+            } else if trimmed.contains("external)") || trimmed.contains("external]") {
+                stats.holes.external_count += 1;
+                stats.holes.total_holes += 1;
+            } else if trimmed.contains("opaque") {
+                stats.holes.opaque_count += 1;
+                stats.holes.total_holes += 1;
+            }
+        }
+    }
+    
+    // Parse for verus! macros to find assume/admit calls and proof functions
+    // (AST parsing still works for macro structure even if contents have parse errors)
+    let parsed = ra_ap_syntax::SourceFile::parse(&content, ra_ap_syntax::Edition::Edition2021);
+    let source_file = parsed.tree();
+    let root = source_file.syntax();
+    
     for node in root.descendants() {
         if node.kind() == SyntaxKind::MACRO_CALL {
             if let Some(macro_call) = ast::MacroCall::cast(node.clone()) {
@@ -119,11 +177,11 @@ fn analyze_file(path: &Path) -> Result<FileStats> {
     Ok(stats)
 }
 
-fn analyze_verus_macro(tree: &SyntaxNode, content: &str, stats: &mut FileStats) {
+fn analyze_verus_macro(tree: &SyntaxNode, _content: &str, stats: &mut FileStats) {
     // Walk the token tree looking for:
     // 1. Functions with proof modifier
-    // 2. Attributes #[verifier::external_body]
-    // 3. Function calls to assume/admit
+    // 2. Function calls to assume/admit
+    // Note: Attributes are already counted at the file level
     
     let tokens: Vec<_> = tree.descendants_with_tokens()
         .filter_map(|n| n.into_token())
@@ -132,14 +190,6 @@ fn analyze_verus_macro(tree: &SyntaxNode, content: &str, stats: &mut FileStats) 
     let mut i = 0;
     while i < tokens.len() {
         let token = &tokens[i];
-        
-        // Look for #[verifier::external_body]
-        if token.kind() == SyntaxKind::POUND && i + 1 < tokens.len() {
-            if is_external_body_attribute(&tokens, i) {
-                stats.holes.external_body_count += 1;
-                stats.holes.total_holes += 1;
-            }
-        }
         
         // Look for "fn" keyword to find proof functions
         if token.kind() == SyntaxKind::FN_KW {
@@ -184,12 +234,18 @@ fn analyze_verus_macro(tree: &SyntaxNode, content: &str, stats: &mut FileStats) 
     }
 }
 
-fn is_external_body_attribute(tokens: &[ra_ap_syntax::SyntaxToken], start_idx: usize) -> bool {
-    // Look for pattern: # [ verifier :: external_body ]
+fn detect_verifier_attribute(tokens: &[ra_ap_syntax::SyntaxToken], start_idx: usize) -> Option<VerifierAttribute> {
+    // Look for patterns:
+    // #[verifier::external_body]
+    // #[verifier(external_body)]
+    // #[verifier::opaque]
+    // #[verifier(opaque)]
+    // etc.
+    
     let mut i = start_idx;
     
     if i >= tokens.len() || tokens[i].kind() != SyntaxKind::POUND {
-        return false;
+        return None;
     }
     i += 1;
     
@@ -199,33 +255,62 @@ fn is_external_body_attribute(tokens: &[ra_ap_syntax::SyntaxToken], start_idx: u
     }
     
     if i >= tokens.len() || tokens[i].kind() != SyntaxKind::L_BRACK {
-        return false;
+        return None;
     }
     i += 1;
     
-    // Look for "verifier"
-    while i < tokens.len() {
-        if tokens[i].kind() == SyntaxKind::IDENT && tokens[i].text() == "verifier" {
-            // Look for :: external_body
-            let mut j = i + 1;
-            while j < tokens.len() && tokens[j].kind() == SyntaxKind::WHITESPACE {
-                j += 1;
-            }
-            if j + 2 < tokens.len() 
-                && tokens[j].kind() == SyntaxKind::COLON2 
-                && tokens[j + 1].kind() == SyntaxKind::IDENT 
-                && tokens[j + 1].text() == "external_body" {
-                return true;
-            }
-        }
-        
-        if tokens[i].kind() == SyntaxKind::R_BRACK {
-            break;
-        }
+    // Skip whitespace
+    while i < tokens.len() && tokens[i].kind() == SyntaxKind::WHITESPACE {
         i += 1;
     }
     
-    false
+    // Look for "verifier"
+    if i >= tokens.len() || tokens[i].kind() != SyntaxKind::IDENT || tokens[i].text() != "verifier" {
+        return None;
+    }
+    i += 1;
+    
+    // Skip whitespace
+    while i < tokens.len() && tokens[i].kind() == SyntaxKind::WHITESPACE {
+        i += 1;
+    }
+    
+    if i >= tokens.len() {
+        return None;
+    }
+    
+    // Check for :: (path) or ( (call syntax)
+    let use_path_syntax = tokens[i].kind() == SyntaxKind::COLON2;
+    let use_call_syntax = tokens[i].kind() == SyntaxKind::L_PAREN;
+    
+    if !use_path_syntax && !use_call_syntax {
+        return None;
+    }
+    
+    i += 1;
+    
+    // Skip whitespace
+    while i < tokens.len() && tokens[i].kind() == SyntaxKind::WHITESPACE {
+        i += 1;
+    }
+    
+    // Get the attribute name
+    if i >= tokens.len() || tokens[i].kind() != SyntaxKind::IDENT {
+        return None;
+    }
+    
+    let attr_name = tokens[i].text();
+    
+    match attr_name {
+        "external_body" => Some(VerifierAttribute::ExternalBody),
+        "external_fn_specification" => Some(VerifierAttribute::ExternalFnSpec),
+        "external_trait_specification" => Some(VerifierAttribute::ExternalTraitSpec),
+        "external_type_specification" => Some(VerifierAttribute::ExternalTypeSpec),
+        "external_trait_extension" => Some(VerifierAttribute::ExternalTraitExt),
+        "external" => Some(VerifierAttribute::External),
+        "opaque" => Some(VerifierAttribute::Opaque),
+        _ => None,
+    }
 }
 
 fn is_proof_function(tokens: &[ra_ap_syntax::SyntaxToken], fn_idx: usize) -> bool {
@@ -280,9 +365,9 @@ fn count_holes_in_function(tokens: &[ra_ap_syntax::SyntaxToken], fn_idx: usize) 
             }
         }
         
-        // Check for #[verifier::external_body]
+        // Check for #[verifier::*] attributes
         if tokens[j].kind() == SyntaxKind::POUND {
-            if is_external_body_attribute(tokens, j) {
+            if detect_verifier_attribute(tokens, j).is_some() {
                 holes += 1;
             }
         }
@@ -308,7 +393,25 @@ fn print_file_report(path: &str, stats: &FileStats) {
             log!("      {} × admit()", stats.holes.admit_count);
         }
         if stats.holes.external_body_count > 0 {
-            log!("      {} × #[verifier::external_body]", stats.holes.external_body_count);
+            log!("      {} × external_body", stats.holes.external_body_count);
+        }
+        if stats.holes.external_fn_spec_count > 0 {
+            log!("      {} × external_fn_specification", stats.holes.external_fn_spec_count);
+        }
+        if stats.holes.external_trait_spec_count > 0 {
+            log!("      {} × external_trait_specification", stats.holes.external_trait_spec_count);
+        }
+        if stats.holes.external_type_spec_count > 0 {
+            log!("      {} × external_type_specification", stats.holes.external_type_spec_count);
+        }
+        if stats.holes.external_trait_ext_count > 0 {
+            log!("      {} × external_trait_extension", stats.holes.external_trait_ext_count);
+        }
+        if stats.holes.external_count > 0 {
+            log!("      {} × external", stats.holes.external_count);
+        }
+        if stats.holes.opaque_count > 0 {
+            log!("      {} × opaque", stats.holes.opaque_count);
         }
         
         if stats.proof_functions > 0 {
@@ -347,6 +450,12 @@ fn compute_summary(file_stats_map: &HashMap<String, FileStats>) -> SummaryStats 
         summary.holes.assume_count += stats.holes.assume_count;
         summary.holes.admit_count += stats.holes.admit_count;
         summary.holes.external_body_count += stats.holes.external_body_count;
+        summary.holes.external_fn_spec_count += stats.holes.external_fn_spec_count;
+        summary.holes.external_trait_spec_count += stats.holes.external_trait_spec_count;
+        summary.holes.external_type_spec_count += stats.holes.external_type_spec_count;
+        summary.holes.external_trait_ext_count += stats.holes.external_trait_ext_count;
+        summary.holes.external_count += stats.holes.external_count;
+        summary.holes.opaque_count += stats.holes.opaque_count;
         summary.holes.total_holes += stats.holes.total_holes;
     }
     
@@ -380,7 +489,25 @@ fn print_summary(summary: &SummaryStats) {
         log!("   {} × admit()", summary.holes.admit_count);
     }
     if summary.holes.external_body_count > 0 {
-        log!("   {} × #[verifier::external_body]", summary.holes.external_body_count);
+        log!("   {} × external_body", summary.holes.external_body_count);
+    }
+    if summary.holes.external_fn_spec_count > 0 {
+        log!("   {} × external_fn_specification", summary.holes.external_fn_spec_count);
+    }
+    if summary.holes.external_trait_spec_count > 0 {
+        log!("   {} × external_trait_specification", summary.holes.external_trait_spec_count);
+    }
+    if summary.holes.external_type_spec_count > 0 {
+        log!("   {} × external_type_specification", summary.holes.external_type_spec_count);
+    }
+    if summary.holes.external_trait_ext_count > 0 {
+        log!("   {} × external_trait_extension", summary.holes.external_trait_ext_count);
+    }
+    if summary.holes.external_count > 0 {
+        log!("   {} × external", summary.holes.external_count);
+    }
+    if summary.holes.opaque_count > 0 {
+        log!("   {} × opaque", summary.holes.opaque_count);
     }
     
     if summary.holes.total_holes == 0 {
