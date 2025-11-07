@@ -2,6 +2,7 @@ use anyhow::Result;
 use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SyntaxNode};
 use rusticate::{StandardArgs, find_rust_files};
 use std::{collections::HashMap, fs, path::{Path, PathBuf}, time::Instant};
+use verus_syn::{visit::Visit, Attribute, Item};
 
 macro_rules! log {
     ($($arg:tt)*) => {{
@@ -124,38 +125,39 @@ fn analyze_file(path: &Path) -> Result<FileStats> {
     
     let mut stats = FileStats::default();
     
-    // Scan for verifier attributes using text scanning (more reliable than AST for Verus syntax)
-    for line in content.lines() {
-        let trimmed = line.trim();
-        
-        if trimmed.starts_with("#[verifier::") || trimmed.starts_with("#[verifier(") {
-            if trimmed.contains("external_body") {
-                stats.holes.external_body_count += 1;
-                stats.holes.total_holes += 1;
-            } else if trimmed.contains("external_fn_specification") {
-                stats.holes.external_fn_spec_count += 1;
-                stats.holes.total_holes += 1;
-            } else if trimmed.contains("external_trait_specification") {
-                stats.holes.external_trait_spec_count += 1;
-                stats.holes.total_holes += 1;
-            } else if trimmed.contains("external_type_specification") {
-                stats.holes.external_type_spec_count += 1;
-                stats.holes.total_holes += 1;
-            } else if trimmed.contains("external_trait_extension") {
-                stats.holes.external_trait_ext_count += 1;
-                stats.holes.total_holes += 1;
-            } else if trimmed.contains("external)") || trimmed.contains("external]") {
-                stats.holes.external_count += 1;
-                stats.holes.total_holes += 1;
-            } else if trimmed.contains("opaque") {
-                stats.holes.opaque_count += 1;
-                stats.holes.total_holes += 1;
+    // Parse with verus_syn - it understands Verus syntax extensions
+    match verus_syn::parse_file(&content) {
+        Ok(syntax_tree) => {
+            // Use visitor pattern to collect all attributes
+            let mut visitor = AttributeVisitor::new();
+            visitor.visit_file(&syntax_tree);
+            
+            // Process collected attributes
+            for attr in &visitor.attributes {
+                if let Some(attr_type) = classify_verifier_attribute(attr) {
+                    match attr_type {
+                        VerifierAttribute::ExternalBody => stats.holes.external_body_count += 1,
+                        VerifierAttribute::ExternalFnSpec => stats.holes.external_fn_spec_count += 1,
+                        VerifierAttribute::ExternalTraitSpec => stats.holes.external_trait_spec_count += 1,
+                        VerifierAttribute::ExternalTypeSpec => stats.holes.external_type_spec_count += 1,
+                        VerifierAttribute::ExternalTraitExt => stats.holes.external_trait_ext_count += 1,
+                        VerifierAttribute::External => stats.holes.external_count += 1,
+                        VerifierAttribute::Opaque => stats.holes.opaque_count += 1,
+                    }
+                    stats.holes.total_holes += 1;
+                }
             }
+        }
+        Err(_e) => {
+            // If even verus_syn fails, fall back to token-based analysis
+            let parsed = ra_ap_syntax::SourceFile::parse(&content, ra_ap_syntax::Edition::Edition2021);
+            let source_file = parsed.tree();
+            let root = source_file.syntax();
+            analyze_attributes_with_ra_syntax(&root, &mut stats);
         }
     }
     
-    // Parse for verus! macros to find assume/admit calls and proof functions
-    // (AST parsing still works for macro structure even if contents have parse errors)
+    // Also scan for assume/admit calls in verus! macros using ra_ap_syntax
     let parsed = ra_ap_syntax::SourceFile::parse(&content, ra_ap_syntax::Edition::Edition2021);
     let source_file = parsed.tree();
     let root = source_file.syntax();
@@ -175,6 +177,138 @@ fn analyze_file(path: &Path) -> Result<FileStats> {
     }
     
     Ok(stats)
+}
+
+// Visitor to collect all attributes using verus_syn
+struct AttributeVisitor {
+    attributes: Vec<Attribute>,
+}
+
+impl AttributeVisitor {
+    fn new() -> Self {
+        AttributeVisitor {
+            attributes: Vec::new(),
+        }
+    }
+}
+
+impl<'ast> Visit<'ast> for AttributeVisitor {
+    fn visit_attribute(&mut self, attr: &'ast Attribute) {
+        self.attributes.push(attr.clone());
+    }
+    
+    fn visit_item(&mut self, item: &'ast Item) {
+        // Collect attributes from all item types
+        match item {
+            Item::Fn(item_fn) => {
+                self.attributes.extend(item_fn.attrs.iter().cloned());
+                verus_syn::visit::visit_item_fn(self, item_fn);
+            }
+            Item::Struct(item_struct) => {
+                self.attributes.extend(item_struct.attrs.iter().cloned());
+                verus_syn::visit::visit_item_struct(self, item_struct);
+            }
+            Item::Enum(item_enum) => {
+                self.attributes.extend(item_enum.attrs.iter().cloned());
+                verus_syn::visit::visit_item_enum(self, item_enum);
+            }
+            Item::Trait(item_trait) => {
+                self.attributes.extend(item_trait.attrs.iter().cloned());
+                verus_syn::visit::visit_item_trait(self, item_trait);
+            }
+            Item::Impl(item_impl) => {
+                self.attributes.extend(item_impl.attrs.iter().cloned());
+                verus_syn::visit::visit_item_impl(self, item_impl);
+            }
+            _ => {
+                verus_syn::visit::visit_item(self, item);
+            }
+        }
+    }
+}
+
+// Classify a verifier attribute using verus_syn's AST
+fn classify_verifier_attribute(attr: &Attribute) -> Option<VerifierAttribute> {
+    // Check path segments
+    let path = &attr.path();
+    
+    if path.segments.is_empty() {
+        return None;
+    }
+    
+    // Check if first segment is "verifier"
+    if path.segments.first()?.ident != "verifier" {
+        return None;
+    }
+    
+    // Single segment: #[verifier(...)]
+    if path.segments.len() == 1 {
+        use verus_syn::{Meta, MetaList};
+        
+        if let Meta::List(MetaList { tokens, .. }) = &attr.meta {
+            // Parse tokens to extract the identifier
+            if let Ok(inner_path) = verus_syn::parse2::<verus_syn::Path>(tokens.clone()) {
+                if let Some(ident) = inner_path.get_ident() {
+                    return match_verifier_ident(ident);
+                }
+            }
+        }
+        return None;
+    }
+    
+    // Two segments: #[verifier::external_body]
+    if path.segments.len() == 2 {
+        let second_ident = &path.segments[1].ident;
+        return match_verifier_ident(second_ident);
+    }
+    
+    None
+}
+
+// Match a verifier identifier using AST comparison
+fn match_verifier_ident(ident: &verus_syn::Ident) -> Option<VerifierAttribute> {
+    // Compare idents directly without string conversion
+    if ident == "external_body" {
+        Some(VerifierAttribute::ExternalBody)
+    } else if ident == "external_fn_specification" {
+        Some(VerifierAttribute::ExternalFnSpec)
+    } else if ident == "external_trait_specification" {
+        Some(VerifierAttribute::ExternalTraitSpec)
+    } else if ident == "external_type_specification" {
+        Some(VerifierAttribute::ExternalTypeSpec)
+    } else if ident == "external_trait_extension" {
+        Some(VerifierAttribute::ExternalTraitExt)
+    } else if ident == "external" {
+        Some(VerifierAttribute::External)
+    } else if ident == "opaque" {
+        Some(VerifierAttribute::Opaque)
+    } else {
+        None
+    }
+}
+
+// Fallback: analyze attributes using ra_ap_syntax token walking
+fn analyze_attributes_with_ra_syntax(root: &SyntaxNode, stats: &mut FileStats) {
+    let all_tokens: Vec<_> = root.descendants_with_tokens()
+        .filter_map(|n| n.into_token())
+        .collect();
+    
+    for (i, token) in all_tokens.iter().enumerate() {
+        if token.kind() == SyntaxKind::POUND {
+            if let Some(attr) = detect_verifier_attribute(&all_tokens, i) {
+                match attr {
+                    VerifierAttribute::ExternalBody => stats.holes.external_body_count += 1,
+                    VerifierAttribute::ExternalFnSpec => stats.holes.external_fn_spec_count += 1,
+                    VerifierAttribute::ExternalTraitSpec => stats.holes.external_trait_spec_count += 1,
+                    VerifierAttribute::ExternalTypeSpec => stats.holes.external_type_spec_count += 1,
+                    VerifierAttribute::ExternalTraitExt => stats.holes.external_trait_ext_count += 1,
+                    VerifierAttribute::External => stats.holes.external_count += 1,
+                    VerifierAttribute::Opaque => stats.holes.opaque_count += 1,
+                }
+                stats.holes.total_holes += 1;
+            }
+        }
+    }
 }
 
 fn analyze_verus_macro(tree: &SyntaxNode, _content: &str, stats: &mut FileStats) {

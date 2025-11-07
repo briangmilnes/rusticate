@@ -52,3 +52,15 @@ Entering directory '/home/milnes/projects/rusticate/src'
 Total violations: 878 files checked, 0 violations found
 
 Completed in 473ms
+Entering directory 'src/bin/review_verus_proof_holes.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 2ms
+Entering directory 'src/bin/review_verus_proof_holes.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 2ms
