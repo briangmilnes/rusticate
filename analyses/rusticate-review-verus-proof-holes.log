@@ -1,0 +1,74 @@
+Verus Proof Hole Detection
+Looking for: assume(false), assume(), admit(), #[verifier::external_body]
+
+✓ /home/milnes/projects/VerusCodebases/human-eval-verus/tasks/human_eval_001.rs
+   1 clean proof function
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   1 clean (no holes)
+   0 holed (contains holes)
+   1 total
+
+Proof Functions:
+   1 clean
+   0 holed
+   1 total
+
+Holes Found: 0 total
+
+🎉 No proof holes found! All proofs are complete.
+
+Completed in 0ms
+Verus Proof Hole Detection
+Looking for: assume(false), assume(), admit(), #[verifier::external_body]
+
+❌ /home/milnes/projects/VerusCodebases/verified-storage/capybaraKV/capybarakv/src/pmem/power_sound_t.rs
+   Holes: 1 total
+      1 × assume()
+   Proof functions: 3 total (3 clean, 0 holed)
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   0 clean (no holes)
+   1 holed (contains holes)
+   1 total
+
+Proof Functions:
+   3 clean
+   0 holed
+   3 total
+
+Holes Found: 1 total
+   1 × assume()
+
+Completed in 0ms
+Verus Proof Hole Detection
+Looking for: assume(false), assume(), admit(), #[verifier::external_body]
+
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   0 clean (no holes)
+   0 holed (contains holes)
+   0 total
+
+Proof Functions:
+   0 clean
+   0 holed
+   0 total
+
+Holes Found: 0 total
+
+🎉 No proof holes found! All proofs are complete.
+
+Completed in 0ms

@@ -319,6 +319,10 @@ name = "rusticate-count-loc"
 path = "src/bin/count_loc.rs"
 
 [[bin]]
+name = "rusticate-review-verus-proof-holes"
+path = "src/bin/review_verus_proof_holes.rs"
+
+[[bin]]
 name = "rusticate-compile-src-tests-benches-run-tests"
 path = "src/bin/compile_src_tests_benches_run_tests.rs"
 
