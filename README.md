@@ -739,7 +739,8 @@ All Verus tools require the `-l Verus` flag.
 | Tool | Description | Output |
 |------|-------------|--------|
 | **`count-loc`** | Count lines of code with spec/proof/exec breakdown | Spec/Proof/Exec LOC per file + summary |
-| **`review-verus-proof-holes`** | Detect unproven assumptions and proof holes | Clean/holed modules, hole types and counts |
+| **`review-verus-proof-holes`** | Detect unproven assumptions, proof holes, and axioms | Holes and axioms by type, clean/holed modules |
+| **`review-verus-axiom-purity`** | Classify axioms as pure math vs system-dependent | Pure math vs non-pure axiom breakdown |
 
 ---
 
@@ -800,7 +801,7 @@ Verus LOC (Spec/Proof/Exec)
 
 ### Tool: `review-verus-proof-holes`
 
-**Purpose:** Detect incomplete proofs and unverified assumptions in Verus code.
+**Purpose:** Detect incomplete proofs, unverified assumptions, and trusted axioms in Verus code.
 
 **Usage:**
 ```bash
@@ -813,12 +814,23 @@ rusticate-review-verus-proof-holes -l Verus -f src/btree.rs
 
 **What it Detects:**
 
+**Proof Holes** (unverified gaps in proofs):
+
 | Hole Type | Description | Severity |
 |-----------|-------------|----------|
 | `assume(false)` | Unproven assumption with false (admits anything) | 🔴 Critical |
 | `assume(...)` | Unproven assumption (any argument) | 🟡 Warning |
 | `admit()` | Admitted proof obligation | 🟡 Warning |
-| `#[verifier::external_body]` | Externally verified function (axiomatized) | 🔵 Info |
+| `#[verifier::external_body]` | Externally verified function | 🔵 Info |
+| `#[verifier::external_*]` | External specifications, traits, types | 🔵 Info |
+| `#[verifier::opaque]` | Opaque function (body hidden from verifier) | 🔵 Info |
+
+**Trusted Axioms** (mathematical foundations, separate from holes):
+
+| Axiom Type | Description |
+|------------|-------------|
+| `axiom fn` | Trusted axiom function declarations |
+| `broadcast use ...axiom...` | Imported axiom groups and functions |
 
 **Metrics Reported:**
 
@@ -827,77 +839,171 @@ rusticate-review-verus-proof-holes -l Verus -f src/btree.rs
 - ❌ Holed files (contains holes)
 - Hole breakdown by type
 - Clean vs holed proof functions
+- Axiom usage
 
 **Summary:**
-- **Clean modules:** Files with zero holes
-- **Holed modules:** Files with ≥1 hole
-- **Clean proof functions:** `proof fn` with no holes inside
-- **Holed proof functions:** `proof fn` containing holes
-- **Aggregate counts:** Total holes by type across all files
+- **Holes Found:** Unverified assumptions and admitted obligations
+  - Breakdown by hole type (assume/admit/external/opaque)
+- **Trusted Axioms:** Mathematical foundations (reported separately)
+  - `axiom fn` declarations
+  - `broadcast use` axiom imports
 
 **Example Output:**
 ```bash
 $ rusticate-review-verus-proof-holes -l Verus -d src/
 
 Verus Proof Hole Detection
-Looking for: assume(false), assume(), admit(), #[verifier::external_body]
+Looking for:
+  - assume(false), assume(), admit()
+  - axiom fn (trusted axioms)
+  - broadcast use axioms (axiom groups and functions)
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
 
-✓ Chap03/InsertionSortStEph.rs
-✓ Chap05/MappingStEph.rs
-✓ Chap05/SetStEph.rs
-❌ experiments/ArrayVecSet.rs
-   Holes: 1 total
-      1 × assume()
-❌ experiments/ForFor.rs
-   Holes: 2 total
-      2 × assume()
-❌ vstdplus/partial_order.rs
-   Holes: 6 total
-      6 × admit()
-   Proof functions: 45 total (39 clean, 6 holed)
-✓ vstdplus/total_order.rs
-   52 clean proof functions
+✓ array_list.rs
+❌ btree_map.rs
+   Holes: 8 total
+      3 × admit()
+      5 × external_body
+   Proof functions: 23 total (20 clean, 3 holed)
+✓ seq_lib.rs
+   141 clean proof functions
 
 ═══════════════════════════════════════════════════════════════
 SUMMARY
 ═══════════════════════════════════════════════════════════════
 
 Modules:
-   12 clean (no holes)
-   4 holed (contains holes)
-   16 total
+   73 clean (no holes)
+   12 holed (contains holes)
+   85 total
 
 Proof Functions:
-   91 clean
-   6 holed
-   97 total
+   672 clean
+   49 holed
+   721 total
 
-Holes Found: 10 total
-   4 × assume()
-   6 × admit()
+Holes Found: 321 total
+   [breakdown by type]
 
-Completed in 4ms
+Trusted Axioms: 189 total
+   108 × axiom fn declarations
+   81 × broadcast use axioms
+
+Completed in 47ms
 ```
-
-**Tested On:**
-- **human-eval-verus:** 264 files, 56 proof functions → 0 holes (100% verified! 🎉)
-- **capybaraKV/pmem:** 20 files, 101 proof functions → 5 holes (1 assume, 4 admit)
-- **APAS-VERUS:** 16 files, 97 proof functions → 10 holes (4 assume, 6 admit)
 
 **Use Cases:**
 - **Pre-publication audit:** Find all unverified assumptions before releasing
 - **Technical debt tracking:** Monitor proof completion progress
 - **Code review:** Identify modules requiring proof work
 - **Verification status:** Quick overview of proof completeness
+- **Axiom audit:** Track mathematical foundations being relied upon
 
-**Implementation:** Pure AST/token parsing. Finds `verus! {}` macros, walks token trees to identify:
-- `proof fn` declarations (by looking for `proof` IDENT before `fn` keyword)
+**Implementation:** Pure AST/token parsing using `ra_ap_syntax`. Finds both `verus!` and `verus_!` macros, walks token trees to identify:
+- `proof fn` and `axiom fn` declarations (IDENT modifiers before FN_KW)
 - Function calls to `assume`/`admit` (IDENT followed by L_PAREN)
-- `#[verifier::external_body]` attributes (POUND → L_BRACK → verifier::external_body)
+- `#[verifier::*]` attributes (POUND → L_BRACK → verifier path, handling `::` tokenized as two COLON)
+- `broadcast use` statements with axiom references (broadcast IDENT → USE_KW)
 
-Tracks hole locations per function and per file. No string hacking.
+No string hacking. Passes string-hacking detector.
 
 **Logs to:** `analyses/rusticate-review-verus-proof-holes.log`
+
+---
+
+### Tool: `review-verus-axiom-purity`
+
+**Purpose:** Classify trusted axioms in Verus code by mathematical abstraction level: numeric math, set theoretic math, or machine-level math.
+
+**Usage:**
+```bash
+# Analyze a directory
+rusticate-review-verus-axiom-purity -l Verus -d src/
+
+# Analyze specific file
+rusticate-review-verus-axiom-purity -l Verus -f src/seq_lib.rs
+```
+
+**Three-Tier Axiom Classification:**
+
+**1. Numeric Math** (✅ Numbers and arithmetic):
+- `nat`, `int` - Natural and integer axioms
+- `arithmetic`, `div_mod`, `mul`, `power`, `logarithm` - Arithmetic operations
+- `add`, `sub` - Numeric operations
+- Mathematical foundations for computation
+
+**2. Set Theoretic Math** (✅ Mathematical abstractions):
+- `seq`, `multiset`, `map`, `set` - Collection theory axioms
+- `to_multiset` - Collection conversion axioms
+- Abstract mathematical structures
+
+**3. Machine Math** (⚠️ Concrete data structures - requires scrutiny):
+- `hash` - Hash function axioms (runtime-dependent)
+- `array`, `vec`, `slice` - Concrete array/vector structures
+- `ptr`, `borrow`, `alloc` - Memory and ownership axioms
+- `atomic`, `thread`, `sync` - Concurrency primitives
+- `layout` - Memory layout axioms
+- Ties proofs to specific runtime behaviors
+
+**Why This Matters:**
+
+Numeric and set theoretic axioms are mathematical foundations (67%+ in vstd). Machine math axioms (33%) tie proofs to specific runtime behaviors (hash implementations, memory models, concurrency primitives) and require more careful review for portability and trust.
+
+**Example Output:**
+```bash
+$ rusticate-review-verus-axiom-purity -l Verus -d src/
+
+Verus Axiom Purity Analysis
+
+✓ seq.rs
+   Numeric math axioms: 7
+      2 × axiom_seq_subrange_index
+      2 × axiom_seq_subrange_len
+      1 × axiom_seq_add_index1
+      1 × axiom_seq_add_index2
+      1 × axiom_seq_add_len
+   Set theoretic math axioms: 16
+      3 × group_seq_axioms
+      1 × axiom_seq_empty
+      [...]
+
+⚠ hash_set.rs
+   Machine math axioms: 3
+      3 × group_hash_axioms
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Axiom Classification:
+   54 numeric math (26.1%)
+   85 set theoretic math (41.1%)
+   68 machine math (32.9%)
+   ─────────────────────
+   207 total axioms
+
+Completed in 52ms
+```
+
+**Use Cases:**
+- **Trust audit:** Understand mathematical vs machine-level axiom dependencies
+- **Portability analysis:** Identify axioms tied to specific runtime behaviors
+- **Review prioritization:** Focus review on machine math axioms
+- **Publication:** Document axiom abstraction levels for verified systems
+
+**Implementation:** Pure AST/token parsing using `ra_ap_syntax`. Detects:
+- `axiom fn` declarations - extracts function names
+- `broadcast use` statements - extracts axiom group/function names
+- Classifies based on name patterns:
+  - Numeric: arithmetic, div, mul, add, sub, nat, int
+  - Set theoretic: seq, multiset, map, set
+  - Machine: everything else (hash, array, ptr, thread, etc.)
+
+No string hacking. Passes string-hacking detector.
+
+**Logs to:** `analyses/rusticate-review-verus-axiom-purity.log`
 
 ---
 

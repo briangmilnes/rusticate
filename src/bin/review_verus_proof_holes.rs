@@ -2,7 +2,7 @@ use anyhow::Result;
 use ra_ap_syntax::{ast::{self, AstNode}, SyntaxKind, SyntaxNode};
 use rusticate::{StandardArgs, find_rust_files};
 use std::{collections::HashMap, fs, path::{Path, PathBuf}, time::Instant};
-use verus_syn::{visit::Visit, Attribute, Item};
+// verus_syn no longer needed - using ra_ap_syntax token-based approach
 
 macro_rules! log {
     ($($arg:tt)*) => {{
@@ -28,6 +28,7 @@ enum VerifierAttribute {
     ExternalTraitExt,
     External,
     Opaque,
+    Axiom,
 }
 
 #[derive(Debug, Default, Clone)]
@@ -45,9 +46,17 @@ struct ProofHoleStats {
     total_holes: usize,
 }
 
+#[derive(Debug, Default, Clone)]
+struct AxiomStats {
+    axiom_fn_count: usize,
+    broadcast_use_axiom_count: usize,
+    total_axioms: usize,
+}
+
 #[derive(Debug, Default)]
 struct FileStats {
     holes: ProofHoleStats,
+    axioms: AxiomStats,
     proof_functions: usize,
     clean_proof_functions: usize,
     holed_proof_functions: usize,
@@ -62,6 +71,7 @@ struct SummaryStats {
     clean_proof_functions: usize,
     holed_proof_functions: usize,
     holes: ProofHoleStats,
+    axioms: AxiomStats,
 }
 
 fn main() -> Result<()> {
@@ -76,6 +86,8 @@ fn main() -> Result<()> {
     log!("Verus Proof Hole Detection");
     log!("Looking for:");
     log!("  - assume(false), assume(), admit()");
+    log!("  - axiom fn (trusted axioms)");
+    log!("  - broadcast use axioms (axiom groups and functions)");
     log!("  - external_body, external_fn_specification, external_trait_specification");
     log!("  - external_type_specification, external_trait_extension, external");
     log!("  - opaque");
@@ -125,49 +137,23 @@ fn analyze_file(path: &Path) -> Result<FileStats> {
     
     let mut stats = FileStats::default();
     
-    // Parse with verus_syn - it understands Verus syntax extensions
-    match verus_syn::parse_file(&content) {
-        Ok(syntax_tree) => {
-            // Use visitor pattern to collect all attributes
-            let mut visitor = AttributeVisitor::new();
-            visitor.visit_file(&syntax_tree);
-            
-            // Process collected attributes
-            for attr in &visitor.attributes {
-                if let Some(attr_type) = classify_verifier_attribute(attr) {
-                    match attr_type {
-                        VerifierAttribute::ExternalBody => stats.holes.external_body_count += 1,
-                        VerifierAttribute::ExternalFnSpec => stats.holes.external_fn_spec_count += 1,
-                        VerifierAttribute::ExternalTraitSpec => stats.holes.external_trait_spec_count += 1,
-                        VerifierAttribute::ExternalTypeSpec => stats.holes.external_type_spec_count += 1,
-                        VerifierAttribute::ExternalTraitExt => stats.holes.external_trait_ext_count += 1,
-                        VerifierAttribute::External => stats.holes.external_count += 1,
-                        VerifierAttribute::Opaque => stats.holes.opaque_count += 1,
-                    }
-                    stats.holes.total_holes += 1;
-                }
-            }
-        }
-        Err(_e) => {
-            // If even verus_syn fails, fall back to token-based analysis
-            let parsed = ra_ap_syntax::SourceFile::parse(&content, ra_ap_syntax::Edition::Edition2021);
-            let source_file = parsed.tree();
-            let root = source_file.syntax();
-            analyze_attributes_with_ra_syntax(&root, &mut stats);
-        }
-    }
-    
-    // Also scan for assume/admit calls in verus! macros using ra_ap_syntax
+    // Use ra_ap_syntax for token-based attribute detection
+    // This catches ALL attributes regardless of Verus syntax
     let parsed = ra_ap_syntax::SourceFile::parse(&content, ra_ap_syntax::Edition::Edition2021);
     let source_file = parsed.tree();
     let root = source_file.syntax();
     
+    let mut found_verus_macro = false;
+    
+    // Scan for assume/admit calls and attributes in verus! and verus_! macros
     for node in root.descendants() {
         if node.kind() == SyntaxKind::MACRO_CALL {
             if let Some(macro_call) = ast::MacroCall::cast(node.clone()) {
                 if let Some(macro_path) = macro_call.path() {
-                    if macro_path.to_string() == "verus" {
+                    let path_str = macro_path.to_string();
+                    if path_str == "verus" || path_str == "verus_" {
                         if let Some(token_tree) = macro_call.token_tree() {
+                            found_verus_macro = true;
                             analyze_verus_macro(token_tree.syntax(), &content, &mut stats);
                         }
                     }
@@ -176,118 +162,17 @@ fn analyze_file(path: &Path) -> Result<FileStats> {
         }
     }
     
+    // If no verus! macro found, scan for attributes at the file level (for non-Verus Rust files)
+    if !found_verus_macro {
+        analyze_attributes_with_ra_syntax(&root, &mut stats);
+    }
+    
     Ok(stats)
 }
 
-// Visitor to collect all attributes using verus_syn
-struct AttributeVisitor {
-    attributes: Vec<Attribute>,
-}
-
-impl AttributeVisitor {
-    fn new() -> Self {
-        AttributeVisitor {
-            attributes: Vec::new(),
-        }
-    }
-}
-
-impl<'ast> Visit<'ast> for AttributeVisitor {
-    fn visit_attribute(&mut self, attr: &'ast Attribute) {
-        self.attributes.push(attr.clone());
-    }
-    
-    fn visit_item(&mut self, item: &'ast Item) {
-        // Collect attributes from all item types
-        match item {
-            Item::Fn(item_fn) => {
-                self.attributes.extend(item_fn.attrs.iter().cloned());
-                verus_syn::visit::visit_item_fn(self, item_fn);
-            }
-            Item::Struct(item_struct) => {
-                self.attributes.extend(item_struct.attrs.iter().cloned());
-                verus_syn::visit::visit_item_struct(self, item_struct);
-            }
-            Item::Enum(item_enum) => {
-                self.attributes.extend(item_enum.attrs.iter().cloned());
-                verus_syn::visit::visit_item_enum(self, item_enum);
-            }
-            Item::Trait(item_trait) => {
-                self.attributes.extend(item_trait.attrs.iter().cloned());
-                verus_syn::visit::visit_item_trait(self, item_trait);
-            }
-            Item::Impl(item_impl) => {
-                self.attributes.extend(item_impl.attrs.iter().cloned());
-                verus_syn::visit::visit_item_impl(self, item_impl);
-            }
-            _ => {
-                verus_syn::visit::visit_item(self, item);
-            }
-        }
-    }
-}
-
-// Classify a verifier attribute using verus_syn's AST
-fn classify_verifier_attribute(attr: &Attribute) -> Option<VerifierAttribute> {
-    // Check path segments
-    let path = &attr.path();
-    
-    if path.segments.is_empty() {
-        return None;
-    }
-    
-    // Check if first segment is "verifier"
-    if path.segments.first()?.ident != "verifier" {
-        return None;
-    }
-    
-    // Single segment: #[verifier(...)]
-    if path.segments.len() == 1 {
-        use verus_syn::{Meta, MetaList};
-        
-        if let Meta::List(MetaList { tokens, .. }) = &attr.meta {
-            // Parse tokens to extract the identifier
-            if let Ok(inner_path) = verus_syn::parse2::<verus_syn::Path>(tokens.clone()) {
-                if let Some(ident) = inner_path.get_ident() {
-                    return match_verifier_ident(ident);
-                }
-            }
-        }
-        return None;
-    }
-    
-    // Two segments: #[verifier::external_body]
-    if path.segments.len() == 2 {
-        let second_ident = &path.segments[1].ident;
-        return match_verifier_ident(second_ident);
-    }
-    
-    None
-}
-
-// Match a verifier identifier using AST comparison
-fn match_verifier_ident(ident: &verus_syn::Ident) -> Option<VerifierAttribute> {
-    // Compare idents directly without string conversion
-    if ident == "external_body" {
-        Some(VerifierAttribute::ExternalBody)
-    } else if ident == "external_fn_specification" {
-        Some(VerifierAttribute::ExternalFnSpec)
-    } else if ident == "external_trait_specification" {
-        Some(VerifierAttribute::ExternalTraitSpec)
-    } else if ident == "external_type_specification" {
-        Some(VerifierAttribute::ExternalTypeSpec)
-    } else if ident == "external_trait_extension" {
-        Some(VerifierAttribute::ExternalTraitExt)
-    } else if ident == "external" {
-        Some(VerifierAttribute::External)
-    } else if ident == "opaque" {
-        Some(VerifierAttribute::Opaque)
-    } else {
-        None
-    }
-}
-
-// Fallback: analyze attributes using ra_ap_syntax token walking
+// Analyze attributes using ra_ap_syntax token walking
+// This is the most reliable method for Verus files as it catches all attributes
+// regardless of whether the Rust parser can fully understand Verus syntax
 fn analyze_attributes_with_ra_syntax(root: &SyntaxNode, stats: &mut FileStats) {
     let all_tokens: Vec<_> = root.descendants_with_tokens()
         .filter_map(|n| n.into_token())
@@ -297,15 +182,40 @@ fn analyze_attributes_with_ra_syntax(root: &SyntaxNode, stats: &mut FileStats) {
         if token.kind() == SyntaxKind::POUND {
             if let Some(attr) = detect_verifier_attribute(&all_tokens, i) {
                 match attr {
-                    VerifierAttribute::ExternalBody => stats.holes.external_body_count += 1,
-                    VerifierAttribute::ExternalFnSpec => stats.holes.external_fn_spec_count += 1,
-                    VerifierAttribute::ExternalTraitSpec => stats.holes.external_trait_spec_count += 1,
-                    VerifierAttribute::ExternalTypeSpec => stats.holes.external_type_spec_count += 1,
-                    VerifierAttribute::ExternalTraitExt => stats.holes.external_trait_ext_count += 1,
-                    VerifierAttribute::External => stats.holes.external_count += 1,
-                    VerifierAttribute::Opaque => stats.holes.opaque_count += 1,
+                    VerifierAttribute::ExternalBody => {
+                        stats.holes.external_body_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::ExternalFnSpec => {
+                        stats.holes.external_fn_spec_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::ExternalTraitSpec => {
+                        stats.holes.external_trait_spec_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::ExternalTypeSpec => {
+                        stats.holes.external_type_spec_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::ExternalTraitExt => {
+                        stats.holes.external_trait_ext_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::External => {
+                        stats.holes.external_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::Opaque => {
+                        stats.holes.opaque_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::Axiom => {
+                        // #[verifier::axiom] attribute - tracked separately as axiom
+                        stats.axioms.axiom_fn_count += 1;
+                        stats.axioms.total_axioms += 1;
+                    }
                 }
-                stats.holes.total_holes += 1;
             }
         }
     }
@@ -315,7 +225,7 @@ fn analyze_verus_macro(tree: &SyntaxNode, _content: &str, stats: &mut FileStats)
     // Walk the token tree looking for:
     // 1. Functions with proof modifier
     // 2. Function calls to assume/admit
-    // Note: Attributes are already counted at the file level
+    // 3. Verifier attributes (which are often inside verus! macros)
     
     let tokens: Vec<_> = tree.descendants_with_tokens()
         .filter_map(|n| n.into_token())
@@ -325,8 +235,15 @@ fn analyze_verus_macro(tree: &SyntaxNode, _content: &str, stats: &mut FileStats)
     while i < tokens.len() {
         let token = &tokens[i];
         
-        // Look for "fn" keyword to find proof functions
+        // Look for "fn" keyword to find proof functions and axiom functions
         if token.kind() == SyntaxKind::FN_KW {
+            // Check for axiom fn (trusted axiom declarations)
+            let is_axiom = is_axiom_function(&tokens, i);
+            if is_axiom {
+                stats.axioms.axiom_fn_count += 1;
+                stats.axioms.total_axioms += 1;
+            }
+            
             let is_proof = is_proof_function(&tokens, i);
             
             if is_proof {
@@ -342,8 +259,9 @@ fn analyze_verus_macro(tree: &SyntaxNode, _content: &str, stats: &mut FileStats)
             }
         }
         
-        // Look for assume/admit function calls
-        if token.kind() == SyntaxKind::IDENT {
+        // Look for assume/admit function calls  
+        // Also check for "broadcast" which might not be an IDENT
+        if token.kind() == SyntaxKind::IDENT || token.text() == "broadcast" {
             let text = token.text();
             if text == "assume" || text == "admit" {
                 // Check if it's followed by (
@@ -359,6 +277,65 @@ fn analyze_verus_macro(tree: &SyntaxNode, _content: &str, stats: &mut FileStats)
                     } else if text == "admit" {
                         stats.holes.admit_count += 1;
                         stats.holes.total_holes += 1;
+                    }
+                }
+            }
+            
+            // Look for "broadcast use" statements that import axioms
+            if text == "broadcast" {
+                // Check if followed by "use"
+                if i + 1 < tokens.len() {
+                    let mut j = i + 1;
+                    while j < tokens.len() && tokens[j].kind() == SyntaxKind::WHITESPACE {
+                        j += 1;
+                    }
+                    if j < tokens.len() && tokens[j].kind() == SyntaxKind::USE_KW {
+                        // This is a broadcast use statement - check if it references axioms
+                        if contains_axiom_reference(&tokens, j) {
+                            stats.axioms.broadcast_use_axiom_count += 1;
+                            stats.axioms.total_axioms += 1;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Look for verifier attributes inside the verus! macro
+        if token.kind() == SyntaxKind::POUND {
+            if let Some(attr) = detect_verifier_attribute(&tokens, i) {
+                match attr {
+                    VerifierAttribute::ExternalBody => {
+                        stats.holes.external_body_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::ExternalFnSpec => {
+                        stats.holes.external_fn_spec_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::ExternalTraitSpec => {
+                        stats.holes.external_trait_spec_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::ExternalTypeSpec => {
+                        stats.holes.external_type_spec_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::ExternalTraitExt => {
+                        stats.holes.external_trait_ext_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::External => {
+                        stats.holes.external_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::Opaque => {
+                        stats.holes.opaque_count += 1;
+                        stats.holes.total_holes += 1;
+                    }
+                    VerifierAttribute::Axiom => {
+                        // #[verifier::axiom] attribute - tracked separately as axiom
+                        stats.axioms.axiom_fn_count += 1;
+                        stats.axioms.total_axioms += 1;
                     }
                 }
             }
@@ -414,14 +391,24 @@ fn detect_verifier_attribute(tokens: &[ra_ap_syntax::SyntaxToken], start_idx: us
     }
     
     // Check for :: (path) or ( (call syntax)
-    let use_path_syntax = tokens[i].kind() == SyntaxKind::COLON2;
+    // Note: Inside macros, :: might be tokenized as two COLON tokens
+    let use_path_syntax = tokens[i].kind() == SyntaxKind::COLON2 || 
+                          (tokens[i].kind() == SyntaxKind::COLON && 
+                           i + 1 < tokens.len() && tokens[i + 1].kind() == SyntaxKind::COLON);
     let use_call_syntax = tokens[i].kind() == SyntaxKind::L_PAREN;
     
     if !use_path_syntax && !use_call_syntax {
         return None;
     }
     
-    i += 1;
+    // Skip past :: (might be COLON2 or two COLON tokens)
+    if tokens[i].kind() == SyntaxKind::COLON2 {
+        i += 1;
+    } else if tokens[i].kind() == SyntaxKind::COLON {
+        i += 2; // Skip both colons
+    } else {
+        i += 1; // L_PAREN case
+    }
     
     // Skip whitespace
     while i < tokens.len() && tokens[i].kind() == SyntaxKind::WHITESPACE {
@@ -443,6 +430,7 @@ fn detect_verifier_attribute(tokens: &[ra_ap_syntax::SyntaxToken], start_idx: us
         "external_trait_extension" => Some(VerifierAttribute::ExternalTraitExt),
         "external" => Some(VerifierAttribute::External),
         "opaque" => Some(VerifierAttribute::Opaque),
+        "axiom" => Some(VerifierAttribute::Axiom),
         _ => None,
     }
 }
@@ -454,6 +442,42 @@ fn is_proof_function(tokens: &[ra_ap_syntax::SyntaxToken], fn_idx: usize) -> boo
         if tokens[j].kind() == SyntaxKind::IDENT && tokens[j].text() == "proof" {
             return true;
         }
+    }
+    false
+}
+
+fn is_axiom_function(tokens: &[ra_ap_syntax::SyntaxToken], fn_idx: usize) -> bool {
+    // Look backwards for "axiom" modifier
+    let start_idx = if fn_idx >= 10 { fn_idx - 10 } else { 0 };
+    for j in start_idx..fn_idx {
+        if tokens[j].kind() == SyntaxKind::IDENT && tokens[j].text() == "axiom" {
+            return true;
+        }
+    }
+    false
+}
+
+fn contains_axiom_reference(tokens: &[ra_ap_syntax::SyntaxToken], use_idx: usize) -> bool {
+    // Starting from "use", scan forward until we hit a semicolon
+    // Look for identifiers containing "axiom"
+    let mut i = use_idx + 1;
+    while i < tokens.len() {
+        let token = &tokens[i];
+        
+        // Stop at semicolon
+        if token.kind() == SyntaxKind::SEMICOLON {
+            break;
+        }
+        
+        // Check if this identifier contains "axiom"
+        if token.kind() == SyntaxKind::IDENT {
+            let text = token.text();
+            if text.contains("axiom") {
+                return true;
+            }
+        }
+        
+        i += 1;
     }
     false
 }
@@ -591,6 +615,10 @@ fn compute_summary(file_stats_map: &HashMap<String, FileStats>) -> SummaryStats 
         summary.holes.external_count += stats.holes.external_count;
         summary.holes.opaque_count += stats.holes.opaque_count;
         summary.holes.total_holes += stats.holes.total_holes;
+        
+        summary.axioms.axiom_fn_count += stats.axioms.axiom_fn_count;
+        summary.axioms.broadcast_use_axiom_count += stats.axioms.broadcast_use_axiom_count;
+        summary.axioms.total_axioms += stats.axioms.total_axioms;
     }
     
     summary
@@ -647,6 +675,18 @@ fn print_summary(summary: &SummaryStats) {
     if summary.holes.total_holes == 0 {
         log!("");
         log!("🎉 No proof holes found! All proofs are complete.");
+    }
+    
+    // Axioms section (separate from holes)
+    if summary.axioms.total_axioms > 0 {
+        log!("");
+        log!("Trusted Axioms: {} total", summary.axioms.total_axioms);
+        if summary.axioms.axiom_fn_count > 0 {
+            log!("   {} × axiom fn declarations", summary.axioms.axiom_fn_count);
+        }
+        if summary.axioms.broadcast_use_axiom_count > 0 {
+            log!("   {} × broadcast use axioms", summary.axioms.broadcast_use_axiom_count);
+        }
     }
 }
 
