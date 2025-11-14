@@ -1,0 +1,719 @@
+Verus Axiom Purity Analysis
+
+⚠ array.rs
+   Pure math axioms: 1
+      1 × array_len_matches_n
+   System axioms: 3
+      1 × axiom_array_ext_equal
+      1 × axiom_spec_array_as_slice
+      1 × axiom_spec_array_fill_for_copy_type
+✓ bytes.rs
+   Pure math axioms: 1
+      1 × group_seq_axioms
+✓ cell.rs
+   Pure math axioms: 2
+      1 × group_map_axioms
+      1 × group_set_axioms
+⚠ function.rs
+   Pure math axioms: 1
+      1 × proof_fn_as_req_ens
+   System axioms: 2
+      1 × axiom_proof_fn_ensures
+      1 × axiom_proof_fn_requires
+✓ hash_map.rs
+   Pure math axioms: 2
+      1 × axiom_hash_map_with_view_spec_len
+      1 × axiom_string_hash_map_spec_len
+✓ hash_set.rs
+   Pure math axioms: 2
+      1 × axiom_hash_set_with_view_spec_len
+      1 × axiom_string_hash_set_spec_len
+✓ layout.rs
+   Pure math axioms: 4
+      1 × layout_of_primitives
+      1 × layout_of_references_and_pointers
+      1 × layout_of_references_and_pointers_for_sized_types
+      1 × layout_of_unit_tuple
+⚠ map.rs
+   Pure math axioms: 11
+      4 × group_set_axioms
+      1 × axiom_map_index_decreases_finite
+      1 × axiom_map_index_decreases_infinite
+      1 × tracked_empty
+      1 × tracked_insert
+      1 × tracked_map_keys
+      1 × tracked_remove
+      1 × tracked_remove_keys
+   System axioms: 2
+      1 × tracked_borrow
+      1 × tracked_union_prefer_right
+✓ map_lib.rs
+   Pure math axioms: 3
+      1 × group_map_axioms
+      1 × group_seq_axioms
+      1 × group_set_axioms
+✓ modes.rs
+   Pure math axioms: 2
+      1 × tracked_static_ref
+      1 × tracked_swap
+⚠ multiset.rs
+   Pure math axioms: 32
+      14 × group_multiset_axioms
+      4 × group_map_axioms
+      4 × group_set_axioms
+      1 × axiom_multiset_add
+      1 × axiom_multiset_always_finite
+      1 × axiom_multiset_contained
+      1 × axiom_multiset_empty
+      1 × axiom_multiset_ext_equal
+      1 × axiom_multiset_ext_equal_deep
+      1 × axiom_multiset_new_not_contained
+      1 × axiom_multiset_singleton
+      1 × axiom_multiset_singleton_different
+      1 × axiom_multiset_sub
+   System axioms: 7
+      1 × axiom_choose_count
+      1 × axiom_count_le_len
+      1 × axiom_filter_count
+      1 × axiom_len_add
+      1 × axiom_len_empty
+      1 × axiom_len_singleton
+      1 × axiom_len_sub
+✓ multiset_lib.rs
+   Pure math axioms: 1
+      1 × group_multiset_axioms
+⚠ pcm.rs
+   Pure math axioms: 10
+      1 × create_unit
+      1 × group_set_axioms
+      1 × join
+      1 × join_shared
+      1 × split
+      1 × update_nondeterministic
+      1 × update_nondeterministic_with_shared
+      1 × validate
+      1 × validate_2
+      1 × weaken
+   System axioms: 1
+      1 × alloc
+✓ pervasive.rs
+   Pure math axioms: 1
+      1 × proof_from_false
+⚠ raw_ptr.rs
+   Pure math axioms: 11
+      1 × empty
+      1 × into_raw
+      1 × into_typed
+      1 × is_aligned
+      1 × is_disjoint
+      1 × is_nonnull
+      1 × join
+      1 × leak_contents
+      1 × null
+      1 × points_to
+      1 × split
+   System axioms: 2
+      1 × axiom_ptr_mut_from_data
+      1 × ptrs_mut_eq
+✓ relations.rs
+   Pure math axioms: 1
+      1 × group_seq_axioms
+✓ seq.rs
+   Pure math axioms: 23
+      3 × group_seq_axioms
+      2 × axiom_seq_subrange_index
+      2 × axiom_seq_subrange_len
+      1 × axiom_seq_add_index1
+      1 × axiom_seq_add_index2
+      1 × axiom_seq_add_len
+      1 × axiom_seq_empty
+      1 × axiom_seq_ext_equal
+      1 × axiom_seq_ext_equal_deep
+      1 × axiom_seq_index_decreases
+      1 × axiom_seq_len_decreases
+      1 × axiom_seq_new_index
+      1 × axiom_seq_new_len
+      1 × axiom_seq_push_index_different
+      1 × axiom_seq_push_index_same
+      1 × axiom_seq_push_len
+      1 × axiom_seq_update_different
+      1 × axiom_seq_update_len
+      1 × axiom_seq_update_same
+✓ seq_lib.rs
+   Pure math axioms: 23
+      12 × group_multiset_axioms
+      9 × group_set_axioms
+      2 × group_seq_axioms
+✓ set.rs
+   Pure math axioms: 11
+      5 × group_set_axioms_early
+      1 × axiom_mk_map_domain
+      1 × axiom_mk_map_index
+      1 × axiom_set_contains_len
+      1 × axiom_set_empty_len
+      1 × axiom_set_ext_equal
+      1 × axiom_set_insert_finite
+✓ set_lib.rs
+   Pure math axioms: 10
+      10 × group_set_axioms
+⚠ simple_pptr.rs
+   Pure math axioms: 1
+      1 × group_set_axioms
+   System axioms: 1
+      1 × group_raw_ptr_axioms
+⚠ slice.rs
+   System axioms: 3
+      1 × axiom_slice_ext_equal
+      1 × axiom_slice_get_usize
+      1 × axiom_spec_len
+⚠ std_specs/hash.rs
+   System axioms: 3
+      3 × group_hash_axioms
+⚠ std_specs/vec.rs
+   Pure math axioms: 3
+      3 × group_seq_axioms
+   System axioms: 3
+      3 × axiom_spec_len
+⚠ storage_protocol.rs
+   Pure math axioms: 10
+      1 × exchange_nondeterministic_with_shared
+      1 × group_map_axioms
+      1 × group_set_axioms
+      1 × guard
+      1 × join
+      1 × join_shared
+      1 × split
+      1 × validate
+      1 × validate_with_shared
+      1 × weaken
+   System axioms: 1
+      1 × alloc
+⚠ string.rs
+   System axioms: 3
+      1 × axiom_str_literal_get_char
+      1 × axiom_str_literal_is_ascii
+      1 × axiom_str_literal_len
+⚠ thread.rs
+   Pure math axioms: 3
+      1 × agrees
+      1 × into
+      1 × send_into
+   System axioms: 3
+      1 × borrow
+      1 × ghost_thread_id
+      1 × sync_borrow
+✓ tokens/frac.rs
+   Pure math axioms: 2
+      1 × group_map_axioms
+      1 × group_set_axioms
+✓ tokens.rs
+   Pure math axioms: 2
+      1 × group_map_axioms
+      1 × group_set_axioms
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Axioms by Purity:
+   173 pure math (83.6%)
+   34 system/impl (16.4%)
+   207 total
+
+Pure Math Categories:
+   129 × seq/multiset/map/set
+   44 × other math
+
+System Categories:
+   3 × hash
+   5 × memory/alloc
+   2 × atomics/concurrency
+   24 × other system
+
+Completed in 52ms
+Verus Axiom Purity Analysis
+
+⚠ Chap05/SetStEph.rs
+   System axioms: 1
+      1 × group_hash_axioms
+✓ vstdplus/hash_set_with_view_plus.rs
+   Pure math axioms: 2
+      1 × axiom_hash_set_with_view_spec_len
+      1 × axiom_string_hash_set_spec_len
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Axioms by Purity:
+   2 pure math (66.7%)
+   1 system/impl (33.3%)
+   3 total
+
+Pure Math Categories:
+   2 × seq/multiset/map/set
+
+System Categories:
+   1 × hash
+
+Completed in 5ms
+Verus Axiom Purity Analysis
+
+⚠ array.rs
+   Pure math axioms: 1
+      1 × array_len_matches_n
+   System axioms: 3
+      1 × axiom_array_ext_equal
+      1 × axiom_spec_array_as_slice
+      1 × axiom_spec_array_fill_for_copy_type
+✓ bytes.rs
+   Pure math axioms: 1
+      1 × group_seq_axioms
+✓ cell.rs
+   Pure math axioms: 2
+      1 × group_map_axioms
+      1 × group_set_axioms
+⚠ function.rs
+   Pure math axioms: 1
+      1 × proof_fn_as_req_ens
+   System axioms: 2
+      1 × axiom_proof_fn_ensures
+      1 × axiom_proof_fn_requires
+✓ hash_map.rs
+   Pure math axioms: 2
+      1 × axiom_hash_map_with_view_spec_len
+      1 × axiom_string_hash_map_spec_len
+✓ hash_set.rs
+   Pure math axioms: 2
+      1 × axiom_hash_set_with_view_spec_len
+      1 × axiom_string_hash_set_spec_len
+✓ layout.rs
+   Pure math axioms: 4
+      1 × layout_of_primitives
+      1 × layout_of_references_and_pointers
+      1 × layout_of_references_and_pointers_for_sized_types
+      1 × layout_of_unit_tuple
+⚠ map.rs
+   Pure math axioms: 11
+      4 × group_set_axioms
+      1 × axiom_map_index_decreases_finite
+      1 × axiom_map_index_decreases_infinite
+      1 × tracked_empty
+      1 × tracked_insert
+      1 × tracked_map_keys
+      1 × tracked_remove
+      1 × tracked_remove_keys
+   System axioms: 2
+      1 × tracked_borrow
+      1 × tracked_union_prefer_right
+✓ map_lib.rs
+   Pure math axioms: 3
+      1 × group_map_axioms
+      1 × group_seq_axioms
+      1 × group_set_axioms
+✓ modes.rs
+   Pure math axioms: 2
+      1 × tracked_static_ref
+      1 × tracked_swap
+⚠ multiset.rs
+   Pure math axioms: 32
+      14 × group_multiset_axioms
+      4 × group_map_axioms
+      4 × group_set_axioms
+      1 × axiom_multiset_add
+      1 × axiom_multiset_always_finite
+      1 × axiom_multiset_contained
+      1 × axiom_multiset_empty
+      1 × axiom_multiset_ext_equal
+      1 × axiom_multiset_ext_equal_deep
+      1 × axiom_multiset_new_not_contained
+      1 × axiom_multiset_singleton
+      1 × axiom_multiset_singleton_different
+      1 × axiom_multiset_sub
+   System axioms: 7
+      1 × axiom_choose_count
+      1 × axiom_count_le_len
+      1 × axiom_filter_count
+      1 × axiom_len_add
+      1 × axiom_len_empty
+      1 × axiom_len_singleton
+      1 × axiom_len_sub
+✓ multiset_lib.rs
+   Pure math axioms: 1
+      1 × group_multiset_axioms
+⚠ pcm.rs
+   Pure math axioms: 10
+      1 × create_unit
+      1 × group_set_axioms
+      1 × join
+      1 × join_shared
+      1 × split
+      1 × update_nondeterministic
+      1 × update_nondeterministic_with_shared
+      1 × validate
+      1 × validate_2
+      1 × weaken
+   System axioms: 1
+      1 × alloc
+✓ pervasive.rs
+   Pure math axioms: 1
+      1 × proof_from_false
+⚠ raw_ptr.rs
+   Pure math axioms: 11
+      1 × empty
+      1 × into_raw
+      1 × into_typed
+      1 × is_aligned
+      1 × is_disjoint
+      1 × is_nonnull
+      1 × join
+      1 × leak_contents
+      1 × null
+      1 × points_to
+      1 × split
+   System axioms: 2
+      1 × axiom_ptr_mut_from_data
+      1 × ptrs_mut_eq
+✓ relations.rs
+   Pure math axioms: 1
+      1 × group_seq_axioms
+✓ seq.rs
+   Pure math axioms: 23
+      3 × group_seq_axioms
+      2 × axiom_seq_subrange_index
+      2 × axiom_seq_subrange_len
+      1 × axiom_seq_add_index1
+      1 × axiom_seq_add_index2
+      1 × axiom_seq_add_len
+      1 × axiom_seq_empty
+      1 × axiom_seq_ext_equal
+      1 × axiom_seq_ext_equal_deep
+      1 × axiom_seq_index_decreases
+      1 × axiom_seq_len_decreases
+      1 × axiom_seq_new_index
+      1 × axiom_seq_new_len
+      1 × axiom_seq_push_index_different
+      1 × axiom_seq_push_index_same
+      1 × axiom_seq_push_len
+      1 × axiom_seq_update_different
+      1 × axiom_seq_update_len
+      1 × axiom_seq_update_same
+✓ seq_lib.rs
+   Pure math axioms: 23
+      12 × group_multiset_axioms
+      9 × group_set_axioms
+      2 × group_seq_axioms
+✓ set.rs
+   Pure math axioms: 11
+      5 × group_set_axioms_early
+      1 × axiom_mk_map_domain
+      1 × axiom_mk_map_index
+      1 × axiom_set_contains_len
+      1 × axiom_set_empty_len
+      1 × axiom_set_ext_equal
+      1 × axiom_set_insert_finite
+✓ set_lib.rs
+   Pure math axioms: 10
+      10 × group_set_axioms
+⚠ simple_pptr.rs
+   Pure math axioms: 1
+      1 × group_set_axioms
+   System axioms: 1
+      1 × group_raw_ptr_axioms
+⚠ slice.rs
+   System axioms: 3
+      1 × axiom_slice_ext_equal
+      1 × axiom_slice_get_usize
+      1 × axiom_spec_len
+⚠ std_specs/hash.rs
+   System axioms: 3
+      3 × group_hash_axioms
+⚠ std_specs/vec.rs
+   Pure math axioms: 3
+      3 × group_seq_axioms
+   System axioms: 3
+      3 × axiom_spec_len
+⚠ storage_protocol.rs
+   Pure math axioms: 10
+      1 × exchange_nondeterministic_with_shared
+      1 × group_map_axioms
+      1 × group_set_axioms
+      1 × guard
+      1 × join
+      1 × join_shared
+      1 × split
+      1 × validate
+      1 × validate_with_shared
+      1 × weaken
+   System axioms: 1
+      1 × alloc
+⚠ string.rs
+   System axioms: 3
+      1 × axiom_str_literal_get_char
+      1 × axiom_str_literal_is_ascii
+      1 × axiom_str_literal_len
+⚠ thread.rs
+   Pure math axioms: 3
+      1 × agrees
+      1 × into
+      1 × send_into
+   System axioms: 3
+      1 × borrow
+      1 × ghost_thread_id
+      1 × sync_borrow
+✓ tokens/frac.rs
+   Pure math axioms: 2
+      1 × group_map_axioms
+      1 × group_set_axioms
+✓ tokens.rs
+   Pure math axioms: 2
+      1 × group_map_axioms
+      1 × group_set_axioms
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Axioms by Purity:
+   173 pure math (83.6%)
+   34 system/impl (16.4%)
+   207 total
+
+Pure Math Categories:
+   129 × seq/multiset/map/set
+   44 × other math
+
+System Categories:
+   3 × hash
+   5 × memory/alloc
+   2 × atomics/concurrency
+   24 × other system
+
+Completed in 73ms
+Verus Axiom Purity Analysis
+
+⚠ array.rs
+   Machine math axioms: 4
+      1 × array_len_matches_n
+      1 × axiom_array_ext_equal
+      1 × axiom_spec_array_as_slice
+      1 × axiom_spec_array_fill_for_copy_type
+✓ bytes.rs
+   Set theoretic math axioms: 1
+      1 × group_seq_axioms
+✓ cell.rs
+   Set theoretic math axioms: 2
+      1 × group_map_axioms
+      1 × group_set_axioms
+⚠ function.rs
+   Machine math axioms: 3
+      1 × axiom_proof_fn_ensures
+      1 × axiom_proof_fn_requires
+      1 × proof_fn_as_req_ens
+✓ hash_map.rs
+   Set theoretic math axioms: 2
+      1 × axiom_hash_map_with_view_spec_len
+      1 × axiom_string_hash_map_spec_len
+✓ hash_set.rs
+   Set theoretic math axioms: 2
+      1 × axiom_hash_set_with_view_spec_len
+      1 × axiom_string_hash_set_spec_len
+⚠ layout.rs
+   Numeric math axioms: 2
+      1 × layout_of_references_and_pointers
+      1 × layout_of_references_and_pointers_for_sized_types
+   Machine math axioms: 2
+      1 × layout_of_primitives
+      1 × layout_of_unit_tuple
+⚠ map.rs
+   Set theoretic math axioms: 7
+      4 × group_set_axioms
+      1 × axiom_map_index_decreases_finite
+      1 × axiom_map_index_decreases_infinite
+      1 × tracked_map_keys
+   Machine math axioms: 6
+      1 × tracked_borrow
+      1 × tracked_empty
+      1 × tracked_insert
+      1 × tracked_remove
+      1 × tracked_remove_keys
+      1 × tracked_union_prefer_right
+✓ map_lib.rs
+   Set theoretic math axioms: 3
+      1 × group_map_axioms
+      1 × group_seq_axioms
+      1 × group_set_axioms
+⚠ modes.rs
+   Machine math axioms: 2
+      1 × tracked_static_ref
+      1 × tracked_swap
+⚠ multiset.rs
+   Numeric math axioms: 26
+      14 × group_multiset_axioms
+      1 × axiom_len_add
+      1 × axiom_len_sub
+      1 × axiom_multiset_add
+      1 × axiom_multiset_always_finite
+      1 × axiom_multiset_contained
+      1 × axiom_multiset_empty
+      1 × axiom_multiset_ext_equal
+      1 × axiom_multiset_ext_equal_deep
+      1 × axiom_multiset_new_not_contained
+      1 × axiom_multiset_singleton
+      1 × axiom_multiset_singleton_different
+      1 × axiom_multiset_sub
+   Set theoretic math axioms: 8
+      4 × group_map_axioms
+      4 × group_set_axioms
+   Machine math axioms: 5
+      1 × axiom_choose_count
+      1 × axiom_count_le_len
+      1 × axiom_filter_count
+      1 × axiom_len_empty
+      1 × axiom_len_singleton
+✓ multiset_lib.rs
+   Numeric math axioms: 1
+      1 × group_multiset_axioms
+⚠ pcm.rs
+   Set theoretic math axioms: 1
+      1 × group_set_axioms
+   Machine math axioms: 10
+      1 × alloc
+      1 × create_unit
+      1 × join
+      1 × join_shared
+      1 × split
+      1 × update_nondeterministic
+      1 × update_nondeterministic_with_shared
+      1 × validate
+      1 × validate_2
+      1 × weaken
+⚠ pervasive.rs
+   Machine math axioms: 1
+      1 × proof_from_false
+⚠ raw_ptr.rs
+   Numeric math axioms: 4
+      1 × into_raw
+      1 × into_typed
+      1 × is_disjoint
+      1 × points_to
+   Machine math axioms: 9
+      1 × axiom_ptr_mut_from_data
+      1 × empty
+      1 × is_aligned
+      1 × is_nonnull
+      1 × join
+      1 × leak_contents
+      1 × null
+      1 × ptrs_mut_eq
+      1 × split
+✓ relations.rs
+   Set theoretic math axioms: 1
+      1 × group_seq_axioms
+✓ seq.rs
+   Numeric math axioms: 7
+      2 × axiom_seq_subrange_index
+      2 × axiom_seq_subrange_len
+      1 × axiom_seq_add_index1
+      1 × axiom_seq_add_index2
+      1 × axiom_seq_add_len
+   Set theoretic math axioms: 16
+      3 × group_seq_axioms
+      1 × axiom_seq_empty
+      1 × axiom_seq_ext_equal
+      1 × axiom_seq_ext_equal_deep
+      1 × axiom_seq_index_decreases
+      1 × axiom_seq_len_decreases
+      1 × axiom_seq_new_index
+      1 × axiom_seq_new_len
+      1 × axiom_seq_push_index_different
+      1 × axiom_seq_push_index_same
+      1 × axiom_seq_push_len
+      1 × axiom_seq_update_different
+      1 × axiom_seq_update_len
+      1 × axiom_seq_update_same
+✓ seq_lib.rs
+   Numeric math axioms: 12
+      12 × group_multiset_axioms
+   Set theoretic math axioms: 11
+      9 × group_set_axioms
+      2 × group_seq_axioms
+✓ set.rs
+   Set theoretic math axioms: 11
+      5 × group_set_axioms_early
+      1 × axiom_mk_map_domain
+      1 × axiom_mk_map_index
+      1 × axiom_set_contains_len
+      1 × axiom_set_empty_len
+      1 × axiom_set_ext_equal
+      1 × axiom_set_insert_finite
+✓ set_lib.rs
+   Set theoretic math axioms: 10
+      10 × group_set_axioms
+⚠ simple_pptr.rs
+   Set theoretic math axioms: 1
+      1 × group_set_axioms
+   Machine math axioms: 1
+      1 × group_raw_ptr_axioms
+⚠ slice.rs
+   Machine math axioms: 3
+      1 × axiom_slice_ext_equal
+      1 × axiom_slice_get_usize
+      1 × axiom_spec_len
+⚠ std_specs/hash.rs
+   Machine math axioms: 3
+      3 × group_hash_axioms
+⚠ std_specs/vec.rs
+   Set theoretic math axioms: 3
+      3 × group_seq_axioms
+   Machine math axioms: 3
+      3 × axiom_spec_len
+⚠ storage_protocol.rs
+   Set theoretic math axioms: 2
+      1 × group_map_axioms
+      1 × group_set_axioms
+   Machine math axioms: 9
+      1 × alloc
+      1 × exchange_nondeterministic_with_shared
+      1 × guard
+      1 × join
+      1 × join_shared
+      1 × split
+      1 × validate
+      1 × validate_with_shared
+      1 × weaken
+⚠ string.rs
+   Machine math axioms: 3
+      1 × axiom_str_literal_get_char
+      1 × axiom_str_literal_is_ascii
+      1 × axiom_str_literal_len
+⚠ thread.rs
+   Numeric math axioms: 2
+      1 × into
+      1 × send_into
+   Machine math axioms: 4
+      1 × agrees
+      1 × borrow
+      1 × ghost_thread_id
+      1 × sync_borrow
+✓ tokens/frac.rs
+   Set theoretic math axioms: 2
+      1 × group_map_axioms
+      1 × group_set_axioms
+✓ tokens.rs
+   Set theoretic math axioms: 2
+      1 × group_map_axioms
+      1 × group_set_axioms
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Axiom Classification:
+   54 numeric math (26.1%)
+   85 set theoretic math (41.1%)
+   68 machine math (32.9%)
+   ─────────────────────
+   207 total axioms
+
+Completed in 52ms

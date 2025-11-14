@@ -112,6 +112,10 @@ name = "rusticate-review-variable-naming"
 path = "src/bin/review_variable_naming.rs"
 
 [[bin]]
+name = "rusticate-review-std-lib"
+path = "src/bin/review_std_lib.rs"
+
+[[bin]]
 name = "rusticate-review-APAS-struct-file-naming"
 path = "src/bin/review_APAS_struct_file_naming.rs"
 
@@ -319,6 +323,10 @@ path = "src/bin/count_where.rs"
 [[bin]]
 name = "rusticate-count-loc"
 path = "src/bin/count_loc.rs"
+
+[[bin]]
+name = "rusticate-count-for-loops"
+path = "src/bin/count_for_loops.rs"
 
 [[bin]]
 name = "rusticate-review-verus-proof-holes"

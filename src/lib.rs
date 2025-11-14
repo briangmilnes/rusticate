@@ -81,3 +81,9 @@ pub fn parse(file: &Path) -> Result<()> {
     Ok(())
 }
 
+/// Format elapsed time consistently across all tools
+/// Format: "Completed in X ms."
+pub fn format_elapsed(elapsed_ms: u128) -> String {
+    format!("Completed in {} ms.", elapsed_ms)
+}
+

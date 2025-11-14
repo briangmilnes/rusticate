@@ -72,3 +72,2011 @@ Holes Found: 0 total
 🎉 No proof holes found! All proofs are complete.
 
 Completed in 0ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+✓ Chap03/InsertionSortStEph.rs
+✓ Chap05/MappingStEph.rs
+✓ Chap05/RelationStEph.rs
+✓ Chap05/SetStEph.rs
+✓ Types.rs
+✓ experiments/ArrayVal.rs
+❌ experiments/ArrayVecSet.rs
+   Holes: 1 total
+      1 × assume()
+❌ experiments/ForFor.rs
+   Holes: 2 total
+      2 × assume()
+✓ experiments/ForLoops.rs
+❌ experiments/WhileWhile.rs
+   Holes: 1 total
+      1 × assume()
+✓ lib.rs
+✓ vstdplus/hash_set_with_view_plus.rs
+❌ vstdplus/partial_order.rs
+   Holes: 6 total
+      6 × admit()
+   Proof functions: 45 total (39 clean, 6 holed)
+✓ vstdplus/set.rs
+✓ vstdplus/set_with_view.rs
+✓ vstdplus/total_order.rs
+   52 clean proof functions
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   12 clean (no holes)
+   4 holed (contains holes)
+   16 total
+
+Proof Functions:
+   91 clean
+   6 holed
+   97 total
+
+Holes Found: 10 total
+   4 × assume()
+   6 × admit()
+
+Completed in 8ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+✓ arithmetic/div_mod.rs
+   76 clean proof functions
+✓ arithmetic/internals/div_internals.rs
+   6 clean proof functions
+✓ arithmetic/internals/div_internals_nonlinear.rs
+   3 clean proof functions
+✓ arithmetic/internals/general_internals.rs
+   3 clean proof functions
+✓ arithmetic/internals/mod.rs
+✓ arithmetic/internals/mod_internals.rs
+   12 clean proof functions
+✓ arithmetic/internals/mod_internals_nonlinear.rs
+   5 clean proof functions
+✓ arithmetic/internals/mul_internals.rs
+   8 clean proof functions
+✓ arithmetic/internals/mul_internals_nonlinear.rs
+   6 clean proof functions
+✓ arithmetic/logarithm.rs
+   5 clean proof functions
+✓ arithmetic/mod.rs
+✓ arithmetic/mul.rs
+   32 clean proof functions
+✓ arithmetic/overflow.rs
+✓ arithmetic/power.rs
+   20 clean proof functions
+✓ arithmetic/power2.rs
+   8 clean proof functions
+✓ array.rs
+   1 clean proof function
+✓ atomic.rs
+✓ atomic_ghost.rs
+✓ bits.rs
+   4 clean proof functions
+✓ build.rs
+✓ bytes.rs
+   5 clean proof functions
+✓ calc_macro.rs
+✓ cell.rs
+✓ compute.rs
+   1 clean proof function
+✓ contrib/exec_spec.rs
+✓ contrib/mod.rs
+✓ float.rs
+✓ function.rs
+✓ hash_map.rs
+✓ hash_set.rs
+❌ invariant.rs
+   Holes: 3 total
+      3 × external
+   Proof functions: 1 total (1 clean, 0 holed)
+✓ laws_cmp.rs
+   2 clean proof functions
+✓ laws_eq.rs
+   9 clean proof functions
+✓ layout.rs
+✓ logatom.rs
+   4 clean proof functions
+✓ map.rs
+   9 clean proof functions
+✓ map_lib.rs
+   25 clean proof functions
+✓ math.rs
+✓ modes.rs
+✓ multiset.rs
+   14 clean proof functions
+✓ multiset_lib.rs
+   3 clean proof functions
+✓ pcm.rs
+   8 clean proof functions
+❌ pcm_lib.rs
+   Holes: 1 total
+      1 × assume(false)
+   Proof functions: 15 total (14 clean, 1 holed)
+❌ pervasive.rs
+   Holes: 4 total
+      1 × assume()
+      1 × admit()
+      2 × external_body
+   Proof functions: 4 total (3 clean, 1 holed)
+✓ prelude.rs
+✓ proph.rs
+✓ raw_ptr.rs
+   1 clean proof function
+✓ relations.rs
+   1 clean proof function
+✓ rwlock.rs
+   1 clean proof function
+❌ seq.rs
+   Holes: 4 total
+      4 × external_body
+   Proof functions: 8 total (8 clean, 0 holed)
+✓ seq_lib.rs
+   141 clean proof functions
+❌ set.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 39 total (39 clean, 0 holed)
+❌ set_lib.rs
+   Holes: 1 total
+      1 × admit()
+   Proof functions: 53 total (52 clean, 1 holed)
+✓ shared.rs
+   3 clean proof functions
+✓ simple_pptr.rs
+   4 clean proof functions
+✓ slice.rs
+✓ state_machine_internal.rs
+✓ std_specs/alloc.rs
+❌ std_specs/atomic.rs
+   Holes: 1 total
+      1 × external_type_specification
+✓ std_specs/bits.rs
+   16 clean proof functions
+✓ std_specs/borrow.rs
+✓ std_specs/clone.rs
+✓ std_specs/cmp.rs
+❌ std_specs/control_flow.rs
+   Holes: 1 total
+      1 × admit()
+   Proof functions: 1 total (0 clean, 1 holed)
+❌ std_specs/core.rs
+   Holes: 3 total
+      2 × external_body
+      1 × external_type_specification
+❌ std_specs/hash.rs
+   Holes: 35 total
+      35 × admit()
+   Proof functions: 38 total (5 clean, 33 holed)
+✓ std_specs/mod.rs
+✓ std_specs/num.rs
+✓ std_specs/ops.rs
+✓ std_specs/option.rs
+   8 clean proof functions
+✓ std_specs/range.rs
+✓ std_specs/result.rs
+✓ std_specs/slice.rs
+✓ std_specs/smart_ptrs.rs
+✓ std_specs/vec.rs
+❌ std_specs/vecdeque.rs
+   Holes: 3 total
+      3 × admit()
+   Proof functions: 3 total (0 clean, 3 holed)
+✓ storage_protocol.rs
+   9 clean proof functions
+❌ string.rs
+   Holes: 1 total
+      1 × admit()
+   Proof functions: 1 total (0 clean, 1 holed)
+✓ thread.rs
+✓ tokens/frac.rs
+   31 clean proof functions
+✓ tokens/map.rs
+   20 clean proof functions
+✓ tokens/seq.rs
+   13 clean proof functions
+✓ tokens.rs
+✓ view.rs
+✓ vstd.rs
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   73 clean (no holes)
+   12 holed (contains holes)
+   85 total
+
+Proof Functions:
+   639 clean
+   41 holed
+   680 total
+
+Holes Found: 58 total
+   1 × assume(false)
+   1 × assume()
+   42 × admit()
+   8 × external_body
+   2 × external_type_specification
+   3 × external
+   1 × opaque
+
+Completed in 78ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+✓ arithmetic/div_mod.rs
+   76 clean proof functions
+✓ arithmetic/internals/div_internals.rs
+   6 clean proof functions
+✓ arithmetic/internals/div_internals_nonlinear.rs
+   3 clean proof functions
+✓ arithmetic/internals/general_internals.rs
+   3 clean proof functions
+✓ arithmetic/internals/mod.rs
+✓ arithmetic/internals/mod_internals.rs
+   12 clean proof functions
+✓ arithmetic/internals/mod_internals_nonlinear.rs
+   5 clean proof functions
+✓ arithmetic/internals/mul_internals.rs
+   8 clean proof functions
+✓ arithmetic/internals/mul_internals_nonlinear.rs
+   6 clean proof functions
+✓ arithmetic/logarithm.rs
+   5 clean proof functions
+✓ arithmetic/mod.rs
+✓ arithmetic/mul.rs
+   32 clean proof functions
+✓ arithmetic/overflow.rs
+✓ arithmetic/power.rs
+   20 clean proof functions
+✓ arithmetic/power2.rs
+   8 clean proof functions
+✓ array.rs
+   1 clean proof function
+✓ atomic.rs
+✓ atomic_ghost.rs
+✓ bits.rs
+   4 clean proof functions
+✓ build.rs
+✓ bytes.rs
+   5 clean proof functions
+✓ calc_macro.rs
+✓ cell.rs
+✓ compute.rs
+   1 clean proof function
+✓ contrib/exec_spec.rs
+✓ contrib/mod.rs
+✓ float.rs
+✓ function.rs
+✓ hash_map.rs
+✓ hash_set.rs
+❌ invariant.rs
+   Holes: 3 total
+      3 × external
+   Proof functions: 1 total (1 clean, 0 holed)
+✓ laws_cmp.rs
+   2 clean proof functions
+✓ laws_eq.rs
+   9 clean proof functions
+✓ layout.rs
+✓ logatom.rs
+   4 clean proof functions
+✓ map.rs
+   9 clean proof functions
+✓ map_lib.rs
+   25 clean proof functions
+✓ math.rs
+✓ modes.rs
+✓ multiset.rs
+   14 clean proof functions
+✓ multiset_lib.rs
+   3 clean proof functions
+✓ pcm.rs
+   8 clean proof functions
+❌ pcm_lib.rs
+   Holes: 1 total
+      1 × assume(false)
+   Proof functions: 15 total (14 clean, 1 holed)
+❌ pervasive.rs
+   Holes: 6 total
+      1 × assume()
+      1 × admit()
+      4 × external_body
+   Proof functions: 4 total (3 clean, 1 holed)
+✓ prelude.rs
+✓ proph.rs
+✓ raw_ptr.rs
+   1 clean proof function
+✓ relations.rs
+   1 clean proof function
+✓ rwlock.rs
+   1 clean proof function
+❌ seq.rs
+   Holes: 8 total
+      8 × external_body
+   Proof functions: 8 total (8 clean, 0 holed)
+✓ seq_lib.rs
+   141 clean proof functions
+❌ set.rs
+   Holes: 2 total
+      2 × opaque
+   Proof functions: 39 total (39 clean, 0 holed)
+❌ set_lib.rs
+   Holes: 1 total
+      1 × admit()
+   Proof functions: 53 total (52 clean, 1 holed)
+✓ shared.rs
+   3 clean proof functions
+✓ simple_pptr.rs
+   4 clean proof functions
+✓ slice.rs
+✓ state_machine_internal.rs
+✓ std_specs/alloc.rs
+❌ std_specs/atomic.rs
+   Holes: 1 total
+      1 × external_type_specification
+✓ std_specs/bits.rs
+   16 clean proof functions
+✓ std_specs/borrow.rs
+✓ std_specs/clone.rs
+✓ std_specs/cmp.rs
+❌ std_specs/control_flow.rs
+   Holes: 1 total
+      1 × admit()
+   Proof functions: 1 total (0 clean, 1 holed)
+❌ std_specs/core.rs
+   Holes: 3 total
+      2 × external_body
+      1 × external_type_specification
+❌ std_specs/hash.rs
+   Holes: 35 total
+      35 × admit()
+   Proof functions: 38 total (5 clean, 33 holed)
+✓ std_specs/mod.rs
+✓ std_specs/num.rs
+✓ std_specs/ops.rs
+✓ std_specs/option.rs
+   8 clean proof functions
+✓ std_specs/range.rs
+✓ std_specs/result.rs
+✓ std_specs/slice.rs
+✓ std_specs/smart_ptrs.rs
+✓ std_specs/vec.rs
+❌ std_specs/vecdeque.rs
+   Holes: 3 total
+      3 × admit()
+   Proof functions: 3 total (0 clean, 3 holed)
+✓ storage_protocol.rs
+   9 clean proof functions
+❌ string.rs
+   Holes: 1 total
+      1 × admit()
+   Proof functions: 1 total (0 clean, 1 holed)
+✓ thread.rs
+✓ tokens/frac.rs
+   31 clean proof functions
+✓ tokens/map.rs
+   20 clean proof functions
+✓ tokens/seq.rs
+   13 clean proof functions
+✓ tokens.rs
+✓ view.rs
+✓ vstd.rs
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   73 clean (no holes)
+   12 holed (contains holes)
+   85 total
+
+Proof Functions:
+   639 clean
+   41 holed
+   680 total
+
+Holes Found: 65 total
+   1 × assume(false)
+   1 × assume()
+   42 × admit()
+   14 × external_body
+   2 × external_type_specification
+   3 × external
+   2 × opaque
+
+Completed in 73ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+✓ arithmetic/div_mod.rs
+   76 clean proof functions
+✓ arithmetic/internals/div_internals.rs
+   6 clean proof functions
+✓ arithmetic/internals/div_internals_nonlinear.rs
+   3 clean proof functions
+✓ arithmetic/internals/general_internals.rs
+   3 clean proof functions
+✓ arithmetic/internals/mod.rs
+✓ arithmetic/internals/mod_internals.rs
+   12 clean proof functions
+✓ arithmetic/internals/mod_internals_nonlinear.rs
+   5 clean proof functions
+✓ arithmetic/internals/mul_internals.rs
+   8 clean proof functions
+✓ arithmetic/internals/mul_internals_nonlinear.rs
+   6 clean proof functions
+✓ arithmetic/logarithm.rs
+   5 clean proof functions
+✓ arithmetic/mod.rs
+✓ arithmetic/mul.rs
+   32 clean proof functions
+✓ arithmetic/overflow.rs
+✓ arithmetic/power.rs
+   20 clean proof functions
+✓ arithmetic/power2.rs
+   8 clean proof functions
+✓ array.rs
+   1 clean proof function
+✓ atomic.rs
+✓ atomic_ghost.rs
+✓ bits.rs
+   4 clean proof functions
+✓ build.rs
+✓ bytes.rs
+   5 clean proof functions
+✓ calc_macro.rs
+✓ cell.rs
+✓ compute.rs
+   1 clean proof function
+✓ contrib/exec_spec.rs
+✓ contrib/mod.rs
+✓ float.rs
+✓ function.rs
+✓ hash_map.rs
+✓ hash_set.rs
+❌ invariant.rs
+   Holes: 3 total
+      3 × external
+   Proof functions: 1 total (1 clean, 0 holed)
+✓ laws_cmp.rs
+   2 clean proof functions
+✓ laws_eq.rs
+   9 clean proof functions
+✓ layout.rs
+✓ logatom.rs
+   4 clean proof functions
+✓ map.rs
+   9 clean proof functions
+✓ map_lib.rs
+   25 clean proof functions
+✓ math.rs
+✓ modes.rs
+✓ multiset.rs
+   14 clean proof functions
+✓ multiset_lib.rs
+   3 clean proof functions
+✓ pcm.rs
+   8 clean proof functions
+❌ pcm_lib.rs
+   Holes: 1 total
+      1 × assume(false)
+   Proof functions: 15 total (14 clean, 1 holed)
+❌ pervasive.rs
+   Holes: 6 total
+      1 × assume()
+      1 × admit()
+      4 × external_body
+   Proof functions: 4 total (3 clean, 1 holed)
+✓ prelude.rs
+✓ proph.rs
+✓ raw_ptr.rs
+   1 clean proof function
+✓ relations.rs
+   1 clean proof function
+✓ rwlock.rs
+   1 clean proof function
+❌ seq.rs
+   Holes: 8 total
+      8 × external_body
+   Proof functions: 8 total (8 clean, 0 holed)
+✓ seq_lib.rs
+   141 clean proof functions
+❌ set.rs
+   Holes: 2 total
+      2 × opaque
+   Proof functions: 39 total (39 clean, 0 holed)
+❌ set_lib.rs
+   Holes: 1 total
+      1 × admit()
+   Proof functions: 53 total (52 clean, 1 holed)
+✓ shared.rs
+   3 clean proof functions
+✓ simple_pptr.rs
+   4 clean proof functions
+✓ slice.rs
+✓ state_machine_internal.rs
+✓ std_specs/alloc.rs
+❌ std_specs/atomic.rs
+   Holes: 1 total
+      1 × external_type_specification
+✓ std_specs/bits.rs
+   16 clean proof functions
+✓ std_specs/borrow.rs
+✓ std_specs/clone.rs
+✓ std_specs/cmp.rs
+❌ std_specs/control_flow.rs
+   Holes: 1 total
+      1 × admit()
+   Proof functions: 1 total (0 clean, 1 holed)
+❌ std_specs/core.rs
+   Holes: 4 total
+      3 × external_body
+      1 × external_type_specification
+❌ std_specs/hash.rs
+   Holes: 35 total
+      35 × admit()
+   Proof functions: 38 total (5 clean, 33 holed)
+✓ std_specs/mod.rs
+✓ std_specs/num.rs
+✓ std_specs/ops.rs
+✓ std_specs/option.rs
+   8 clean proof functions
+✓ std_specs/range.rs
+✓ std_specs/result.rs
+❌ std_specs/slice.rs
+   Holes: 1 total
+      1 × admit()
+   Proof functions: 1 total (0 clean, 1 holed)
+✓ std_specs/smart_ptrs.rs
+❌ std_specs/vec.rs
+   Holes: 3 total
+      3 × admit()
+   Proof functions: 7 total (4 clean, 3 holed)
+❌ std_specs/vecdeque.rs
+   Holes: 3 total
+      3 × admit()
+   Proof functions: 3 total (0 clean, 3 holed)
+✓ storage_protocol.rs
+   9 clean proof functions
+❌ string.rs
+   Holes: 1 total
+      1 × admit()
+   Proof functions: 1 total (0 clean, 1 holed)
+✓ thread.rs
+✓ tokens/frac.rs
+   31 clean proof functions
+✓ tokens/map.rs
+   20 clean proof functions
+✓ tokens/seq.rs
+   13 clean proof functions
+❌ tokens.rs
+   Holes: 4 total
+      4 × assume(false)
+   Proof functions: 33 total (29 clean, 4 holed)
+✓ view.rs
+✓ vstd.rs
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   70 clean (no holes)
+   15 holed (contains holes)
+   85 total
+
+Proof Functions:
+   672 clean
+   49 holed
+   721 total
+
+Holes Found: 74 total
+   5 × assume(false)
+   1 × assume()
+   46 × admit()
+   15 × external_body
+   2 × external_type_specification
+   3 × external
+   2 × opaque
+
+Completed in 75ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+❌ core.rs
+   Holes: 4 total
+      3 × external_body
+      1 × external_type_specification
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   0 clean (no holes)
+   1 holed (contains holes)
+   1 total
+
+Proof Functions:
+   0 clean
+   0 holed
+   0 total
+
+Holes Found: 4 total
+   3 × external_body
+   1 × external_type_specification
+
+Completed in 1ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+❌ core.rs
+   Holes: 4 total
+      3 × external_body
+      1 × external_type_specification
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   0 clean (no holes)
+   1 holed (contains holes)
+   1 total
+
+Proof Functions:
+   0 clean
+   0 holed
+   0 total
+
+Holes Found: 4 total
+   3 × external_body
+   1 × external_type_specification
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+❌ core.rs
+   Holes: 4 total
+      3 × external_body
+      1 × external_type_specification
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   0 clean (no holes)
+   1 holed (contains holes)
+   1 total
+
+Proof Functions:
+   0 clean
+   0 holed
+   0 total
+
+Holes Found: 4 total
+   3 × external_body
+   1 × external_type_specification
+
+Completed in 1ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+❌ core.rs
+   Holes: 56 total
+      7 × external_body
+      36 × external_trait_specification
+      13 × external_type_specification
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   0 clean (no holes)
+   1 holed (contains holes)
+   1 total
+
+Proof Functions:
+   0 clean
+   0 holed
+   0 total
+
+Holes Found: 56 total
+   7 × external_body
+   36 × external_trait_specification
+   13 × external_type_specification
+
+Completed in 0ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+❌ core.rs
+   Holes: 27 total
+      3 × external_body
+      18 × external_trait_specification
+      6 × external_type_specification
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   0 clean (no holes)
+   1 holed (contains holes)
+   1 total
+
+Proof Functions:
+   0 clean
+   0 holed
+   0 total
+
+Holes Found: 27 total
+   3 × external_body
+   18 × external_trait_specification
+   6 × external_type_specification
+
+Completed in 1ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+✓ Chap03/InsertionSortStEph.rs
+✓ Chap05/MappingStEph.rs
+❌ Chap05/RelationStEph.rs
+   Holes: 4 total
+      4 × external_body
+❌ Chap05/SetStEph.rs
+   Holes: 5 total
+      5 × external_body
+✓ Types.rs
+✓ experiments/ArrayVal.rs
+❌ experiments/ArrayVecSet.rs
+   Holes: 1 total
+      1 × assume()
+❌ experiments/ForFor.rs
+   Holes: 2 total
+      2 × assume()
+✓ experiments/ForLoops.rs
+❌ experiments/WhileWhile.rs
+   Holes: 1 total
+      1 × assume()
+✓ lib.rs
+❌ vstdplus/hash_set_with_view_plus.rs
+   Holes: 25 total
+      25 × external_body
+❌ vstdplus/partial_order.rs
+   Holes: 8 total
+      6 × admit()
+      2 × external_body
+   Proof functions: 45 total (39 clean, 6 holed)
+✓ vstdplus/set.rs
+✓ vstdplus/set_with_view.rs
+✓ vstdplus/total_order.rs
+   52 clean proof functions
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   9 clean (no holes)
+   7 holed (contains holes)
+   16 total
+
+Proof Functions:
+   91 clean
+   6 holed
+   97 total
+
+Holes Found: 46 total
+   4 × assume()
+   6 × admit()
+   36 × external_body
+
+Completed in 5ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+✓ arithmetic/div_mod.rs
+   76 clean proof functions
+❌ arithmetic/internals/div_internals.rs
+   Holes: 2 total
+      2 × opaque
+   Proof functions: 6 total (6 clean, 0 holed)
+✓ arithmetic/internals/div_internals_nonlinear.rs
+   3 clean proof functions
+✓ arithmetic/internals/general_internals.rs
+   3 clean proof functions
+✓ arithmetic/internals/mod.rs
+❌ arithmetic/internals/mod_internals.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 12 total (12 clean, 0 holed)
+✓ arithmetic/internals/mod_internals_nonlinear.rs
+   5 clean proof functions
+❌ arithmetic/internals/mul_internals.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 8 total (8 clean, 0 holed)
+✓ arithmetic/internals/mul_internals_nonlinear.rs
+   6 clean proof functions
+❌ arithmetic/logarithm.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 5 total (5 clean, 0 holed)
+✓ arithmetic/mod.rs
+✓ arithmetic/mul.rs
+   32 clean proof functions
+✓ arithmetic/overflow.rs
+❌ arithmetic/power.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 20 total (20 clean, 0 holed)
+❌ arithmetic/power2.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 8 total (8 clean, 0 holed)
+❌ array.rs
+   Holes: 5 total
+      4 × external_body
+      1 × external
+   Proof functions: 1 total (1 clean, 0 holed)
+❌ atomic.rs
+   Holes: 3 total
+      3 × external_body
+✓ atomic_ghost.rs
+✓ bits.rs
+   4 clean proof functions
+✓ build.rs
+❌ bytes.rs
+   Holes: 8 total
+      8 × external_body
+   Proof functions: 5 total (5 clean, 0 holed)
+✓ calc_macro.rs
+❌ cell.rs
+   Holes: 12 total
+      10 × external_body
+      2 × external
+✓ compute.rs
+   1 clean proof function
+❌ contrib/exec_spec.rs
+   Holes: 9 total
+      9 × external_body
+✓ contrib/mod.rs
+✓ float.rs
+❌ function.rs
+   Holes: 14 total
+      4 × external_body
+      6 × external_trait_specification
+      4 × external_type_specification
+❌ hash_map.rs
+   Holes: 22 total
+      22 × external_body
+❌ hash_set.rs
+   Holes: 20 total
+      20 × external_body
+❌ invariant.rs
+   Holes: 2 total
+      2 × external_body
+   Proof functions: 1 total (1 clean, 0 holed)
+❌ laws_cmp.rs
+   Holes: 3 total
+      3 × opaque
+   Proof functions: 2 total (2 clean, 0 holed)
+❌ laws_eq.rs
+   Holes: 4 total
+      4 × opaque
+   Proof functions: 9 total (9 clean, 0 holed)
+❌ layout.rs
+   Holes: 1 total
+      1 × external_body
+✓ logatom.rs
+   4 clean proof functions
+✓ map.rs
+   9 clean proof functions
+✓ map_lib.rs
+   25 clean proof functions
+✓ math.rs
+✓ modes.rs
+❌ multiset.rs
+   Holes: 1 total
+      1 × external_body
+   Proof functions: 14 total (14 clean, 0 holed)
+✓ multiset_lib.rs
+   3 clean proof functions
+❌ pcm.rs
+   Holes: 1 total
+      1 × external_body
+   Proof functions: 8 total (8 clean, 0 holed)
+❌ pcm_lib.rs
+   Holes: 1 total
+      1 × assume(false)
+   Proof functions: 15 total (14 clean, 1 holed)
+❌ pervasive.rs
+   Holes: 13 total
+      1 × assume()
+      1 × admit()
+      10 × external_body
+      1 × external
+   Proof functions: 4 total (3 clean, 1 holed)
+✓ prelude.rs
+❌ proph.rs
+   Holes: 1 total
+      1 × external_body
+❌ raw_ptr.rs
+   Holes: 22 total
+      22 × external_body
+   Proof functions: 1 total (1 clean, 0 holed)
+✓ relations.rs
+   1 clean proof function
+✓ rwlock.rs
+   1 clean proof function
+❌ seq.rs
+   Holes: 5 total
+      5 × external_body
+   Proof functions: 8 total (8 clean, 0 holed)
+❌ seq_lib.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 141 total (141 clean, 0 holed)
+❌ set.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 39 total (39 clean, 0 holed)
+❌ set_lib.rs
+   Holes: 1 total
+      1 × admit()
+   Proof functions: 53 total (52 clean, 1 holed)
+✓ shared.rs
+   3 clean proof functions
+✓ simple_pptr.rs
+   4 clean proof functions
+❌ slice.rs
+   Holes: 6 total
+      4 × external_body
+      1 × external_trait_specification
+      1 × external
+✓ state_machine_internal.rs
+❌ std_specs/alloc.rs
+   Holes: 2 total
+      1 × external_body
+      1 × external_type_specification
+❌ std_specs/atomic.rs
+   Holes: 3 total
+      1 × external_body
+      2 × external_type_specification
+❌ std_specs/bits.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 16 total (16 clean, 0 holed)
+❌ std_specs/borrow.rs
+   Holes: 2 total
+      1 × external_trait_specification
+      1 × external_type_specification
+❌ std_specs/clone.rs
+   Holes: 1 total
+      1 × external_trait_specification
+❌ std_specs/cmp.rs
+   Holes: 7 total
+      4 × external_trait_specification
+      3 × external_trait_extension
+❌ std_specs/control_flow.rs
+   Holes: 4 total
+      1 × admit()
+      1 × external_body
+      2 × external_type_specification
+   Proof functions: 1 total (0 clean, 1 holed)
+❌ std_specs/core.rs
+   Holes: 27 total
+      3 × external_body
+      18 × external_trait_specification
+      6 × external_type_specification
+❌ std_specs/hash.rs
+   Holes: 58 total
+      35 × admit()
+      12 × external_body
+      2 × external_trait_specification
+      8 × external_type_specification
+      1 × opaque
+   Proof functions: 38 total (5 clean, 33 holed)
+✓ std_specs/mod.rs
+✓ std_specs/num.rs
+✓ std_specs/ops.rs
+✓ std_specs/option.rs
+   8 clean proof functions
+❌ std_specs/range.rs
+   Holes: 1 total
+      1 × external_type_specification
+✓ std_specs/result.rs
+❌ std_specs/slice.rs
+   Holes: 3 total
+      1 × admit()
+      1 × external_body
+      1 × external_type_specification
+   Proof functions: 1 total (0 clean, 1 holed)
+✓ std_specs/smart_ptrs.rs
+❌ std_specs/vec.rs
+   Holes: 8 total
+      3 × admit()
+      3 × external_body
+      2 × external_type_specification
+   Proof functions: 7 total (4 clean, 3 holed)
+❌ std_specs/vecdeque.rs
+   Holes: 7 total
+      3 × admit()
+      2 × external_body
+      2 × external_type_specification
+   Proof functions: 3 total (0 clean, 3 holed)
+❌ storage_protocol.rs
+   Holes: 1 total
+      1 × external_body
+   Proof functions: 9 total (9 clean, 0 holed)
+❌ string.rs
+   Holes: 18 total
+      1 × admit()
+      11 × external_body
+      2 × external_type_specification
+      4 × external
+   Proof functions: 1 total (0 clean, 1 holed)
+❌ thread.rs
+   Holes: 11 total
+      8 × external_body
+      3 × external
+✓ tokens/frac.rs
+   31 clean proof functions
+✓ tokens/map.rs
+   20 clean proof functions
+✓ tokens/seq.rs
+   13 clean proof functions
+❌ tokens.rs
+   Holes: 4 total
+      4 × assume(false)
+   Proof functions: 33 total (29 clean, 4 holed)
+✓ view.rs
+✓ vstd.rs
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   39 clean (no holes)
+   46 holed (contains holes)
+   85 total
+
+Proof Functions:
+   672 clean
+   49 holed
+   721 total
+
+Holes Found: 321 total
+   5 × assume(false)
+   1 × assume()
+   46 × admit()
+   171 × external_body
+   33 × external_trait_specification
+   32 × external_type_specification
+   3 × external_trait_extension
+   12 × external
+   18 × opaque
+
+Completed in 72ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - axiom fn (trusted axioms)
+  - broadcast use axioms (axiom groups and functions)
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+✓ arithmetic/div_mod.rs
+   76 clean proof functions
+❌ arithmetic/internals/div_internals.rs
+   Holes: 2 total
+      2 × opaque
+   Proof functions: 6 total (6 clean, 0 holed)
+✓ arithmetic/internals/div_internals_nonlinear.rs
+   3 clean proof functions
+✓ arithmetic/internals/general_internals.rs
+   3 clean proof functions
+✓ arithmetic/internals/mod.rs
+❌ arithmetic/internals/mod_internals.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 12 total (12 clean, 0 holed)
+✓ arithmetic/internals/mod_internals_nonlinear.rs
+   5 clean proof functions
+❌ arithmetic/internals/mul_internals.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 8 total (8 clean, 0 holed)
+✓ arithmetic/internals/mul_internals_nonlinear.rs
+   6 clean proof functions
+❌ arithmetic/logarithm.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 5 total (5 clean, 0 holed)
+✓ arithmetic/mod.rs
+✓ arithmetic/mul.rs
+   32 clean proof functions
+✓ arithmetic/overflow.rs
+❌ arithmetic/power.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 20 total (20 clean, 0 holed)
+❌ arithmetic/power2.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 8 total (8 clean, 0 holed)
+❌ array.rs
+   Holes: 5 total
+      4 × external_body
+      1 × external
+   Proof functions: 1 total (1 clean, 0 holed)
+❌ atomic.rs
+   Holes: 3 total
+      3 × external_body
+✓ atomic_ghost.rs
+✓ bits.rs
+   4 clean proof functions
+✓ build.rs
+❌ bytes.rs
+   Holes: 8 total
+      8 × external_body
+   Proof functions: 5 total (5 clean, 0 holed)
+✓ calc_macro.rs
+❌ cell.rs
+   Holes: 12 total
+      10 × external_body
+      2 × external
+✓ compute.rs
+   1 clean proof function
+❌ contrib/exec_spec.rs
+   Holes: 9 total
+      9 × external_body
+✓ contrib/mod.rs
+✓ float.rs
+❌ function.rs
+   Holes: 14 total
+      4 × external_body
+      6 × external_trait_specification
+      4 × external_type_specification
+❌ hash_map.rs
+   Holes: 22 total
+      22 × external_body
+❌ hash_set.rs
+   Holes: 20 total
+      20 × external_body
+❌ invariant.rs
+   Holes: 2 total
+      2 × external_body
+   Proof functions: 1 total (1 clean, 0 holed)
+❌ laws_cmp.rs
+   Holes: 3 total
+      3 × opaque
+   Proof functions: 2 total (2 clean, 0 holed)
+❌ laws_eq.rs
+   Holes: 4 total
+      4 × opaque
+   Proof functions: 9 total (9 clean, 0 holed)
+❌ layout.rs
+   Holes: 1 total
+      1 × external_body
+✓ logatom.rs
+   4 clean proof functions
+✓ map.rs
+   9 clean proof functions
+✓ map_lib.rs
+   25 clean proof functions
+✓ math.rs
+✓ modes.rs
+❌ multiset.rs
+   Holes: 1 total
+      1 × external_body
+   Proof functions: 14 total (14 clean, 0 holed)
+✓ multiset_lib.rs
+   3 clean proof functions
+❌ pcm.rs
+   Holes: 1 total
+      1 × external_body
+   Proof functions: 8 total (8 clean, 0 holed)
+❌ pcm_lib.rs
+   Holes: 1 total
+      1 × assume(false)
+   Proof functions: 15 total (14 clean, 1 holed)
+❌ pervasive.rs
+   Holes: 13 total
+      1 × assume()
+      1 × admit()
+      10 × external_body
+      1 × external
+   Proof functions: 4 total (3 clean, 1 holed)
+✓ prelude.rs
+❌ proph.rs
+   Holes: 1 total
+      1 × external_body
+❌ raw_ptr.rs
+   Holes: 22 total
+      22 × external_body
+   Proof functions: 1 total (1 clean, 0 holed)
+✓ relations.rs
+   1 clean proof function
+✓ rwlock.rs
+   1 clean proof function
+❌ seq.rs
+   Holes: 5 total
+      5 × external_body
+   Proof functions: 8 total (8 clean, 0 holed)
+❌ seq_lib.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 141 total (141 clean, 0 holed)
+❌ set.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 39 total (39 clean, 0 holed)
+❌ set_lib.rs
+   Holes: 1 total
+      1 × admit()
+   Proof functions: 53 total (52 clean, 1 holed)
+✓ shared.rs
+   3 clean proof functions
+✓ simple_pptr.rs
+   4 clean proof functions
+❌ slice.rs
+   Holes: 6 total
+      4 × external_body
+      1 × external_trait_specification
+      1 × external
+✓ state_machine_internal.rs
+❌ std_specs/alloc.rs
+   Holes: 2 total
+      1 × external_body
+      1 × external_type_specification
+❌ std_specs/atomic.rs
+   Holes: 3 total
+      1 × external_body
+      2 × external_type_specification
+❌ std_specs/bits.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 16 total (16 clean, 0 holed)
+❌ std_specs/borrow.rs
+   Holes: 2 total
+      1 × external_trait_specification
+      1 × external_type_specification
+❌ std_specs/clone.rs
+   Holes: 1 total
+      1 × external_trait_specification
+❌ std_specs/cmp.rs
+   Holes: 7 total
+      4 × external_trait_specification
+      3 × external_trait_extension
+❌ std_specs/control_flow.rs
+   Holes: 4 total
+      1 × admit()
+      1 × external_body
+      2 × external_type_specification
+   Proof functions: 1 total (0 clean, 1 holed)
+❌ std_specs/core.rs
+   Holes: 27 total
+      3 × external_body
+      18 × external_trait_specification
+      6 × external_type_specification
+❌ std_specs/hash.rs
+   Holes: 58 total
+      35 × admit()
+      12 × external_body
+      2 × external_trait_specification
+      8 × external_type_specification
+      1 × opaque
+   Proof functions: 38 total (5 clean, 33 holed)
+✓ std_specs/mod.rs
+✓ std_specs/num.rs
+✓ std_specs/ops.rs
+✓ std_specs/option.rs
+   8 clean proof functions
+❌ std_specs/range.rs
+   Holes: 1 total
+      1 × external_type_specification
+✓ std_specs/result.rs
+❌ std_specs/slice.rs
+   Holes: 3 total
+      1 × admit()
+      1 × external_body
+      1 × external_type_specification
+   Proof functions: 1 total (0 clean, 1 holed)
+✓ std_specs/smart_ptrs.rs
+❌ std_specs/vec.rs
+   Holes: 8 total
+      3 × admit()
+      3 × external_body
+      2 × external_type_specification
+   Proof functions: 7 total (4 clean, 3 holed)
+❌ std_specs/vecdeque.rs
+   Holes: 7 total
+      3 × admit()
+      2 × external_body
+      2 × external_type_specification
+   Proof functions: 3 total (0 clean, 3 holed)
+❌ storage_protocol.rs
+   Holes: 1 total
+      1 × external_body
+   Proof functions: 9 total (9 clean, 0 holed)
+❌ string.rs
+   Holes: 18 total
+      1 × admit()
+      11 × external_body
+      2 × external_type_specification
+      4 × external
+   Proof functions: 1 total (0 clean, 1 holed)
+❌ thread.rs
+   Holes: 11 total
+      8 × external_body
+      3 × external
+✓ tokens/frac.rs
+   31 clean proof functions
+✓ tokens/map.rs
+   20 clean proof functions
+✓ tokens/seq.rs
+   13 clean proof functions
+❌ tokens.rs
+   Holes: 4 total
+      4 × assume(false)
+   Proof functions: 33 total (29 clean, 4 holed)
+✓ view.rs
+✓ vstd.rs
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   39 clean (no holes)
+   46 holed (contains holes)
+   85 total
+
+Proof Functions:
+   672 clean
+   49 holed
+   721 total
+
+Holes Found: 321 total
+   5 × assume(false)
+   1 × assume()
+   46 × admit()
+   171 × external_body
+   33 × external_trait_specification
+   32 × external_type_specification
+   3 × external_trait_extension
+   12 × external
+   18 × opaque
+
+Trusted Axioms: 108 total
+   108 × axiom fn declarations
+
+Completed in 84ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - axiom fn (trusted axioms)
+  - broadcast use axioms (axiom groups and functions)
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+✓ Chap03/InsertionSortStEph.rs
+✓ Chap05/MappingStEph.rs
+❌ Chap05/RelationStEph.rs
+   Holes: 4 total
+      4 × external_body
+❌ Chap05/SetStEph.rs
+   Holes: 5 total
+      5 × external_body
+✓ Types.rs
+✓ experiments/ArrayVal.rs
+❌ experiments/ArrayVecSet.rs
+   Holes: 1 total
+      1 × assume()
+❌ experiments/ForFor.rs
+   Holes: 2 total
+      2 × assume()
+✓ experiments/ForLoops.rs
+❌ experiments/WhileWhile.rs
+   Holes: 1 total
+      1 × assume()
+✓ lib.rs
+❌ vstdplus/hash_set_with_view_plus.rs
+   Holes: 25 total
+      25 × external_body
+❌ vstdplus/partial_order.rs
+   Holes: 8 total
+      6 × admit()
+      2 × external_body
+   Proof functions: 45 total (39 clean, 6 holed)
+✓ vstdplus/set.rs
+✓ vstdplus/set_with_view.rs
+✓ vstdplus/total_order.rs
+   52 clean proof functions
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   9 clean (no holes)
+   7 holed (contains holes)
+   16 total
+
+Proof Functions:
+   91 clean
+   6 holed
+   97 total
+
+Holes Found: 46 total
+   4 × assume()
+   6 × admit()
+   36 × external_body
+
+Trusted Axioms: 2 total
+   2 × axiom fn declarations
+
+Completed in 8ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - axiom fn (trusted axioms)
+  - broadcast use axioms (axiom groups and functions)
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+❌ SetStEph.rs
+   Holes: 5 total
+      5 × external_body
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   0 clean (no holes)
+   1 holed (contains holes)
+   1 total
+
+Proof Functions:
+   0 clean
+   0 holed
+   0 total
+
+Holes Found: 5 total
+   5 × external_body
+
+Completed in 0ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - axiom fn (trusted axioms)
+  - broadcast use axioms (axiom groups and functions)
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+❌ SetStEph.rs
+   Holes: 5 total
+      5 × external_body
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   0 clean (no holes)
+   1 holed (contains holes)
+   1 total
+
+Proof Functions:
+   0 clean
+   0 holed
+   0 total
+
+Holes Found: 5 total
+   5 × external_body
+
+Completed in 0ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - axiom fn (trusted axioms)
+  - broadcast use axioms (axiom groups and functions)
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+❌ SetStEph.rs
+   Holes: 5 total
+      5 × external_body
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   0 clean (no holes)
+   1 holed (contains holes)
+   1 total
+
+Proof Functions:
+   0 clean
+   0 holed
+   0 total
+
+Holes Found: 5 total
+   5 × external_body
+
+Completed in 0ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - axiom fn (trusted axioms)
+  - broadcast use axioms (axiom groups and functions)
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+❌ SetStEph.rs
+   Holes: 5 total
+      5 × external_body
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   0 clean (no holes)
+   1 holed (contains holes)
+   1 total
+
+Proof Functions:
+   0 clean
+   0 holed
+   0 total
+
+Holes Found: 5 total
+   5 × external_body
+
+Trusted Axioms: 1 total
+   1 × broadcast use axioms
+
+Completed in 0ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - axiom fn (trusted axioms)
+  - broadcast use axioms (axiom groups and functions)
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+✓ Chap03/InsertionSortStEph.rs
+✓ Chap05/MappingStEph.rs
+❌ Chap05/RelationStEph.rs
+   Holes: 4 total
+      4 × external_body
+❌ Chap05/SetStEph.rs
+   Holes: 5 total
+      5 × external_body
+✓ Types.rs
+✓ experiments/ArrayVal.rs
+❌ experiments/ArrayVecSet.rs
+   Holes: 1 total
+      1 × assume()
+❌ experiments/ForFor.rs
+   Holes: 2 total
+      2 × assume()
+✓ experiments/ForLoops.rs
+❌ experiments/WhileWhile.rs
+   Holes: 1 total
+      1 × assume()
+✓ lib.rs
+❌ vstdplus/hash_set_with_view_plus.rs
+   Holes: 25 total
+      25 × external_body
+❌ vstdplus/partial_order.rs
+   Holes: 8 total
+      6 × admit()
+      2 × external_body
+   Proof functions: 45 total (39 clean, 6 holed)
+✓ vstdplus/set.rs
+✓ vstdplus/set_with_view.rs
+✓ vstdplus/total_order.rs
+   52 clean proof functions
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   9 clean (no holes)
+   7 holed (contains holes)
+   16 total
+
+Proof Functions:
+   91 clean
+   6 holed
+   97 total
+
+Holes Found: 46 total
+   4 × assume()
+   6 × admit()
+   36 × external_body
+
+Trusted Axioms: 3 total
+   2 × axiom fn declarations
+   1 × broadcast use axioms
+
+Completed in 4ms
+Verus Proof Hole Detection
+Looking for:
+  - assume(false), assume(), admit()
+  - axiom fn (trusted axioms)
+  - broadcast use axioms (axiom groups and functions)
+  - external_body, external_fn_specification, external_trait_specification
+  - external_type_specification, external_trait_extension, external
+  - opaque
+
+✓ arithmetic/div_mod.rs
+   76 clean proof functions
+❌ arithmetic/internals/div_internals.rs
+   Holes: 2 total
+      2 × opaque
+   Proof functions: 6 total (6 clean, 0 holed)
+✓ arithmetic/internals/div_internals_nonlinear.rs
+   3 clean proof functions
+✓ arithmetic/internals/general_internals.rs
+   3 clean proof functions
+✓ arithmetic/internals/mod.rs
+❌ arithmetic/internals/mod_internals.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 12 total (12 clean, 0 holed)
+✓ arithmetic/internals/mod_internals_nonlinear.rs
+   5 clean proof functions
+❌ arithmetic/internals/mul_internals.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 8 total (8 clean, 0 holed)
+✓ arithmetic/internals/mul_internals_nonlinear.rs
+   6 clean proof functions
+❌ arithmetic/logarithm.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 5 total (5 clean, 0 holed)
+✓ arithmetic/mod.rs
+✓ arithmetic/mul.rs
+   32 clean proof functions
+✓ arithmetic/overflow.rs
+❌ arithmetic/power.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 20 total (20 clean, 0 holed)
+❌ arithmetic/power2.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 8 total (8 clean, 0 holed)
+❌ array.rs
+   Holes: 5 total
+      4 × external_body
+      1 × external
+   Proof functions: 1 total (1 clean, 0 holed)
+❌ atomic.rs
+   Holes: 3 total
+      3 × external_body
+✓ atomic_ghost.rs
+✓ bits.rs
+   4 clean proof functions
+✓ build.rs
+❌ bytes.rs
+   Holes: 8 total
+      8 × external_body
+   Proof functions: 5 total (5 clean, 0 holed)
+✓ calc_macro.rs
+❌ cell.rs
+   Holes: 12 total
+      10 × external_body
+      2 × external
+✓ compute.rs
+   1 clean proof function
+❌ contrib/exec_spec.rs
+   Holes: 9 total
+      9 × external_body
+✓ contrib/mod.rs
+✓ float.rs
+❌ function.rs
+   Holes: 14 total
+      4 × external_body
+      6 × external_trait_specification
+      4 × external_type_specification
+❌ hash_map.rs
+   Holes: 22 total
+      22 × external_body
+❌ hash_set.rs
+   Holes: 20 total
+      20 × external_body
+❌ invariant.rs
+   Holes: 2 total
+      2 × external_body
+   Proof functions: 1 total (1 clean, 0 holed)
+❌ laws_cmp.rs
+   Holes: 3 total
+      3 × opaque
+   Proof functions: 2 total (2 clean, 0 holed)
+❌ laws_eq.rs
+   Holes: 4 total
+      4 × opaque
+   Proof functions: 9 total (9 clean, 0 holed)
+❌ layout.rs
+   Holes: 1 total
+      1 × external_body
+✓ logatom.rs
+   4 clean proof functions
+✓ map.rs
+   9 clean proof functions
+✓ map_lib.rs
+   25 clean proof functions
+✓ math.rs
+✓ modes.rs
+❌ multiset.rs
+   Holes: 1 total
+      1 × external_body
+   Proof functions: 14 total (14 clean, 0 holed)
+✓ multiset_lib.rs
+   3 clean proof functions
+❌ pcm.rs
+   Holes: 1 total
+      1 × external_body
+   Proof functions: 8 total (8 clean, 0 holed)
+❌ pcm_lib.rs
+   Holes: 1 total
+      1 × assume(false)
+   Proof functions: 15 total (14 clean, 1 holed)
+❌ pervasive.rs
+   Holes: 13 total
+      1 × assume()
+      1 × admit()
+      10 × external_body
+      1 × external
+   Proof functions: 4 total (3 clean, 1 holed)
+✓ prelude.rs
+❌ proph.rs
+   Holes: 1 total
+      1 × external_body
+❌ raw_ptr.rs
+   Holes: 22 total
+      22 × external_body
+   Proof functions: 1 total (1 clean, 0 holed)
+✓ relations.rs
+   1 clean proof function
+✓ rwlock.rs
+   1 clean proof function
+❌ seq.rs
+   Holes: 5 total
+      5 × external_body
+   Proof functions: 8 total (8 clean, 0 holed)
+❌ seq_lib.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 141 total (141 clean, 0 holed)
+❌ set.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 39 total (39 clean, 0 holed)
+❌ set_lib.rs
+   Holes: 1 total
+      1 × admit()
+   Proof functions: 53 total (52 clean, 1 holed)
+✓ shared.rs
+   3 clean proof functions
+✓ simple_pptr.rs
+   4 clean proof functions
+❌ slice.rs
+   Holes: 6 total
+      4 × external_body
+      1 × external_trait_specification
+      1 × external
+✓ state_machine_internal.rs
+❌ std_specs/alloc.rs
+   Holes: 2 total
+      1 × external_body
+      1 × external_type_specification
+❌ std_specs/atomic.rs
+   Holes: 3 total
+      1 × external_body
+      2 × external_type_specification
+❌ std_specs/bits.rs
+   Holes: 1 total
+      1 × opaque
+   Proof functions: 16 total (16 clean, 0 holed)
+❌ std_specs/borrow.rs
+   Holes: 2 total
+      1 × external_trait_specification
+      1 × external_type_specification
+❌ std_specs/clone.rs
+   Holes: 1 total
+      1 × external_trait_specification
+❌ std_specs/cmp.rs
+   Holes: 7 total
+      4 × external_trait_specification
+      3 × external_trait_extension
+❌ std_specs/control_flow.rs
+   Holes: 4 total
+      1 × admit()
+      1 × external_body
+      2 × external_type_specification
+   Proof functions: 1 total (0 clean, 1 holed)
+❌ std_specs/core.rs
+   Holes: 27 total
+      3 × external_body
+      18 × external_trait_specification
+      6 × external_type_specification
+❌ std_specs/hash.rs
+   Holes: 58 total
+      35 × admit()
+      12 × external_body
+      2 × external_trait_specification
+      8 × external_type_specification
+      1 × opaque
+   Proof functions: 38 total (5 clean, 33 holed)
+✓ std_specs/mod.rs
+✓ std_specs/num.rs
+✓ std_specs/ops.rs
+✓ std_specs/option.rs
+   8 clean proof functions
+❌ std_specs/range.rs
+   Holes: 1 total
+      1 × external_type_specification
+✓ std_specs/result.rs
+❌ std_specs/slice.rs
+   Holes: 3 total
+      1 × admit()
+      1 × external_body
+      1 × external_type_specification
+   Proof functions: 1 total (0 clean, 1 holed)
+✓ std_specs/smart_ptrs.rs
+❌ std_specs/vec.rs
+   Holes: 8 total
+      3 × admit()
+      3 × external_body
+      2 × external_type_specification
+   Proof functions: 7 total (4 clean, 3 holed)
+❌ std_specs/vecdeque.rs
+   Holes: 7 total
+      3 × admit()
+      2 × external_body
+      2 × external_type_specification
+   Proof functions: 3 total (0 clean, 3 holed)
+❌ storage_protocol.rs
+   Holes: 1 total
+      1 × external_body
+   Proof functions: 9 total (9 clean, 0 holed)
+❌ string.rs
+   Holes: 18 total
+      1 × admit()
+      11 × external_body
+      2 × external_type_specification
+      4 × external
+   Proof functions: 1 total (0 clean, 1 holed)
+❌ thread.rs
+   Holes: 11 total
+      8 × external_body
+      3 × external
+✓ tokens/frac.rs
+   31 clean proof functions
+✓ tokens/map.rs
+   20 clean proof functions
+✓ tokens/seq.rs
+   13 clean proof functions
+❌ tokens.rs
+   Holes: 4 total
+      4 × assume(false)
+   Proof functions: 33 total (29 clean, 4 holed)
+✓ view.rs
+✓ vstd.rs
+
+═══════════════════════════════════════════════════════════════
+SUMMARY
+═══════════════════════════════════════════════════════════════
+
+Modules:
+   39 clean (no holes)
+   46 holed (contains holes)
+   85 total
+
+Proof Functions:
+   672 clean
+   49 holed
+   721 total
+
+Holes Found: 321 total
+   5 × assume(false)
+   1 × assume()
+   46 × admit()
+   171 × external_body
+   33 × external_trait_specification
+   32 × external_type_specification
+   3 × external_trait_extension
+   12 × external
+   18 × opaque
+
+Trusted Axioms: 189 total
+   108 × axiom fn declarations
+   81 × broadcast use axioms
+
+Completed in 47ms

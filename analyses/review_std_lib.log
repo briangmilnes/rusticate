@@ -1,0 +1,1177 @@
+Analyzing std library usage across Top 100 Rust projects...
+============================================================
+
+[1] Analyzing rust-cli_env_logger...
+  ✓ Found 6 files using std, 16 unique items
+
+[2] Analyzing BurntSushi_byteorder...
+  ✓ Found 1 files using std, 2 unique items
+
+[3] Analyzing dirs-dev_dirs-rs...
+  ✓ Found 5 files using std, 3 unique items
+
+[4] Analyzing rust-lang-nursery_lazy-static.rs...
+  → No std usage found
+
+[5] Analyzing alexcrichton_cfg-if...
+  → No std usage found
+
+[6] Analyzing KokaKiwi_rust-hex...
+  → No std usage found
+
+[7] Analyzing BurntSushi_memchr...
+  ✓ Found 3 files using std, 2 unique items
+
+[8] Analyzing hyperium_hyper...
+  ✓ Found 42 files using std, 98 unique items
+
+[9] Analyzing dtolnay_ryu...
+  → No std usage found
+
+[10] Analyzing rust-random_getrandom...
+  ✓ Found 3 files using std, 8 unique items
+
+[11] Analyzing servo_rust-smallvec...
+  ✓ Found 2 files using std, 18 unique items
+
+[12] Analyzing BurntSushi_aho-corasick...
+  ✓ Found 10 files using std, 23 unique items
+
+[13] Analyzing rust-bakery_nom...
+  ✓ Found 4 files using std, 6 unique items
+
+[14] Analyzing Stebalien_tempfile...
+  ✓ Found 12 files using std, 62 unique items
+
+[15] Analyzing hyperium_http...
+  ✓ Found 18 files using std, 39 unique items
+
+[16] Analyzing bincode-org_bincode...
+  → No src/ directory found, skipping
+
+[17] Analyzing dtolnay_itoa...
+  → No std usage found
+
+[18] Analyzing servo_rust-url-idna...
+  ✓ Found 6 files using std, 18 unique items
+
+[19] Analyzing RustCrypto_traits...
+  ✓ Found 1 files using std, 2 unique items
+
+[20] Analyzing chronotope_chrono...
+  ✓ Found 19 files using std, 34 unique items
+
+[21] Analyzing RustCrypto_utils...
+  ✓ Found 8 files using std, 24 unique items
+
+[22] Analyzing rust-lang_hashbrown...
+  ✓ Found 3 files using std, 17 unique items
+
+[23] Analyzing rustwasm_wasm-bindgen...
+  ✓ Found 1 files using std, 6 unique items
+
+[24] Analyzing tokio-rs_axum...
+  ✓ Found 59 files using std, 85 unique items
+
+[25] Analyzing dtolnay_anyhow...
+  ✓ Found 4 files using std, 28 unique items
+
+[26] Analyzing dtolnay_syn...
+  ✓ Found 34 files using std, 77 unique items
+
+[27] Analyzing cuviper_autocfg...
+  ✓ Found 3 files using std, 13 unique items
+
+[28] Analyzing dtolnay_semver...
+  ✓ Found 1 files using std, 2 unique items
+
+[29] Analyzing tokio-rs_tokio...
+  ✓ Found 345 files using std, 371 unique items
+
+[30] Analyzing BurntSushi_walkdir...
+  ✓ Found 6 files using std, 34 unique items
+
+[31] Analyzing dtolnay_quote...
+  ✓ Found 1 files using std, 3 unique items
+
+[32] Analyzing dtolnay_async-trait...
+  ✓ Found 2 files using std, 3 unique items
+
+[33] Analyzing microsoft_windows-rs...
+  → No src/ directory found, skipping
+
+[34] Analyzing serde-rs_json...
+  ✓ Found 2 files using std, 5 unique items
+
+[35] Analyzing tkaitchuck_aHash...
+  ✓ Found 9 files using std, 60 unique items
+
+[36] Analyzing rust-lang_regex...
+  ✓ Found 27 files using std, 29 unique items
+
+[37] Analyzing GREsau_schemars...
+  ✓ Found 9 files using std, 31 unique items
+
+[38] Analyzing marshallpierce_rust-base64...
+  ✓ Found 8 files using std, 13 unique items
+
+[39] Analyzing rust-lang_flate2-rs...
+  ✓ Found 20 files using std, 42 unique items
+
+[40] Analyzing RustCrypto_hashes...
+  → No std usage found
+
+[41] Analyzing Peternator7_strum...
+  ✓ Found 6 files using std, 13 unique items
+
+[42] Analyzing rust-lang_glob...
+  ✓ Found 1 files using std, 21 unique items
+
+[43] Analyzing dtolnay_paste...
+  ✓ Found 4 files using std, 12 unique items
+
+[44] Analyzing nix-rust_nix...
+  ✓ Found 52 files using std, 123 unique items
+
+[45] Analyzing unicode-rs_unicode-width...
+  → No std usage found
+
+[46] Analyzing hyperium_http-body...
+  ✓ Found 12 files using std, 33 unique items
+
+[47] Analyzing dtolnay_unicode-ident...
+  ✓ Found 4 files using std, 13 unique items
+
+[48] Analyzing rayon-rs_rayon...
+  ✓ Found 113 files using std, 123 unique items
+
+[49] Analyzing toml-rs_toml...
+  → No src/ directory found, skipping
+
+[50] Analyzing bytecodealliance_rustix...
+  ✓ Found 12 files using std, 105 unique items
+
+[51] Analyzing rust-lang_rustc-hash...
+  ✓ Found 3 files using std, 6 unique items
+
+[52] Analyzing uuid-rs_uuid...
+  ✓ Found 16 files using std, 30 unique items
+
+[53] Analyzing rust-random_rand...
+  ✓ Found 8 files using std, 18 unique items
+
+[54] Analyzing taiki-e_pin-project-lite...
+  → No std usage found
+
+[55] Analyzing console-rs_indicatif...
+  ✓ Found 9 files using std, 52 unique items
+
+[56] Analyzing rust-lang_bitflags...
+  ✓ Found 24 files using std, 20 unique items
+
+[57] Analyzing rust-num_num-traits...
+  → No std usage found
+
+[58] Analyzing dtolnay_proc-macro2...
+  ✓ Found 7 files using std, 19 unique items
+
+[59] Analyzing rust-itertools_itertools...
+  ✓ Found 38 files using std, 58 unique items
+
+[60] Analyzing dtolnay_thiserror...
+  ✓ Found 8 files using std, 19 unique items
+
+[61] Analyzing rust-lang_socket2...
+  ✓ Found 6 files using std, 76 unique items
+
+[62] Analyzing clap-rs_clap...
+  ✓ Found 56 files using std, 145 unique items
+
+[63] Analyzing serde-rs_serde...
+  ✓ Found 22 files using std, 26 unique items
+
+[64] Analyzing rust-lang_cc-rs...
+  ✓ Found 11 files using std, 79 unique items
+
+[65] Analyzing rust-lang_futures-rs...
+  ✓ Found 68 files using std, 87 unique items
+
+[66] Analyzing servo_rust-url...
+  ✓ Found 6 files using std, 18 unique items
+
+[67] Analyzing JelteF_derive_more...
+  ✓ Found 8 files using std, 16 unique items
+
+[68] Analyzing rust-lang_log...
+  ✓ Found 7 files using std, 32 unique items
+
+[69] Analyzing indexmap-rs_indexmap...
+  ✓ Found 6 files using std, 8 unique items
+
+[70] Analyzing withoutboats_heck...
+  → No std usage found
+
+[71] Analyzing matklad_once_cell...
+  ✓ Found 3 files using std, 5 unique items
+
+[72] Analyzing rust-lang_libc...
+  ✓ Found 10 files using std, 33 unique items
+
+[73] Analyzing rustls_rustls...
+  ✓ Found 69 files using std, 81 unique items
+
+[74] Analyzing tower-rs_tower...
+  ✓ Found 51 files using std, 39 unique items
+
+[75] Analyzing rust-lang_rust-bindgen...
+  ✓ Found 1 files using std, 8 unique items
+
+[76] Analyzing colored-rs_colored...
+  ✓ Found 1 files using std, 10 unique items
+
+[77] Analyzing bheisler_criterion.rs...
+  ✓ Found 44 files using std, 77 unique items
+
+[78] Analyzing tokio-rs_tracing...
+  ✓ Found 54 files using std, 113 unique items
+
+[79] Analyzing SergioBenitez_version_check...
+  ✓ Found 4 files using std, 11 unique items
+
+[80] Analyzing tokio-rs_prost...
+  ✓ Found 18 files using std, 49 unique items
+
+[81] Analyzing dguo_strsim-rs...
+  ✓ Found 1 files using std, 19 unique items
+
+[82] Analyzing Amanieu_parking_lot...
+  ✓ Found 26 files using std, 43 unique items
+
+[83] Analyzing tokio-rs_tls...
+  ✓ Found 1 files using std, 24 unique items
+
+[84] Analyzing time-rs_time...
+  ✓ Found 31 files using std, 22 unique items
+
+[85] Analyzing tokio-rs_bytes...
+  ✓ Found 5 files using std, 13 unique items
+
+============================================================
+Standard Library Usage Histogram
+============================================================
+
+Total projects analyzed: 82
+Total unique std items: 821
+
+Note: Numbers indicate how many projects (out of 82) use each item.
+
+MODULES (number = projects using this module)
+==============================================
+
+ 45 std::error
+ 45 std::fmt
+ 42 std::io
+ 36 std::collections
+ 31 std::mem
+ 29 std::path
+ 29 std::str
+ 27 std::ffi
+ 27 std::ops
+ 26 std::iter
+ 26 std::sync
+ 23 std::env
+ 22 std::time
+ 19 std::cmp
+ 19 std::fs
+ 19 std::hash
+ 18 std::marker
+ 17 std::borrow
+ 17 std::cell
+ 17 std::convert
+ 17 std::os
+ 17 std::ptr
+ 16 std::thread
+ 14 std::panic
+ 13 std::num
+ 13 std::process
+ 13 std::slice
+ 10 std::any
+ 10 std::net
+ 10 std::pin
+ 10 std::rc
+ 10 std::result
+ 10 std::task
+  9 std::future
+  9 std::vec
+  8 std::string
+  5 std::default
+  5 std::format
+  4 std::backtrace
+  4 std::hint
+  4 std::option
+  4 std::thread_local
+  3 std::alloc
+  3 std::char
+  3 std::usize
+  2 std::boxed
+  2 std::dbg
+  2 std::eprintln
+  2 std::is_x86_feature_detected
+  2 std::prelude
+  2 std::println
+  1 std::Core
+  1 std::array
+  1 std::ascii
+  1 std::cfg
+  1 std::clone
+  1 std::concat
+  1 std::f32
+  1 std::f64
+  1 std::primitive
+  1 std::std
+  1 std::stringify
+  1 std::u32
+
+Total modules: 63
+
+TRAITS (number = projects using this trait)
+============================================
+
+ 40 std::error::Error
+ 24 std::io::Write
+ 21 std::fmt::Debug
+ 19 std::fmt::Display
+ 18 std::ops::Deref
+ 17 std::io::Error
+ 16 std::hash::Hash
+ 16 std::io::Read
+ 14 std::ops::DerefMut
+ 14 std::str::FromStr
+ 13 std::fmt::Write
+ 12 std::hash::Hasher
+ 10 std::convert::TryFrom
+  8 std::convert::TryInto
+  8 std::future::Future
+  6 std::hash::BuildHasher
+  6 std::io::BufRead
+  6 std::panic::UnwindSafe
+  4 std::default::Default
+  4 std::iter::Iterator
+  4 std::panic::RefUnwindSafe
+  4 std::string::ToString
+  3 std::fmt::Error
+  3 std::io::Seek
+  3 std::marker::Unpin
+  2 std::cmp::Eq
+  2 std::convert::From
+  2 std::iter::IntoIterator
+  1 std::clone::Clone
+  1 std::cmp::PartialEq
+  1 std::future::Future<Output = T>
+  1 std::io::prelude::Write
+  1 std::iter::ExactSizeIterator
+  1 std::marker::Copy
+  1 std::net::Shutdown::Write
+  1 std::ops::Drop
+  1 std::ops::Fn
+
+Total traits: 37
+
+TYPES (number = projects using this type)
+==========================================
+
+ 27 std::path::Path
+ 23 std::path::PathBuf
+ 21 std::collections::HashMap
+ 19 std::fmt::Result
+ 16 std::fs::File
+ 16 std::time::Duration
+ 15 std::ffi::OsStr
+ 15 std::io::ErrorKind
+ 15 std::marker::PhantomData
+ 15 std::sync::atomic::Ordering
+ 14 std::fmt::Formatter<'_>
+ 14 std::sync::Arc
+ 13 std::cell::RefCell
+ 13 std::collections::HashSet
+ 12 std::ffi::OsString
+ 12 std::sync::Mutex
+ 12 std::time::Instant
+ 11 std::borrow::Cow
+ 11 std::cmp::Ordering
+ 11 std::time::SystemTime
+ 10 std::cell::Cell
+ 10 std::fmt::Formatter
+ 10 std::io::Result<()>
+ 10 std::pin::Pin
+ 10 std::sync::atomic::AtomicBool
+ 10 std::sync::atomic::AtomicUsize
+ 10 std::task::Poll
+  9 std::ffi::CStr
+  9 std::ffi::CString
+  9 std::io::IoSlice
+  9 std::rc::Rc
+  9 std::task::Context
+  8 std::any::Any
+  8 std::collections::BTreeMap
+  8 std::collections::BTreeSet
+  8 std::convert::Infallible
+  8 std::mem::MaybeUninit
+  8 std::process::Command
+  7 std::collections::VecDeque
+  7 std::io::Cursor
+  7 std::iter::FusedIterator
+  7 std::os::unix::ffi::OsStrExt
+  7 std::sync::Once
+  6 std::borrow::Borrow
+  6 std::io::Result
+  6 std::io::Result<usize>
+  6 std::io::SeekFrom
+  6 std::iter::FromIterator
+  6 std::mem::ManuallyDrop
+  6 std::ops::Index
+  6 std::ops::Range
+  6 std::os::fd::AsRawFd
+  6 std::os::unix::io::AsRawFd
+  6 std::os::unix::io::RawFd
+  5 std::collections::hash_map::DefaultHasher
+  5 std::io::BufReader
+  5 std::io::ErrorKind::Other
+  5 std::io::IoSliceMut
+  5 std::net::Ipv4Addr
+  5 std::net::Ipv6Addr
+  5 std::net::SocketAddr
+  5 std::net::SocketAddrV6
+  5 std::ops::Add
+  5 std::ops::AddAssign
+  5 std::os::fd::AsFd
+  5 std::os::fd::FromRawFd
+  5 std::os::fd::RawFd
+  5 std::path::Component
+  5 std::sync::atomic::Ordering::Relaxed
+  4 std::any::TypeId
+  4 std::backtrace::Backtrace
+  4 std::cell::UnsafeCell
+  4 std::iter::Peekable
+  4 std::net::SocketAddrV4
+  4 std::num::NonZeroUsize
+  4 std::ops::BitOr
+  4 std::os::fd::BorrowedFd
+  4 std::os::fd::OwnedFd
+  4 std::os::unix::io::AsFd
+  4 std::os::unix::io::BorrowedFd
+  4 std::panic::AssertUnwindSafe
+  4 std::process::Child
+  4 std::process::Stdio
+  4 std::str::Utf8Error
+  4 std::sync::MutexGuard
+  4 std::sync::OnceLock
+  4 std::sync::RwLock
+  3 std::fs::OpenOptions
+  3 std::io::BufWriter
+  3 std::io::IoSlice<'_>
+  3 std::iter::Fuse
+  3 std::net::IpAddr
+  3 std::net::TcpListener
+  3 std::net::TcpStream
+  3 std::num::NonZeroU32
+  3 std::ops::BitAnd
+  3 std::ops::Bound
+  3 std::ops::RangeBounds
+  3 std::ops::Sub
+  3 std::os::fd::IntoRawFd
+  3 std::os::unix::ffi::OsStringExt
+  3 std::os::unix::fs::MetadataExt
+  3 std::os::unix::fs::OpenOptionsExt
+  3 std::os::unix::io::FromRawFd
+  3 std::os::unix::io::IntoRawFd
+  3 std::os::unix::io::OwnedFd
+  3 std::os::unix::net::UnixDatagram
+  3 std::os::windows::io::AsRawHandle
+  3 std::os::windows::io::AsRawSocket
+  3 std::os::windows::io::FromRawSocket
+  3 std::os::windows::io::IntoRawSocket
+  3 std::os::windows::io::RawSocket
+  3 std::path::Prefix
+  3 std::pin::Pin<&mut Self>
+  3 std::result::Result<T, Error>
+  3 std::str::Chars
+  3 std::string::String
+  3 std::sync::LazyLock
+  3 std::sync::Mutex<T>
+  3 std::sync::RwLockReadGuard
+  3 std::sync::RwLockWriteGuard
+  3 std::sync::Weak
+  3 std::sync::atomic::AtomicPtr
+  3 std::sync::atomic::Ordering::SeqCst
+  3 std::task::Context<'_>
+  3 std::task::Poll<Self::Output>
+  3 std::thread::JoinHandle
+  3 std::thread::ThreadId
+  3 std::usize::MAX
+  2 std::alloc::Layout
+  2 std::borrow::BorrowMut
+  2 std::cell::Ref
+  2 std::cmp::Ordering::Equal
+  2 std::cmp::Ordering::Greater
+  2 std::cmp::Ordering::Less
+  2 std::collections::btree_map::Entry
+  2 std::collections::hash_map::Entry
+  2 std::collections::hash_map::RandomState
+  2 std::fs::DirBuilder
+  2 std::fs::DirEntry
+  2 std::fs::FileType
+  2 std::fs::Permissions
+  2 std::fs::ReadDir
+  2 std::hash::BuildHasherDefault
+  2 std::hash::DefaultHasher
+  2 std::io::Cursor<Vec<u8>>
+  2 std::io::ErrorKind::BrokenPipe
+  2 std::io::ErrorKind::InvalidData
+  2 std::io::ErrorKind::InvalidInput
+  2 std::io::ErrorKind::UnexpectedEof
+  2 std::io::ErrorKind::WouldBlock
+  2 std::io::IsTerminal
+  2 std::iter::Enumerate
+  2 std::marker::PhantomData<T>
+  2 std::mem::transmute::<&[u8], &'a [u8]>
+  2 std::net::Shutdown
+  2 std::num::ParseIntError
+  2 std::ops::BitAndAssign
+  2 std::ops::BitOrAssign
+  2 std::ops::ControlFlow
+  2 std::ops::Mul
+  2 std::ops::Range<usize>
+  2 std::ops::RangeFrom
+  2 std::ops::SubAssign
+  2 std::option::Option
+  2 std::os::hermit::ffi::OsStrExt
+  2 std::os::unix::fs::DirBuilderExt
+  2 std::os::unix::fs::DirEntryExt
+  2 std::os::unix::net::SocketAddr
+  2 std::os::unix::net::UnixListener
+  2 std::os::unix::net::UnixStream
+  2 std::os::unix::prelude::OsStrExt
+  2 std::os::unix::prelude::RawFd
+  2 std::os::wasi::fs::MetadataExt
+  2 std::os::windows::ffi::OsStrExt
+  2 std::os::windows::ffi::OsStringExt
+  2 std::os::windows::fs::OpenOptionsExt
+  2 std::os::windows::io::AsSocket
+  2 std::os::windows::io::BorrowedSocket
+  2 std::os::windows::io::OwnedSocket
+  2 std::os::windows::io::RawHandle
+  2 std::panic::Location
+  2 std::process::ChildStdin
+  2 std::process::ChildStdout
+  2 std::ptr::NonNull
+  2 std::rc::Rc<()>
+  2 std::result::Result<T, E>
+  2 std::sync::Arc<T>
+  2 std::sync::Barrier
+  2 std::sync::Condvar
+  2 std::sync::LockResult
+  2 std::sync::RwLock<T>
+  2 std::sync::TryLockError
+  2 std::sync::atomic::AtomicU16
+  2 std::sync::atomic::AtomicU64
+  2 std::sync::atomic::AtomicU8
+  2 std::sync::atomic::Ordering::AcqRel
+  2 std::sync::atomic::Ordering::Acquire
+  2 std::task::Poll::Pending
+  2 std::task::Poll::Ready
+  2 std::task::Poll<Option<Self::Item>>
+  2 std::task::RawWaker
+  2 std::task::RawWakerVTable
+  2 std::task::Waker
+  2 std::thread::Builder
+  2 std::thread::Result
+  2 std::thread::Thread
+  2 std::time::SystemTimeError
+  2 std::vec::Vec
+  1 std::alloc::System
+  1 std::any::TypeId::of::<A>
+  1 std::any::TypeId::of::<i32>
+  1 std::any::type_name::<A>
+  1 std::any::type_name::<K>
+  1 std::any::type_name::<M>
+  1 std::backtrace::BacktraceStatus
+  1 std::borrow::Borrow<std::ffi::OsStr>
+  1 std::borrow::Borrow<str>
+  1 std::borrow::Cow::Borrowed
+  1 std::borrow::Cow<'_, str>
+  1 std::borrow::Cow<'a, str>
+  1 std::borrow::ToOwned
+  1 std::boxed::Box
+  1 std::boxed::Box<T>
+  1 std::cell::BorrowMutError
+  1 std::cell::Cell<()>
+  1 std::cell::Cell<bool>
+  1 std::cell::UnsafeCell<T>
+  1 std::collections::BinaryHeap
+  1 std::collections::HashMap<&str, serde_json::Value>
+  1 std::collections::HashMap<Arc<str>, SmallIndex>
+  1 std::collections::HashMap<Arc<str>, u32>
+  1 std::collections::HashMap<K, V, DeterministicState>
+  1 std::collections::HashMap<K, V, FxSeededState>
+  1 std::collections::HashMap<K, V, S>
+  1 std::collections::HashMap<State, LazyStateID>
+  1 std::collections::HashMap<State, StateID>
+  1 std::collections::HashMap<String, String>
+  1 std::collections::HashSet<K, DeterministicState>
+  1 std::collections::HashSet<K, S>
+  1 std::collections::HashSet<V, FxSeededState>
+  1 std::collections::HashSet<u32>
+  1 std::collections::LinkedList
+  1 std::collections::hash_map::IntoKeys
+  1 std::collections::hash_map::IntoValues
+  1 std::convert::TryFrom<std::time::SystemTime>
+  1 std::convert::TryFrom<std::vec::Vec<u8>>
+  1 std::env::VarError
+  1 std::env::VarError::NotPresent
+  1 std::env::VarError::NotUnicode
+  1 std::env::consts::OS
+  1 std::f32::consts::PI
+  1 std::f64::consts::PI
+  1 std::ffi::FromBytesWithNulError
+  1 std::ffi::NulError
+  1 std::fmt::Arguments
+  1 std::fmt::Arguments<'_>
+  1 std::fmt::Binary
+  1 std::fmt::Formatter<'a>
+  1 std::fmt::LowerHex
+  1 std::fmt::Octal
+  1 std::fmt::UpperHex
+  1 std::fs::Metadata
+  1 std::future::Future<Output = Option<Result<http::HeaderMap, Self::Error>>>
+  1 std::future::Future<Output = io::Result<()>>
+  1 std::future::IntoFuture
+  1 std::future::Ready<()>
+  1 std::future::Ready<Response>
+  1 std::future::Ready<Result<Response, Self::Error>>
+  1 std::future::Ready<Result<Self::Response, Self::Error>>
+  1 std::future::pending::<()>
+  1 std::hash::RandomState
+  1 std::io::Bytes
+  1 std::io::Cursor<T>
+  1 std::io::ErrorKind::Interrupted
+  1 std::io::ErrorKind::NotConnected
+  1 std::io::ErrorKind::TimedOut
+  1 std::io::ErrorKind::WriteZero
+  1 std::io::Result<&[u8]>
+  1 std::io::Result<AbortHandle>
+  1 std::io::Result<Async01<()>>
+  1 std::io::Result<Bytes>
+  1 std::io::Result<File>
+  1 std::io::Result<LocalRuntime>
+  1 std::io::Result<Match>
+  1 std::io::Result<Runtime>
+  1 std::io::Result<StreamChunk>
+  1 std::io::Result<bool>
+  1 std::io::Result<u64>
+  1 std::io::SeekFrom::Start
+  1 std::io::Sink
+  1 std::io::Stdin
+  1 std::iter::Cloned
+  1 std::iter::Cycle
+  1 std::iter::Empty<T>
+  1 std::iter::Flatten
+  1 std::iter::FromIterator<F>
+  1 std::iter::Fuse<Iter>
+  1 std::iter::Map
+  1 std::iter::Map<ChunkSeq<P>, F>
+  1 std::iter::Product
+  1 std::iter::Product<Self::Item>
+  1 std::iter::Sum
+  1 std::iter::Sum<Self::Item>
+  1 std::iter::Zip
+  1 std::marker::PhantomData<&'fd std::convert::Infallible>
+  1 std::marker::PhantomData<BorrowedFd<'fd>>
+  1 std::marker::PhantomData<E>
+  1 std::marker::PhantomData<F>
+  1 std::marker::PhantomData<N>
+  1 std::marker::PhantomData<std::cell::Cell<()>>
+  1 std::marker::PhantomData<std::rc::Rc<()>>
+  1 std::marker::PhantomPinned
+  1 std::mem::MaybeUninit<u8>
+  1 std::mem::align_of::<&'static Location<'static>>
+  1 std::mem::align_of::<Core<T, S>>
+  1 std::mem::align_of::<Id>
+  1 std::mem::align_of::<Trailer>
+  1 std::mem::align_of::<usize>
+  1 std::mem::size_of::<Core<T, S>>
+  1 std::mem::size_of::<F>
+  1 std::mem::size_of::<Header>
+  1 std::mem::size_of::<Id>
+  1 std::mem::size_of::<S>
+  1 std::mem::size_of::<T>
+  1 std::mem::size_of::<f64>
+  1 std::mem::size_of::<sockaddr_vm>
+  1 std::mem::size_of::<timespec>
+  1 std::mem::size_of::<u64>
+  1 std::mem::size_of::<usize>
+  1 std::mem::transmute::<&'cursor mut ReadBuf<'data>, &'cursor mut ReadBuf<'cursor>>
+  1 std::mem::transmute::<&mut Context<'_>, &mut hyper_context<'_>>
+  1 std::mem::transmute::<i32, SockProtocol>
+  1 std::net::Ipv6Addr::LOCALHOST
+  1 std::net::ToSocketAddrs
+  1 std::net::UdpSocket
+  1 std::num::NonZero
+  1 std::num::NonZeroI32
+  1 std::num::NonZeroU16
+  1 std::num::NonZeroU64
+  1 std::num::NonZeroU8
+  1 std::num::Saturating
+  1 std::num::Saturating<T>
+  1 std::num::Wrapping
+  1 std::num::Wrapping<T>
+  1 std::ops::BitAnd<Output = T>
+  1 std::ops::BitAndAssign<bool>
+  1 std::ops::BitOr<Output = T>
+  1 std::ops::BitXor
+  1 std::ops::BitXor<Output = T>
+  1 std::ops::BitXorAssign
+  1 std::ops::Bound::Excluded
+  1 std::ops::Bound::Included
+  1 std::ops::Bound::Unbounded
+  1 std::ops::Bound<&usize>
+  1 std::ops::Bound<i64>
+  1 std::ops::Bound<u64>
+  1 std::ops::ControlFlow::Break
+  1 std::ops::ControlFlow::Continue
+  1 std::ops::IndexMut
+  1 std::ops::MulAssign
+  1 std::ops::Not
+  1 std::ops::Not<Output = T>
+  1 std::ops::Range<i64>
+  1 std::ops::Range<u64>
+  1 std::ops::RangeBounds<usize>
+  1 std::ops::RangeFrom<i64>
+  1 std::ops::RangeFrom<usize>
+  1 std::ops::RangeFull
+  1 std::ops::RangeInclusive
+  1 std::ops::RangeInclusive<i64>
+  1 std::ops::RangeInclusive<usize>
+  1 std::ops::RangeTo<i64>
+  1 std::ops::RangeTo<usize>
+  1 std::ops::RangeToInclusive<i64>
+  1 std::ops::RangeToInclusive<usize>
+  1 std::ops::Shl
+  1 std::ops::Shr
+  1 std::ops::Sub<Output = T>
+  1 std::option::IntoIter<SocketAddr>
+  1 std::option::IntoIter<T>
+  1 std::option::Option::None
+  1 std::option::Option::Some
+  1 std::os::android::net::SocketAddrExt
+  1 std::os::fd::BorrowedFd<'_>
+  1 std::os::fd::BorrowedFd<'static>
+  1 std::os::hermit::ext::ffi::OsStrExt
+  1 std::os::hermit::ext::ffi::OsStringExt
+  1 std::os::linux::net::SocketAddrExt
+  1 std::os::unix::fs::FileExt
+  1 std::os::unix::fs::FileTypeExt
+  1 std::os::unix::fs::PermissionsExt
+  1 std::os::unix::io::BorrowedFd<'_>
+  1 std::os::unix::prelude::AsRawFd
+  1 std::os::unix::prelude::FromRawFd
+  1 std::os::unix::process::CommandExt
+  1 std::os::unix::process::ExitStatusExt
+  1 std::os::vxworks::ext::ffi::OsStrExt
+  1 std::os::vxworks::ext::ffi::OsStringExt
+  1 std::os::wasi::ffi::OsStrExt
+  1 std::os::wasi::ffi::OsStringExt
+  1 std::os::wasi::fs::DirEntryExt
+  1 std::os::wasi::fs::FileExt
+  1 std::os::wasi::fs::FileTypeExt
+  1 std::os::wasi::fs::OpenOptionsExt
+  1 std::os::wasi::io::FromRawFd
+  1 std::os::wasi::io::IntoRawFd
+  1 std::os::windows::io::AsHandle
+  1 std::os::windows::io::BorrowedHandle
+  1 std::os::windows::io::FromRawHandle
+  1 std::os::windows::prelude::AsRawHandle
+  1 std::os::windows::prelude::FromRawHandle
+  1 std::os::windows::prelude::IntoRawHandle
+  1 std::os::windows::prelude::OwnedHandle
+  1 std::os::windows::prelude::RawHandle
+  1 std::os::windows::process::CommandExt
+  1 std::panic::AssertUnwindSafe<F>
+  1 std::panic::AssertUnwindSafe<S>
+  1 std::panic::Location<'static>
+  1 std::panic::PanicInfo
+  1 std::path::Components
+  1 std::path::Iter
+  1 std::path::Prefix::VerbatimDisk
+  1 std::process::ChildStderr
+  1 std::process::ExitCode
+  1 std::process::ExitStatus
+  1 std::process::Output
+  1 std::rc::Rc<S>
+  1 std::rc::Weak
+  1 std::result::Result
+  1 std::result::Result::Err
+  1 std::result::Result::Ok
+  1 std::result::Result<(), ClearEnvError>
+  1 std::result::Result<(), NmountError>
+  1 std::result::Result<(), Self::Error>
+  1 std::result::Result<(), SocketAddressLengthNotDynamic>
+  1 std::result::Result<(), std::io::Error>
+  1 std::result::Result<(std::os::fd::OwnedFd, std::os::fd::OwnedFd), Error>
+  1 std::result::Result<NonNull<[u8]>, AllocError>
+  1 std::result::Result<Self, ()>
+  1 std::result::Result<Self, Self::Err>
+  1 std::result::Result<Self, Self::Error>
+  1 std::result::Result<Self, io::Error>
+  1 std::result::Result<T, JoinError>
+  1 std::result::Result<usize, std::io::Error>
+  1 std::slice::Iter
+  1 std::slice::Iter<'_, Id>
+  1 std::slice::Iter<'_, K>
+  1 std::slice::Iter<'_, T>
+  1 std::slice::Iter<'_, V>
+  1 std::slice::Iter<'a, (Arc<str>, PercentDecodedStr)>
+  1 std::slice::Iter<'a, (String, T)>
+  1 std::slice::Iter<'a, K>
+  1 std::slice::Iter<'a, V>
+  1 std::slice::Iter<'s, T>
+  1 std::slice::IterMut<'a, K>
+  1 std::slice::IterMut<'a, V>
+  1 std::slice::SliceIndex
+  1 std::slice::from_raw_parts_mut::<'a, MaybeUninit<u8>>
+  1 std::str::CharIndices<'s>
+  1 std::str::Lines
+  1 std::string::FromUtf8Error
+  1 std::sync::Arc<S>
+  1 std::sync::Arc<atomic_take::AtomicTake<oneshot::Sender<T>>>
+  1 std::sync::Arc<dyn Fn(&TaskMeta<'_>) + Send + Sync>
+  1 std::sync::Arc<dyn Fn() -> String + Send + Sync + 'static>
+  1 std::sync::Arc<dyn std::any::Any + Send + Sync + 'static>
+  1 std::sync::Mutex<ContextV7>
+  1 std::sync::Mutex<f64>
+  1 std::sync::MutexGuard<'a, T>
+  1 std::sync::PoisonError
+  1 std::sync::RwLock<f64>
+  1 std::sync::RwLockReadGuard<'a, T>
+  1 std::sync::RwLockWriteGuard<'a, T>
+  1 std::sync::TryLockResult
+  1 std::sync::WaitTimeoutResult
+  1 std::sync::atomic::AtomicU32
+  1 std::sync::atomic::Ordering::Release
+  1 std::task::Poll<Option<Result<http_body::Frame<Self::Data>, Self::Error>>>
+  1 std::task::Poll<Result<(), Self::Error>>
+  1 std::thread::AccessError
+  1 std::thread::JoinHandle<()>
+  1 std::thread::LocalKey
+  1 std::thread::LocalKey<T>
+  1 std::thread::Result<R>
+  1 std::u32::MAX
+  1 std::vec::IntoIter<AnyValue>
+  1 std::vec::IntoIter<SocketAddr>
+  1 std::vec::IntoIter<T>
+  1 std::vec::IntoIter<Vec<AnyValue>>
+  1 std::vec::Vec<u8>
+
+Total types: 491
+
+IMPLS (number = projects using this method/function)
+=====================================================
+
+ 15 std::sync::atomic
+ 13 std::os::unix
+ 11 std::str::from_utf8
+ 10 std::collections::hash_map
+  9 std::os::windows
+  8 std::mem::take
+  7 std::cmp::min
+  7 std::env::var
+  7 std::iter::once
+  7 std::mem::size_of
+  7 std::os::unix::ffi
+  7 std::ptr::null_mut
+  7 std::time::UNIX_EPOCH
+  6 std::io::Error::new
+  6 std::os::fd
+  6 std::os::raw
+  6 std::os::unix::io
+  6 std::os::windows::io
+  6 std::thread::panicking
+  5 std::env::var_os
+  5 std::io::prelude
+  5 std::os::raw::c_int
+  5 std::os::unix::prelude
+  5 std::sync::mpsc
+  5 std::thread::sleep
+  5 std::thread::spawn
+  4 std::ffi::c_void
+  4 std::io::stdout
+  4 std::mem::replace
+  4 std::mem::swap
+  4 std::mem::zeroed
+  4 std::os::unix::fs
+  3 std::any::type_name
+  3 std::env::current_dir
+  3 std::ffi::c_int
+  3 std::fs::create_dir_all
+  3 std::fs::read_to_string
+  3 std::future::ready
+  3 std::io::stderr
+  3 std::iter::empty
+  3 std::iter::repeat
+  3 std::os::hermit
+  3 std::os::raw::c_uint
+  3 std::os::unix::net
+  3 std::os::wasi
+  3 std::os::windows::ffi
+  3 std::os::windows::fs
+  3 std::panic::catch_unwind
+  3 std::process::exit
+  3 std::slice::from_raw_parts
+  3 std::sync::Arc::new
+  3 std::sync::mpsc::channel
+  3 std::task::ready
+  3 std::thread::current
+  3 std::thread::scope
+  3 std::time::Duration::from_millis
+  2 std::backtrace::Backtrace::force_capture
+  2 std::cmp::max
+  2 std::collections::HashSet::new
+  2 std::collections::btree_map
+  2 std::env::args
+  2 std::env::consts
+  2 std::fmt::Display::fmt
+  2 std::fs::DirBuilder::new
+  2 std::fs::File::create
+  2 std::fs::canonicalize
+  2 std::fs::hard_link
+  2 std::fs::read
+  2 std::fs::read_dir
+  2 std::fs::remove_dir_all
+  2 std::future::poll_fn
+  2 std::hint::spin_loop
+  2 std::io::Error::from
+  2 std::io::sink
+  2 std::iter::successors
+  2 std::mem::forget
+  2 std::net::TcpListener::bind
+  2 std::os::hermit::ffi
+  2 std::os::raw::c_char
+  2 std::os::raw::c_void
+  2 std::os::unix::fs::symlink
+  2 std::os::wasi::fs
+  2 std::os::windows::fs::symlink_dir
+  2 std::os::windows::fs::symlink_file
+  2 std::path::Path::new
+  2 std::pin::pin
+  2 std::process::abort
+  2 std::ptr::copy_nonoverlapping
+  2 std::ptr::eq
+  2 std::ptr::null
+  2 std::ptr::read
+  2 std::str::from_utf8_unchecked
+  2 std::string::ToString::to_string
+  2 std::sync::atomic::fence
+  2 std::thread::available_parallelism
+  2 std::time::Duration::from_secs
+  2 std::time::Duration::new
+  2 std::time::Instant::now
+  2 std::time::SystemTime::UNIX_EPOCH
+  1 std::alloc::alloc
+  1 std::alloc::handle_alloc_error
+  1 std::array::from_fn
+  1 std::cell::Cell::new
+  1 std::cell::UnsafeCell::new
+  1 std::collections::HashMap::with_capacity_and_hasher
+  1 std::collections::HashMap::with_hasher
+  1 std::collections::HashSet::with_capacity_and_hasher
+  1 std::collections::HashSet::with_hasher
+  1 std::collections::hash_set
+  1 std::convert::identity
+  1 std::env::args_os
+  1 std::env::consts::EXE_EXTENSION
+  1 std::env::consts::EXE_SUFFIX
+  1 std::env::current_exe
+  1 std::env::home_dir
+  1 std::env::remove_var
+  1 std::error::Error::source
+  1 std::f32::consts
+  1 std::f64::consts
+  1 std::ffi::CStr::from_ptr
+  1 std::ffi::OsStr::from_bytes
+  1 std::ffi::OsStr::new
+  1 std::ffi::OsString::from
+  1 std::ffi::OsString::from_wide
+  1 std::ffi::OsString::into_boxed_os_str
+  1 std::ffi::c_char
+  1 std::ffi::c_double
+  1 std::ffi::c_long
+  1 std::ffi::c_uint
+  1 std::fmt::Debug::fmt
+  1 std::fs::File::open
+  1 std::fs::OpenOptions::new
+  1 std::fs::copy
+  1 std::fs::create_dir
+  1 std::fs::metadata
+  1 std::fs::read_link
+  1 std::fs::remove_dir
+  1 std::fs::remove_file
+  1 std::fs::rename
+  1 std::fs::set_permissions
+  1 std::fs::symlink_metadata
+  1 std::fs::write
+  1 std::future::pending
+  1 std::hint::black_box
+  1 std::hint::unreachable_unchecked
+  1 std::io::BufReader::new
+  1 std::io::Cursor::new
+  1 std::io::Error::from_raw_os_error
+  1 std::io::Error::other
+  1 std::io::stdin
+  1 std::iter::from_fn
+  1 std::iter::repeat_with
+  1 std::mem::ManuallyDrop::new
+  1 std::mem::MaybeUninit::uninit
+  1 std::mem::drop
+  1 std::mem::needs_drop
+  1 std::mem::transmute
+  1 std::net::Ipv4Addr::new
+  1 std::net::Ipv6Addr::new
+  1 std::net::TcpListener::from_raw_fd
+  1 std::net::TcpListener::from_raw_socket
+  1 std::net::TcpStream::from_raw_fd
+  1 std::net::TcpStream::from_raw_socket
+  1 std::net::UdpSocket::from_raw_fd
+  1 std::net::UdpSocket::from_raw_socket
+  1 std::ops::Deref::deref
+  1 std::os::android
+  1 std::os::android::net
+  1 std::os::fd::BorrowedFd::borrow_raw
+  1 std::os::hermit::ext
+  1 std::os::hermit::ext::ffi
+  1 std::os::linux
+  1 std::os::linux::net
+  1 std::os::raw::c_long
+  1 std::os::raw::c_longlong
+  1 std::os::raw::c_short
+  1 std::os::raw::c_ulong
+  1 std::os::raw::c_ulonglong
+  1 std::os::raw::c_ushort
+  1 std::os::uefi
+  1 std::os::uefi::env
+  1 std::os::uefi::env::boot_services
+  1 std::os::uefi::env::image_handle
+  1 std::os::unix::fs::DirBuilderExt::mode
+  1 std::os::unix::io::AsRawFd::as_raw_fd
+  1 std::os::unix::io::BorrowedFd::borrow_raw
+  1 std::os::unix::net::SocketAddr::from_pathname
+  1 std::os::unix::net::UnixDatagram::from_raw_fd
+  1 std::os::unix::net::UnixStream::from_raw_fd
+  1 std::os::unix::process
+  1 std::os::vxworks
+  1 std::os::vxworks::ext
+  1 std::os::vxworks::ext::ffi
+  1 std::os::wasi::ffi
+  1 std::os::wasi::io
+  1 std::os::wasi::prelude
+  1 std::os::windows::prelude
+  1 std::os::windows::process
+  1 std::panic::Location::caller
+  1 std::panic::resume_unwind
+  1 std::path::PathBuf::from
+  1 std::path::PathBuf::into_boxed_path
+  1 std::path::is_separator
+  1 std::pin::Pin::into_inner
+  1 std::pin::Pin::new
+  1 std::prelude::v1
+  1 std::primitive::bool
+  1 std::primitive::str
+  1 std::process::Command::new
+  1 std::process::Stdio::inherit
+  1 std::process::Stdio::null
+  1 std::process::Stdio::piped
+  1 std::process::id
+  1 std::ptr::write
+  1 std::string::String::with_capacity
+  1 std::sync::Arc::try_unwrap
+  1 std::sync::Mutex::new
+  1 std::sync::atomic::ATOMIC_USIZE_INIT
+  1 std::sync::atomic::AtomicU16::new
+  1 std::sync::atomic::AtomicU32::new
+  1 std::sync::atomic::AtomicUsize::new
+  1 std::task::Context::from_waker
+  1 std::thread::Builder::new
+  1 std::thread::park
+  1 std::thread::park_timeout
+  1 std::thread::yield_now
+  1 std::time::Duration::from_secs_f64
+  1 std::time::Instant::sub
+  1 std::time::SystemTime::now
+  1 std::time::SystemTime::try_from
+
+Total impls: 230
+
+DISTRIBUTION
+============
+
+Shows how many std items are used by N projects.
+Format: N projects: X std items (meaning X items are each used by N projects)
+
+ 45 projects use    2 std items
+ 42 projects use    1 std items
+ 40 projects use    1 std items
+ 36 projects use    1 std items
+ 31 projects use    1 std items
+ 29 projects use    2 std items
+ 27 projects use    3 std items
+ 26 projects use    2 std items
+ 24 projects use    1 std items
+ 23 projects use    2 std items
+ 22 projects use    1 std items
+ 21 projects use    2 std items
+ 19 projects use    5 std items
+ 18 projects use    2 std items
+ 17 projects use    6 std items
+ 16 projects use    5 std items
+ 15 projects use    5 std items
+ 14 projects use    5 std items
+ 13 projects use    7 std items
+ 12 projects use    4 std items
+ 11 projects use    4 std items
+ 10 projects use   15 std items
+  9 projects use    8 std items
+  8 projects use   10 std items
+  7 projects use   12 std items
+  6 projects use   20 std items
+  5 projects use   24 std items
+  4 projects use   32 std items
+  3 projects use   72 std items
+  2 projects use  132 std items
+  1 projects use  434 std items
+
+TOP PROJECTS BY STD USAGE
+=========================
+
+Top 20 projects by unique std items used:
+
+ 1. 371 std items - tokio-rs_tokio
+ 2. 145 std items - clap-rs_clap
+ 3. 123 std items - nix-rust_nix
+ 4. 123 std items - rayon-rs_rayon
+ 5. 113 std items - tokio-rs_tracing
+ 6. 105 std items - bytecodealliance_rustix
+ 7.  98 std items - hyperium_hyper
+ 8.  87 std items - rust-lang_futures-rs
+ 9.  85 std items - tokio-rs_axum
+10.  81 std items - rustls_rustls
+11.  79 std items - rust-lang_cc-rs
+12.  77 std items - dtolnay_syn
+13.  77 std items - bheisler_criterion.rs
+14.  76 std items - rust-lang_socket2
+15.  62 std items - Stebalien_tempfile
+16.  60 std items - tkaitchuck_aHash
+17.  58 std items - rust-itertools_itertools
+18.  52 std items - console-rs_indicatif
+19.  49 std items - tokio-rs_prost
+20.  43 std items - Amanieu_parking_lot
+
+Completed in 3398 ms.

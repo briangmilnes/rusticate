@@ -27,7 +27,7 @@ Python will be sent back to the family estate for not working well!
 
 ## Overview
 
-**Rusticate** is a suite of 76+ AST-based tools for analyzing and automatically fixing Rust codebases. Unlike traditional linters that rely on string manipulation or regex, Rusticate uses the Rust Analyzer syntax tree (`ra_ap_syntax`) for precise, reliable code transformations.
+**Rusticate** is a suite of 77+ AST-based tools for analyzing and automatically fixing Rust codebases. Unlike traditional linters that rely on string manipulation or regex, Rusticate uses the Rust Analyzer syntax tree (`ra_ap_syntax`) for precise, reliable code transformations.
 
 **Note:** While Rusticate is a general-purpose Rust analysis toolkit, some tools are specific to the [APAS-AI](https://github.com/briangmilnes/APAS-AI) project (Algorithm Performance Analysis System - a comprehensive Rust implementation of algorithms and data structures). These APAS-specific tools handle chapter migration (Chap18 → Chap19), module naming conventions, and parallelism patterns specific to that codebase.
 
@@ -337,11 +337,13 @@ Tools that count or measure code properties.
 | `count-loc` | Count lines of code (excluding comments, blanks) |
 | `count-vec` | Count `Vec` usage |
 | `count-where` | Count `where` clause usage |
+| `count-for-loops` | Count for loops, distinguishing range-based (0..n) from iterator-based loops |
 
 **Example:**
 ```bash
 count-loc -c                  # Count LOC in entire codebase
 count-where -d src/Chap19/    # Count where clauses in Chap19
+count-for-loops -c            # Count all for loops, show range vs iterator breakdown
 ```
 
 ---
@@ -493,6 +495,7 @@ compile-and-test -c           # Compile + run tests
 count-loc -c                  # Lines of code
 count-where -c                # Where clause usage
 count-vec -c                  # Vec usage
+count-for-loops -c            # For loop analysis (range vs iterator)
 
 # Quality checks
 review-summary-accuracy       # Verify report accuracy
@@ -697,6 +700,7 @@ The following tools have been validated on the large-scale [APAS-AI](https://git
 - ✓ `count-as` - Found 1,456 UFCS patterns: 256 src + 942 tests + 258 benches
 - ✓ `count-vec` - Found 721 Vec usages: 453 src + 198 tests + 70 benches
 - ✓ `count-where` - Found 213 where clauses: 213 src + 0 tests + 0 benches
+- ✓ `count-for-loops` - Found 739 loops: 478 range-based (64%), 261 iterator-based (35%)
 
 ### Review Tools (Extensively Tested)
 - ✓ `review-test-functions` - Analyzed 2,780 functions, 88.9% coverage detection
@@ -1071,6 +1075,7 @@ target/release/rusticate-count-loc -c APAS-AI-copy/apas-ai
 target/release/rusticate-count-as -c APAS-AI-copy/apas-ai
 target/release/rusticate-count-vec -c APAS-AI-copy/apas-ai
 target/release/rusticate-count-where -c APAS-AI-copy/apas-ai
+target/release/rusticate-count-for-loops -c APAS-AI-copy/apas-ai
 
 # Run review tools on APAS-AI
 target/release/rusticate-review string-hacking -c APAS-AI-copy/apas-ai
