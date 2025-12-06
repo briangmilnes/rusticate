@@ -292,7 +292,8 @@ fn check_for_string_hacking(source: &str, file_path: &str) -> Result<Vec<String>
 
 fn is_source_like_variable(var_name: &str) -> bool {
     let source_names = ["source", "src", "code", "text", "content", "body", 
-                        "result", "call_text", "callee_text", "impl_text"];
+                        "result", "call_text", "callee_text", "impl_text",
+                        "line", "lines", "fn_line", "search_line"];
     source_names.iter().any(|name| var_name.contains(name))
 }
 
