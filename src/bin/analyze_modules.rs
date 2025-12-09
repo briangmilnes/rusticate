@@ -245,21 +245,23 @@ fn is_wrapper_crate(path: &str) -> bool {
     false
 }
 
-fn count_functions_in_file(file: &Path) -> Result<(usize, usize, usize)> {
+fn count_functions_in_file(file: &Path) -> Result<(usize, usize, usize, usize, usize)> {
     let content = fs::read_to_string(file)
         .with_context(|| format!("Failed to read: {}", file.display()))?;
     
     let parse = match parse_file(&content) {
         Ok(p) => p,
-        Err(_) => return Ok((0, 0, 0)), // Skip files with parse errors
+        Err(_) => return Ok((0, 0, 0, 0, 0)), // Skip files with parse errors
     };
     
     let root = parse.syntax();
     let mut pub_count = 0;
     let mut unsafe_count = 0;
     let mut total_fns = 0;
+    let mut trait_fns = 0;
+    let mut impl_fns = 0;
     
-    // Walk AST looking for items that might contain functions
+    // Walk AST looking for all function definitions
     for item_node in root.descendants() {
         if item_node.kind() == SyntaxKind::FN {
             if let Some(fn_node) = ast::Fn::cast(item_node.clone()) {
@@ -275,14 +277,48 @@ fn count_functions_in_file(file: &Path) -> Result<(usize, usize, usize)> {
                     child.kind() == SyntaxKind::VISIBILITY
                 });
                 
-                if is_pub {
-                    pub_count += 1;
+                // Determine context: trait, impl, or standalone
+                let mut current = item_node.parent();
+                let mut in_trait = false;
+                let mut in_impl = false;
+                
+                while let Some(parent) = current {
+                    match parent.kind() {
+                        SyntaxKind::TRAIT => {
+                            in_trait = true;
+                            break;
+                        }
+                        SyntaxKind::IMPL => {
+                            in_impl = true;
+                            break;
+                        }
+                        _ => {}
+                    }
+                    current = parent.parent();
+                }
+                
+                if in_trait {
+                    trait_fns += 1;
+                    // Trait methods are implicitly public
+                    if is_pub || true {  // Traits define public interface
+                        pub_count += 1;
+                    }
+                } else if in_impl {
+                    impl_fns += 1;
+                    if is_pub {
+                        pub_count += 1;
+                    }
+                } else {
+                    // Standalone function
+                    if is_pub {
+                        pub_count += 1;
+                    }
                 }
             }
         }
     }
     
-    Ok((pub_count, unsafe_count, total_fns))
+    Ok((pub_count, unsafe_count, total_fns, trait_fns, impl_fns))
 }
 
 fn count_stdlib_functions(jobs: usize) -> Result<()> {
@@ -307,6 +343,9 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
     let mut total_pub = 0;
     let mut total_unsafe = 0;
     let mut total_files = 0;
+    let mut total_fns = 0;
+    let mut total_trait = 0;
+    let mut total_impl = 0;
     
     for (lib_name, lib_path) in libs {
         if !lib_path.exists() {
@@ -330,16 +369,20 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
                     let mut pub_count = 0;
                     let mut unsafe_count = 0;
                     let mut total_count = 0;
+                    let mut trait_count = 0;
+                    let mut impl_count = 0;
                     
                     for file in chunk.iter() {
-                        if let Ok((pub_fns, unsafe_fns, total_fns)) = count_functions_in_file(file) {
+                        if let Ok((pub_fns, unsafe_fns, total_fns, trait_fns, impl_fns)) = count_functions_in_file(file) {
                             pub_count += pub_fns;
                             unsafe_count += unsafe_fns;
                             total_count += total_fns;
+                            trait_count += trait_fns;
+                            impl_count += impl_fns;
                         }
                     }
                     
-                    (pub_count, unsafe_count, total_count)
+                    (pub_count, unsafe_count, total_count, trait_count, impl_count)
                 })
             })
             .collect();
@@ -348,24 +391,39 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
         let mut lib_pub = 0;
         let mut lib_unsafe = 0;
         let mut lib_total = 0;
+        let mut lib_trait = 0;
+        let mut lib_impl = 0;
         for handle in handles {
-            let (pub_fns, unsafe_fns, total_fns) = handle.join().unwrap();
+            let (pub_fns, unsafe_fns, total_fns, trait_fns, impl_fns) = handle.join().unwrap();
             lib_pub += pub_fns;
             lib_unsafe += unsafe_fns;
             lib_total += total_fns;
+            lib_trait += trait_fns;
+            lib_impl += impl_fns;
         }
         
-        println!("  {} total functions ({} public, {} unsafe)", lib_total, lib_pub, lib_unsafe);
+        let standalone = lib_total - lib_trait - lib_impl;
+        println!("  {} total functions ({} standalone, {} in traits, {} in impls)", 
+                 lib_total, standalone, lib_trait, lib_impl);
+        println!("    {} public, {} unsafe", lib_pub, lib_unsafe);
         total_pub += lib_pub;
         total_unsafe += lib_unsafe;
+        total_fns += lib_total;
+        total_trait += lib_trait;
+        total_impl += lib_impl;
         total_files += files.len();
     }
     
     let elapsed = start.elapsed();
+    let standalone = total_fns - total_trait - total_impl;
     println!("\n=== Summary ===");
     println!("Total files: {}", total_files);
-    println!("Total public functions: {}", total_pub);
-    println!("Total unsafe functions: {}", total_unsafe);
+    println!("Total functions: {}", total_fns);
+    println!("  Standalone: {}", standalone);
+    println!("  In traits: {}", total_trait);
+    println!("  In impls: {}", total_impl);
+    println!("Total public: {}", total_pub);
+    println!("Total unsafe: {}", total_unsafe);
     println!("\nCompleted in {} ms.", elapsed.as_millis());
     
     Ok(())
