@@ -140,7 +140,12 @@ fn extract_paths_from_use_tree(use_tree: &ast::UseTree, prefix: String) -> Vec<S
     let mut paths = Vec::new();
     
     if let Some(path) = use_tree.path() {
-        let path_str = path.to_string();
+        // Extract path properly via AST segments
+        let path_str = path.segments()
+            .map(|seg| seg.to_string())
+            .collect::<Vec<_>>()
+            .join("::");
+            
         let full_path = if prefix.is_empty() {
             path_str.clone()
         } else {
@@ -268,12 +273,11 @@ fn main() -> Result<()> {
     }
 
     log!("rusticate-analyze-modules");
-    log!("==========================");
-    log!("Codebase: {}", args.codebase.display());
-    if let Some(max) = args.max_codebases {
-        log!("Max codebases: {}", max);
-    }
-    log!("Started at: {:?}\n", start);
+    log!("Command: {}", std::env::args().collect::<Vec<_>>().join(" "));
+    log!("Codebase: {} | Max: {:?} | Started: {:?}", 
+        args.codebase.display(), 
+        args.max_codebases.map_or("unlimited".to_string(), |m| m.to_string()),
+        start);
 
     println!("rusticate-analyze-modules");
     println!("==========================");
@@ -314,130 +318,87 @@ fn main() -> Result<()> {
     println!("Found {} Rust files across {} codebases", rust_files.len(), codebases_to_analyze.len());
     log!("Found {} Rust files across {} codebases\n", rust_files.len(), codebases_to_analyze.len());
 
-    // Collect module usage
-    let mut module_usage: Vec<ModuleUsage> = Vec::new();
-    let mut vstd_usage: Vec<ModuleUsage> = Vec::new();
+    // Collect standard library usage only
+    let mut std_lib_usage: HashMap<String, usize> = HashMap::new();
     let mut errors = 0;
+    let builtin_libs = ["std", "core", "alloc", "proc_macro", "test"];
 
-    println!("Analyzing module usage...\n");
+    println!("Analyzing standard library usage...\n");
     
     for file in &rust_files {
         match extract_use_paths(file) {
             Ok(uses) => {
-                for (use_path, line) in uses {
-                    // Skip wrapper crates
-                    if is_wrapper_crate(&use_path) {
-                        continue;
+                for (use_path, _line) in uses {
+                    // Only track built-in Rust libraries
+                    let is_builtin = builtin_libs.iter().any(|&lib| {
+                        use_path == lib || use_path.starts_with(&format!("{}::", lib))
+                    });
+                    
+                    if is_builtin {
+                        *std_lib_usage.entry(use_path).or_insert(0) += 1;
                     }
-
-                    let usage = ModuleUsage {
-                        module_path: use_path.clone(),
-                        file: file.clone(),
-                        line,
-                    };
-
-                    // Check if it's vstd usage
-                    if use_path.starts_with("vstd::") || use_path == "vstd" {
-                        vstd_usage.push(usage.clone());
-                    }
-
-                    module_usage.push(usage);
                 }
             }
-            Err(e) => {
+            Err(_) => {
                 errors += 1;
-                log!("Error parsing {}: {}", file.display(), e);
+                log!("{}:1: Parse error", file.display());
             }
         }
     }
 
     println!("Analysis complete!");
-    println!("  Total module uses: {}", module_usage.len());
-    println!("  vstd uses: {}", vstd_usage.len());
+    println!("  Standard library uses: {}", std_lib_usage.values().sum::<usize>());
+    println!("  Unique std paths: {}", std_lib_usage.len());
     println!("  Parse errors: {}", errors);
     println!();
 
-    log!("Analysis complete!");
-    log!("  Total module uses: {}", module_usage.len());
-    log!("  vstd uses: {}", vstd_usage.len());
-    log!("  Parse errors: {}\n", errors);
+    log!("Analysis complete: {} std lib uses, {} unique paths, {} errors", 
+        std_lib_usage.values().sum::<usize>(), std_lib_usage.len(), errors);
 
-    // Analyze vstd usage
-    if !vstd_usage.is_empty() {
-        println!("=== vstd Module Usage ===\n");
-        log!("=== vstd Module Usage ===\n");
-
-        // Count by module
-        let mut vstd_modules: HashMap<String, usize> = HashMap::new();
-        for usage in &vstd_usage {
-            *vstd_modules.entry(usage.module_path.clone()).or_insert(0) += 1;
-        }
-
-        // Sort by usage count
-        let mut sorted: Vec<_> = vstd_modules.into_iter().collect();
-        sorted.sort_by(|a, b| b.1.cmp(&a.1));
-
-        println!("vstd modules by usage count:");
-        log!("vstd modules by usage count:");
-        for (module, count) in &sorted {
-            println!("  {:4} {}", count, module);
-            log!("  {:4} {}", count, module);
-        }
-        println!();
-        log!("");
-
-        // Show unique vstd modules used
-        let unique_modules: HashSet<String> = vstd_usage
-            .iter()
-            .map(|u| u.module_path.clone())
-            .collect();
+    // Separate modules from data types
+    let mut modules_only: HashMap<String, usize> = HashMap::new();
+    let mut data_types_used: HashMap<String, usize> = HashMap::new();
+    
+    for (path, count) in &std_lib_usage {
+        // Count segments - more than 2 means it has a type/trait/item
+        let segments: Vec<&str> = path.split("::").collect();
         
-        println!("Unique vstd modules: {}", unique_modules.len());
-        log!("Unique vstd modules: {}", unique_modules.len());
-        
-        // Show file locations for vstd usage (first 10)
-        println!("\nSample vstd usage locations:");
-        log!("\nSample vstd usage locations:");
-        for usage in vstd_usage.iter().take(10) {
-            let msg = format!("  {}:{} - {}", 
-                usage.file.display(), 
-                usage.line, 
-                usage.module_path);
-            println!("{}", msg);
-            log!("{}", msg);
-        }
-        if vstd_usage.len() > 10 {
-            println!("  ... and {} more", vstd_usage.len() - 10);
-            log!("  ... and {} more", vstd_usage.len() - 10);
-        }
-    } else {
-        println!("No vstd usage found.");
-        log!("No vstd usage found.");
-    }
-
-    // Summary of all modules (excluding wrappers)
-    println!("\n=== Top Non-Wrapper Modules ===\n");
-    log!("\n=== Top Non-Wrapper Modules ===\n");
-
-    let mut all_modules: HashMap<String, usize> = HashMap::new();
-    for usage in &module_usage {
-        // Extract root crate from module path
-        let root = if let Some(pos) = usage.module_path.find("::") {
-            &usage.module_path[..pos]
+        if segments.len() <= 2 || path.ends_with("::self") {
+            // Just a module like "std::io", "std", or "std::io::self"
+            *modules_only.entry(path.clone()).or_insert(0) += count;
         } else {
-            &usage.module_path
-        };
-        *all_modules.entry(root.to_string()).or_insert(0) += 1;
+            // Has a type like "std::collections::HashMap"
+            // ONLY count the full path as a data type, DON'T count parent as module
+            *data_types_used.entry(path.clone()).or_insert(0) += count;
+        }
     }
 
-    let mut sorted_all: Vec<_> = all_modules.into_iter().collect();
-    sorted_all.sort_by(|a, b| b.1.cmp(&a.1));
-
-    println!("All modules by usage ({} total):", sorted_all.len());
-    log!("All modules by usage ({} total):", sorted_all.len());
-    for (module, count) in sorted_all.iter() {
+    // Display modules
+    println!("\n=== Standard Library Modules Used ===\n");
+    log!("\n=== Standard Library Modules Used ===");
+    
+    let mut sorted_modules: Vec<_> = modules_only.into_iter().collect();
+    sorted_modules.sort_by(|a, b| b.1.cmp(&a.1));
+    
+    println!("Modules ({} total):", sorted_modules.len());
+    log!("Modules ({} total):", sorted_modules.len());
+    for (module, count) in sorted_modules.iter() {
         println!("  {:4} {}", count, module);
         log!("  {:4} {}", count, module);
+    }
+
+    // Display data types
+    println!("\n=== Standard Library Data Types Used ===\n");
+    log!("\n=== Standard Library Data Types Used ===");
+    
+    let mut sorted_types: Vec<_> = data_types_used.into_iter().collect();
+    sorted_types.sort_by(|a, b| b.1.cmp(&a.1));
+    
+    println!("Data types ({} total):", sorted_types.len());
+    log!("Data types ({} total):", sorted_types.len());
+    for (dtype, count) in sorted_types.iter() {
+        println!("  {:4} {}", count, dtype);
+        log!("  {:4} {}", count, dtype);
     }
 
     let elapsed = start.elapsed();
