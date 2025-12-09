@@ -398,9 +398,9 @@ fn main() -> Result<()> {
     let mut sorted_all: Vec<_> = all_modules.into_iter().collect();
     sorted_all.sort_by(|a, b| b.1.cmp(&a.1));
 
-    println!("Top 20 modules by usage:");
-    log!("Top 20 modules by usage:");
-    for (module, count) in sorted_all.iter().take(20) {
+    println!("All modules by usage ({} total):", sorted_all.len());
+    log!("All modules by usage ({} total):", sorted_all.len());
+    for (module, count) in sorted_all.iter() {
         println!("  {:4} {}", count, module);
         log!("  {:4} {}", count, module);
     }
