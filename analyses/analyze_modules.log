@@ -2,7 +2,7 @@ rusticate-analyze-modules --rust-libs
 ======================================
 Command: ./target/release/rusticate-analyze-modules -R
 Jobs: 4
-Started: Instant { tv_sec: 81893, tv_nsec: 504592953 }
+Started: Instant { tv_sec: 82606, tv_nsec: 744154435 }
 
 Stdlib path: /home/milnes/.rustup/toolchains/1.88.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library
 
@@ -65,8 +65,8 @@ Total functions: 17726
 Total public: 8370
 Total unsafe: 1408
 
-Completed in 360 ms.
-Finished: Instant { tv_sec: 81893, tv_nsec: 865567707 }
+Analysis completed in 327 ms.
+Finished: Instant { tv_sec: 82607, tv_nsec: 71327826 }
 
 
 === DETAILED FUNCTION INVENTORY ===
@@ -26002,3 +26002,6 @@ tests::windows::<standalone>
   - os_string_must_know_it_isnt_utf8_issue_126291
 
 === END INVENTORY ===
+
+Inventory output: 131 ms
+TOTAL TIME: 458 ms (0.46 seconds)

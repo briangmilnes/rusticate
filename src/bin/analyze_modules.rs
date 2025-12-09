@@ -401,7 +401,7 @@ fn count_functions_in_file(file: &Path, lib_root: &Path) -> Result<(usize, usize
 }
 
 fn count_stdlib_functions(jobs: usize) -> Result<()> {
-    let start = std::time::Instant::now();
+    let overall_start = std::time::Instant::now();
     
     // Set up logging FIRST
     let log_path = PathBuf::from("analyses/analyze_modules.log");
@@ -420,7 +420,7 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
     log!("======================================");
     log!("Command: {}", std::env::args().collect::<Vec<_>>().join(" "));
     log!("Jobs: {}", jobs);
-    log!("Started: {:?}\n", start);
+    log!("Started: {:?}\n", overall_start);
     
     println!("rusticate-analyze-modules --rust-libs");
     println!("======================================");
@@ -531,7 +531,7 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
         all_functions.extend(lib_functions);
     }
     
-    let elapsed = start.elapsed();
+    let elapsed = overall_start.elapsed();
     let standalone = total_fns - total_trait - total_impl;
     
     log!("\n=== SUMMARY ===");
@@ -542,7 +542,7 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
     log!("  In impls: {}", total_impl);
     log!("Total public: {}", total_pub);
     log!("Total unsafe: {}", total_unsafe);
-    log!("\nCompleted in {} ms.", elapsed.as_millis());
+    log!("\nAnalysis completed in {} ms.", elapsed.as_millis());
     log!("Finished: {:?}", std::time::Instant::now());
     
     println!("\n=== Summary ===");
@@ -553,10 +553,19 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
     println!("  In impls: {}", total_impl);
     println!("Total public: {}", total_pub);
     println!("Total unsafe: {}", total_unsafe);
-    println!("\nCompleted in {} ms.", elapsed.as_millis());
+    println!("\nAnalysis completed in {} ms.", elapsed.as_millis());
     
     // Output detailed function list organized by type
+    let inventory_start = std::time::Instant::now();
     output_function_inventory(&all_functions, &mut log_file)?;
+    let inventory_elapsed = inventory_start.elapsed();
+    
+    let total_elapsed = overall_start.elapsed();
+    log!("\nInventory output: {} ms", inventory_elapsed.as_millis());
+    log!("TOTAL TIME: {} ms ({:.2} seconds)", total_elapsed.as_millis(), total_elapsed.as_secs_f64());
+    
+    println!("\nInventory written to log");
+    println!("TOTAL TIME: {} ms ({:.2} seconds)", total_elapsed.as_millis(), total_elapsed.as_secs_f64());
     
     Ok(())
 }
