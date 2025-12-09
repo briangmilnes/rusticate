@@ -191,6 +191,29 @@ fn find_rust_files(dir: &Path) -> Vec<PathBuf> {
         .collect()
 }
 
+fn find_codebases(dir: &Path) -> Vec<PathBuf> {
+    // Find subdirectories that look like codebases (have Cargo.toml or .rs files)
+    let mut codebases = Vec::new();
+    
+    if let Ok(entries) = fs::read_dir(dir) {
+        for entry in entries.filter_map(|e| e.ok()) {
+            let path = entry.path();
+            if path.is_dir() {
+                // Check if this looks like a codebase
+                let has_cargo = path.join("Cargo.toml").exists();
+                let has_rust = find_rust_files(&path).len() > 0;
+                
+                if has_cargo || has_rust {
+                    codebases.push(path);
+                }
+            }
+        }
+    }
+    
+    codebases.sort();
+    codebases
+}
+
 fn main() -> Result<()> {
     let start = std::time::Instant::now();
     
@@ -225,11 +248,36 @@ fn main() -> Result<()> {
     }
     println!();
 
-    // Find all Rust files
+    // Check if this is a directory of codebases or a single codebase
+    let codebases = find_codebases(&args.codebase);
+    
+    let codebases_to_analyze = if codebases.is_empty() {
+        // Single codebase - analyze the given path directly
+        vec![args.codebase.clone()]
+    } else {
+        // Multiple codebases - apply -m limit
+        println!("Found {} codebases", codebases.len());
+        log!("Found {} codebases", codebases.len());
+        
+        let mut limited = codebases;
+        if let Some(max) = args.max_codebases {
+            limited.truncate(max);
+            println!("Limiting to {} codebases", limited.len());
+            log!("Limiting to {} codebases", limited.len());
+        }
+        println!();
+        log!("");
+        limited
+    };
+
+    // Find all Rust files across selected codebases
     println!("Finding Rust files...");
-    let rust_files = find_rust_files(&args.codebase);
-    println!("Found {} Rust files", rust_files.len());
-    log!("Found {} Rust files\n", rust_files.len());
+    let mut rust_files = Vec::new();
+    for codebase in &codebases_to_analyze {
+        rust_files.extend(find_rust_files(codebase));
+    }
+    println!("Found {} Rust files across {} codebases", rust_files.len(), codebases_to_analyze.len());
+    log!("Found {} Rust files across {} codebases\n", rust_files.len(), codebases_to_analyze.len());
 
     // Collect module usage
     let mut module_usage: Vec<ModuleUsage> = Vec::new();
