@@ -30,6 +30,7 @@ struct Args {
     max_codebases: Option<usize>,
     jobs: usize,
     rust_libs: bool,
+    usage_analysis: bool,  // Compile projects and count stdlib usage from MIR
 }
 
 impl Args {
@@ -39,6 +40,7 @@ impl Args {
         let mut max_codebases = None;
         let mut jobs = 4;
         let mut rust_libs = false;
+        let mut usage_analysis = false;
 
         while let Some(arg) = args_iter.next() {
             match arg.as_str() {
@@ -70,6 +72,12 @@ impl Args {
                 "-R" | "--rust-libs" => {
                     rust_libs = true;
                 }
+                "-U" | "--usage" => {
+                    usage_analysis = true;
+                }
+                "-U" | "--usage" => {
+                    usage_analysis = true;
+                }
                 "-h" | "--help" => {
                     print_help();
                     std::process::exit(0);
@@ -83,6 +91,11 @@ impl Args {
         // Fail fast: need either -C or -R
         if codebase.is_none() && !rust_libs {
             bail!("Must specify either -C/--codebase or -R/--rust-libs\nRun with --help for usage");
+        }
+        
+        // -U requires -C
+        if usage_analysis && codebase.is_none() {
+            bail!("-U/--usage requires -C/--codebase\nRun with --help for usage");
         }
 
         // Validate codebase path if provided
@@ -100,6 +113,7 @@ impl Args {
             max_codebases,
             jobs,
             rust_libs,
+            usage_analysis,
         })
     }
 }
@@ -109,18 +123,21 @@ fn print_help() {
         r#"rusticate-analyze-modules - Analyze module usage in codebases
 
 USAGE:
-    rusticate-analyze-modules -C <PATH> [-m <N>] [-j <N>]
+    rusticate-analyze-modules -C <PATH> [-m <N>] [-j <N>] [-U]
     rusticate-analyze-modules -R [-j <N>]
 
 OPTIONS:
     -C, --codebase <PATH>       Path to a codebase, or a directory of codebases
     -R, --rust-libs             Parse Rust stdlib (std/core/alloc) and count all functions
+    -U, --usage                 Compile projects and analyze actual function usage from MIR
     -m, --max-codebases <N>     Limit number of codebases to analyze (default: unlimited)
-    -j, --jobs <N>              Number of parallel threads (default: 4)
+    -j, --jobs <N>              Number of parallel threads (default: 4, use 1 for -U)
     -h, --help                  Print this help message
 
 MODES:
-    Either -C (analyze codebases) or -R (analyze Rust stdlib) is required.
+    -C: Analyze what modules/types are imported (fast, parse-only)
+    -C -U: Compile and analyze actual function calls (slow, requires cargo build)
+    -R: Generate stdlib function inventory
 
 DESCRIPTION:
     Analyzes which modules are used in Rust codebases. Filters out wrapper
@@ -681,6 +698,172 @@ fn find_codebases(dir: &Path) -> Vec<PathBuf> {
     codebases
 }
 
+fn check_mir_exists(project_path: &Path) -> bool {
+    let target_dir = project_path.join("target/debug/deps");
+    if !target_dir.exists() {
+        return false;
+    }
+    
+    // Check if any .mir files exist
+    if let Ok(entries) = fs::read_dir(&target_dir) {
+        for entry in entries.flatten() {
+            if entry.path().extension().and_then(|s| s.to_str()) == Some("mir") {
+                return true;
+            }
+        }
+    }
+    false
+}
+
+fn compile_with_mir(project_path: &Path) -> Result<()> {
+    println!("  Compiling with MIR emission...");
+    
+    let output = std::process::Command::new("cargo")
+        .arg("build")
+        .current_dir(project_path)
+        .env("RUSTFLAGS", "--emit=mir")
+        .output()
+        .context("Failed to run cargo build")?;
+    
+    if !output.status.success() {
+        let stderr = String::from_utf8_lossy(&output.stderr);
+        bail!("Cargo build failed:\n{}", stderr);
+    }
+    
+    Ok(())
+}
+
+fn parse_mir_file(mir_path: &Path) -> Result<Vec<String>> {
+    let content = fs::read_to_string(mir_path)
+        .with_context(|| format!("Failed to read MIR file: {}", mir_path.display()))?;
+    
+    let mut calls = Vec::new();
+    
+    // Parse lines looking for function calls
+    // Format: _N = Type::<Generics>::method(...) -> [...]
+    for line in content.lines() {
+        let line = line.trim();
+        
+        // Look for stdlib function calls
+        if line.contains("std::") || line.contains("core::") || line.contains("alloc::") {
+            // Extract function call: Type::<...>::method
+            if let Some(eq_pos) = line.find('=') {
+                let after_eq = &line[eq_pos + 1..].trim();
+                
+                // Extract up to the opening paren or arrow
+                if let Some(end) = after_eq.find('(').or_else(|| after_eq.find(" ->")) {
+                    let call = after_eq[..end].trim();
+                    
+                    // Filter for stdlib calls
+                    if call.starts_with("std::") || call.starts_with("core::") || call.starts_with("alloc::") ||
+                       call.starts_with("<std::") || call.starts_with("<core::") || call.starts_with("<alloc::") {
+                        calls.push(call.to_string());
+                    }
+                }
+            }
+        }
+    }
+    
+    Ok(calls)
+}
+
+fn analyze_usage(codebase: &Path, max_codebases: Option<usize>, _jobs: usize) -> Result<()> {
+    let overall_start = std::time::Instant::now();
+    
+    println!("rusticate-analyze-modules --usage");
+    println!("==================================");
+    println!("Codebase: {}", codebase.display());
+    println!();
+    
+    // Check if this is a single project or directory of projects
+    let mut codebases = if codebase.join("Cargo.toml").exists() {
+        // Single project
+        vec![codebase.to_path_buf()]
+    } else {
+        // Directory of projects
+        find_codebases(codebase)
+    };
+    
+    if codebases.is_empty() {
+        bail!("No Rust projects found in {}", codebase.display());
+    }
+    
+    // Apply max limit
+    if let Some(max) = max_codebases {
+        println!("Limiting to {} codebases", max);
+        codebases.truncate(max);
+    }
+    
+    println!("Processing {} projects (-j 1)...\n", codebases.len());
+    
+    let mut total_calls = 0;
+    let mut projects_with_mir = 0;
+    let mut projects_compiled = 0;
+    let mut all_stdlib_calls: std::collections::HashMap<String, usize> = std::collections::HashMap::new();
+    
+    for (idx, project) in codebases.iter().enumerate() {
+        println!("[{}/{}] {}", idx + 1, codebases.len(), project.file_name().unwrap().to_string_lossy());
+        
+        // Check if MIR exists
+        let has_mir = check_mir_exists(project);
+        
+        if has_mir {
+            println!("  MIR files found, reusing...");
+            projects_with_mir += 1;
+        } else {
+            // Compile with MIR
+            match compile_with_mir(project) {
+                Ok(_) => {
+                    println!("  Compilation successful");
+                    projects_compiled += 1;
+                }
+                Err(e) => {
+                    println!("  Compilation failed: {}", e);
+                    continue;
+                }
+            }
+        }
+        
+        // Parse MIR files
+        let target_dir = project.join("target/debug/deps");
+        if let Ok(entries) = fs::read_dir(&target_dir) {
+            for entry in entries.flatten() {
+                if entry.path().extension().and_then(|s| s.to_str()) == Some("mir") {
+                    if let Ok(calls) = parse_mir_file(&entry.path()) {
+                        for call in calls {
+                            *all_stdlib_calls.entry(call).or_insert(0) += 1;
+                            total_calls += 1;
+                        }
+                    }
+                }
+            }
+        }
+        
+        println!();
+    }
+    
+    let elapsed = overall_start.elapsed();
+    
+    println!("\n=== Summary ===");
+    println!("Projects processed: {}", codebases.len());
+    println!("  MIR reused: {}", projects_with_mir);
+    println!("  Compiled: {}", projects_compiled);
+    println!("Total stdlib calls found: {}", total_calls);
+    println!("Unique stdlib functions: {}", all_stdlib_calls.len());
+    println!("\nTop 20 most called:");
+    
+    let mut calls_vec: Vec<_> = all_stdlib_calls.iter().collect();
+    calls_vec.sort_by(|a, b| b.1.cmp(a.1));
+    
+    for (call, count) in calls_vec.iter().take(20) {
+        println!("  {:6} {}", count, call);
+    }
+    
+    println!("\nTOTAL TIME: {} ms ({:.2} seconds)", elapsed.as_millis(), elapsed.as_secs_f64());
+    
+    Ok(())
+}
+
 fn main() -> Result<()> {
     let start = std::time::Instant::now();
     
@@ -694,6 +877,11 @@ fn main() -> Result<()> {
 
     // Must have codebase for normal mode
     let codebase = args.codebase.context("Codebase required for non -R mode")?;
+    
+    // Handle -U mode (usage analysis with compilation)
+    if args.usage_analysis {
+        return analyze_usage(&codebase, args.max_codebases, args.jobs);
+    }
 
     // Set up logging
     let log_path = PathBuf::from("analyses/analyze_modules.log");
