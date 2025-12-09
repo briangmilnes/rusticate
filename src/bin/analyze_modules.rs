@@ -324,11 +324,31 @@ fn count_functions_in_file(file: &Path) -> Result<(usize, usize, usize, usize, u
 fn count_stdlib_functions(jobs: usize) -> Result<()> {
     let start = std::time::Instant::now();
     
+    // Set up logging FIRST
+    let log_path = PathBuf::from("analyses/analyze_modules.log");
+    fs::create_dir_all("analyses")?;
+    let mut log_file = fs::File::create(&log_path)
+        .context("Failed to create log file")?;
+
+    macro_rules! log {
+        ($($arg:tt)*) => {
+            writeln!(log_file, $($arg)*).ok();
+        };
+    }
+    
+    // Log header
+    log!("rusticate-analyze-modules --rust-libs");
+    log!("======================================");
+    log!("Command: {}", std::env::args().collect::<Vec<_>>().join(" "));
+    log!("Jobs: {}", jobs);
+    log!("Started: {:?}\n", start);
+    
     println!("rusticate-analyze-modules --rust-libs");
     println!("======================================");
     println!("Finding Rust stdlib source...\n");
     
     let stdlib_path = find_rust_stdlib()?;
+    log!("Stdlib path: {}", stdlib_path.display());
     println!("Found: {}\n", stdlib_path.display());
     
     // Analyze std, core, alloc, proc_macro, test
@@ -353,8 +373,11 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
             continue;
         }
         
+        log!("\nAnalyzing {}...", lib_name);
+        log!("  Path: {}", lib_path.display());
         println!("Analyzing {}...", lib_name);
         let files = find_rust_files(&lib_path);
+        log!("  Files: {}", files.len());
         println!("  {} files", files.len());
         
         // Parse files in parallel using chunks
@@ -403,6 +426,13 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
         }
         
         let standalone = lib_total - lib_trait - lib_impl;
+        log!("  Total functions: {}", lib_total);
+        log!("    Standalone: {}", standalone);
+        log!("    In traits: {}", lib_trait);
+        log!("    In impls: {}", lib_impl);
+        log!("  Public: {}", lib_pub);
+        log!("  Unsafe: {}", lib_unsafe);
+        
         println!("  {} total functions ({} standalone, {} in traits, {} in impls)", 
                  lib_total, standalone, lib_trait, lib_impl);
         println!("    {} public, {} unsafe", lib_pub, lib_unsafe);
@@ -416,6 +446,18 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
     
     let elapsed = start.elapsed();
     let standalone = total_fns - total_trait - total_impl;
+    
+    log!("\n=== SUMMARY ===");
+    log!("Total files: {}", total_files);
+    log!("Total functions: {}", total_fns);
+    log!("  Standalone: {}", standalone);
+    log!("  In traits: {}", total_trait);
+    log!("  In impls: {}", total_impl);
+    log!("Total public: {}", total_pub);
+    log!("Total unsafe: {}", total_unsafe);
+    log!("\nCompleted in {} ms.", elapsed.as_millis());
+    log!("Finished: {:?}", std::time::Instant::now());
+    
     println!("\n=== Summary ===");
     println!("Total files: {}", total_files);
     println!("Total functions: {}", total_fns);
