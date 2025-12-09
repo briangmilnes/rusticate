@@ -347,3 +347,7 @@ path = "src/bin/review_test_functions.rs"
 [[bin]]
 name = "review-summary-accuracy"
 path = "src/bin/review_summary_accuracy.rs"
+
+[[bin]]
+name = "rusticate-download-rust-codebases"
+path = "src/bin/download_rust_codebases.rs"
