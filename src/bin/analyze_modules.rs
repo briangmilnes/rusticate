@@ -26,9 +26,10 @@ const WRAPPER_CRATES: &[&str] = &[
 ];
 
 struct Args {
-    codebase: PathBuf,
+    codebase: Option<PathBuf>,
     max_codebases: Option<usize>,
     jobs: usize,
+    rust_libs: bool,
 }
 
 impl Args {
@@ -37,6 +38,7 @@ impl Args {
         let mut codebase = None;
         let mut max_codebases = None;
         let mut jobs = 4;
+        let mut rust_libs = false;
 
         while let Some(arg) = args_iter.next() {
             match arg.as_str() {
@@ -65,6 +67,9 @@ impl Args {
                         bail!("--jobs must be at least 1");
                     }
                 }
+                "-R" | "--rust-libs" => {
+                    rust_libs = true;
+                }
                 "-h" | "--help" => {
                     print_help();
                     std::process::exit(0);
@@ -75,25 +80,26 @@ impl Args {
             }
         }
 
-        // Fail fast on missing required argument
-        let codebase = codebase.context(
-            "Missing required argument: -C/--codebase\nRun with --help for usage"
-        )?;
-
-        // Fail fast if path doesn't exist
-        if !codebase.exists() {
-            bail!("Codebase path does not exist: {}", codebase.display());
+        // Fail fast: need either -C or -R
+        if codebase.is_none() && !rust_libs {
+            bail!("Must specify either -C/--codebase or -R/--rust-libs\nRun with --help for usage");
         }
 
-        // Fail fast if not a directory
-        if !codebase.is_dir() {
-            bail!("Codebase path is not a directory: {}", codebase.display());
+        // Validate codebase path if provided
+        if let Some(ref cb) = codebase {
+            if !cb.exists() {
+                bail!("Codebase path does not exist: {}", cb.display());
+            }
+            if !cb.is_dir() {
+                bail!("Codebase path is not a directory: {}", cb.display());
+            }
         }
 
         Ok(Args { 
             codebase,
             max_codebases,
             jobs,
+            rust_libs,
         })
     }
 }
@@ -104,12 +110,17 @@ fn print_help() {
 
 USAGE:
     rusticate-analyze-modules -C <PATH> [-m <N>] [-j <N>]
+    rusticate-analyze-modules -R [-j <N>]
 
 OPTIONS:
-    -C, --codebase <PATH>       Path to a codebase, or a directory of codebases [required]
+    -C, --codebase <PATH>       Path to a codebase, or a directory of codebases
+    -R, --rust-libs             Parse Rust stdlib (std/core/alloc) and count all functions
     -m, --max-codebases <N>     Limit number of codebases to analyze (default: unlimited)
     -j, --jobs <N>              Number of parallel threads (default: 4)
     -h, --help                  Print this help message
+
+MODES:
+    Either -C (analyze codebases) or -R (analyze Rust stdlib) is required.
 
 DESCRIPTION:
     Analyzes which modules are used in Rust codebases. Filters out wrapper
@@ -234,6 +245,132 @@ fn is_wrapper_crate(path: &str) -> bool {
     false
 }
 
+fn count_functions_in_file(file: &Path) -> Result<(usize, usize, usize)> {
+    let content = fs::read_to_string(file)
+        .with_context(|| format!("Failed to read: {}", file.display()))?;
+    
+    let parse = match parse_file(&content) {
+        Ok(p) => p,
+        Err(_) => return Ok((0, 0, 0)), // Skip files with parse errors
+    };
+    
+    let root = parse.syntax();
+    let mut pub_count = 0;
+    let mut unsafe_count = 0;
+    let mut total_fns = 0;
+    
+    // Walk AST looking for items that might contain functions
+    for item_node in root.descendants() {
+        if item_node.kind() == SyntaxKind::FN {
+            if let Some(fn_node) = ast::Fn::cast(item_node.clone()) {
+                total_fns += 1;
+                
+                // Check if unsafe
+                if fn_node.unsafe_token().is_some() {
+                    unsafe_count += 1;
+                }
+                
+                // Check visibility: VISIBILITY token is a child of the FN node itself
+                let is_pub = item_node.children_with_tokens().any(|child| {
+                    child.kind() == SyntaxKind::VISIBILITY
+                });
+                
+                if is_pub {
+                    pub_count += 1;
+                }
+            }
+        }
+    }
+    
+    Ok((pub_count, unsafe_count, total_fns))
+}
+
+fn count_stdlib_functions(jobs: usize) -> Result<()> {
+    let start = std::time::Instant::now();
+    
+    println!("rusticate-analyze-modules --rust-libs");
+    println!("======================================");
+    println!("Finding Rust stdlib source...\n");
+    
+    let stdlib_path = find_rust_stdlib()?;
+    println!("Found: {}\n", stdlib_path.display());
+    
+    // Analyze std, core, alloc, proc_macro, test
+    let libs = vec![
+        ("std", stdlib_path.join("std")),
+        ("core", stdlib_path.join("core")),
+        ("alloc", stdlib_path.join("alloc")),
+        ("proc_macro", stdlib_path.join("proc_macro")),
+        ("test", stdlib_path.join("test")),
+    ];
+    
+    let mut total_pub = 0;
+    let mut total_unsafe = 0;
+    let mut total_files = 0;
+    
+    for (lib_name, lib_path) in libs {
+        if !lib_path.exists() {
+            println!("Warning: {} not found at {}", lib_name, lib_path.display());
+            continue;
+        }
+        
+        println!("Analyzing {}...", lib_name);
+        let files = find_rust_files(&lib_path);
+        println!("  {} files", files.len());
+        
+        // Parse files in parallel using chunks
+        let chunk_size = (files.len() + jobs - 1) / jobs;
+        let chunks: Vec<_> = files.chunks(chunk_size).map(|c| c.to_vec()).collect();
+        
+        let handles: Vec<_> = chunks
+            .into_iter()
+            .enumerate()
+            .map(|(chunk_idx, chunk)| {
+                std::thread::spawn(move || {
+                    let mut pub_count = 0;
+                    let mut unsafe_count = 0;
+                    let mut total_count = 0;
+                    
+                    for file in chunk.iter() {
+                        if let Ok((pub_fns, unsafe_fns, total_fns)) = count_functions_in_file(file) {
+                            pub_count += pub_fns;
+                            unsafe_count += unsafe_fns;
+                            total_count += total_fns;
+                        }
+                    }
+                    
+                    (pub_count, unsafe_count, total_count)
+                })
+            })
+            .collect();
+        
+        // Merge results
+        let mut lib_pub = 0;
+        let mut lib_unsafe = 0;
+        let mut lib_total = 0;
+        for handle in handles {
+            let (pub_fns, unsafe_fns, total_fns) = handle.join().unwrap();
+            lib_pub += pub_fns;
+            lib_unsafe += unsafe_fns;
+            lib_total += total_fns;
+        }
+        
+        println!("  {} total functions ({} public, {} unsafe)", lib_total, lib_pub, lib_unsafe);
+        total_pub += lib_pub;
+        total_unsafe += lib_unsafe;
+        total_files += files.len();
+    }
+    
+    let elapsed = start.elapsed();
+    println!("\n=== Summary ===");
+    println!("Total files: {}", total_files);
+    println!("Total public functions: {}", total_pub);
+    println!("Total unsafe functions: {}", total_unsafe);
+    println!("\nCompleted in {} ms.", elapsed.as_millis());
+    
+    Ok(())
+}
+
 fn find_rust_files(dir: &Path) -> Vec<PathBuf> {
     WalkDir::new(dir)
         .into_iter()
@@ -244,6 +381,40 @@ fn find_rust_files(dir: &Path) -> Vec<PathBuf> {
         })
         .map(|e| e.path().to_path_buf())
         .collect()
+}
+
+fn find_rust_stdlib() -> Result<PathBuf> {
+    // Try rustup sysroot first
+    let output = std::process::Command::new("rustc")
+        .arg("--print")
+        .arg("sysroot")
+        .output();
+    
+    if let Ok(output) = output {
+        if output.status.success() {
+            let sysroot = String::from_utf8_lossy(&output.stdout).trim().to_string();
+            let stdlib_path = PathBuf::from(sysroot)
+                .join("lib/rustlib/src/rust/library");
+            
+            if stdlib_path.exists() {
+                return Ok(stdlib_path);
+            }
+        }
+    }
+    
+    // Try ~/projects/rust
+    let home = std::env::var("HOME").unwrap_or_else(|_| "/home".to_string());
+    let projects_rust = PathBuf::from(home).join("projects/rust/library");
+    
+    if projects_rust.exists() {
+        return Ok(projects_rust);
+    }
+    
+    bail!(
+        "Rust stdlib source not found!\n\
+        Install with: rustup component add rust-src\n\
+        Or clone to: ~/projects/rust"
+    );
 }
 
 fn find_codebases(dir: &Path) -> Vec<PathBuf> {
@@ -275,6 +446,14 @@ fn main() -> Result<()> {
     // Parse args with fail-fast validation
     let args = Args::parse()?;
 
+    // Handle -R mode separately
+    if args.rust_libs {
+        return count_stdlib_functions(args.jobs);
+    }
+
+    // Must have codebase for normal mode
+    let codebase = args.codebase.context("Codebase required for non -R mode")?;
+
     // Set up logging
     let log_path = PathBuf::from("analyses/analyze_modules.log");
     fs::create_dir_all("analyses")?;
@@ -290,14 +469,14 @@ fn main() -> Result<()> {
     log!("rusticate-analyze-modules");
     log!("Command: {}", std::env::args().collect::<Vec<_>>().join(" "));
     log!("Codebase: {} | Max: {} | Jobs: {} | Started: {:?}", 
-        args.codebase.display(), 
+        codebase.display(), 
         args.max_codebases.map_or("unlimited".to_string(), |m| m.to_string()),
         args.jobs,
         start);
 
     println!("rusticate-analyze-modules");
     println!("==========================");
-    println!("Codebase: {}", args.codebase.display());
+    println!("Codebase: {}", codebase.display());
     if let Some(max) = args.max_codebases {
         println!("Max codebases: {}", max);
     }
@@ -305,11 +484,11 @@ fn main() -> Result<()> {
     println!();
 
     // Check if this is a directory of codebases or a single codebase
-    let codebases = find_codebases(&args.codebase);
+    let codebases = find_codebases(&codebase);
     
     let codebases_to_analyze = if codebases.is_empty() {
         // Single codebase - analyze the given path directly
-        vec![args.codebase.clone()]
+        vec![codebase.clone()]
     } else {
         // Multiple codebases - apply -m limit
         println!("Found {} codebases", codebases.len());

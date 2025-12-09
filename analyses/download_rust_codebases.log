@@ -1,0 +1,1111 @@
+rusticate-download-rust-codebases
+Started at: Instant { tv_sec: 61917, tv_nsec: 55522505 }
+Settings:
+  Input: analyses/top1100_unique_repos.txt
+  Output: /home/milnes/projects/RustCodebases
+  Jobs: 8
+  Shallow: true
+  GitHub only: true
+  Skip existing: true
+  Dry run: false
+  Max repos: None
+  Start at: 0
+
+Loaded 1087 repositories
+
+Cloning 1087 repositories with 8 parallel jobs...
+
+[T1] ⊘ Skipped 1: mgeisler/textwrap (already exists)
+[T0] ⊘ Skipped 2: dtolnay/syn (already exists)
+[T1] ⊘ Skipped 3: Actyx/sync_wrapper (already exists)
+[T0] ⊘ Skipped 4: rust-lang/hashbrown (already exists)
+[T1] ⊘ Skipped 5: RustCrypto/MACs (already exists)
+[T0] ⊘ Skipped 6: bitflags/bitflags (already exists)
+[T1] ⊘ Skipped 7: rayon-rs/rayon (already exists)
+[T0] ⊘ Skipped 8: dtolnay/proc-macro2 (already exists)
+[T2] ⊘ Skipped 9: open-telemetry/opentelemetry-rust (already exists)
+[T1] ⊘ Skipped 10: smol-rs/event-listener (already exists)
+[T0] ⊘ Skipped 11: dtolnay/quote (already exists)
+[T3] ⊘ Skipped 14: algesten/ureq (already exists)
+[T2] ⊘ Skipped 13: steffengy/schannel-rs (already exists)
+[T1] ⊘ Skipped 12: Alexhuszagh/minimal-lexical (already exists)
+[T0] ⊘ Skipped 15: marshallpierce/rust-base64 (already exists)
+[T3] ⊘ Skipped 16: jni-rs/jni-rs (already exists)
+[T0] ⊘ Skipped 19: rust-lang/libc (already exists)
+[T3] ⊘ Skipped 20: DimaKudosh/difflib (already exists)
+[T3] ⊘ Skipped 21: brendanzab/approx (already exists)
+[T0] ⊘ Skipped 22: rust-random/rand (already exists)
+[T2] ⊘ Skipped 17: contain-rs/vec-map (already exists)
+[T3] ⊘ Skipped 23: brendanzab/codespan (already exists)
+[T4] ⊘ Skipped 24: nukesor/comfy-table (already exists)
+[T3] ⊘ Skipped 27: metrics-rs/quanta (already exists)
+[T4] ⊘ Skipped 28: BurntSushi/jiff (already exists)
+[T0] ⊘ Skipped 25: rust-random/getrandom (already exists)
+[T4] ⊘ Skipped 30: taiki-e/const_fn (already exists)
+[T3] ⊘ Skipped 29: emilio/precomputed-hash (already exists)
+[T4] ⊘ Skipped 33: rust-lang-nursery/error-chain (already exists)
+[T0] ⊘ Skipped 31: rust-lang/regex (already exists)
+[T4] ⊘ Skipped 35: oconnor663/os_pipe.rs (already exists)
+[T0] ⊘ Skipped 36: indexmap-rs/indexmap (already exists)
+[T4] ⊘ Skipped 37: dtolnay/cxx (already exists)
+[T0] ⊘ Skipped 38: rust-itertools/itertools (already exists)
+[T4] ⊘ Skipped 39: google/flatbuffers (already exists)
+[T2] ⊘ Skipped 26: sunfishcode/io-lifetimes (already exists)
+[T5] ⊘ Skipped 32: Lokathor/safe_arch (already exists)
+[T2] ⊘ Skipped 42: rust-random/rngs (already exists)
+[T3] ⊘ Skipped 34: dcchut/async-recursion (already exists)
+[T0] ⊘ Skipped 40: rust-lang/cfg-if (already exists)
+[T4] ⊘ Skipped 41: dtolnay/link-cplusplus (already exists)
+[T1] ⊘ Skipped 18: krisprice/ipnet (already exists)
+[T5] ⊘ Skipped 43: servo/tendril (already exists)
+[T2] ⊘ Skipped 44: kyren/hashlink (already exists)
+[T3] ⊘ Skipped 45: rusticstuff/simdutf8 (already exists)
+[T0] ⊘ Skipped 46: serde-rs/serde (already exists)
+[T4] ⊘ Skipped 47: EmbarkStudios/cfg-expr (already exists)
+[T1] ⊘ Skipped 48: chronotope/humantime (already exists)
+[T5] ⊘ Skipped 49: conradkleinespel/rpassword (already exists)
+[T2] ⊘ Skipped 50: kornelski/rust_urlencoding (already exists)
+[T3] ⊘ Skipped 51: sval-rs/value-bag (already exists)
+[T2] ⊘ Skipped 56: japaric/cast.rs (already exists)
+[T4] ⊘ Skipped 53: r-efi/r-efi (already exists)
+[T1] ⊘ Skipped 54: unicode-rs/unicode-segmentation (already exists)
+[T5] ⊘ Skipped 55: stanislav-tkach/os_info (already exists)
+[T0] ⊘ Skipped 52: cuviper/autocfg (already exists)
+[T3] ⊘ Skipped 57: RustCrypto/sponges (already exists)
+[T2] ⊘ Skipped 58: RustCrypto/password-hashes (already exists)
+[T4] ⊘ Skipped 59: sfackler/fallible-streaming-iterator (already exists)
+[T1] ⊘ Skipped 60: alacritty/vte (already exists)
+[T1] ⊘ Skipped 66: mystor/synstructure (already exists)
+[T1] ⊘ Skipped 67: tokio-rs/prost (already exists)
+[T1] ⊘ Skipped 68: nagisa/rust_libloading (already exists)
+[T3] ⊘ Skipped 63: daxpedda/web-time (already exists)
+[T2] ⊘ Skipped 64: smol-rs/async-io (already exists)
+[T4] ⊘ Skipped 65: mgeisler/smawk (already exists)
+[T5] ⊘ Skipped 61: addr-rs/psl-types (already exists)
+[T4] ⊘ Skipped 72: redis-rs/redis-rs (already exists)
+[T0] ⊘ Skipped 62: BurntSushi/memchr (already exists)
+[T1] ⊘ Skipped 69: alexcrichton/openssl-probe (already exists)
+[T3] ⊘ Skipped 70: mitsuhiko/sha1-smol (already exists)
+[T1] ⊘ Skipped 76: retep998/winapi-rs (already exists)
+[T2] ⊘ Skipped 71: SimonSapin/rust-utf8 (already exists)
+[T3] ⊘ Skipped 77: rust-random/rand_distr (already exists)
+[T2] ⊘ Skipped 79: dropbox/rust-brotli (already exists)
+[T3] ⊘ Skipped 80: chronotope/chrono-tz (already exists)
+[T2] ⊘ Skipped 81: pyo3/pyo3 (already exists)
+[T4] ⊘ Skipped 74: Absolucy/nanorand-rs (already exists)
+[T0] ⊘ Skipped 75: dtolnay/itoa (already exists)
+[T1] ⊘ Skipped 78: bkchr/proc-macro-crate (already exists)
+[T0] ⊘ Skipped 85: dtolnay/thiserror (already exists)
+[T1] ⊘ Skipped 86: rust-lang/jobserver-rs (already exists)
+[T0] ⊘ Skipped 87: dtolnay/unicode-ident (already exists)
+[T1] ⊘ Skipped 88: fitzgen/bumpalo (already exists)
+[T0] ⊘ Skipped 89: serde-rs/json (already exists)
+[T1] ⊘ Skipped 90: rust-openssl/rust-openssl (already exists)
+[T0] ⊘ Skipped 91: withoutboats/heck (already exists)
+[T1] ⊘ Skipped 92: rust-phf/rust-phf (already exists)
+[T0] ⊘ Skipped 93: rust-lang/log (already exists)
+[T5] ⊘ Skipped 73: LukeMathWalker/wiremock-rs (already exists)
+[T3] ⊘ Skipped 82: iqlusioninc/crates (already exists)
+[T2] ⊘ Skipped 83: dtolnay/unsafe-libyaml (already exists)
+[T4] ⊘ Skipped 84: oliver-giersch/tagptr (already exists)
+[T1] ⊘ Skipped 94: nvzqz/static-assertions-rs (already exists)
+[T1] ⊘ Skipped 100: hawkw/sharded-slab (already exists)
+[T0] ⊘ Skipped 95: matklad/once_cell (already exists)
+[T3] ⊘ Skipped 97: rkyv/ptr_meta (already exists)
+[T2] ⊘ Skipped 98: Marwes/combine (already exists)
+[T3] ⊘ Skipped 103: whatisinternet/inflector (already exists)
+[T2] ⊘ Skipped 104: dropbox/rust-brotli-decompressor (already exists)
+[T3] ⊘ Skipped 105: getsentry/rust-debugid (already exists)
+[T2] ⊘ Skipped 106: RustCrypto/crypto-bigint (already exists)
+[T3] ⊘ Skipped 107: RustCrypto/elliptic-curves (already exists)
+[T2] ⊘ Skipped 108: gentoo90/winreg-rs (already exists)
+[T3] ⊘ Skipped 109: 3Hren/msgpack-rust (already exists)
+[T4] ⊘ Skipped 99: dimforge/nalgebra (already exists)
+[T3] ⊘ Skipped 111: RustCrypto/AEADs (already exists)
+[T1] ⊘ Skipped 101: petgraph/petgraph (already exists)
+[T3] ⊘ Skipped 113: Detegr/rust-ctrlc (already exists)
+[T5] ⊘ Skipped 96: servo/futf (already exists)
+[T3] ⊘ Skipped 115: altsysrq/rusty-fork (already exists)
+[T0] ⊘ Skipped 102: rust-lang/cc-rs (already exists)
+[T3] ⊘ Skipped 117: hannobraun/inotify (already exists)
+[T4] ⊘ Skipped 112: someguynamedjosh/ouroboros (already exists)
+[T3] ⊘ Skipped 119: rusticata/der-parser (already exists)
+[T1] ⊘ Skipped 114: storyyeller/stable_deref_trait (already exists)
+[T3] ⊘ Skipped 121: soc/option-ext (already exists)
+[T1] ⊘ Skipped 122: jedisct1/rust-siphash (already exists)
+[T3] ⊘ Skipped 123: arcnmx/serde-value (already exists)
+[T1] ⊘ Skipped 124: rutrum/convert-case (already exists)
+[T3] ⊘ Skipped 125: TeXitoi/structopt (already exists)
+[T1] ⊘ Skipped 126: petgraph/fixedbitset (already exists)
+[T2] ⊘ Skipped 110: SergioBenitez/yansi (already exists)
+[T0] ⊘ Skipped 118: dtolnay/ryu (already exists)
+[T4] ⊘ Skipped 120: gimli-rs/cpp_demangle (already exists)
+[T4] ⊘ Skipped 131: rust-analyzer/smol_str (already exists)
+[T5] ⊘ Skipped 116: zkat/miette (already exists)
+[T5] ⊘ Skipped 133: reem/rust-mac (already exists)
+[T1] ⊘ Skipped 128: softprops/atty (already exists)
+[T5] ⊘ Skipped 134: rushmorem/publicsuffix (already exists)
+[T0] ⊘ Skipped 130: clap-rs/clap (already exists)
+[T4] ⊘ Skipped 132: moka-rs/moka (already exists)
+[T4] ⊘ Skipped 137: GnomedDev/proc-macro-error-2 (already exists)
+[T3] ⊘ Skipped 127: rust-fuzz/arbitrary (already exists)
+[T2] ⊘ Skipped 129: mcarton/rust-derivative (already exists)
+[T1] ⊘ Skipped 135: jhpratt/deranged (already exists)
+[T5] ⊘ Skipped 136: nagisa/rust_rdrand (already exists)
+[T0] ⊘ Skipped 138: BurntSushi/aho-corasick (already exists)
+[T4] ⊘ Skipped 139: dtolnay/seq-macro (already exists)
+[T4] ⊘ Skipped 145: zowens/crc32c (already exists)
+[T3] ⊘ Skipped 140: rusticata/x509-parser (already exists)
+[T2] ⊘ Skipped 141: bheisler/TinyTemplate (already exists)
+[T3] ⊘ Skipped 147: rust-lang/git2-rs (already exists)
+[T1] ⊘ Skipped 142: wasm-bindgen/wasm-bindgen (already exists)
+[T3] ⊘ Skipped 149: bluss/matrixmultiply (already exists)
+[T1] ⊘ Skipped 150: harryfei/which-rs (already exists)
+[T3] ⊘ Skipped 151: MarcusGrass/parse-range-headers (already exists)
+[T1] ⊘ Skipped 152: jonas-schievink/adler (already exists)
+[T3] ⊘ Skipped 153: rusticata/oid-registry (already exists)
+[T1] ⊘ Skipped 154: sfackler/foreign-types (already exists)
+[T2] ⊘ Skipped 148: tokio-rs/valuable (already exists)
+[T2] ⊘ Skipped 157: debris/tiny-keccak (already exists)
+[T5] ⊘ Skipped 143: octplane/fsevent-rust (already exists)
+[T0] ⊘ Skipped 144: servo/rust-smallvec (already exists)
+[T4] ⊘ Skipped 146: gilnaa/globwalk (already exists)
+[T4] ⊘ Skipped 161: danburkert/fs2-rs (already exists)
+[T4] ⊘ Skipped 162: Amanieu/atomic-rs (already exists)
+[T1] ⊘ Skipped 156: rustls/rustls-native-certs (already exists)
+[T2] ⊘ Skipped 158: dtolnay/proc-macro-hack (already exists)
+[T2] ⊘ Skipped 165: oli-obk/cargo_metadata (already exists)
+[T5] ⊘ Skipped 159: Michael-F-Bryan/include_dir (already exists)
+[T0] ⊘ Skipped 160: Amanieu/parking_lot (already exists)
+[T5] ⊘ Skipped 167: rust-postgres/rust-postgres (already exists)
+[T0] ⊘ Skipped 168: rapidfuzz/strsim-rs (already exists)
+[T5] ⊘ Skipped 169: getsentry/symbolic (already exists)
+[T0] ⊘ Skipped 170: microsoft/windows-rs (already exists)
+[T5] ⊘ Skipped 171: Sgeo/take_mut (already exists)
+[T0] ⊘ Skipped 172: rust-lang-nursery/lazy-static.rs (already exists)
+[T5] ⊘ Skipped 173: smithay/wayland-rs (already exists)
+[T0] ⊘ Skipped 174: rust-lang/socket2 (already exists)
+[T5] ⊘ Skipped 175: kornelski/deunicode (already exists)
+[T0] ⊘ Skipped 176: rust-num/num-traits (already exists)
+[T5] ⊘ Skipped 177: gdesmott/system-deps (already exists)
+[T1] ⊘ Skipped 164: mcgoo/vcpkg-rs (already exists)
+[T2] ⊘ Skipped 166: BurntSushi/ripgrep (already exists)
+[T1] ⊘ Skipped 180: nushell/nu-ansi-term (already exists)
+[T3] ⊘ Skipped 155: hickory-dns/resolv-conf (already exists)
+[T4] ⊘ Skipped 163: udoprog/relative-path (already exists)
+[T3] ⊘ Skipped 183: rodrimati1992/const_format_crates (already exists)
+[T0] ⊘ Skipped 178: bytecodealliance/rustix (already exists)
+[T5] ⊘ Skipped 179: dbus2/zbus (already exists)
+[T2] ⊘ Skipped 181: jhpratt/num_threads (already exists)
+[T1] ⊘ Skipped 182: TedDriggs/ident_case (already exists)
+[T2] ⊘ Skipped 188: sfackler/rust-fallible-iterator (already exists)
+[T1] ⊘ Skipped 189: VoidStarKat/half-rs (already exists)
+[T2] ⊘ Skipped 190: Stebalien/xattr (already exists)
+[T0] ⊘ Skipped 186: rayon-rs/either (already exists)
+[T5] ⊘ Skipped 187: z-galaxy/zbus (already exists)
+[T4] ⊘ Skipped 184: meithecatte/enumflags2 (already exists)
+[T1] ⊘ Skipped 191: hawkw/matchers (already exists)
+[T4] ⊘ Skipped 195: rust-embedded/heapless (already exists)
+[T3] ⊘ Skipped 185: smol-rs/piper (already exists)
+[T2] ⊘ Skipped 192: GREsau/schemars (already exists)
+[T0] ⊘ Skipped 193: SergioBenitez/version_check (already exists)
+[T5] ⊘ Skipped 194: stusmall/murmur3 (already exists)
+[T1] ⊘ Skipped 196: sebcrozet/instant (already exists)
+[T5] ⊘ Skipped 201: johannesvollmer/exrs (already exists)
+[T4] ⊘ Skipped 197: yoshuawuyts/miow (already exists)
+[T3] ⊘ Skipped 198: llogiq/bytecount (already exists)
+[T2] ⊘ Skipped 199: snapview/tokio-tungstenite (already exists)
+[T0] ⊘ Skipped 200: dtolnay/semver (already exists)
+[T4] ⊘ Skipped 202: besok/jsonpath-rust (already exists)
+[T3] ⊘ Skipped 203: Nugine/outref (already exists)
+[T2] ⊘ Skipped 204: shepmaster/twox-hash (already exists)
+[T0] ⊘ Skipped 205: servo/rust-url (already exists)
+[T4] ⊘ Skipped 206: magiclen/educe (already exists)
+[T3] ⊘ Skipped 207: smol-rs/async-process (already exists)
+[T2] ⊘ Skipped 208: camino-rs/camino (already exists)
+[T0] ⊘ Skipped 209: tokio-rs/bytes (already exists)
+[T4] ⊘ Skipped 210: dtolnay/scratch (already exists)
+[T3] ⊘ Skipped 211: allan2/dotenvy (already exists)
+[T1] ⊘ Skipped 215: BurntSushi/bstr (already exists)
+[T1] ⊘ Skipped 217: JelteF/derive_more (already exists)
+[T0] ⊘ Skipped 213: time-rs/time (already exists)
+[T4] ⊘ Skipped 214: LukasKalbertodt/litrs (already exists)
+[T3] ⊘ Skipped 216: dtolnay/ref-cast (already exists)
+[T2] ⊘ Skipped 212: rust-lang/cmake-rs (already exists)
+[T2] ⊘ Skipped 222: assert-rs/predicates-rs (already exists)
+[T1] ⊘ Skipped 218: reem/rust-ordered-float (already exists)
+[T0] ⊘ Skipped 219: RustCrypto/traits (already exists)
+[T4] ⊘ Skipped 220: idubrov/json-patch (already exists)
+[T0] ⊘ Skipped 225: taiki-e/pin-project-lite (already exists)
+[T4] ⊘ Skipped 226: SimonSapin/rust-typed-arena (already exists)
+[T2] ⊘ Skipped 223: mrhooray/crc-rs (already exists)
+[T3] ⊘ Skipped 221: contain-rs/lru-cache (already exists)
+[T4] ⊘ Skipped 227: smol-rs/async-broadcast (already exists)
+[T0] ⊘ Skipped 228: tokio-rs/mio (already exists)
+[T1] ⊘ Skipped 224: dtolnay/prettyplease (already exists)
+[T0] ⊘ Skipped 232: bluss/scopeguard (already exists)
+[T3] ⊘ Skipped 230: rkyv/rkyv (already exists)
+[T0] ⊘ Skipped 234: dtolnay/anyhow (already exists)
+[T4] ⊘ Skipped 231: lalrpop/lalrpop (already exists)
+[T1] ⊘ Skipped 233: rust-lang/rust-bindgen (already exists)
+[T2] ⊘ Skipped 229: RustCrypto/KDFs (already exists)
+[T3] ⊘ Skipped 235: shepmaster/snafu (already exists)
+[T0] ⊘ Skipped 236: sunfishcode/linux-raw-sys (already exists)
+[T4] ⊘ Skipped 237: rust-lang/ena (already exists)
+[T1] ⊘ Skipped 238: jhpratt/powerfmt (already exists)
+[T2] ⊘ Skipped 239: smol-rs/event-listener-strategy (already exists)
+[T3] ⊘ Skipped 240: hannobraun/inotify-sys (already exists)
+[T0] ⊘ Skipped 241: RustCrypto/utils (already exists)
+[T4] ⊘ Skipped 242: orlp/slotmap (already exists)
+[T1] ⊘ Skipped 243: rust-lang/compiler-builtins (already exists)
+[T1] ⊘ Skipped 248: tokio-rs/axum (already exists)
+[T2] ⊘ Skipped 244: djc/hostname (already exists)
+[T3] ⊘ Skipped 245: notify-rs/notify (already exists)
+[T2] ⊘ Skipped 250: SergioBenitez/cookie-rs (already exists)
+[T0] ⊘ Skipped 246: Frommi/miniz_oxide (already exists)
+[T1] ⊘ Skipped 249: gyscos/zstd-rs (already exists)
+[T3] ⊘ Skipped 251: mozilla/cbindgen (already exists)
+[T4] ⊘ Skipped 247: dtolnay/typeid (already exists)
+[T2] ⊘ Skipped 252: serde-rs/bytes (already exists)
+[T0] ⊘ Skipped 253: hyperium/http (already exists)
+[T1] ⊘ Skipped 254: rust-num/num-rational (already exists)
+[T3] ⊘ Skipped 255: yaahc/indenter (already exists)
+[T4] ⊘ Skipped 256: achanda/ipnetwork (already exists)
+[T2] ⊘ Skipped 257: plotters-rs/plotters (already exists)
+[T0] ⊘ Skipped 258: crossbeam-rs/crossbeam (already exists)
+[T2] ⊘ Skipped 262: alexcrichton/scoped-tls (already exists)
+[T3] ⊘ Skipped 260: rusticata/asn1-rs (already exists)
+[T4] ⊘ Skipped 261: rust-windowing/raw-window-handle (already exists)
+[T1] ⊘ Skipped 259: hyperium/hyper-tls (already exists)
+[T0] ⊘ Skipped 263: cryptocorrosion/cryptocorrosion (already exists)
+[T2] ⊘ Skipped 264: zip-rs/zip2 (already exists)
+[T3] ⊘ Skipped 265: paupino/rust-decimal (already exists)
+[T2] ⊘ Skipped 269: alexcrichton/tar-rs (already exists)
+[T4] ⊘ Skipped 266: michaelsproul/rust_radix_trie (already exists)
+[T1] ⊘ Skipped 267: sunfishcode/is-terminal (already exists)
+[T0] ⊘ Skipped 268: tokio-rs/tokio (already exists)
+[T3] ⊘ Skipped 270: remram44/adler32-rs (already exists)
+[T2] ⊘ Skipped 271: utkarshkukreti/diff.rs (already exists)
+[T4] ⊘ Skipped 272: michaelsproul/rust_nibble_vec (already exists)
+[T1] ⊘ Skipped 273: rustls/sct.rs (already exists)
+[T0] ⊘ Skipped 274: hyperium/hyper (already exists)
+[T3] ⊘ Skipped 275: bluss/rawpointer (already exists)
+[T2] ⊘ Skipped 276: mackwic/colored (already exists)
+[T4] ⊘ Skipped 277: assert-rs/assert_cmd (already exists)
+[T1] ⊘ Skipped 278: seanmonstar/unicase (already exists)
+[T0] ⊘ Skipped 279: smol-rs/fastrand (already exists)
+[T3] ⊘ Skipped 280: Keruspe/async-global-executor (already exists)
+[T2] ⊘ Skipped 281: dtolnay/path-to-error (already exists)
+[T4] ⊘ Skipped 282: Lolirofle/endian-type (already exists)
+[T2] ⊘ Skipped 286: eminence/terminal-size (already exists)
+[T1] ⊘ Skipped 283: rust-lang/cargo (already exists)
+[T0] ⊘ Skipped 284: Gilnaa/memoffset (already exists)
+[T3] ⊘ Skipped 285: cameron1024/unarray (already exists)
+[T4] ⊘ Skipped 287: RReverser/serde-wasm-bindgen (already exists)
+[T3] ⊘ Skipped 291: djkoloski/rend (already exists)
+[T4] ⊘ Skipped 292: RustCrypto/stream-ciphers (already exists)
+[T3] ⊘ Skipped 293: davidpdrsn/assert-json-diff (already exists)
+[T4] ⊘ Skipped 294: smol-rs/async-signal (already exists)
+[T0] ⊘ Skipped 290: toml-rs/toml (already exists)
+[T1] ⊘ Skipped 289: zakarumych/allocator-api2 (already exists)
+[T3] ⊘ Skipped 295: async-rs/async-std (already exists)
+[T1] ⊘ Skipped 298: sfackler/rust-native-tls (already exists)
+[T3] ⊘ Skipped 299: image-rs/color_quant (already exists)
+[T2] ⊘ Skipped 288: orlp/foldhash (already exists)
+[T0] ⊘ Skipped 297: BurntSushi/byteorder (already exists)
+[T4] ⊘ Skipped 296: harfbuzz/ttf-parser (already exists)
+[T1] ⊘ Skipped 300: tailhook/quick-error (already exists)
+[T3] ⊘ Skipped 301: rkyv/bytecheck (already exists)
+[T2] ⊘ Skipped 302: dropbox/rust-alloc-no-stdlib (already exists)
+[T0] ⊘ Skipped 303: tokio-rs/slab (already exists)
+[T4] ⊘ Skipped 304: apache/datafusion-sqlparser-rs (already exists)
+[T1] ⊘ Skipped 305: yaahc/displaydoc (already exists)
+[T3] ⊘ Skipped 306: yoshuawuyts/kv-log-macro (already exists)
+[T2] ⊘ Skipped 307: rust-num/num-derive (already exists)
+[T0] ⊘ Skipped 308: rustls/rustls (already exists)
+[T4] ⊘ Skipped 309: shssoichiro/sqlformat-rs (already exists)
+[T0] ⊘ Skipped 313: fizyk20/generic-array (already exists)
+[T4] ⊘ Skipped 314: murarth/assert_matches (already exists)
+[T3] ⊘ Skipped 311: rusticata/rusticata-macros (already exists)
+[T1] ⊘ Skipped 310: jhpratt/num-conv (already exists)
+[T2] ⊘ Skipped 312: XAMPPRocky/remove_dir_all (already exists)
+[T0] ⊘ Skipped 315: rust-lang/futures-rs (already exists)
+[T4] ⊘ Skipped 316: Stranger6667/jsonschema (already exists)
+[T4] ⊘ Skipped 321: apache/arrow-rs (already exists)
+[T3] ⊘ Skipped 317: tikv/rust-prometheus (already exists)
+[T1] ⊘ Skipped 318: servo/core-foundation-rs (already exists)
+[T2] ⊘ Skipped 319: rust-pretty-assertions/rust-pretty-assertions (already exists)
+[T0] ⊘ Skipped 320: hyperium/http-body (already exists)
+[T4] ⊘ Skipped 322: dnsl48/fraction (already exists)
+[T3] ⊘ Skipped 323: bojand/infer (already exists)
+[T1] ⊘ Skipped 324: RustCrypto/formats (already exists)
+[T2] ⊘ Skipped 325: enarx/ciborium (already exists)
+[T1] ⊘ Skipped 329: BurntSushi/winapi-util (already exists)
+[T2] ⊘ Skipped 330: smol-rs/async-task (already exists)
+[T1] ⊘ Skipped 331: alexcrichton/filetime (already exists)
+[T1] ⊘ Skipped 333: dtolnay/serde-yaml (already exists)
+[T3] ⊘ Skipped 328: eyre-rs/eyre (already exists)
+[T3] ⊘ Skipped 335: rust-lang/getopts (already exists)
+[T3] ⊘ Skipped 336: HdrHistogram/HdrHistogram_rust (already exists)
+[T0] ⊘ Skipped 326: tkaitchuck/ahash (already exists)
+[T2] ⊘ Skipped 332: xdg-rs/dirs (already exists)
+[T1] ⊘ Skipped 334: contain-rs/bit-vec (already exists)
+[T3] ⊘ Skipped 337: zonyitoo/rust-ini (already exists)
+[T3] ⊘ Skipped 341: rust-embedded-community/hash32 (already exists)
+[T0] ⊘ Skipped 338: tokio-rs/tracing (already exists)
+[T2] ⊘ Skipped 339: zesterer/flume (already exists)
+[T0] ⊘ Skipped 343: RustCrypto/hashes (already exists)
+[T1] ⊘ Skipped 340: ibraheemdev/matchit (already exists)
+[T3] ⊘ Skipped 342: derekdreery/normalize-line-endings (already exists)
+[T3] ⊘ Skipped 347: ihrwein/backoff (already exists)
+[T2] ⊘ Skipped 344: dalek-cryptography/curve25519-dalek (already exists)
+[T0] ⊘ Skipped 345: chronotope/chrono (already exists)
+[T0] ⊘ Skipped 350: servo/rust-fnv (already exists)
+[T1] ⊘ Skipped 346: rust-num/num-complex (already exists)
+[T3] ⊘ Skipped 348: image-rs/image-gif (already exists)
+[T3] ⊘ Skipped 353: bytecodealliance/wasm-tools (already exists)
+[T4] ⊘ Skipped 327: mit-plv/fiat-crypto (already exists)
+[T2] ⊘ Skipped 349: RustCrypto/RSA (already exists)
+[T0] ⊘ Skipped 351: hyperium/h2 (already exists)
+[T4] ⊘ Skipped 356: BurntSushi/quickcheck (already exists)
+[T3] ⊘ Skipped 354: rust-cli/config-rs (already exists)
+[T4] ⊘ Skipped 358: srijs/rust-tokio-retry (already exists)
+[T2] ⊘ Skipped 355: briansmith/webpki (already exists)
+[T4] ⊘ Skipped 360: magiclen/enum-ordinalize (already exists)
+[T1] ⊘ Skipped 352: xacrimon/dashmap (already exists)
+[T0] ⊘ Skipped 357: paholg/typenum (already exists)
+[T3] ⊘ Skipped 359: BurntSushi/rust-snappy (already exists)
+[T3] ⊘ Skipped 365: image-rs/fdeflate (already exists)
+[T4] ⊘ Skipped 361: paritytech/nohash-hasher (already exists)
+[T2] ⊘ Skipped 362: dtolnay/erased-serde (already exists)
+[T2] ⊘ Skipped 367: async-rs/futures-timer (already exists)
+[T1] ⊘ Skipped 363: smol-rs/async-channel (already exists)
+[T3] ⊘ Skipped 366: smithy-lang/smithy-rs (already exists)
+[T1] ⊘ Skipped 370: rust-num/num-iter (already exists)
+[T4] ⊘ Skipped 368: slint-ui/document-features (already exists)
+[T0] ⊘ Skipped 364: unicode-rs/unicode-width (already exists)
+[T4] ⊘ Skipped 373: mneumann/errno-dragonfly-rs (already exists)
+[T2] ⊘ Skipped 369: zkcrypto/ff (already exists)
+[T4] ⊘ Skipped 375: rust-lang-nursery/failure (already exists)
+[T1] ⊘ Skipped 372: hyperium/tonic (already exists)
+[T0] ⊘ Skipped 374: Stebalien/tempfile (already exists)
+[T1] ⊘ Skipped 378: danaugrs/overload (already exists)
+[T0] ⊘ Skipped 379: rust-lang-nursery/pin-utils (already exists)
+[T3] ⊘ Skipped 371: pyfisch/rust-language-tags (already exists)
+[T4] ⊘ Skipped 377: rustwasm/console_error_panic_hook (already exists)
+[T1] ⊘ Skipped 380: tafia/quick-xml (already exists)
+[T0] ⊘ Skipped 381: uuid-rs/uuid (already exists)
+[T1] ⊘ Skipped 384: polyfill-rs/is_terminal_polyfill (already exists)
+[T3] ⊘ Skipped 382: tmiasko/shell-words (already exists)
+[T4] ⊘ Skipped 383: d-e-s-o/test-log (already exists)
+[T0] ⊘ Skipped 385: rust-lang/pkg-config-rs (already exists)
+[T4] ⊘ Skipped 388: apache/arrow-rs-object-store (already exists)
+[T0] ⊘ Skipped 389: nix-rust/nix (already exists)
+[T4] ⊘ Skipped 390: eminence/procfs (already exists)
+[T3] ⊘ Skipped 387: image-rs/weezl (already exists)
+[T2] ⊘ Skipped 376: dtolnay/serde-repr (already exists)
+[T0] ⊘ Skipped 391: djc/rustc-version-rs (already exists)
+[T1] ⊘ Skipped 386: rustls/pki-types (already exists)
+[T4] ⊘ Skipped 392: 56quarters/cadence (already exists)
+[T3] ⊘ Skipped 393: MSxDOS/ntapi (already exists)
+[T2] ⊘ Skipped 394: webdesus/fs_extra (already exists)
+[T0] ⊘ Skipped 395: Lokathor/tinyvec (already exists)
+[T2] ⊘ Skipped 399: Nullus157/async-compression (already exists)
+[T1] ⊘ Skipped 396: jonasbb/serde_with (already exists)
+[T3] ⊘ Skipped 398: Matthias247/futures-intrusive (already exists)
+[T4] ⊘ Skipped 397: mitsuhiko/insta (already exists)
+[T0] ⊘ Skipped 400: bytecodealliance/wasi-rs (already exists)
+[T4] ⊘ Skipped 404: avitex/rust-aliasable (already exists)
+[T4] ⊘ Skipped 406: console-rs/dialoguer (already exists)
+[T4] ⊘ Skipped 407: TrueLayer/reqwest-middleware (already exists)
+[T3] ⊘ Skipped 403: dermesser/integer-encoding-rs (already exists)
+[T0] ⊘ Skipped 405: rust-num/num-integer (already exists)
+[T2] ⊘ Skipped 401: tokio-rs/tracing-opentelemetry (already exists)
+[T1] ⊘ Skipped 402: smol-rs/atomic-waker (already exists)
+[T4] ⊘ Skipped 408: gimli-rs/leb128 (already exists)
+[T1] ⊘ Skipped 412: eira-fransham/crunchy (already exists)
+[T4] ⊘ Skipped 413: arkworks-rs/std (already exists)
+[T0] ⊘ Skipped 410: rust-bakery/nom (already exists)
+[T0] ⊘ Skipped 416: mvdnes/spin-rs (already exists)
+[T3] ⊘ Skipped 409: vorner/bytes-utils (already exists)
+[T2] ⊘ Skipped 411: zkcrypto/group (already exists)
+[T1] ⊘ Skipped 414: smol-rs/futures-lite (already exists)
+[T4] ⊘ Skipped 415: mheffner/rust-sketches-ddsketch (already exists)
+[T1] ⊘ Skipped 420: ia0/data-encoding (already exists)
+[T0] ⊘ Skipped 417: seanmonstar/num_cpus (already exists)
+[T1] ⊘ Skipped 422: pest-parser/pest (already exists)
+[T2] ⊘ Skipped 419: RumovZ/android-tzdata (already exists)
+[T4] ⊘ Skipped 421: paritytech/parity-common (already exists)
+[T2] ⊘ Skipped 425: smol-rs/waker-fn (already exists)
+[T3] ⊘ Skipped 418: pseitz/lz4_flex (already exists)
+[T1] ⊘ Skipped 424: bincode-org/bincode (already exists)
+[T0] ⊘ Skipped 423: lambda-fairy/rust-errno (already exists)
+[T1] ⊘ Skipped 429: contain-rs/bit-set (already exists)
+[T4] ⊘ Skipped 426: soc/directories-rs (already exists)
+[T1] ⊘ Skipped 431: contain-rs/linked-hash-map (already exists)
+[T2] ⊘ Skipped 427: mcountryman/simd-adler32 (already exists)
+[T1] ⊘ Skipped 433: katharostech/cfg_aliases (already exists)
+[T2] ⊘ Skipped 434: rust-cli/termtree (already exists)
+[T1] ⊘ Skipped 435: bytecodealliance/target-lexicon (already exists)
+[T3] ⊘ Skipped 428: image-rs/jpeg-decoder (already exists)
+[T0] ⊘ Skipped 430: winnow-rs/winnow (already exists)
+[T4] ⊘ Skipped 432: arkworks-rs/algebra (already exists)
+[T0] ⊘ Skipped 439: seanmonstar/httparse (already exists)
+[T1] ⊘ Skipped 437: tokio-rs/async-stream (already exists)
+[T3] ⊘ Skipped 438: Nugine/simd (already exists)
+[T4] ⊘ Skipped 440: dimforge/simba (already exists)
+[T2] ⊘ Skipped 436: fitzgen/peeking_take_while (already exists)
+[T0] ⊘ Skipped 441: rustls/tokio-rustls (already exists)
+[T1] ⊘ Skipped 442: hyperium/hyper-util (already exists)
+[T3] ⊘ Skipped 443: dtolnay/inventory (already exists)
+[T4] ⊘ Skipped 444: abonander/safemem (already exists)
+[T2] ⊘ Skipped 445: alexcrichton/wait-timeout (already exists)
+[T0] ⊘ Skipped 446: briansmith/ring (already exists)
+[T1] ⊘ Skipped 447: unicode-org/icu4x (already exists)
+[T3] ⊘ Skipped 448: launchbadge/sqlx (already exists)
+[T4] ⊘ Skipped 449: http-rs/http-types (already exists)
+[T4] ⊘ Skipped 454: Xudong-Huang/generator-rs (already exists)
+[T0] ⊘ Skipped 451: unicode-rs/unicode-xid (already exists)
+[T1] ⊘ Skipped 452: RazrFalcon/memmap2-rs (already exists)
+[T3] ⊘ Skipped 453: andrewhickman/fs-err (already exists)
+[T2] ⊘ Skipped 450: akhilles/crc-catalog (already exists)
+[T4] ⊘ Skipped 455: phil-opp/rust-bit-field (already exists)
+[T0] ⊘ Skipped 456: briansmith/untrusted (already exists)
+[T1] ⊘ Skipped 457: Lokathor/bytemuck (already exists)
+[T3] ⊘ Skipped 458: MattiasBuelens/wasm-streams (already exists)
+[T2] ⊘ Skipped 459: smol-rs/blocking (already exists)
+[T4] ⊘ Skipped 460: boinkor-net/governor (already exists)
+[T0] ⊘ Skipped 461: google/zerocopy (already exists)
+[T1] ⊘ Skipped 462: ogham/rust-ansi-term (already exists)
+[T3] ⊘ Skipped 463: tomprogrammer/rust-ascii (already exists)
+[T2] ⊘ Skipped 464: console-rs/indicatif (already exists)
+[T4] ⊘ Skipped 465: DoumanAsh/xxhash-rust (already exists)
+[T0] ⊘ Skipped 466: srijs/rust-crc32fast (already exists)
+[T1] ⊘ Skipped 467: dtolnay/indoc (already exists)
+[T3] ⊘ Skipped 468: VoidStarKat/widestring-rs (already exists)
+[T2] ⊘ Skipped 469: RustCrypto/signatures (already exists)
+[T4] ⊘ Skipped 470: est31/maybe-uninit (already exists)
+[T0] ⊘ Skipped 471: unicode-rs/unicode-normalization (already exists)
+[T1] ⊘ Skipped 472: oyvindln/adler2 (already exists)
+[T3] ⊘ Skipped 473: RazrFalcon/xmlparser (already exists)
+[T2] ⊘ Skipped 474: quinn-rs/quinn (already exists)
+[T4] ⊘ Skipped 475: callum-oakley/json5-rs (already exists)
+[T0] ⊘ Skipped 476: rust-cli/env_logger (already exists)
+[T1] ⊘ Skipped 477: tokio-rs/tls (already exists)
+[T3] ⊘ Skipped 478: rwf2/multer (already exists)
+[T2] ⊘ Skipped 479: RustCrypto/block-modes (already exists)
+[T4] ⊘ Skipped 480: jean-airoldie/humantime-serde (already exists)
+[T0] ⊘ Skipped 481: indexmap-rs/equivalent (already exists)
+[T1] ⊘ Skipped 482: smol-rs/concurrent-queue (already exists)
+[T3] ⊘ Skipped 483: swgillespie/unicode-categories (already exists)
+[T2] ⊘ Skipped 484: qwandor/anes-rs (already exists)
+[T4] ⊘ Skipped 485: lalrpop/ascii-canvas (already exists)
+[T0] ⊘ Skipped 486: Amanieu/thread_local-rs (already exists)
+[T1] ⊘ Skipped 487: taiki-e/portable-atomic (already exists)
+[T3] ⊘ Skipped 488: jni-rs/jni-sys (already exists)
+[T2] ⊘ Skipped 489: fancy-regex/fancy-regex (already exists)
+[T4] ⊘ Skipped 490: rust-bitcoin/rust-secp256k1 (already exists)
+[T0] ⊘ Skipped 491: rust-lang/flate2-rs (already exists)
+[T1] ⊘ Skipped 492: KyleMayes/clang-sys (already exists)
+[T3] ⊘ Skipped 493: sunng87/handlebars-rust (already exists)
+[T2] ⊘ Skipped 494: alexcrichton/bzip2-rs (already exists)
+[T4] ⊘ Skipped 495: lambda-fairy/if_chain (already exists)
+[T0] ⊘ Skipped 496: Soveu/tinyvec_macros (already exists)
+[T1] ⊘ Skipped 497: cesarb/constant_time_eq (already exists)
+[T3] ⊘ Skipped 498: bikeshedder/deadpool (already exists)
+[T2] ⊘ Skipped 499: chyh1990/yaml-rust (already exists)
+[T4] ⊘ Skipped 500: zopfli-rs/zopfli (already exists)
+[T0] ⊘ Skipped 501: dtolnay/async-trait (already exists)
+[T1] ⊘ Skipped 502: BurntSushi/ucd-generate (already exists)
+[T3] ⊘ Skipped 503: rustwasm/gloo (already exists)
+[T2] ⊘ Skipped 504: tormol/encode_unicode (already exists)
+[T4] ⊘ Skipped 505: bcmyers/num-format (already exists)
+[T0] ⊘ Skipped 506: rust-lang/rustc-hash (already exists)
+[T1] ⊘ Skipped 507: tower-rs/tower-http (already exists)
+[T3] ⊘ Skipped 508: bytecodealliance/wit-bindgen (already exists)
+[T2] ⊘ Skipped 509: hyperium/headers (already exists)
+[T4] ⊘ Skipped 510: qnighy/yasna.rs (already exists)
+[T0] ⊘ Skipped 511: KokaKiwi/rust-hex (already exists)
+[T1] ⊘ Skipped 512: dirs-dev/dirs-sys-rs (already exists)
+[T3] ⊘ Skipped 513: akubera/bigdecimal-rs (already exists)
+[T2] ⊘ Skipped 514: rusqlite/rusqlite (already exists)
+[T4] ⊘ Skipped 515: antifuchs/nonzero_ext (already exists)
+[T3] ⊘ Skipped 519: alexcrichton/openssl-src-rs (already exists)
+[T1] ⊘ Skipped 517: jethrogb/rust-cexpr (already exists)
+[T2] ⊘ Skipped 518: Manishearth/pathdiff (already exists)
+[T4] ⊘ Skipped 520: oconnor663/blake2_simd (already exists)
+[T0] ⊘ Skipped 516: vorner/signal-hook (already exists)
+[T3] ⊘ Skipped 521: raphlinus/pulldown-cmark (already exists)
+[T1] ⊘ Skipped 522: soc/dirs-rs (already exists)
+[T2] ⊘ Skipped 523: mmastrac/rust-ctor (already exists)
+[T4] ⊘ Skipped 524: servo/html5ever (already exists)
+[T0] ⊘ Skipped 525: seanmonstar/reqwest (already exists)
+[T3] ⊘ Skipped 526: lo48576/iri-string (already exists)
+[T1] ⊘ Skipped 527: RustCrypto/block-ciphers (already exists)
+[T2] ⊘ Skipped 528: GuillaumeGomez/doc-comment (already exists)
+[T4] ⊘ Skipped 529: m4b/scroll (already exists)
+[T4] ⊘ Skipped 534: dotenv-rs/dotenv (already exists)
+[T3] ⊘ Skipped 531: idanarye/rust-typed-builder (already exists)
+[T1] ⊘ Skipped 532: smol-rs/async-lock (already exists)
+[T2] ⊘ Skipped 533: smol-rs/async-executor (already exists)
+[T0] ⊘ Skipped 530: dalek-cryptography/subtle (already exists)
+[T4] ⊘ Skipped 535: gimli-rs/findshlibs (already exists)
+[T0] ⊘ Skipped 539: gimli-rs/object (already exists)
+[T3] ⊘ Skipped 536: samscott89/serde_qs (already exists)
+[T1] ⊘ Skipped 537: console-rs/console (already exists)
+[T2] ⊘ Skipped 538: hsivonen/utf16_iter (already exists)
+[T4] ⊘ Skipped 540: alexcrichton/xz2-rs (already exists)
+[T2] ⊘ Skipped 544: hsivonen/write16 (already exists)
+[T3] ⊘ Skipped 542: emk/cesu8-rs (already exists)
+[T1] ⊘ Skipped 543: havarnov/multimap (already exists)
+[T4] ⊘ Skipped 545: liranringel/ipconfig (already exists)
+[T1] ⊘ Skipped 548: smol-rs/parking (already exists)
+[T4] ⊘ Skipped 549: alexcrichton/curl-rust (already exists)
+[T2] ⊘ Skipped 546: mbrubeck/rust-debug-unreachable (already exists)
+[T0] ⊘ Skipped 541: rustls/webpki (already exists)
+[T1] ⊘ Skipped 550: hjr3/hyper-timeout (already exists)
+[T3] ⊘ Skipped 547: pyfisch/cbor (already exists)
+[T4] ⊘ Skipped 551: auto-impl-rs/auto_impl (already exists)
+[T3] ⊘ Skipped 555: unicode-rs/unicode-properties (already exists)
+[T2] ⊘ Skipped 552: GuillaumeGomez/sysinfo (already exists)
+[T1] ⊘ Skipped 554: kornelski/rust-security-framework (already exists)
+[T4] ⊘ Skipped 556: magiclen/utf8-width (already exists)
+[T1] ⊘ Skipped 559: indiv0/lazycell (already exists)
+[T3] ⊘ Skipped 557: 10xGenomics/lz4-rs (already exists)
+[T2] ⊘ Skipped 558: mikedilger/float-cmp (already exists)
+[T4] ⊘ Skipped 560: frewsxcv/rust-chunked-transfer (already exists)
+[T2] ⊘ Skipped 563: sfackler/rust-stringprep (already exists)
+[T1] ⊘ Skipped 561: jeromefroe/lru-rs (already exists)
+[T3] ⊘ Skipped 562: metrics-rs/metrics (already exists)
+[T4] ⊘ Skipped 564: jhpratt/standback (already exists)
+[T3] ⊘ Skipped 567: actix/actix-net (already exists)
+[T4] ⊘ Skipped 568: borntyping/rust-simple_logger (already exists)
+[T3] ⊘ Skipped 569: aws/aws-lc-rs (already exists)
+[T1] ⊘ Skipped 566: vorner/arc-swap (already exists)
+[T0] ⊘ Skipped 553: rustls/webpki-roots (already exists)
+[T4] ⊘ Skipped 570: wvwwvwwv/scalable-concurrent-containers (already exists)
+[T4] ⊘ Skipped 574: Arnavion/k8s-openapi (already exists)
+[T2] ⊘ Skipped 565: dignifiedquire/num-bigint (already exists)
+[T1] ⊘ Skipped 572: hsivonen/idna_adapter (already exists)
+[T0] ⊘ Skipped 573: dtolnay/rustversion (already exists)
+[T4] ⊘ Skipped 575: bodil/smartstring (already exists)
+[T0] ⊘ Skipped 578: hyperium/mime (already exists)
+[T2] ⊘ Skipped 576: sfackler/tokio-io-timeout (already exists)
+[T1] ⊘ Skipped 577: jcreekmore/pem-rs (already exists)
+[T4] ⊘ Skipped 579: rustls/rcgen (already exists)
+[T3] ⊘ Skipped 571: bytesize-rs/bytesize (already exists)
+[T0] ⊘ Skipped 580: strawlab/iana-time-zone (already exists)
+[T2] ⊘ Skipped 581: kornelski/xml-rs (already exists)
+[T1] ⊘ Skipped 582: hsivonen/utf8_iter (already exists)
+[T4] ⊘ Skipped 583: wvwwvwwv/scalable-delayed-dealloc (already exists)
+[T4] ⊘ Skipped 588: SergioBenitez/uncased (already exists)
+[T3] ⊘ Skipped 584: awslabs/aws-sdk-rust (already exists)
+[T2] ⊘ Skipped 586: asomers/mockall (already exists)
+[T1] ⊘ Skipped 587: abonander/mime_guess (already exists)
+[T2] ⊘ Skipped 591: Alexhuszagh/rust-lexical (already exists)
+[T0] ⊘ Skipped 585: rustls/pemfile (already exists)
+[T0] ⊘ Skipped 594: TedDriggs/darling (already exists)
+[T3] ⊘ Skipped 590: rust-ndarray/ndarray (already exists)
+[T1] ⊘ Skipped 592: rust-lang/libz-sys (already exists)
+[T1] ⊘ Skipped 597: bitvecto-rs/bitvec (already exists)
+[T4] ⊘ Skipped 589: BurntSushi/utf8-ranges (already exists)
+[T0] ⊘ Skipped 595: BurntSushi/termcolor (already exists)
+[T3] ⊘ Skipped 596: sgodwincs/dlv-list-rs (already exists)
+[T1] ⊘ Skipped 598: rust-num/num (already exists)
+[T3] ⊘ Skipped 601: bluejekyll/trust-dns (already exists)
+[T4] ⊘ Skipped 599: stephaneyfx/enum-iterator (already exists)
+[T0] ⊘ Skipped 600: servo/unicode-bidi (already exists)
+[T2] ⊘ Skipped 593: ardaku/whoami (already exists)
+[T1] ⊘ Skipped 602: SimonSapin/rust-std-candidates (already exists)
+[T2] ⊘ Skipped 606: image-rs/image-png (already exists)
+[T3] ⊘ Skipped 603: rust-lang/stacker (already exists)
+[T2] ⊘ Skipped 608: bluss/maplit (already exists)
+[T0] ⊘ Skipped 605: comex/rust-shlex (already exists)
+[T4] ⊘ Skipped 604: RazrFalcon/pico-args (already exists)
+[T1] ⊘ Skipped 607: dtolnay/dyn-clone (already exists)
+[T4] ⊘ Skipped 612: paritytech/unsigned-varint (already exists)
+[T2] ⊘ Skipped 610: ogham/rust-number-prefix (already exists)
+[T0] ⊘ Skipped 611: seanmonstar/want (already exists)
+[T1] ⊘ Skipped 613: illicitonion/num_enum (already exists)
+[T0] ⊘ Skipped 616: gimli-rs/gimli (already exists)
+[T4] ⊘ Skipped 614: tokio-rs/loom (already exists)
+[T2] ⊘ Skipped 615: mullvad/system-configuration-rs (already exists)
+[T1] ⊘ Skipped 617: ferrilab/ferrilab (already exists)
+[T3] ⊘ Skipped 609: deprecrated/net2-rs (already exists)
+[T0] ⊘ Skipped 618: seanmonstar/try-lock (already exists)
+[T4] ⊘ Skipped 619: sdroege/bytes-num-slice-cast (already exists)
+[T2] ⊘ Skipped 620: image-rs/image (already exists)
+[T1] ⊘ Skipped 621: criterion-rs/criterion.rs (already exists)
+[T2] ⊘ Skipped 625: colin-kiegel/rust-derive-builder (already exists)
+[T2] ⊘ Skipped 627: tkaitchuck/constrandom (already exists)
+[T4] ⊘ Skipped 624: rust-rocksdb/rust-rocksdb (already exists)
+[T1] ⊘ Skipped 626: smol-rs/polling (already exists)
+[T4] ⊘ Skipped 629: paritytech/parity-scale-codec (already exists)
+[T3] ⊘ Skipped 622: la10736/rstest (already exists)
+[T0] ⊘ Skipped 623: rust-lang/glob (already exists)
+[T2] ⊘ Skipped 628: reem/rust-void (already exists)
+[T1] ⊘ Skipped 630: myrrlyn/tap (already exists)
+[T2] ⊘ Skipped 634: BLAKE3-team/BLAKE3 (already exists)
+[T3] ⊘ Skipped 632: sagebind/castaway (already exists)
+[T0] ⊘ Skipped 633: tower-rs/tower (already exists)
+[T1] ⊘ Skipped 635: steveklabnik/semver-parser (already exists)
+[T0] ⊘ Skipped 638: rust-lang/rustc-demangle (already exists)
+[T1] ⊘ Skipped 639: dylni/os_str_bytes (already exists)
+[T0] ⊘ Skipped 640: Peternator7/strum (already exists)
+[T1] ⊘ Skipped 641: myrrlyn/wyz (already exists)
+[T0] ⊘ Skipped 642: BurntSushi/walkdir (already exists)
+[T4] ⊘ Skipped 631: fitzgen/mach (already exists)
+[T2] ⊘ Skipped 636: cbreeden/fxhash (already exists)
+[T1] ⊘ Skipped 643: BurntSushi/rust-csv (already exists)
+[T2] ⊘ Skipped 646: Stebalien/term (already exists)
+[T0] ⊘ Skipped 644: taiki-e/pin-project (already exists)
+[T4] ⊘ Skipped 645: Keats/validator (already exists)
+[T1] ⊘ Skipped 647: snapview/tungstenite-rs (already exists)
+[T4] ⊘ Skipped 650: kube-rs/kube (already exists)
+[T2] ⊘ Skipped 648: bluejekyll/enum-as-inner (already exists)
+[T0] ⊘ Skipped 649: rust-cli/anstyle (already exists)
+[T1] ⊘ Skipped 651: nical/android_system_properties (already exists)
+[T0] ⊘ Skipped 654: pyfisch/httpdate (already exists)
+[T1] ⊘ Skipped 655: droundy/arrayref (already exists)
+[T0] ⊘ Skipped 656: bluss/arrayvec (already exists)
+[T2] ⊘ Skipped 653: Keats/jsonwebtoken (already exists)
+[T3] ⊘ Skipped 637: actix/actix-web (already exists)
+[T4] ⊘ Skipped 652: bodil/bitmaps (already exists)
+[T0] ⊘ Skipped 657: rust-num/num-bigint (already exists)
+[T2] ⊘ Skipped 658: mitsuhiko/similar (already exists)
+[T3] ⊘ Skipped 659: ron-rs/ron (already exists)
+[T4] ⊘ Skipped 660: rust-lang/tempdir (already exists)
+[T0] ⊘ Skipped 661: rust-lang/backtrace-rs (already exists)
+[T2] ⊘ Skipped 662: acw/simple_asn1 (already exists)
+[T3] ⊘ Skipped 663: apache/thrift (already exists)
+[T2] ⊘ Skipped 666: dtolnay/dtoa (already exists)
+[T0] ⊘ Skipped 665: rustls/hyper-rustls (already exists)
+[T4] ⊘ Skipped 664: Lokathor/wide (already exists)
+[T3] ⊘ Skipped 667: sgodwincs/ordered-multimap-rs (already exists)
+[T2] ⊘ Skipped 668: gz/rust-cpuid (already exists)
+[T0] ⊘ Skipped 669: hermit-os/hermit-rs (already exists)
+[T4] ⊘ Skipped 670: LeopoldArkham/humansize (already exists)
+[T3] ⊘ Skipped 671: axelf4/unicode-linebreak (already exists)
+[T2] ⊘ Skipped 672: trifectatechfoundation/bzip2-rs (already exists)
+[T0] ⊘ Skipped 673: BurntSushi/same-file (already exists)
+[T4] ⊘ Skipped 674: crossterm-rs/crossterm-winapi (already exists)
+[T3] ⊘ Skipped 675: Manishearth/triomphe (already exists)
+[T2] ⊘ Skipped 676: gnzlbg/match_cfg (already exists)
+[T0] ⊘ Skipped 677: gimli-rs/addr2line (already exists)
+[T4] ⊘ Skipped 678: seanmonstar/warp (already exists)
+[T3] ⊘ Skipped 679: carllerche/iovec (already exists)
+[T2] ⊘ Skipped 680: RustCrypto/universal-hashes (already exists)
+[T0] ⊘ Skipped 681: nox/serde_urlencoded (already exists)
+[T4] ⊘ Skipped 682: reem/rust-unreachable (already exists)
+[T3] ⊘ Skipped 683: tikv/jemallocator (already exists)
+[T2] ⊘ Skipped 684: mitsuhiko/fragile (already exists)
+[T0] ⊘ Skipped 685: dtolnay/paste (already exists)
+[T4] ⊘ Skipped 686: lunacookies/etcetera (already exists)
+[T3] ⊘ Skipped 687: image-rs/image-tiff (already exists)
+[T2] ⊘ Skipped 688: near/borsh-rs (already exists)
+[T0] ⊘ Skipped 689: hsivonen/encoding_rs (already exists)
+[T4] ⊘ Skipped 690: OrKoN/base-x-rs (already exists)
+[T3] ⊘ Skipped 691: kornelski/rust-rgb (already exists)
+[T2] ⊘ Skipped 692: stainless-steel/md5 (already exists)
+[T3] ⊘ Skipped 693: Nullus157/bs58-rs (already exists)
+[T2] ⊘ Skipped 694: owo-colors/owo-colors (already exists)
+[T2] ⊘ Skipped 696: proptest-rs/proptest (already exists)
+[T3] ⊘ Skipped 695: ParkMyCar/compact_str (already exists)
+[T2] ⊘ Skipped 697: servo/string-cache (already exists)
+[T2] ⊘ Skipped 698: palfrey/serial_test (already exists)
+[T2] ⊘ Skipped 699: crossterm-rs/crossterm (already exists)
+[T2] ⊘ Skipped 700: marcianx/downcast-rs (already exists)
+[T2] ⊘ Skipped 701: fkoep/downcast-rs (already exists)
+[T2] ⊘ Skipped 702: rust-threadpool/rust-threadpool (already exists)
+[T2] ⊘ Skipped 703: pacman82/atoi-rs (already exists)
+[T7] ✓ Cloned 1/1087: SeaQL/sea-bae
+[T6] ✓ Cloned 2/1087: yescallop/fluent-uri-rs
+[T5] ✓ Cloned 3/1087: dtolnay/trybuild
+[T7] ✓ Cloned 4/1087: brendanzab/gl-rs
+[T6] ✓ Cloned 5/1087: jmg-duarte/sealed-rs
+[T5] ✓ Cloned 6/1087: upsuper/retain_mut
+[T7] ✓ Cloned 7/1087: Byron/treediff-rs
+[T5] ✓ Cloned 8/1087: ardaku/wasite
+[T6] ✓ Cloned 9/1087: sval-rs/sval
+[T5] ✓ Cloned 10/1087: maciejhirsz/beef
+[T6] ✓ Cloned 11/1087: GitoxideLabs/prodash
+[T7] ✓ Cloned 12/1087: zhiburt/tabled
+[T5] ✓ Cloned 13/1087: frondeus/test-case
+[T6] ✓ Cloned 14/1087: serde-rs/test
+[T7] ✓ Cloned 15/1087: addr-rs/psl
+[T5] ✓ Cloned 16/1087: Ralith/lru-slab
+[T6] ✓ Cloned 17/1087: Voultapher/self_cell
+[T7] ✓ Cloned 18/1087: esposm03/xcursor-rs
+[T5] ✓ Cloned 19/1087: yoshuawuyts/fd-lock
+[T6] ✓ Cloned 20/1087: Stebalien/slug-rs
+[T7] ✓ Cloned 21/1087: vitiral/build_const
+[T5] ✓ Cloned 22/1087: rustyhorde/vergen
+[T6] ✓ Cloned 23/1087: rust-embedded/nb
+[T7] ✓ Cloned 24/1087: rust-netlink/netlink-packet-utils
+[T7] ✓ Cloned 25/1087: oschwald/maxminddb-rust
+[T6] ✓ Cloned 26/1087: dudykr/ddbase
+[T5] ✓ Cloned 27/1087: open-i18n/rust-unic
+[T5] ✓ Cloned 28/1087: johannesvollmer/lebe
+[T6] ✓ Cloned 29/1087: getsentry/rust-sourcemap
+[T7] ✓ Cloned 30/1087: mcginty/snow
+[T5] ✓ Cloned 31/1087: alexcrichton/ssh2-rs
+[T6] ✓ Cloned 32/1087: sfackler/r2d2
+[T7] ✓ Cloned 33/1087: SergioBenitez/Figment
+[T6] ✓ Cloned 34/1087: RoaringBitmap/roaring-rs
+[T5] ✓ Cloned 35/1087: m4b/goblin
+[T7] ✓ Cloned 36/1087: LukasKalbertodt/libtest-mimic
+[T6] ✓ Cloned 37/1087: rust-mobile/ndk
+[T5] ✓ Cloned 38/1087: johannhof/difference.rs
+[T7] ✓ Cloned 39/1087: rust-windowing/glutin
+[T6] ✓ Cloned 40/1087: bytecodealliance/regalloc2
+[T6] ⊘ Skipped 704: deprecrated/mio-uds (already exists)
+[T6] ⊘ Skipped 705: graphql-rust/graphql-parser (already exists)
+[T6] ⊘ Skipped 706: nrc/derive-new (already exists)
+[T6] ⊘ Skipped 707: fitzgen/id-arena (already exists)
+[T6] ⊘ Skipped 708: Boshen/unicode-id (already exists)
+[T6] ⊘ Skipped 709: mdsteele/rust-cfb (already exists)
+[T6] ⊘ Skipped 710: Keats/tera (already exists)
+[T6] ⊘ Skipped 711: PyO3/rust-numpy (already exists)
+[T6] ⊘ Skipped 712: chanced/jsonptr (already exists)
+[T6] ⊘ Skipped 713: danipopes/const-hex (already exists)
+[T6] ⊘ Skipped 714: RReverser/serde-xml-rs (already exists)
+[T6] ⊘ Skipped 715: magiclen/byte-unit (already exists)
+[T6] ⊘ Skipped 716: KodrAus/serde_fmt (already exists)
+[T6] ⊘ Skipped 717: dahosek/finl_unicode (already exists)
+[T6] ⊘ Skipped 718: dtolnay/inherent (already exists)
+[T6] ⊘ Skipped 719: rodrigocfd/winsafe (already exists)
+[T6] ⊘ Skipped 720: SeaQL/sea-query (already exists)
+[T6] ⊘ Skipped 721: SSheldon/rust-objc (already exists)
+[T6] ⊘ Skipped 722: andylokandy/arraydeque (already exists)
+[T6] ⊘ Skipped 723: fMeow/maybe-async-rs (already exists)
+[T6] ⊘ Skipped 724: SSheldon/malloc_buf (already exists)
+[T6] ⊘ Skipped 725: Stebalien/str_stack (already exists)
+[T6] ⊘ Skipped 726: napi-rs/napi-rs (already exists)
+[T6] ⊘ Skipped 727: ebarnard/rust-plist (already exists)
+[T6] ⊘ Skipped 728: alexheretic/linked-hash-set (already exists)
+[T6] ⊘ Skipped 729: tokio-rs/tokio-openssl (already exists)
+[T6] ⊘ Skipped 730: Lymia/enumset (already exists)
+[T6] ⊘ Skipped 731: dcuddeback/termios-rs (already exists)
+[T6] ⊘ Skipped 732: multiformats/rust-multibase (already exists)
+[T6] ⊘ Skipped 733: oconnor663/duct.rs (already exists)
+[T6] ⊘ Skipped 734: askama-rs/askama (already exists)
+[T6] ⊘ Skipped 735: gtk-rs/gtk-rs-core (already exists)
+[T6] ⊘ Skipped 736: slog-rs/term (already exists)
+[T6] ⊘ Skipped 737: ridiculousfish/regress (already exists)
+[T6] ⊘ Skipped 738: paritytech/soketto (already exists)
+[T6] ⊘ Skipped 739: sgodwincs/uriparse-rs (already exists)
+[T6] ⊘ Skipped 740: open-telemetry/opentelemetry-rust-contrib (already exists)
+[T5] ✓ Cloned 41/1087: slog-rs/slog
+[T7] ✗ Failed 1: jmap-rs/json-pointer - Git clone failed for https://github.com/jmap-rs/json-pointer.git
+[T7] ✓ Cloned 42/1087: zeenix/xdg-home
+[T5] ✓ Cloned 43/1087: image-rs/byteorder-lite
+[T6] ✓ Cloned 44/1087: bluss/twoway
+[T7] ✓ Cloned 45/1087: rustless/valico
+[T5] ✓ Cloned 46/1087: sile/libflate
+[T6] ✓ Cloned 47/1087: robjtede/impl-more
+[T5] ✓ Cloned 48/1087: multiformats/rust-multihash
+[T7] ✓ Cloned 49/1087: grovesNL/glow
+[T6] ✓ Cloned 50/1087: ramosbugs/oauth2-rs
+[T5] ✓ Cloned 51/1087: SergioBenitez/proc-macro2-diagnostics
+[T7] ✓ Cloned 52/1087: dylni/normpath
+[T6] ✓ Cloned 53/1087: Ethiraric/yaml-rust2
+[T5] ✓ Cloned 54/1087: dtolnay/basic-toml
+[T7] ✓ Cloned 55/1087: SergioBenitez/Pear
+[T6] ✓ Cloned 56/1087: lucab/memfd-rs
+[T7] ✓ Cloned 57/1087: rustless/jsonway
+[T6] ✓ Cloned 58/1087: purpleprotocol/mimalloc_rust
+[T7] ✓ Cloned 59/1087: rust-netlink/netlink-packet-route
+[T6] ✓ Cloned 60/1087: marmeladema/clru-rs
+[T7] ✓ Cloned 61/1087: ejmahler/strength_reduce
+[T6] ✓ Cloned 62/1087: bodil/im-rs
+[T7] ✓ Cloned 63/1087: jedisct1/rust-hmac-sha512
+[T6] ✓ Cloned 64/1087: Seeker14491/opener
+[T5] ✓ Cloned 65/1087: GitoxideLabs/gitoxide
+[T7] ✓ Cloned 66/1087: jamesmunns/cobs.rs
+[T6] ✓ Cloned 67/1087: billyrieger/bimap-rs
+[T5] ✓ Cloned 68/1087: smol-rs/async-fs
+[T7] ✓ Cloned 69/1087: gluon-lang/lsp-types
+[T6] ✓ Cloned 70/1087: kobzol/rust-delegate
+[T7] ✓ Cloned 71/1087: Kerollmops/slice-group-by
+[T5] ✓ Cloned 72/1087: seanmonstar/pretty-env-logger
+[T6] ✓ Cloned 73/1087: async-graphql/async-graphql
+[T7] ✓ Cloned 74/1087: oyvindln/gzip-header
+[T5] ✓ Cloned 75/1087: bkchr/impl-trait-for-tuples
+[T6] ✓ Cloned 76/1087: Elzair/core_affinity_rs
+[T7] ✓ Cloned 77/1087: RazrFalcon/tiny-skia
+[T5] ✓ Cloned 78/1087: bodil/sized-chunks
+[T6] ✓ Cloned 79/1087: slog-rs/async
+[T7] ✓ Cloned 80/1087: magiclen/html-escape
+[T5] ✓ Cloned 81/1087: jbaublitz/getset
+[T6] ✓ Cloned 82/1087: Canop/lazy-regex
+[T7] ✓ Cloned 83/1087: fitzgen/is_executable
+[T6] ✓ Cloned 84/1087: alexcrichton/nghttp2-rs
+[T5] ✓ Cloned 85/1087: getsentry/sentry-rust
+[T7] ✓ Cloned 86/1087: danreeves/path-clean
+[T6] ✓ Cloned 87/1087: robbepop/string-interner
+[T5] ✓ Cloned 88/1087: pfernie/cookie_store
+[T7] ✓ Cloned 89/1087: denoland/rusty_v8
+[T5] ✓ Cloned 90/1087: ruuda/thread-id
+[T6] ✓ Cloned 91/1087: gendx/lzma-rs
+[T7] ✓ Cloned 92/1087: dbrgn/tracing-test
+[T5] ✓ Cloned 93/1087: sfackler/shell-escape
+[T5] ⊘ Skipped 741: KillingSpark/zstd-rs (already exists)
+[T6] ✓ Cloned 94/1087: fede1024/rust-rdkafka
+[T5] ✓ Cloned 95/1087: zkat/supports-color
+[T6] ✓ Cloned 96/1087: zkcrypto/merlin
+[T5] ✓ Cloned 97/1087: servo/rust-cssparser
+[T6] ✓ Cloned 98/1087: mxinden/asynchronous-codec
+[T5] ✓ Cloned 99/1087: tiny-http/tiny-http
+[T6] ✓ Cloned 100/1087: SSheldon/rust-block
+[T5] ✓ Cloned 101/1087: luser/strip-ansi-escapes
+[T6] ✓ Cloned 102/1087: diesel-rs/diesel
+[T6] ✓ Cloned 103/1087: djc/bb8
+[T6] ✓ Cloned 104/1087: mitsuhiko/similar-asserts
+[T6] ✓ Cloned 105/1087: prometheus/client_rust
+[T6] ✓ Cloned 106/1087: rust-util-collections/vsdb
+[T7] ✓ Cloned 107/1087: rusoto/rusoto
+[T6] ✓ Cloned 108/1087: FillZpp/sys-info-rs
+[T7] ✓ Cloned 109/1087: paritytech/yamux
+[T7] ✓ Cloned 110/1087: garro95/priority-queue
+[T6] ✓ Cloned 111/1087: conradkleinespel/duck
+[T7] ✓ Cloned 112/1087: judemille/rust-uritemplate
+[T6] ✓ Cloned 113/1087: alexheretic/ab-glyph
+[T7] ✓ Cloned 114/1087: dzamlo/rust-bitfield
+[T6] ✓ Cloned 115/1087: oxidecomputer/serde_tokenstream
+[T7] ✓ Cloned 116/1087: mitsuhiko/serde-plain
+[T6] ✓ Cloned 117/1087: Byron/open-rs
+[T7] ✓ Cloned 118/1087: rust-mobile/android_log-sys-rs
+[T6] ✓ Cloned 119/1087: maciejhirsz/json-rust
+[T7] ✓ Cloned 120/1087: TrueLayer/task-local-extensions
+[T7] ✓ Cloned 121/1087: ModProg/proc-macro-utils
+[T6] ✓ Cloned 122/1087: dtolnay/typetag
+[T7] ✓ Cloned 123/1087: docopt/docopt.rs
+[T6] ✓ Cloned 124/1087: spacejam/sled
+[T7] ✓ Cloned 125/1087: Manishearth/array-init
+[T7] ⊘ Skipped 742: slog-rs/json (already exists)
+[T7] ⊘ Skipped 743: alexcrichton/backtrace-rs (already exists)
+[T6] ✓ Cloned 126/1087: abonander/multipart
+[T7] ✓ Cloned 127/1087: Boshen/unicode-id-start
+[T6] ✓ Cloned 128/1087: Xuanwo/backon
+[T7] ✓ Cloned 129/1087: DanielKeep/rust-custom-derive
+[T6] ✓ Cloned 130/1087: graphql-rust/graphql-client
+[T7] ✓ Cloned 131/1087: fussybeaver/bollard
+[T6] ✓ Cloned 132/1087: nuxinl/cloudabi
+[T7] ✓ Cloned 133/1087: japaric/cty
+[T6] ✓ Cloned 134/1087: thomcc/rust-more-asserts
+[T7] ✓ Cloned 135/1087: blackbeam/rust-crc16
+[T6] ✓ Cloned 136/1087: rhysd/path-slash
+[T7] ✓ Cloned 137/1087: haraldh/rust_uds_windows
+[T6] ✓ Cloned 138/1087: iamcodemaker/console_log
+[T7] ✓ Cloned 139/1087: vorot93/fastrlp
+[T6] ✓ Cloned 140/1087: drakulix/simplelog.rs
+[T7] ✓ Cloned 141/1087: SSheldon/rust-dispatch
+[T6] ✓ Cloned 142/1087: baoyachi/sha256-rs
+[T6] ✓ Cloned 143/1087: rust-lang/rustc-serialize
+[T7] ✓ Cloned 144/1087: oxidecomputer/typify
+[T7] ✓ Cloned 145/1087: Kimundi/scoped-threadpool-rs
+[T6] ✓ Cloned 146/1087: kornelski/imgref
+[T6] ✓ Cloned 147/1087: sarah-ek/equator
+[T7] ✓ Cloned 148/1087: httpmock/httpmock
+[T6] ✓ Cloned 149/1087: bincode-org/virtue
+[T7] ✓ Cloned 150/1087: quininer/futures-rustls
+[T6] ✓ Cloned 151/1087: johnstonskj/rust-email_address
+[T7] ✓ Cloned 152/1087: dtolnay/ghost
+[T6] ✓ Cloned 153/1087: Kimundi/owning-ref-rs
+[T7] ✓ Cloned 154/1087: fitzgen/inlinable_string
+[T6] ✓ Cloned 155/1087: kevinmehall/rust-peg
+[T7] ✓ Cloned 156/1087: diwic/dbus-rs
+[T6] ✓ Cloned 157/1087: influxdata/pbjson
+[T7] ✓ Cloned 158/1087: Diggsey/rust-field-offset
+[T6] ✓ Cloned 159/1087: zkat/supports-hyperlinks
+[T7] ✓ Cloned 160/1087: rust-netlink/netlink-proto
+[T6] ✓ Cloned 161/1087: wooorm/levenshtein-rs
+[T7] ✓ Cloned 162/1087: estk/log4rs
+[T6] ✓ Cloned 163/1087: multiformats/rust-multiaddr
+[T7] ✓ Cloned 164/1087: ash-rs/ash
+[T6] ✓ Cloned 165/1087: rust-lang/annotate-snippets-rs
+[T6] ✓ Cloned 166/1087: tailhook/cpu-time
+[T7] ✓ Cloned 167/1087: pelikan-io/rustcommon
+[T5] ✓ Cloned 168/1087: etemesi254/zune-image
+[T6] ✓ Cloned 169/1087: zkat/supports-unicode
+[T7] ✓ Cloned 170/1087: maciejhirsz/tiny-bip39
+[T5] ✓ Cloned 171/1087: randomites/plain
+[T6] ✓ Cloned 172/1087: jbaublitz/neli
+[T7] ✓ Cloned 173/1087: servo/euclid
+[T5] ✓ Cloned 174/1087: rust-fuzz/libfuzzer
+[T6] ✓ Cloned 175/1087: dylanede/cassowary-rs
+[T7] ✓ Cloned 176/1087: paritytech/jsonrpsee
+[T5] ✓ Cloned 177/1087: dtolnay/dissimilar
+[T7] ✓ Cloned 178/1087: alexliesenfeld/async-object-pool
+[T5] ✓ Cloned 179/1087: debris/rustc-hex
+[T6] ✓ Cloned 180/1087: azure/azure-sdk-for-rust
+[T5] ✓ Cloned 181/1087: rust-embedded/critical-section
+[T7] ✓ Cloned 182/1087: phsym/prettytable-rs
+[T6] ✓ Cloned 183/1087: alexcrichton/gcc-rs
+[T5] ✓ Cloned 184/1087: tomaka/wasm-timer
+[T7] ✓ Cloned 185/1087: danielhenrymantilla/macro_rules_attribute-rs
+[T6] ✓ Cloned 186/1087: rustls/rustls-platform-verifier
+[T5] ✓ Cloned 187/1087: tokio-rs/tokio-metrics
+[T7] ✓ Cloned 188/1087: Byron/pulldown-cmark-to-cmark
+[T6] ✓ Cloned 189/1087: tredoe/ascii_utils
+[T7] ✓ Cloned 190/1087: shssoichiro/maybe-rayon
+[T5] ✓ Cloned 191/1087: bbqsrc/core2
+[T6] ✓ Cloned 192/1087: sbstp/attohttpc
+[T7] ✓ Cloned 193/1087: DanielKeep/rust-conv
+[T5] ✓ Cloned 194/1087: rust-embedded/embedded-hal
+[T6] ✓ Cloned 195/1087: metalbear-co/hyper-http-proxy
+[T5] ✓ Cloned 196/1087: idanarye/rust-smart-default
+[T7] ✓ Cloned 197/1087: rust-av/v_frame
+[T6] ✓ Cloned 198/1087: rust-osdev/spinning_top
+[T5] ✓ Cloned 199/1087: sfackler/scheduled-thread-pool
+[T7] ✓ Cloned 200/1087: lu-zero/noop_proc_macro
+[T7] ✓ Cloned 201/1087: ModProg/attribute-derive
+[T5] ✓ Cloned 202/1087: rust-windowing/winit
+[T7] ✓ Cloned 203/1087: Phundrak/output-vt100-rs
+[T5] ✓ Cloned 204/1087: lifthrasiir/num-cmp
+[T7] ✓ Cloned 205/1087: ModProg/quote-use
+[T5] ✓ Cloned 206/1087: polyfill-rs/once_cell_polyfill
+[T7] ✓ Cloned 207/1087: rust-windowing/android-ndk-rs
+[T5] ✓ Cloned 208/1087: thk1/send_wrapper
+[T7] ✓ Cloned 209/1087: lu-zero/arg_enum_proc_macro
+[T5] ✓ Cloned 210/1087: ModProg/derive-where
+[T7] ✓ Cloned 211/1087: rust-mobile/android_logger-rs
+[T7] ✓ Cloned 212/1087: est31/serde-big-array
+[T5] ✓ Cloned 213/1087: rustsec/rustsec
+[T5] ✓ Cloned 214/1087: jaemk/cached
+[T7] ✓ Cloned 215/1087: juhaku/utoipa
+[T5] ✓ Cloned 216/1087: hickory-dns/hickory-dns
+[T7] ✓ Cloned 217/1087: neoeinstein/stats_alloc
+[T5] ✓ Cloned 218/1087: lipanski/mockito
+[T7] ✓ Cloned 219/1087: kornelski/avif-serialize
+[T7] ✓ Cloned 220/1087: rust-av/av1-grain
+[T5] ✓ Cloned 221/1087: RazrFalcon/roxmltree
+[T7] ✓ Cloned 222/1087: taiki-e/syn-mid
+[T7] ✓ Cloned 223/1087: notriddle/rust-float-ord
+[T5] ✓ Cloned 224/1087: aldanor/qoi-rust
+[T7] ✓ Cloned 225/1087: lu-zero/simd_helpers
+[T5] ✓ Cloned 226/1087: TrueLayer/retry-policies
+[T7] ✓ Cloned 227/1087: addr-rs/addr
+[T6] ✓ Cloned 228/1087: swc-project/swc
+[T5] ✓ Cloned 229/1087: daboross/fern
+[T7] ✓ Cloned 230/1087: staedoix/collection_literals
+[T7] ⊘ Skipped 744: stjepang/async-lock (already exists)
+[T5] ✓ Cloned 231/1087: danburkert/memmap-rs
+[T6] ✓ Cloned 232/1087: jamesmunns/postcard
+[T7] ✓ Cloned 233/1087: ModProg/interpolator
+[T7] ✓ Cloned 234/1087: wolandr/pretty-hex
+[T6] ✓ Cloned 235/1087: amodm/webbrowser-rs
+[T5] ✓ Cloned 236/1087: smithay/client-toolkit
+[T7] ✓ Cloned 237/1087: kornelski/cavif-rs
+[T6] ✓ Cloned 238/1087: smol-rs/async-net
+[T5] ✓ Cloned 239/1087: rust-bitcoin/rust-bech32
+[T5] ✓ Cloned 240/1087: DoumanAsh/clipboard-win
+[T6] ✓ Cloned 241/1087: 1Password/arboard
+[T5] ✓ Cloned 242/1087: dtolnay/serde-ignored
+[T6] ✓ Cloned 243/1087: rust-analyzer/expect-test
+[T7] ✓ Cloned 244/1087: gfx-rs/wgpu
+[T6] ✓ Cloned 245/1087: fflorent/nom_locate
+[T5] ✓ Cloned 246/1087: madsmtm/objc2
+[T7] ✓ Cloned 247/1087: kezhuw/zookeeper-client-rust
+[T5] ✓ Cloned 248/1087: upsuper/dtoa-short
+[T6] ✓ Cloned 249/1087: rhysd/tinyjson
+[T5] ✓ Cloned 250/1087: elinorbgr/dlib
+[T6] ✓ Cloned 251/1087: enarx/flagset
+[T6] ✓ Cloned 252/1087: rust-netlink/netlink-sys
+[T7] ✓ Cloned 253/1087: xiph/rav1e
+[T5] ✓ Cloned 254/1087: aclysma/profiling
+[T6] ✓ Cloned 255/1087: abonander/buf_redux
+[T7] ✓ Cloned 256/1087: sticnarf/tokio-socks
+[T5] ✓ Cloned 257/1087: tailhook/serde-regex
+[T6] ✓ Cloned 258/1087: tuffy/bitstream-io
+[T5] ✓ Cloned 259/1087: tikv/pprof-rs
+[T7] ✓ Cloned 260/1087: LeoBorai/local-ip-address
+[T6] ✓ Cloned 261/1087: Kyuuhachi/syn_derive
+[T7] ✓ Cloned 262/1087: sfackler/rust-log-mdc
+[T5] ✓ Cloned 263/1087: AltF02/x11-rs
+[T7] ✓ Cloned 264/1087: hanmertens/dary_heap
+[T6] ✓ Cloned 265/1087: paritytech/scale-info
+[T5] ✓ Cloned 266/1087: badboy/iso8601
+[T6] ✓ Cloned 267/1087: QEDK/configparser-rs
+[T5] ✓ Cloned 268/1087: async-rs/async-attributes
+[T7] ✓ Cloned 269/1087: unicode-rs/unicode-script
+[T6] ✓ Cloned 270/1087: dtolnay/enumn
+[T7] ✓ Cloned 271/1087: messense/if-addrs
+[T5] ✓ Cloned 272/1087: WanzenBug/rle-decode-helper
+[T6] ✓ Cloned 273/1087: rust-netlink/netlink-packet-core
+[T5] ✓ Cloned 274/1087: andrewhickman/prost-reflect
+[T7] ✓ Cloned 275/1087: emabee/flexi_logger
+[T6] ✓ Cloned 276/1087: slog-rs/scope
+[T7] ✓ Cloned 277/1087: dunmatt/no-std-net
+[T5] ✓ Cloned 278/1087: tokio-rs/io-uring
+[T5] ✓ Cloned 279/1087: al8n/fs4-rs
+[T7] ✓ Cloned 280/1087: koute/stdweb
+[T5] ✓ Cloned 281/1087: dtolnay/serde-untagged
+[T5] ✓ Cloned 282/1087: zkat/is_ci
+[T5] ✓ Cloned 283/1087: bitshifter/glam-rs
+[T5] ✓ Cloned 284/1087: sarah-ek/aligned-vec
+[T7] ✓ Cloned 285/1087: apache/datafusion
+[T7] ✓ Cloned 286/1087: statrs-dev/statrs
+[T7] ✓ Cloned 287/1087: sru-systems/rust-argon2
+[T5] ✓ Cloned 288/1087: maciejhirsz/logos
+[T7] ✓ Cloned 289/1087: rust-netlink/rtnetlink
+[T5] ✓ Cloned 290/1087: sqlparser-rs/sqlparser-rs
+[T7] ✓ Cloned 291/1087: smithay/calloop-wayland-source
+[T5] ✓ Cloned 292/1087: paritytech/libsecp256k1
+[T7] ✓ Cloned 293/1087: iddm/serde-aux
+[T5] ✓ Cloned 294/1087: softprops/hyperlocal
+[T7] ✓ Cloned 295/1087: staktrace/quoted-printable
+[T7] ✓ Cloned 296/1087: RazrFalcon/strict-num
+[T5] ✓ Cloned 297/1087: Smithay/calloop
+[T7] ✓ Cloned 298/1087: fnichol/names
+[T7] ⊘ Skipped 745: awslabs/smithy-rs (already exists)
+[T5] ✓ Cloned 299/1087: JohnTitor/mach2
+[T7] ✓ Cloned 300/1087: Michael-F-Bryan/ffi_helpers
+[T5] ✓ Cloned 301/1087: alexheretic/owned-ttf-parser
+[T7] ✓ Cloned 302/1087: lifthrasiir/rust-encoding
+[T5] ✓ Cloned 303/1087: psychon/x11rb
+[T7] ✓ Cloned 304/1087: dimbleby/mio-extras
+[T5] ✓ Cloned 305/1087: icorderi/rust-uname
+[T7] ✓ Cloned 306/1087: SergioBenitez/state
+[T5] ✓ Cloned 307/1087: stepancheg/rust-protobuf
+[T7] ✓ Cloned 308/1087: elastic/elasticsearch-rs
+[T5] ✓ Cloned 309/1087: oconnor663/shared_child.rs
+[T7] ✓ Cloned 310/1087: nlordell/ethnum-rs
+[T7] ✓ Cloned 311/1087: frozenlib/structmeta
+[T7] ✓ Cloned 312/1087: rust-bitcoin/hex-conservative
+[T7] ✓ Cloned 313/1087: andreasots/base32
+[T7] ✓ Cloned 314/1087: paritytech/jsonrpc
+[T5] ✓ Cloned 315/1087: bytecodealliance/wasmtime
+[T7] ✓ Cloned 316/1087: BurntSushi/fst
+[T5] ✓ Cloned 317/1087: danieldg/ordered-stream
+[T7] ✓ Cloned 318/1087: hniksic/rust-subprocess
+[T5] ✓ Cloned 319/1087: NervosFoundation/faster-hex
+[T7] ✓ Cloned 320/1087: veddan/rust-htmlescape
+[T5] ✓ Cloned 321/1087: servo/stylo
+[T7] ✓ Cloned 322/1087: stbuehler/rust-cidr
+[T7] ✓ Cloned 323/1087: softprops/treeline
+[T5] ✓ Cloned 324/1087: rust-bitcoin/rust-bitcoin
+[T7] ✓ Cloned 325/1087: actix/actix
+[T5] ✓ Cloned 326/1087: DoumanAsh/error-code
+[T5] ✓ Cloned 327/1087: jonhoo/inferno
+[T5] ✓ Cloned 328/1087: image-rs/deflate-rs
+[T5] ⊘ Skipped 746: tokio-rs/console (already exists)
+[T5] ✓ Cloned 329/1087: image-rs/image-webp
+[T5] ✓ Cloned 330/1087: EVaillant/lockfree-object-pool
+[T5] ✓ Cloned 331/1087: cobalt-org/kstring
+[T5] ✓ Cloned 332/1087: tafia/quick-protobuf
+[T5] ✓ Cloned 333/1087: trifectatechfoundation/zlib-rs
+[T5] ✓ Cloned 334/1087: brunoczim/fslock
+[T5] ✓ Cloned 335/1087: smol-rs/cache-padded
+[T5] ✓ Cloned 336/1087: lukaslueg/built
+[T5] ✓ Cloned 337/1087: kkawakam/rustyline
+[T5] ✓ Cloned 338/1087: nearprotocol/borsh
+[T5] ✓ Cloned 339/1087: iwillspeak/rust-onig
+[T5] ✓ Cloned 340/1087: anatawa12/deflate64-rs
+
+=== Summary ===
+Total repositories: 1087
+  Cloned:           340
+  Skipped:          746
+  Failed:           1
+Completed in 126746 ms.
