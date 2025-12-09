@@ -646,12 +646,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rustc-demangle"
-version = "0.1.26"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56f7d92ca342cea22a06f2121d944b4fd82af56988c270852495420f961d4ace"
-
-[[package]]
 name = "rustc-hash"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -667,7 +661,6 @@ dependencies = [
  "ra_ap_syntax",
  "regex",
  "rowan",
- "rustc-demangle",
  "serde",
  "serde_json",
  "serial_test",

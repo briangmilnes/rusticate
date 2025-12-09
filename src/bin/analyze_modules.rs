@@ -716,18 +716,18 @@ fn check_mir_exists(project_path: &Path) -> bool {
 }
 
 fn compile_with_mir(project_path: &Path) -> Result<()> {
-    println!("  Compiling with MIR emission...");
+    println!("  Checking and emitting MIR (no codegen)...");
     
     let output = std::process::Command::new("cargo")
-        .arg("build")
+        .arg("check")  // Use check instead of build - faster, no codegen
         .current_dir(project_path)
         .env("RUSTFLAGS", "--emit=mir")
         .output()
-        .context("Failed to run cargo build")?;
+        .context("Failed to run cargo check")?;
     
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
-        bail!("Cargo build failed:\n{}", stderr);
+        bail!("Cargo check failed:\n{}", stderr);
     }
     
     Ok(())
