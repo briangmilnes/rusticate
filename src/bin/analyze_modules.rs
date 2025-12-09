@@ -733,6 +733,86 @@ fn compile_with_mir(project_path: &Path) -> Result<()> {
     Ok(())
 }
 
+fn normalize_function_name(raw: &str) -> String {
+    // Handle: <Type<T> as Trait>::method -> Type::method
+    // Handle: Type::<T, U>::method -> Type::method
+    // Handle: std::vec::Vec::<T>::push -> std::vec::Vec::push
+    
+    let mut result = raw.to_string();
+    
+    // Remove trait syntax: <Type as Trait>:: -> Type::
+    if result.starts_with('<') {
+        if let Some(as_pos) = result.find(" as ") {
+            // Extract type name between < and " as "
+            let type_part = &result[1..as_pos];
+            // Find the closing > for the outer <...>
+            if let Some(close_pos) = result.find(">::") {
+                let rest = &result[close_pos + 3..];
+                result = format!("{}::{}", type_part, rest);
+            }
+        } else if let Some(close_pos) = result.find(">::") {
+            // Just <Type>:: without "as", remove the angle brackets
+            let type_part = &result[1..close_pos];
+            let rest = &result[close_pos + 3..];
+            result = format!("{}::{}", type_part, rest);
+        }
+    }
+    
+    // Remove generic parameters: Type::<T, U> -> Type
+    // This is tricky because we need to balance angle brackets
+    let mut cleaned = String::new();
+    let mut depth = 0;
+    let mut skip_mode = false;
+    
+    for ch in result.chars() {
+        match ch {
+            ':' if depth == 0 => {
+                cleaned.push(ch);
+                skip_mode = false;
+            }
+            '<' if skip_mode => {
+                depth += 1;
+            }
+            '>' if skip_mode => {
+                depth -= 1;
+                if depth == 0 {
+                    skip_mode = false;
+                }
+            }
+            _ if skip_mode => {
+                // Skip generics content
+            }
+            '<' if !skip_mode => {
+                // Start of generics, skip it
+                skip_mode = true;
+                depth = 1;
+            }
+            _ => {
+                cleaned.push(ch);
+            }
+        }
+    }
+    
+    // Final cleanup
+    cleaned = cleaned.replace("<", "").replace(">", "");
+    
+    // Remove multiple consecutive :: 
+    while cleaned.contains("::::") {
+        cleaned = cleaned.replace("::::", "::");
+    }
+    while cleaned.contains(":::") {
+        cleaned = cleaned.replace(":::", "::");
+    }
+    
+    // Remove trailing ::
+    if cleaned.ends_with("::") {
+        cleaned = cleaned[..cleaned.len() - 2].to_string();
+    }
+    
+    // Trim
+    cleaned.trim().to_string()
+}
+
 fn parse_mir_file(mir_path: &Path) -> Result<Vec<String>> {
     let content = fs::read_to_string(mir_path)
         .with_context(|| format!("Failed to read MIR file: {}", mir_path.display()))?;
@@ -748,16 +828,37 @@ fn parse_mir_file(mir_path: &Path) -> Result<Vec<String>> {
         if line.contains("std::") || line.contains("core::") || line.contains("alloc::") {
             // Extract function call: Type::<...>::method
             if let Some(eq_pos) = line.find('=') {
-                let after_eq = &line[eq_pos + 1..].trim();
+                let after_eq = line[eq_pos + 1..].trim();
                 
-                // Extract up to the opening paren or arrow
-                if let Some(end) = after_eq.find('(').or_else(|| after_eq.find(" ->")) {
+                // Find the function call by balancing angle brackets
+                let mut depth = 0;
+                let mut end_pos = None;
+                
+                for (i, ch) in after_eq.char_indices() {
+                    match ch {
+                        '<' => depth += 1,
+                        '>' => depth -= 1,
+                        '(' if depth == 0 => {
+                            end_pos = Some(i);
+                            break;
+                        }
+                        ' ' if depth == 0 && after_eq[i..].starts_with(" ->") => {
+                            end_pos = Some(i);
+                            break;
+                        }
+                        _ => {}
+                    }
+                }
+                
+                if let Some(end) = end_pos {
                     let call = after_eq[..end].trim();
                     
                     // Filter for stdlib calls
-                    if call.starts_with("std::") || call.starts_with("core::") || call.starts_with("alloc::") ||
-                       call.starts_with("<std::") || call.starts_with("<core::") || call.starts_with("<alloc::") {
-                        calls.push(call.to_string());
+                    if call.contains("std::") || call.contains("core::") || call.contains("alloc::") {
+                        let normalized = normalize_function_name(call);
+                        if !normalized.is_empty() {
+                            calls.push(normalized);
+                        }
                     }
                 }
             }
