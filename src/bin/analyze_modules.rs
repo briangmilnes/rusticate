@@ -27,12 +27,14 @@ const WRAPPER_CRATES: &[&str] = &[
 
 struct Args {
     codebase: PathBuf,
+    max_codebases: Option<usize>,
 }
 
 impl Args {
     fn parse() -> Result<Self> {
         let mut args_iter = std::env::args().skip(1);
         let mut codebase = None;
+        let mut max_codebases = None;
 
         while let Some(arg) = args_iter.next() {
             match arg.as_str() {
@@ -42,6 +44,14 @@ impl Args {
                             .next()
                             .context("Expected path after -C/--codebase")?
                     ));
+                }
+                "-m" | "--max-codebases" => {
+                    let max = args_iter
+                        .next()
+                        .context("Expected number after -m/--max-codebases")?
+                        .parse::<usize>()
+                        .context("Invalid number for -m/--max-codebases")?;
+                    max_codebases = Some(max);
                 }
                 "-h" | "--help" => {
                     print_help();
@@ -68,7 +78,10 @@ impl Args {
             bail!("Codebase path is not a directory: {}", codebase.display());
         }
 
-        Ok(Args { codebase })
+        Ok(Args { 
+            codebase,
+            max_codebases,
+        })
     }
 }
 
@@ -77,11 +90,12 @@ fn print_help() {
         r#"rusticate-analyze-modules - Analyze module usage in codebases
 
 USAGE:
-    rusticate-analyze-modules -C <PATH>
+    rusticate-analyze-modules -C <PATH> [-m <N>]
 
 OPTIONS:
-    -C, --codebase <PATH>    Path to a codebase, or a directory of codebases [required]
-    -h, --help               Print this help message
+    -C, --codebase <PATH>       Path to a codebase, or a directory of codebases [required]
+    -m, --max-codebases <N>     Limit number of codebases to analyze (default: unlimited)
+    -h, --help                  Print this help message
 
 DESCRIPTION:
     Analyzes which modules are used in Rust codebases. Filters out wrapper
@@ -103,6 +117,9 @@ EXAMPLES:
 
     # Analyze a directory containing multiple codebases
     rusticate-analyze-modules -C ~/projects/VerusCodebases
+
+    # Test with first 5 codebases only
+    rusticate-analyze-modules -C ~/projects/VerusCodebases -m 5
 
     # Analyze modules in multiple codebases individually
     for dir in ~/projects/VerusCodebases/*; do
@@ -195,11 +212,17 @@ fn main() -> Result<()> {
     log!("rusticate-analyze-modules");
     log!("==========================");
     log!("Codebase: {}", args.codebase.display());
+    if let Some(max) = args.max_codebases {
+        log!("Max codebases: {}", max);
+    }
     log!("Started at: {:?}\n", start);
 
     println!("rusticate-analyze-modules");
     println!("==========================");
     println!("Codebase: {}", args.codebase.display());
+    if let Some(max) = args.max_codebases {
+        println!("Max codebases: {}", max);
+    }
     println!();
 
     // Find all Rust files
