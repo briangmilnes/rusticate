@@ -4,7 +4,7 @@ use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
-use ra_ap_syntax::{ast, AstNode, SyntaxKind};
+use ra_ap_syntax::{ast, AstNode, SyntaxKind, SyntaxNode};
 use rusticate::parse_file;
 
 // Crates that wrap/re-export everything - we want to filter these out
@@ -245,13 +245,72 @@ fn is_wrapper_crate(path: &str) -> bool {
     false
 }
 
-fn count_functions_in_file(file: &Path) -> Result<(usize, usize, usize, usize, usize)> {
+// Struct to hold detailed function information
+#[derive(Debug, Clone)]
+struct FunctionInfo {
+    name: String,
+    module_path: String,
+    context: FunctionContext,
+    is_public: bool,
+    is_unsafe: bool,
+}
+
+#[derive(Debug, Clone)]
+enum FunctionContext {
+    Standalone,
+    Trait(String),      // trait name
+    Impl(String),       // type name
+}
+
+fn extract_function_name(fn_node: &SyntaxNode) -> Option<String> {
+    fn_node.children_with_tokens()
+        .find(|c| c.kind() == SyntaxKind::NAME)
+        .map(|n| n.to_string())
+}
+
+fn extract_impl_type(impl_node: &SyntaxNode) -> Option<String> {
+    // Look for the type being implemented
+    // Format: impl [<generics>] Type [<generics>] [for Trait] { ... }
+    for child in impl_node.children_with_tokens() {
+        if child.kind() == SyntaxKind::PATH_TYPE {
+            if let Some(path) = child.as_node() {
+                // Extract the type path
+                return Some(path.to_string().trim().to_string());
+            }
+        }
+    }
+    None
+}
+
+fn extract_trait_name(trait_node: &SyntaxNode) -> Option<String> {
+    trait_node.children_with_tokens()
+        .find(|c| c.kind() == SyntaxKind::NAME)
+        .map(|n| n.to_string())
+}
+
+fn file_to_module_path(file: &Path, lib_root: &Path) -> String {
+    // Convert file path to module path
+    // e.g., std/collections/hash_map.rs -> std::collections::hash_map
+    let rel = file.strip_prefix(lib_root).unwrap_or(file);
+    let path_str = rel.to_string_lossy();
+    
+    // Remove .rs extension and convert / to ::
+    let module = path_str
+        .strip_suffix(".rs").unwrap_or(&path_str)
+        .replace("/", "::")
+        .replace("mod::", "")  // Remove mod:: for mod.rs files
+        .replace("lib::", ""); // Remove lib:: for lib.rs files
+    
+    module
+}
+
+fn count_functions_in_file(file: &Path, lib_root: &Path) -> Result<(usize, usize, usize, usize, usize, Vec<FunctionInfo>)> {
     let content = fs::read_to_string(file)
         .with_context(|| format!("Failed to read: {}", file.display()))?;
     
     let parse = match parse_file(&content) {
         Ok(p) => p,
-        Err(_) => return Ok((0, 0, 0, 0, 0)), // Skip files with parse errors
+        Err(_) => return Ok((0, 0, 0, 0, 0, Vec::new())), // Skip files with parse errors
     };
     
     let root = parse.syntax();
@@ -260,6 +319,9 @@ fn count_functions_in_file(file: &Path) -> Result<(usize, usize, usize, usize, u
     let mut total_fns = 0;
     let mut trait_fns = 0;
     let mut impl_fns = 0;
+    let mut functions = Vec::new();
+    
+    let module_path = file_to_module_path(file, lib_root);
     
     // Walk AST looking for all function definitions
     for item_node in root.descendants() {
@@ -277,19 +339,25 @@ fn count_functions_in_file(file: &Path) -> Result<(usize, usize, usize, usize, u
                     child.kind() == SyntaxKind::VISIBILITY
                 });
                 
+                // Extract function name
+                let fn_name = extract_function_name(&item_node).unwrap_or_else(|| "<anonymous>".to_string());
+                
                 // Determine context: trait, impl, or standalone
                 let mut current = item_node.parent();
-                let mut in_trait = false;
-                let mut in_impl = false;
+                let mut context = FunctionContext::Standalone;
                 
                 while let Some(parent) = current {
                     match parent.kind() {
                         SyntaxKind::TRAIT => {
-                            in_trait = true;
+                            if let Some(trait_name) = extract_trait_name(&parent) {
+                                context = FunctionContext::Trait(trait_name);
+                            }
                             break;
                         }
                         SyntaxKind::IMPL => {
-                            in_impl = true;
+                            if let Some(type_name) = extract_impl_type(&parent) {
+                                context = FunctionContext::Impl(type_name);
+                            }
                             break;
                         }
                         _ => {}
@@ -297,28 +365,39 @@ fn count_functions_in_file(file: &Path) -> Result<(usize, usize, usize, usize, u
                     current = parent.parent();
                 }
                 
-                if in_trait {
-                    trait_fns += 1;
-                    // Trait methods are implicitly public
-                    if is_pub || true {  // Traits define public interface
-                        pub_count += 1;
+                // Update counts based on context
+                match &context {
+                    FunctionContext::Trait(_) => {
+                        trait_fns += 1;
+                        pub_count += 1; // Trait methods are implicitly public
                     }
-                } else if in_impl {
-                    impl_fns += 1;
-                    if is_pub {
-                        pub_count += 1;
+                    FunctionContext::Impl(_) => {
+                        impl_fns += 1;
+                        if is_pub {
+                            pub_count += 1;
+                        }
                     }
-                } else {
-                    // Standalone function
-                    if is_pub {
-                        pub_count += 1;
+                    FunctionContext::Standalone => {
+                        if is_pub {
+                            pub_count += 1;
+                        }
                     }
                 }
+                
+                // Create FunctionInfo
+                let is_trait = matches!(context, FunctionContext::Trait(_));
+                functions.push(FunctionInfo {
+                    name: fn_name,
+                    module_path: module_path.clone(),
+                    context,
+                    is_public: is_pub || is_trait,
+                    is_unsafe: fn_node.unsafe_token().is_some(),
+                });
             }
         }
     }
     
-    Ok((pub_count, unsafe_count, total_fns, trait_fns, impl_fns))
+    Ok((pub_count, unsafe_count, total_fns, trait_fns, impl_fns, functions))
 }
 
 fn count_stdlib_functions(jobs: usize) -> Result<()> {
@@ -366,6 +445,7 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
     let mut total_fns = 0;
     let mut total_trait = 0;
     let mut total_impl = 0;
+    let mut all_functions: Vec<FunctionInfo> = Vec::new();
     
     for (lib_name, lib_path) in libs {
         if !lib_path.exists() {
@@ -384,28 +464,32 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
         let chunk_size = (files.len() + jobs - 1) / jobs;
         let chunks: Vec<_> = files.chunks(chunk_size).map(|c| c.to_vec()).collect();
         
+        let lib_path_clone = lib_path.clone();
         let handles: Vec<_> = chunks
             .into_iter()
             .enumerate()
             .map(|(chunk_idx, chunk)| {
+                let lib_root = lib_path_clone.clone();
                 std::thread::spawn(move || {
                     let mut pub_count = 0;
                     let mut unsafe_count = 0;
                     let mut total_count = 0;
                     let mut trait_count = 0;
                     let mut impl_count = 0;
+                    let mut all_functions = Vec::new();
                     
                     for file in chunk.iter() {
-                        if let Ok((pub_fns, unsafe_fns, total_fns, trait_fns, impl_fns)) = count_functions_in_file(file) {
+                        if let Ok((pub_fns, unsafe_fns, total_fns, trait_fns, impl_fns, functions)) = count_functions_in_file(file, &lib_root) {
                             pub_count += pub_fns;
                             unsafe_count += unsafe_fns;
                             total_count += total_fns;
                             trait_count += trait_fns;
                             impl_count += impl_fns;
+                            all_functions.extend(functions);
                         }
                     }
                     
-                    (pub_count, unsafe_count, total_count, trait_count, impl_count)
+                    (pub_count, unsafe_count, total_count, trait_count, impl_count, all_functions)
                 })
             })
             .collect();
@@ -416,13 +500,15 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
         let mut lib_total = 0;
         let mut lib_trait = 0;
         let mut lib_impl = 0;
+        let mut lib_functions = Vec::new();
         for handle in handles {
-            let (pub_fns, unsafe_fns, total_fns, trait_fns, impl_fns) = handle.join().unwrap();
+            let (pub_fns, unsafe_fns, total_fns, trait_fns, impl_fns, functions) = handle.join().unwrap();
             lib_pub += pub_fns;
             lib_unsafe += unsafe_fns;
             lib_total += total_fns;
             lib_trait += trait_fns;
             lib_impl += impl_fns;
+            lib_functions.extend(functions);
         }
         
         let standalone = lib_total - lib_trait - lib_impl;
@@ -442,6 +528,7 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
         total_trait += lib_trait;
         total_impl += lib_impl;
         total_files += files.len();
+        all_functions.extend(lib_functions);
     }
     
     let elapsed = start.elapsed();
@@ -467,6 +554,51 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
     println!("Total public: {}", total_pub);
     println!("Total unsafe: {}", total_unsafe);
     println!("\nCompleted in {} ms.", elapsed.as_millis());
+    
+    // Output detailed function list organized by type
+    output_function_inventory(&all_functions, &mut log_file)?;
+    
+    Ok(())
+}
+
+fn output_function_inventory(functions: &[FunctionInfo], log_file: &mut fs::File) -> Result<()> {
+    use std::collections::BTreeMap;
+    
+    // Organize by module::type
+    let mut by_type: BTreeMap<String, Vec<&FunctionInfo>> = BTreeMap::new();
+    
+    for func in functions {
+        let key = match &func.context {
+            FunctionContext::Standalone => {
+                format!("{}::<standalone>", func.module_path)
+            }
+            FunctionContext::Trait(trait_name) => {
+                format!("{}::trait::{}", func.module_path, trait_name)
+            }
+            FunctionContext::Impl(type_name) => {
+                format!("{}::{}", func.module_path, type_name)
+            }
+        };
+        by_type.entry(key).or_insert_with(Vec::new).push(func);
+    }
+    
+    writeln!(log_file, "\n\n=== DETAILED FUNCTION INVENTORY ===")?;
+    writeln!(log_file, "Format: module::Type")?;
+    writeln!(log_file, "  - function_name\n")?;
+    
+    for (type_key, funcs) in by_type.iter() {
+        writeln!(log_file, "{}", type_key)?;
+        for func in funcs {
+            let flags = format!("{}{}",
+                if func.is_public { "pub " } else { "" },
+                if func.is_unsafe { "unsafe " } else { "" }
+            );
+            writeln!(log_file, "  - {}{}", flags, func.name)?;
+        }
+        writeln!(log_file)?;
+    }
+    
+    writeln!(log_file, "=== END INVENTORY ===")?;
     
     Ok(())
 }
