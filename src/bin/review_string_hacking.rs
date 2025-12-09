@@ -234,6 +234,19 @@ fn check_for_string_hacking(source: &str, file_path: &str) -> Result<Vec<String>
                             }
                         }
                     }
+                    
+                    // Check for .to_string() on syntax-like variables (AST nodes converted to strings)
+                    if method_name == "to_string" {
+                        if let Some(receiver) = call.receiver() {
+                            let receiver_text = receiver.to_string();
+                            if is_syntax_like_variable(&receiver_text) {
+                                let line = get_line_number(source, node.text_range().start().into());
+                                violations.push(format!(
+                                    "{file_path}:{line}: String hacking detected: {receiver_text}.to_string() - Extract path/items from AST structure, not raw text"
+                                ));
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -295,6 +308,13 @@ fn is_source_like_variable(var_name: &str) -> bool {
                         "result", "call_text", "callee_text", "impl_text",
                         "line", "lines", "fn_line", "search_line"];
     source_names.iter().any(|name| var_name.contains(name))
+}
+
+fn is_syntax_like_variable(var_name: &str) -> bool {
+    let syntax_names = ["syntax", "node", "tree", "ast", "parse", "parsed", 
+                        "use_tree", "source_file", "item", "stmt", "expr",
+                        "use_text", "path_text"];
+    syntax_names.iter().any(|name| var_name.contains(name))
 }
 
 fn get_line_number(source: &str, byte_offset: usize) -> usize {
