@@ -136,6 +136,37 @@ struct ModuleUsage {
     line: usize,
 }
 
+fn extract_paths_from_use_tree(use_tree: &ast::UseTree, prefix: String) -> Vec<String> {
+    let mut paths = Vec::new();
+    
+    if let Some(path) = use_tree.path() {
+        let path_str = path.to_string();
+        let full_path = if prefix.is_empty() {
+            path_str.clone()
+        } else {
+            format!("{}::{}", prefix, path_str)
+        };
+        
+        // Check if there's a UseTreeList (grouped imports like {A, B, C})
+        if let Some(use_tree_list) = use_tree.use_tree_list() {
+            // Recurse into each item in the list
+            for child_tree in use_tree_list.use_trees() {
+                paths.extend(extract_paths_from_use_tree(&child_tree, full_path.clone()));
+            }
+        } else {
+            // Simple path - just add it
+            paths.push(full_path);
+        }
+    } else if let Some(use_tree_list) = use_tree.use_tree_list() {
+        // List without a path (e.g., use {self, A, B})
+        for child_tree in use_tree_list.use_trees() {
+            paths.extend(extract_paths_from_use_tree(&child_tree, prefix.clone()));
+        }
+    }
+    
+    paths
+}
+
 fn extract_use_paths(file: &Path) -> Result<Vec<(String, usize)>> {
     let content = fs::read_to_string(file)
         .with_context(|| format!("Failed to read file: {}", file.display()))?;
@@ -149,13 +180,17 @@ fn extract_use_paths(file: &Path) -> Result<Vec<(String, usize)>> {
         if node.kind() == SyntaxKind::USE {
             if let Some(use_item) = ast::Use::cast(node.clone()) {
                 if let Some(use_tree) = use_item.use_tree() {
-                    let use_text = use_tree.syntax().text().to_string();
+                    // Extract paths properly via AST traversal
+                    let paths = extract_paths_from_use_tree(&use_tree, String::new());
                     
                     // Calculate line number by counting newlines before this node
                     let offset = node.text_range().start().into();
                     let line = content[..offset].lines().count();
                     
-                    uses.push((use_text, line));
+                    // Add all extracted paths with the same line number
+                    for path in paths {
+                        uses.push((path, line));
+                    }
                 }
             }
         }
