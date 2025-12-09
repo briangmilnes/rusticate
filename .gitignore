@@ -41,3 +41,6 @@ tramp
 *_flymake.*
 .projectile
 .dir-locals.el
+
+# Large data files
+analyses/crates_io_data/
