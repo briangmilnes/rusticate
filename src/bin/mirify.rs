@@ -3,7 +3,7 @@ use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use walkdir::WalkDir;
 
 struct Args {
@@ -11,6 +11,7 @@ struct Args {
     max_projects: Option<usize>,
     jobs: usize,
     clean_first: bool,
+    clean_artifacts: bool,
 }
 
 impl Args {
@@ -20,6 +21,7 @@ impl Args {
         let mut max_projects = None;
         let mut jobs = 1; // Default sequential for safety
         let mut clean_first = false;
+        let mut clean_artifacts = false;
 
         while let Some(arg) = args_iter.next() {
             match arg.as_str() {
@@ -51,6 +53,9 @@ impl Args {
                 "--clean" => {
                     clean_first = true;
                 }
+                "--clean-artifacts" => {
+                    clean_artifacts = true;
+                }
                 "-h" | "--help" => {
                     print_help();
                     std::process::exit(0);
@@ -75,6 +80,7 @@ impl Args {
             max_projects,
             jobs,
             clean_first,
+            clean_artifacts,
         })
     }
 }
@@ -90,7 +96,8 @@ OPTIONS:
     -C, --codebase <PATH>       Path to a project or directory of projects [required]
     -m, --max-projects <N>      Limit number of projects to process (default: unlimited)
     -j, --jobs <N>              Number of parallel builds (default: 1)
-    --clean                     Run 'cargo clean' before generating MIR (removes old binaries)
+    --clean                     Run 'cargo clean' before generating MIR (removes everything)
+    --clean-artifacts           After MIR generation, delete artifacts but keep *.mir files
     -h, --help                  Print this help message
 
 DESCRIPTION:
@@ -155,6 +162,47 @@ fn clean_project(project_path: &Path) -> Result<()> {
     Ok(())
 }
 
+fn clean_artifacts_keep_mir(project_path: &Path) -> Result<()> {
+    // Delete build artifacts but keep *.mir and *.d files
+    // Keeps project buildable with minimal storage
+    let target_dir = project_path.join("target");
+    
+    if !target_dir.exists() {
+        return Ok(());
+    }
+    
+    // Delete .rmeta, .rlib, and other large artifacts
+    for ext in &["rmeta", "rlib", "so", "a", "dylib"] {
+        let _ = std::process::Command::new("find")
+            .arg(&target_dir)
+            .arg("-type")
+            .arg("f")
+            .arg("-name")
+            .arg(format!("*.{}", ext))
+            .arg("-delete")
+            .output();
+    }
+    
+    // Delete build and incremental directories
+    for subdir in &["build", "incremental", ".fingerprint"] {
+        let path = target_dir.join(subdir);
+        if path.exists() {
+            let _ = fs::remove_dir_all(&path);
+        }
+    }
+    
+    // Clean up empty directories
+    let _ = std::process::Command::new("find")
+        .arg(&target_dir)
+        .arg("-type")
+        .arg("d")
+        .arg("-empty")
+        .arg("-delete")
+        .output();
+    
+    Ok(())
+}
+
 fn mirify_project(project_path: &Path, clean_first: bool) -> Result<()> {
     if clean_first {
         clean_project(project_path)?;
@@ -162,6 +210,8 @@ fn mirify_project(project_path: &Path, clean_first: bool) -> Result<()> {
     
     let output = std::process::Command::new("cargo")
         .arg("check")
+        .arg("-j")
+        .arg("1")  // Limit each cargo to 1 rustc at a time
         .current_dir(project_path)
         .env("RUSTFLAGS", "--emit=mir")
         .output()
@@ -180,27 +230,26 @@ fn main() -> Result<()> {
     let args = Args::parse()?;
     
     // Set up logging
-    let log_path = PathBuf::from("analyses/mirify.log");
+    let log_path = PathBuf::from("analyses/rusticate-mirify.log");
     fs::create_dir_all("analyses")?;
-    let mut log_file = fs::File::create(&log_path)
+    let log_file = fs::File::create(&log_path)
         .context("Failed to create log file")?;
-    
-    macro_rules! log {
-        ($($arg:tt)*) => {
-            writeln!(log_file, $($arg)*).ok();
-        };
-    }
+    let shared_log = Arc::new(Mutex::new(log_file));
     
     // Log header
-    log!("rusticate-mirify");
-    log!("=================");
-    log!("Command: {}", std::env::args().collect::<Vec<_>>().join(" "));
-    log!("Codebase: {}", args.codebase.display());
-    log!("Jobs: {}", args.jobs);
-    if let Some(max) = args.max_projects {
-        log!("Max projects: {}", max);
+    {
+        let mut log = shared_log.lock().unwrap();
+        writeln!(log, "rusticate-mirify").ok();
+        writeln!(log, "=================").ok();
+        writeln!(log, "Command: {}", std::env::args().collect::<Vec<_>>().join(" ")).ok();
+        writeln!(log, "Codebase: {}", args.codebase.display()).ok();
+        writeln!(log, "Jobs: {}", args.jobs).ok();
+        if let Some(max) = args.max_projects {
+            writeln!(log, "Max projects: {}", max).ok();
+        }
+        writeln!(log, "Started: {:?}\n", overall_start).ok();
+        log.flush().ok();
     }
-    log!("Started: {:?}\n", overall_start);
     
     println!("rusticate-mirify");
     println!("=================");
@@ -224,13 +273,19 @@ fn main() -> Result<()> {
     
     // Apply max limit
     if let Some(max) = args.max_projects {
-        log!("Limiting to {} projects", max);
         println!("Limiting to {} projects", max);
+        if let Ok(mut log) = shared_log.lock() {
+            writeln!(log, "Limiting to {} projects", max).ok();
+        }
         projects.truncate(max);
     }
     
-    log!("Found {} projects\n", projects.len());
     println!("Found {} projects\n", projects.len());
+    {
+        let mut log = shared_log.lock().unwrap();
+        writeln!(log, "Found {} projects\n", projects.len()).ok();
+        log.flush().ok();
+    }
     
     // Counters
     let total_projects = projects.len();
@@ -242,6 +297,7 @@ fn main() -> Result<()> {
     let chunk_size = (projects.len() + args.jobs - 1) / args.jobs;
     let chunks: Vec<_> = projects.chunks(chunk_size).map(|c| c.to_vec()).collect();
     let clean_first = args.clean_first;
+    let clean_artifacts = args.clean_artifacts;
     
     let handles: Vec<_> = chunks
         .into_iter()
@@ -249,30 +305,71 @@ fn main() -> Result<()> {
             let mir_reused = Arc::clone(&mir_reused);
             let compiled = Arc::clone(&compiled);
             let failed = Arc::clone(&failed);
+            let shared_log = Arc::clone(&shared_log);
             
             std::thread::spawn(move || {
                 for project in chunk {
-                    let name = project.file_name().unwrap().to_string_lossy();
+                    let name = project.file_name().unwrap().to_string_lossy().to_string();
+                    let project_start = std::time::Instant::now();
                     
                     // Check if MIR already exists (skip check if cleaning)
                     if !clean_first && check_mir_exists(&project) {
-                        println!("  [CACHED] {}", name);
+                        let elapsed = project_start.elapsed();
+                        let msg = format!("  [CACHED] {} ({:.2}s)", name, elapsed.as_secs_f64());
+                        println!("{}", msg);
+                        
+                        // Log immediately
+                        if let Ok(mut log) = shared_log.lock() {
+                            writeln!(log, "{}", msg).ok();
+                        }
+                        
                         mir_reused.fetch_add(1, Ordering::Relaxed);
                     } else {
-                        if clean_first {
-                            print!("  [CLEAN+BUILD] {} ... ", name);
+                        let prefix = if clean_first {
+                            format!("  [CLEAN+BUILD] {}", name)
                         } else {
-                            print!("  [BUILD]  {} ... ", name);
-                        }
+                            format!("  [BUILD]  {}", name)
+                        };
+                        print!("{} ... ", prefix);
                         std::io::stdout().flush().ok();
                         
                         match mirify_project(&project, clean_first) {
                             Ok(_) => {
-                                println!("OK");
+                                // Clean artifacts if requested
+                                let msg = if clean_artifacts {
+                                    if let Err(e) = clean_artifacts_keep_mir(&project) {
+                                        let elapsed = project_start.elapsed();
+                                        format!("{} ... OK but cleanup failed: {} ({:.2}s)", prefix, e, elapsed.as_secs_f64())
+                                    } else {
+                                        let elapsed = project_start.elapsed();
+                                        format!("{} ... OK+CLEANED ({:.2}s)", prefix, elapsed.as_secs_f64())
+                                    }
+                                } else {
+                                    let elapsed = project_start.elapsed();
+                                    format!("{} ... OK ({:.2}s)", prefix, elapsed.as_secs_f64())
+                                };
+                                
+                                println!("{}", msg.trim_start_matches(&format!("{} ... ", prefix)));
+                                
+                                // Log immediately
+                                if let Ok(mut log) = shared_log.lock() {
+                                    writeln!(log, "{}", msg).ok();
+                                    log.flush().ok();
+                                }
+                                
                                 compiled.fetch_add(1, Ordering::Relaxed);
                             }
                             Err(e) => {
-                                println!("FAILED: {}", e);
+                                let elapsed = project_start.elapsed();
+                                let msg = format!("{} ... FAILED: {} ({:.2}s)", prefix, e, elapsed.as_secs_f64());
+                                println!("{}", msg.trim_start_matches(&format!("{} ... ", prefix)));
+                                
+                                // Log immediately
+                                if let Ok(mut log) = shared_log.lock() {
+                                    writeln!(log, "{}", msg).ok();
+                                    log.flush().ok();
+                                }
+                                
                                 failed.fetch_add(1, Ordering::Relaxed);
                             }
                         }
@@ -301,13 +398,18 @@ fn main() -> Result<()> {
     println!("  Failed:       {}", errors);
     println!("\nTOTAL TIME: {} ms ({:.2} seconds)", elapsed.as_millis(), elapsed.as_secs_f64());
     
-    log!("\n=== Summary ===");
-    log!("Total projects: {}", total_projects);
-    log!("  MIR cached:   {}", reused);
-    log!("  Compiled:     {}", built);
-    log!("  Failed:       {}", errors);
-    log!("\nTOTAL TIME: {} ms ({:.2} seconds)", elapsed.as_millis(), elapsed.as_secs_f64());
-    log!("Finished: {:?}", std::time::Instant::now());
+    // Log summary
+    {
+        let mut log = shared_log.lock().unwrap();
+        writeln!(log, "\n=== Summary ===").ok();
+        writeln!(log, "Total projects: {}", total_projects).ok();
+        writeln!(log, "  MIR cached:   {}", reused).ok();
+        writeln!(log, "  Compiled:     {}", built).ok();
+        writeln!(log, "  Failed:       {}", errors).ok();
+        writeln!(log, "\nTOTAL TIME: {} ms ({:.2} seconds)", elapsed.as_millis(), elapsed.as_secs_f64()).ok();
+        writeln!(log, "Finished: {:?}", std::time::Instant::now()).ok();
+        log.flush().ok();
+    }
     
     println!("\nLog: {}", log_path.display());
     

@@ -1,0 +1,9 @@
+rusticate-mirify
+=================
+Command: ./target/release/rusticate-mirify -C /home/milnes/projects/RustCodebases -j 6 --clean-artifacts
+Codebase: /home/milnes/projects/RustCodebases
+Jobs: 6
+Started: Instant { tv_sec: 86072, tv_nsec: 977103081 }
+
+Found 2690 projects
+
