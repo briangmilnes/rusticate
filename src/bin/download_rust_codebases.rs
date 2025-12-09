@@ -4,7 +4,7 @@ use std::io::{BufRead, BufReader, Write};
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use std::time::Instant;
 
 struct Args {
@@ -253,22 +253,26 @@ fn main() -> Result<()> {
     // Create log file
     let log_file_path = PathBuf::from("analyses/download_rust_codebases.log");
     fs::create_dir_all("analyses").ok();
-    let mut log_file = fs::File::create(&log_file_path)
+    let log_file = fs::File::create(&log_file_path)
         .context("Failed to create log file")?;
+    let log_file = Arc::new(Mutex::new(log_file));
 
-    writeln!(log_file, "rusticate-download-rust-codebases")?;
-    writeln!(log_file, "Started at: {:?}", start_time)?;
-    writeln!(log_file, "Settings:")?;
-    writeln!(log_file, "  Input: {}", args.input.display())?;
-    writeln!(log_file, "  Output: {}", args.output_dir.display())?;
-    writeln!(log_file, "  Jobs: {}", args.jobs)?;
-    writeln!(log_file, "  Shallow: {}", args.shallow)?;
-    writeln!(log_file, "  GitHub only: {}", args.github_only)?;
-    writeln!(log_file, "  Skip existing: {}", args.skip_existing)?;
-    writeln!(log_file, "  Dry run: {}", args.dry_run)?;
-    writeln!(log_file, "  Max repos: {:?}", args.max_repos)?;
-    writeln!(log_file, "  Start at: {}", args.start_at)?;
-    writeln!(log_file)?;
+    {
+        let mut log = log_file.lock().unwrap();
+        writeln!(log, "rusticate-download-rust-codebases")?;
+        writeln!(log, "Started at: {:?}", start_time)?;
+        writeln!(log, "Settings:")?;
+        writeln!(log, "  Input: {}", args.input.display())?;
+        writeln!(log, "  Output: {}", args.output_dir.display())?;
+        writeln!(log, "  Jobs: {}", args.jobs)?;
+        writeln!(log, "  Shallow: {}", args.shallow)?;
+        writeln!(log, "  GitHub only: {}", args.github_only)?;
+        writeln!(log, "  Skip existing: {}", args.skip_existing)?;
+        writeln!(log, "  Dry run: {}", args.dry_run)?;
+        writeln!(log, "  Max repos: {:?}", args.max_repos)?;
+        writeln!(log, "  Start at: {}", args.start_at)?;
+        writeln!(log)?;
+    }
 
     println!("rusticate-download-rust-codebases");
     println!("==================================");
@@ -283,7 +287,7 @@ fn main() -> Result<()> {
     // Parse repository list
     let mut repos = parse_repos(&args.input, args.github_only)?;
     println!("Loaded {} repositories", repos.len());
-    writeln!(log_file, "Loaded {} repositories", repos.len())?;
+    writeln!(log_file.lock().unwrap(), "Loaded {} repositories", repos.len())?;
 
     // Apply start_at and max_repos filters
     if args.start_at > 0 {
@@ -301,10 +305,11 @@ fn main() -> Result<()> {
 
     if args.dry_run {
         println!("\n=== DRY RUN - Would clone {} repositories ===", repos.len());
-        writeln!(log_file, "\nDRY RUN - Would clone {} repositories", repos.len())?;
+        let mut log = log_file.lock().unwrap();
+        writeln!(log, "\nDRY RUN - Would clone {} repositories", repos.len())?;
         for (idx, repo) in repos.iter().enumerate() {
             println!("{:4}. {} ({})", idx + 1, repo.path, repo.url);
-            writeln!(log_file, "{:4}. {} ({})", idx + 1, repo.path, repo.url)?;
+            writeln!(log, "{:4}. {} ({})", idx + 1, repo.path, repo.url)?;
         }
         return Ok(());
     }
@@ -314,6 +319,7 @@ fn main() -> Result<()> {
         .with_context(|| format!("Failed to create output directory: {}", args.output_dir.display()))?;
 
     println!("Cloning {} repositories with {} parallel jobs...\n", repos.len(), args.jobs);
+    writeln!(log_file.lock().unwrap(), "\nCloning {} repositories with {} parallel jobs...\n", repos.len(), args.jobs)?;
 
     // Counters
     let total = repos.len();
@@ -333,21 +339,28 @@ fn main() -> Result<()> {
         let cloned = Arc::clone(&cloned);
         let skipped = Arc::clone(&skipped);
         let failed = Arc::clone(&failed);
+        let log_file = Arc::clone(&log_file);
 
         let handle = std::thread::spawn(move || {
             for repo in chunk {
                 match clone_repo(&repo, &output_dir, shallow, skip_existing) {
                     Ok(true) => {
                         let count = cloned.fetch_add(1, Ordering::SeqCst) + 1;
-                        println!("[T{}] ✓ Cloned {}/{}: {}", thread_idx, count, total, repo.path);
+                        let msg = format!("[T{}] ✓ Cloned {}/{}: {}", thread_idx, count, total, repo.path);
+                        println!("{}", msg);
+                        writeln!(log_file.lock().unwrap(), "{}", msg).ok();
                     }
                     Ok(false) => {
                         let count = skipped.fetch_add(1, Ordering::SeqCst) + 1;
-                        println!("[T{}] ⊘ Skipped {}: {} (already exists)", thread_idx, count, repo.path);
+                        let msg = format!("[T{}] ⊘ Skipped {}: {} (already exists)", thread_idx, count, repo.path);
+                        println!("{}", msg);
+                        writeln!(log_file.lock().unwrap(), "{}", msg).ok();
                     }
                     Err(e) => {
                         let count = failed.fetch_add(1, Ordering::SeqCst) + 1;
-                        eprintln!("[T{}] ✗ Failed {}: {} - {}", thread_idx, count, repo.path, e);
+                        let msg = format!("[T{}] ✗ Failed {}: {} - {}", thread_idx, count, repo.path, e);
+                        eprintln!("{}", msg);
+                        writeln!(log_file.lock().unwrap(), "{}", msg).ok();
                     }
                 }
             }
@@ -373,12 +386,15 @@ fn main() -> Result<()> {
     println!("  Failed:           {}", failed_count);
     println!("Completed in {} ms.", elapsed.as_millis());
 
-    writeln!(log_file, "\n=== Summary ===")?;
-    writeln!(log_file, "Total repositories: {}", total)?;
-    writeln!(log_file, "  Cloned:           {}", cloned_count)?;
-    writeln!(log_file, "  Skipped:          {}", skipped_count)?;
-    writeln!(log_file, "  Failed:           {}", failed_count)?;
-    writeln!(log_file, "Completed in {} ms.", elapsed.as_millis())?;
+    {
+        let mut log = log_file.lock().unwrap();
+        writeln!(log, "\n=== Summary ===")?;
+        writeln!(log, "Total repositories: {}", total)?;
+        writeln!(log, "  Cloned:           {}", cloned_count)?;
+        writeln!(log, "  Skipped:          {}", skipped_count)?;
+        writeln!(log, "  Failed:           {}", failed_count)?;
+        writeln!(log, "Completed in {} ms.", elapsed.as_millis())?;
+    }
 
     println!("\nLog written to: {}", log_file_path.display());
 
