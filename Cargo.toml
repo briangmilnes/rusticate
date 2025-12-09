@@ -351,3 +351,7 @@ path = "src/bin/review_summary_accuracy.rs"
 [[bin]]
 name = "rusticate-download-rust-codebases"
 path = "src/bin/download_rust_codebases.rs"
+
+[[bin]]
+name = "rusticate-analyze-modules"
+path = "src/bin/analyze_modules.rs"
