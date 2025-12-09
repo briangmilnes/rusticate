@@ -1,0 +1,56 @@
+Repository Size Analysis
+============================================================
+
+Total repositories analyzed: 203
+Failed to fetch: 467
+
+Total Size:
+  2,609,036 KB
+  2,547.89 MB
+  2.49 GB
+
+Average repository size:
+  12,852 KB (12.55 MB)
+
+Median repository size:
+  595 KB (0.58 MB)
+
+Largest repository:
+  1,161,672 KB (1,134.45 MB)
+
+Smallest repository:
+  0 KB (0.00 MB)
+
+Estimated Download Times:
+------------------------------------------------------------
+  10 Mbps (slow broadband): 34.0 minutes (2038 seconds)
+  50 Mbps (typical broadband): 6.8 minutes (408 seconds)
+  100 Mbps (fast broadband): 3.4 minutes (204 seconds)
+  1 Gbps (gigabit): 20 seconds
+
+Note: These are git repository sizes as reported by GitHub API.
+Actual clone sizes may be larger due to git history.
+
+
+Failed repositories (467):
+  3Hren/msgpack-rus: 404
+  Amanieu/parking_lo: 404
+  Arnavion/k8s-openap: 404
+  DoumanAsh/xxhash-rus: 404
+  Gilnaa/memoffse: 404
+  GuillaumeGomez/doc-commen: 404
+  HdrHistogram/HdrHistogram_rus: 404
+  MSxDOS/ntap: 404
+  RustCrypto/crypto-bigin: 404
+  SergioBenitez/yans: 404
+  SimonSapin/rust-utf8: 403
+  Soveu/tinyvec_macros: 403
+  Stebalien/tempfile: 403
+  Stebalien/term: 403
+  Stebalien/xattr: 403
+  Stranger6667/jsonschema: 403
+  TeXitoi/structop: 403
+  TedDriggs/darlin: 403
+  TedDriggs/ident_case: 403
+  TrueLayer/reqwest-middleware: 403
+  ... and 447 more
