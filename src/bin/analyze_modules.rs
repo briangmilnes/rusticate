@@ -28,6 +28,7 @@ const WRAPPER_CRATES: &[&str] = &[
 struct Args {
     codebase: PathBuf,
     max_codebases: Option<usize>,
+    jobs: usize,
 }
 
 impl Args {
@@ -35,6 +36,7 @@ impl Args {
         let mut args_iter = std::env::args().skip(1);
         let mut codebase = None;
         let mut max_codebases = None;
+        let mut jobs = 4;
 
         while let Some(arg) = args_iter.next() {
             match arg.as_str() {
@@ -52,6 +54,16 @@ impl Args {
                         .parse::<usize>()
                         .context("Invalid number for -m/--max-codebases")?;
                     max_codebases = Some(max);
+                }
+                "-j" | "--jobs" => {
+                    jobs = args_iter
+                        .next()
+                        .context("Expected number after -j/--jobs")?
+                        .parse::<usize>()
+                        .context("Invalid number for -j/--jobs")?;
+                    if jobs == 0 {
+                        bail!("--jobs must be at least 1");
+                    }
                 }
                 "-h" | "--help" => {
                     print_help();
@@ -81,6 +93,7 @@ impl Args {
         Ok(Args { 
             codebase,
             max_codebases,
+            jobs,
         })
     }
 }
@@ -90,11 +103,12 @@ fn print_help() {
         r#"rusticate-analyze-modules - Analyze module usage in codebases
 
 USAGE:
-    rusticate-analyze-modules -C <PATH> [-m <N>]
+    rusticate-analyze-modules -C <PATH> [-m <N>] [-j <N>]
 
 OPTIONS:
     -C, --codebase <PATH>       Path to a codebase, or a directory of codebases [required]
     -m, --max-codebases <N>     Limit number of codebases to analyze (default: unlimited)
+    -j, --jobs <N>              Number of parallel threads (default: 4)
     -h, --help                  Print this help message
 
 DESCRIPTION:
@@ -112,19 +126,20 @@ DESCRIPTION:
     Also tracks vstd usage specifically for Verus projects.
 
 EXAMPLES:
-    # Analyze a single codebase
+    # Analyze a single codebase (default 4 threads)
     rusticate-analyze-modules -C ~/projects/my-project
 
-    # Analyze a directory containing multiple codebases
-    rusticate-analyze-modules -C ~/projects/VerusCodebases
+    # Analyze with 8 threads for faster processing
+    rusticate-analyze-modules -C ~/projects/RustCodebases -j 8
 
-    # Test with first 5 codebases only
-    rusticate-analyze-modules -C ~/projects/VerusCodebases -m 5
+    # Use all 64 threads! 🚀
+    rusticate-analyze-modules -C ~/projects/RustCodebases -j 64
 
-    # Analyze modules in multiple codebases individually
-    for dir in ~/projects/VerusCodebases/*; do
-        rusticate-analyze-modules -C "$dir"
-    done
+    # Test with first 5 codebases, 4 threads (don't hog CPU)
+    rusticate-analyze-modules -C ~/projects/RustCodebases -m 5 -j 4
+
+NOTE:
+    Default is -j 4 to leave CPU for other work. Crank it up for speed!
 "#
     );
 }
@@ -274,9 +289,10 @@ fn main() -> Result<()> {
 
     log!("rusticate-analyze-modules");
     log!("Command: {}", std::env::args().collect::<Vec<_>>().join(" "));
-    log!("Codebase: {} | Max: {:?} | Started: {:?}", 
+    log!("Codebase: {} | Max: {} | Jobs: {} | Started: {:?}", 
         args.codebase.display(), 
         args.max_codebases.map_or("unlimited".to_string(), |m| m.to_string()),
+        args.jobs,
         start);
 
     println!("rusticate-analyze-modules");
@@ -285,6 +301,7 @@ fn main() -> Result<()> {
     if let Some(max) = args.max_codebases {
         println!("Max codebases: {}", max);
     }
+    println!("Jobs: {}", args.jobs);
     println!();
 
     // Check if this is a directory of codebases or a single codebase
@@ -318,32 +335,68 @@ fn main() -> Result<()> {
     println!("Found {} Rust files across {} codebases", rust_files.len(), codebases_to_analyze.len());
     log!("Found {} Rust files across {} codebases\n", rust_files.len(), codebases_to_analyze.len());
 
-    // Collect standard library usage only
-    let mut std_lib_usage: HashMap<String, usize> = HashMap::new();
-    let mut errors = 0;
-    let builtin_libs = ["std", "core", "alloc", "proc_macro", "test"];
-
-    println!("Analyzing standard library usage...\n");
+    // Parallel analysis with per-thread aggregation
+    println!("Analyzing standard library usage with {} threads...\n", args.jobs);
     
-    for file in &rust_files {
-        match extract_use_paths(file) {
-            Ok(uses) => {
-                for (use_path, _line) in uses {
-                    // Only track built-in Rust libraries
-                    let is_builtin = builtin_libs.iter().any(|&lib| {
-                        use_path == lib || use_path.starts_with(&format!("{}::", lib))
-                    });
-                    
-                    if is_builtin {
-                        *std_lib_usage.entry(use_path).or_insert(0) += 1;
+    let builtin_libs = ["std", "core", "alloc", "proc_macro", "test"];
+    let chunk_size = (rust_files.len() + args.jobs - 1) / args.jobs;
+    let mut handles = Vec::new();
+
+    for chunk in rust_files.chunks(chunk_size) {
+        let chunk = chunk.to_vec();
+        let builtin_libs = builtin_libs.to_vec();
+        
+        let handle = std::thread::spawn(move || {
+            let mut local_usage: HashMap<String, usize> = HashMap::new();
+            let mut local_errors = Vec::new();
+            
+            for file in chunk {
+                match extract_use_paths(&file) {
+                    Ok(uses) => {
+                        for (use_path, _line) in uses {
+                            // Only track built-in Rust libraries
+                            let is_builtin = builtin_libs.iter().any(|&lib| {
+                                use_path == lib || use_path.starts_with(&format!("{}::", lib))
+                            });
+                            
+                            if is_builtin {
+                                *local_usage.entry(use_path).or_insert(0) += 1;
+                            }
+                        }
+                    }
+                    Err(_) => {
+                        local_errors.push(file);
                     }
                 }
             }
-            Err(_) => {
-                errors += 1;
-                log!("{}:1: Parse error", file.display());
-            }
+            
+            (local_usage, local_errors)
+        });
+        
+        handles.push(handle);
+    }
+
+    // Merge results from all threads
+    let mut std_lib_usage: HashMap<String, usize> = HashMap::new();
+    let mut error_files = Vec::new();
+    
+    for handle in handles {
+        let (local_usage, local_errors) = handle.join().unwrap();
+        
+        // Merge usage counts
+        for (path, count) in local_usage {
+            *std_lib_usage.entry(path).or_insert(0) += count;
         }
+        
+        // Collect errors
+        error_files.extend(local_errors);
+    }
+    
+    let errors = error_files.len();
+    
+    // Log errors
+    for file in &error_files {
+        log!("{}:1: Parse error", file.display());
     }
 
     println!("Analysis complete!");
