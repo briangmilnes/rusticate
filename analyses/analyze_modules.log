@@ -2,7 +2,7 @@ rusticate-analyze-modules --rust-libs
 ======================================
 Command: ./target/release/rusticate-analyze-modules -R
 Jobs: 4
-Started: Instant { tv_sec: 82606, tv_nsec: 744154435 }
+Started at: 2025-12-09 19:10:52 -08:00
 
 Stdlib path: /home/milnes/.rustup/toolchains/1.88.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library
 
@@ -10,10 +10,11 @@ Analyzing std...
   Path: /home/milnes/.rustup/toolchains/1.88.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/std
   Files: 644
   Total functions: 9772
-    Standalone: 2820
+    Standalone: 1539
     In traits: 676
     In impls: 6276
-  Public: 4760
+    Tests: 1281 (excluded from usage)
+  Public: 4748
   Unsafe: 478
 
 Analyzing core...
@@ -23,6 +24,7 @@ Analyzing core...
     Standalone: 1122
     In traits: 399
     In impls: 3255
+    Tests: 0 (excluded from usage)
   Public: 2484
   Unsafe: 715
 
@@ -30,9 +32,10 @@ Analyzing alloc...
   Path: /home/milnes/.rustup/toolchains/1.88.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/alloc
   Files: 70
   Total functions: 2547
-    Standalone: 446
+    Standalone: 209
     In traits: 43
     In impls: 2058
+    Tests: 237 (excluded from usage)
   Public: 886
   Unsafe: 214
 
@@ -43,6 +46,7 @@ Analyzing proc_macro...
     Standalone: 15
     In traits: 13
     In impls: 264
+    Tests: 0 (excluded from usage)
   Public: 121
   Unsafe: 1
 
@@ -50,23 +54,14 @@ Analyzing test...
   Path: /home/milnes/.rustup/toolchains/1.88.0-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/test
   Files: 30
   Total functions: 339
-    Standalone: 160
+    Standalone: 102
     In traits: 23
     In impls: 156
+    Tests: 58 (excluded from usage)
   Public: 119
   Unsafe: 0
 
-=== SUMMARY ===
-Total files: 1018
-Total functions: 17726
-  Standalone: 4563
-  In traits: 1154
-  In impls: 12009
-Total public: 8370
-Total unsafe: 1408
-
-Analysis completed in 327 ms.
-Finished: Instant { tv_sec: 82607, tv_nsec: 71327826 }
+Parsing completed in 460 ms.
 
 
 === DETAILED FUNCTION INVENTORY ===
@@ -26003,5 +25998,17 @@ tests::windows::<standalone>
 
 === END INVENTORY ===
 
-Inventory output: 131 ms
-TOTAL TIME: 458 ms (0.46 seconds)
+Inventory output: 128 ms
+
+=== FINAL SUMMARY ===
+Total files analyzed: 1018
+Library functions: 16150
+  Standalone: 2987
+  In traits: 1154
+  In impls: 12009
+Test functions: 1576 (excluded from usage)
+Total public: 8358
+Total unsafe: 1408
+
+TOTAL TIME: 589 ms (0.59 seconds)
+Ended at: 2025-12-09 19:10:52 -08:00

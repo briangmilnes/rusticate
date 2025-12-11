@@ -2,7 +2,6 @@ use anyhow::{Context, Result, bail};
 use std::fs;
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use walkdir::WalkDir;
 
@@ -95,20 +94,27 @@ USAGE:
 OPTIONS:
     -C, --codebase <PATH>       Path to a project or directory of projects [required]
     -m, --max-projects <N>      Limit number of projects to process (default: unlimited)
-    -j, --jobs <N>              Number of parallel builds (default: 1)
+    -j, --jobs <N>              Number of threads for each cargo build (default: 1)
+                                Projects are built sequentially to avoid cargo package cache lock contention.
+                                This flag controls the parallelism within each cargo invocation.
     --clean                     Run 'cargo clean' before generating MIR (removes everything)
-    --clean-artifacts           After MIR generation, delete artifacts but keep *.mir files
+    --clean-artifacts           Delete build artifacts but keep *.mir files (applies to all projects)
     -h, --help                  Print this help message
 
 DESCRIPTION:
-    Runs 'cargo check --emit=mir' on Rust projects to generate MIR files.
+    Runs 'cargo check --tests --emit=mir' on Rust projects to generate MIR files.
     MIR (Mid-level Intermediate Representation) contains fully-typed function calls.
     
-    Caches: Skips projects that already have MIR files.
+    Note: --tests is always used to include test code in the MIR output.
+    
+    Projects are processed sequentially (one at a time) to avoid cargo package cache locking.
+    The -j flag controls how many threads each individual cargo uses for compilation.
+    
+    Caches: Skips projects that already have MIR files (unless --clean is used).
     
 EXAMPLES:
-    rusticate-mirify -C ~/projects/RustCodebases -m 50 -j 4
-    rusticate-mirify -C ~/projects/my-project
+    rusticate-mirify -C ~/projects/RustCodebases -m 50 -j 6
+    rusticate-mirify -C ~/projects/my-project --clean
 "#
     );
 }
@@ -147,14 +153,20 @@ fn check_mir_exists(project_path: &Path) -> bool {
     false
 }
 
-fn clean_project(project_path: &Path) -> Result<()> {
+fn clean_project(project_path: &Path, log_file: Arc<Mutex<fs::File>>) -> Result<()> {
     let output = std::process::Command::new("cargo")
         .arg("clean")
         .current_dir(project_path)
         .output()
         .context("Failed to run cargo clean")?;
     
-    if !output.status.success() {
+    if output.status.success() {
+        let name = project_path.file_name().unwrap().to_string_lossy();
+        if let Ok(mut log) = log_file.lock() {
+            writeln!(log, "  Cleaned: {}", name).ok();
+            log.flush().ok();
+        }
+    } else {
         let stderr = String::from_utf8_lossy(&output.stderr);
         bail!("Cargo clean failed:\n{}", stderr);
     }
@@ -163,63 +175,117 @@ fn clean_project(project_path: &Path) -> Result<()> {
 }
 
 fn clean_artifacts_keep_mir(project_path: &Path) -> Result<()> {
-    // Delete build artifacts but keep *.mir and *.d files
-    // Keeps project buildable with minimal storage
-    let target_dir = project_path.join("target");
+    // Delete build artifacts but keep *.mir files
+    // Clean ALL target directories (including workspace members)
     
-    if !target_dir.exists() {
+    // Find all target directories within this project
+    let output = std::process::Command::new("find")
+        .arg(project_path)
+        .arg("-maxdepth")
+        .arg("5")  // Deep enough for workspace members
+        .arg("-type")
+        .arg("d")
+        .arg("-name")
+        .arg("target")
+        .output()
+        .context("Failed to find target directories")?;
+    
+    let target_dirs: Vec<PathBuf> = String::from_utf8_lossy(&output.stdout)
+        .lines()
+        .filter(|s| !s.is_empty())
+        .map(PathBuf::from)
+        .collect();
+    
+    if target_dirs.is_empty() {
         return Ok(());
     }
     
-    // Delete .rmeta, .rlib, and other large artifacts
-    for ext in &["rmeta", "rlib", "so", "a", "dylib"] {
+    for target_dir in target_dirs {
+        // Delete file artifacts (all extensions except .mir)
+        for ext in &["rmeta", "rlib", "so", "a", "dylib", "dll", "exe", "d", "o", "json"] {
+            let _ = std::process::Command::new("find")
+                .arg(&target_dir)
+                .arg("-type")
+                .arg("f")
+                .arg("-name")
+                .arg(format!("*.{}", ext))
+                .arg("-delete")
+                .output();
+        }
+        
+        // Delete executables (files without extensions in deps/)
+        let _ = std::process::Command::new("sh")
+            .arg("-c")
+            .arg(format!(
+                "find '{}' -path '*/deps/*' -type f -executable ! -name '*.mir' -delete 2>/dev/null",
+                target_dir.display()
+            ))
+            .output();
+        
+        // Delete incremental compilation cache (largest space hog!)
+        let _ = std::process::Command::new("rm")
+            .arg("-rf")
+            .arg(target_dir.join("debug/incremental"))
+            .arg(target_dir.join("release/incremental"))
+            .output();
+        
+        // Delete build script outputs
+        let _ = std::process::Command::new("rm")
+            .arg("-rf")
+            .arg(target_dir.join("debug/build"))
+            .arg(target_dir.join("release/build"))
+            .output();
+        
+        // Delete .fingerprint directories
+        let _ = std::process::Command::new("rm")
+            .arg("-rf")
+            .arg(target_dir.join("debug/.fingerprint"))
+            .arg(target_dir.join("release/.fingerprint"))
+            .output();
+        
+        // Clean up empty directories
         let _ = std::process::Command::new("find")
             .arg(&target_dir)
             .arg("-type")
-            .arg("f")
-            .arg("-name")
-            .arg(format!("*.{}", ext))
+            .arg("d")
+            .arg("-empty")
             .arg("-delete")
             .output();
     }
     
-    // Delete build and incremental directories
-    for subdir in &["build", "incremental", ".fingerprint"] {
-        let path = target_dir.join(subdir);
-        if path.exists() {
-            let _ = fs::remove_dir_all(&path);
-        }
-    }
-    
-    // Clean up empty directories
-    let _ = std::process::Command::new("find")
-        .arg(&target_dir)
-        .arg("-type")
-        .arg("d")
-        .arg("-empty")
-        .arg("-delete")
-        .output();
-    
     Ok(())
 }
 
-fn mirify_project(project_path: &Path, clean_first: bool) -> Result<()> {
+fn mirify_project(project_path: &Path, clean_first: bool, jobs: usize, log_file: Arc<Mutex<fs::File>>, err_log: Arc<Mutex<fs::File>>) -> Result<()> {
     if clean_first {
-        clean_project(project_path)?;
+        clean_project(project_path, Arc::clone(&log_file))?;
     }
     
     let output = std::process::Command::new("cargo")
         .arg("check")
+        .arg("--tests")   // Include test code in MIR output
+        .arg("--quiet")   // Suppress "Finished" and other progress messages
         .arg("-j")
-        .arg("1")  // Limit each cargo to 1 rustc at a time
+        .arg(jobs.to_string())
         .current_dir(project_path)
         .env("RUSTFLAGS", "--emit=mir")
         .output()
         .context("Failed to run cargo check")?;
     
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    
+    // Always log stderr to error file
+    if !stderr.is_empty() {
+        if let Ok(mut err) = err_log.lock() {
+            let name = project_path.file_name().unwrap().to_string_lossy();
+            writeln!(err, "\n=== {} ===", name).ok();
+            write!(err, "{}", stderr).ok();
+            err.flush().ok();
+        }
+    }
+    
     if !output.status.success() {
-        let stderr = String::from_utf8_lossy(&output.stderr);
-        bail!("Cargo check failed:\n{}", stderr);
+        bail!("Build failed (see rusticate-mirify.errs)");
     }
     
     Ok(())
@@ -231,10 +297,14 @@ fn main() -> Result<()> {
     
     // Set up logging
     let log_path = PathBuf::from("analyses/rusticate-mirify.log");
+    let err_path = PathBuf::from("analyses/rusticate-mirify.errs");
     fs::create_dir_all("analyses")?;
     let log_file = fs::File::create(&log_path)
         .context("Failed to create log file")?;
+    let err_file = fs::File::create(&err_path)
+        .context("Failed to create error file")?;
     let shared_log = Arc::new(Mutex::new(log_file));
+    let shared_err = Arc::new(Mutex::new(err_file));
     
     // Log header
     {
@@ -289,113 +359,117 @@ fn main() -> Result<()> {
     
     // Counters
     let total_projects = projects.len();
-    let mir_reused = Arc::new(AtomicUsize::new(0));
-    let compiled = Arc::new(AtomicUsize::new(0));
-    let failed = Arc::new(AtomicUsize::new(0));
+    let mut mir_reused = 0;
+    let mut compiled = 0;
+    let mut failed = 0;
     
-    // Process in parallel using thread pool
-    let chunk_size = (projects.len() + args.jobs - 1) / args.jobs;
-    let chunks: Vec<_> = projects.chunks(chunk_size).map(|c| c.to_vec()).collect();
+    // Process projects sequentially
     let clean_first = args.clean_first;
     let clean_artifacts = args.clean_artifacts;
+    let jobs = args.jobs;
     
-    let handles: Vec<_> = chunks
-        .into_iter()
-        .map(|chunk| {
-            let mir_reused = Arc::clone(&mir_reused);
-            let compiled = Arc::clone(&compiled);
-            let failed = Arc::clone(&failed);
-            let shared_log = Arc::clone(&shared_log);
-            
-            std::thread::spawn(move || {
-                for project in chunk {
-                    let name = project.file_name().unwrap().to_string_lossy().to_string();
-                    let project_start = std::time::Instant::now();
-                    
-                    // Check if MIR already exists (skip check if cleaning)
-                    if !clean_first && check_mir_exists(&project) {
-                        let elapsed = project_start.elapsed();
-                        let msg = format!("  [CACHED] {} ({:.2}s)", name, elapsed.as_secs_f64());
-                        println!("{}", msg);
-                        
-                        // Log immediately
-                        if let Ok(mut log) = shared_log.lock() {
-                            writeln!(log, "{}", msg).ok();
-                        }
-                        
-                        mir_reused.fetch_add(1, Ordering::Relaxed);
-                    } else {
-                        let prefix = if clean_first {
-                            format!("  [CLEAN+BUILD] {}", name)
-                        } else {
-                            format!("  [BUILD]  {}", name)
-                        };
-                        print!("{} ... ", prefix);
-                        std::io::stdout().flush().ok();
-                        
-                        match mirify_project(&project, clean_first) {
-                            Ok(_) => {
-                                // Clean artifacts if requested
-                                let msg = if clean_artifacts {
-                                    if let Err(e) = clean_artifacts_keep_mir(&project) {
-                                        let elapsed = project_start.elapsed();
-                                        format!("{} ... OK but cleanup failed: {} ({:.2}s)", prefix, e, elapsed.as_secs_f64())
-                                    } else {
-                                        let elapsed = project_start.elapsed();
-                                        format!("{} ... OK+CLEANED ({:.2}s)", prefix, elapsed.as_secs_f64())
-                                    }
-                                } else {
-                                    let elapsed = project_start.elapsed();
-                                    format!("{} ... OK ({:.2}s)", prefix, elapsed.as_secs_f64())
-                                };
-                                
-                                println!("{}", msg.trim_start_matches(&format!("{} ... ", prefix)));
-                                
-                                // Log immediately
-                                if let Ok(mut log) = shared_log.lock() {
-                                    writeln!(log, "{}", msg).ok();
-                                    log.flush().ok();
-                                }
-                                
-                                compiled.fetch_add(1, Ordering::Relaxed);
-                            }
-                            Err(e) => {
-                                let elapsed = project_start.elapsed();
-                                let msg = format!("{} ... FAILED: {} ({:.2}s)", prefix, e, elapsed.as_secs_f64());
-                                println!("{}", msg.trim_start_matches(&format!("{} ... ", prefix)));
-                                
-                                // Log immediately
-                                if let Ok(mut log) = shared_log.lock() {
-                                    writeln!(log, "{}", msg).ok();
-                                    log.flush().ok();
-                                }
-                                
-                                failed.fetch_add(1, Ordering::Relaxed);
-                            }
-                        }
+    for project in projects {
+        let name = project.file_name()
+            .or_else(|| project.iter().last())
+            .map(|s| s.to_string_lossy().to_string())
+            .unwrap_or_else(|| "project".to_string());
+        let project_start = std::time::Instant::now();
+        
+        // Check if MIR already exists (skip check if cleaning)
+        if !clean_first && check_mir_exists(&project) {
+            // Clean artifacts even for cached projects if requested
+            if clean_artifacts {
+                if let Err(e) = clean_artifacts_keep_mir(&project) {
+                    let elapsed = project_start.elapsed();
+                    let msg = format!("  [CACHED+CLEAN-FAILED] {} - {} ({:.2}s)", name, e, elapsed.as_secs_f64());
+                    println!("{}", msg);
+                    if let Ok(mut log) = shared_log.lock() {
+                        writeln!(log, "{}", msg).ok();
+                    }
+                } else {
+                    let elapsed = project_start.elapsed();
+                    let msg = format!("  [CACHED+CLEANED] {} ({:.2}s)", name, elapsed.as_secs_f64());
+                    println!("{}", msg);
+                    if let Ok(mut log) = shared_log.lock() {
+                        writeln!(log, "{}", msg).ok();
                     }
                 }
-            })
-        })
-        .collect();
-    
-    // Wait for all threads
-    for handle in handles {
-        handle.join().unwrap();
+            } else {
+                let elapsed = project_start.elapsed();
+                let msg = format!("  [CACHED] {} ({:.2}s)", name, elapsed.as_secs_f64());
+                println!("{}", msg);
+                if let Ok(mut log) = shared_log.lock() {
+                    writeln!(log, "{}", msg).ok();
+                }
+            }
+            
+            mir_reused += 1;
+        } else {
+            let prefix = if clean_first {
+                format!("  [CLEAN+BUILD] {}", name)
+            } else {
+                format!("  [BUILD]  {}", name)
+            };
+            print!("{} ... ", prefix);
+            std::io::stdout().flush().ok();
+            
+            match mirify_project(&project, clean_first, jobs, Arc::clone(&shared_log), Arc::clone(&shared_err)) {
+                Ok(()) => {
+                    // Clean artifacts if requested
+                    let msg = if clean_artifacts {
+                        if let Err(e) = clean_artifacts_keep_mir(&project) {
+                            let elapsed = project_start.elapsed();
+                            format!("{} ... OK but cleanup failed: {} ({:.2}s)", prefix, e, elapsed.as_secs_f64())
+                        } else {
+                            let elapsed = project_start.elapsed();
+                            format!("{} ... OK+CLEANED ({:.2}s)", prefix, elapsed.as_secs_f64())
+                        }
+                    } else {
+                        let elapsed = project_start.elapsed();
+                        format!("{} ... OK ({:.2}s)", prefix, elapsed.as_secs_f64())
+                    };
+                    
+                    println!("{}", msg.trim_start_matches(&format!("{} ... ", prefix)));
+                    
+                    // Log immediately
+                    if let Ok(mut log) = shared_log.lock() {
+                        writeln!(log, "{}", msg).ok();
+                        log.flush().ok();
+                    }
+                    
+                    compiled += 1;
+                }
+                Err(e) => {
+                    let elapsed = project_start.elapsed();
+                    let msg = format!("{} ... FAILED: {} ({:.2}s)", prefix, e, elapsed.as_secs_f64());
+                    println!("{}", msg.trim_start_matches(&format!("{} ... ", prefix)));
+                    
+                    // Log immediately
+                    if let Ok(mut log) = shared_log.lock() {
+                        writeln!(log, "{}", msg).ok();
+                        log.flush().ok();
+                    }
+                    
+                    failed += 1;
+                }
+            }
+        }
     }
     
     let elapsed = overall_start.elapsed();
     
     // Final stats
-    let reused = mir_reused.load(Ordering::Relaxed);
-    let built = compiled.load(Ordering::Relaxed);
-    let errors = failed.load(Ordering::Relaxed);
+    let build_success_pct = if total_projects > 0 {
+        (compiled as f64 / total_projects as f64) * 100.0
+    } else {
+        0.0
+    };
     
     println!("\n=== Summary ===");
     println!("Total projects: {}", total_projects);
-    println!("  MIR cached:   {}", reused);
-    println!("  Compiled:     {}", built);
-    println!("  Failed:       {}", errors);
+    println!("  MIR cached:   {}", mir_reused);
+    println!("  Compiled:     {} ({:.1}%)", compiled, build_success_pct);
+    println!("  Failed:       {}", failed);
     println!("\nTOTAL TIME: {} ms ({:.2} seconds)", elapsed.as_millis(), elapsed.as_secs_f64());
     
     // Log summary
@@ -403,9 +477,9 @@ fn main() -> Result<()> {
         let mut log = shared_log.lock().unwrap();
         writeln!(log, "\n=== Summary ===").ok();
         writeln!(log, "Total projects: {}", total_projects).ok();
-        writeln!(log, "  MIR cached:   {}", reused).ok();
-        writeln!(log, "  Compiled:     {}", built).ok();
-        writeln!(log, "  Failed:       {}", errors).ok();
+        writeln!(log, "  MIR cached:   {}", mir_reused).ok();
+        writeln!(log, "  Compiled:     {} ({:.1}%)", compiled, build_success_pct).ok();
+        writeln!(log, "  Failed:       {}", failed).ok();
         writeln!(log, "\nTOTAL TIME: {} ms ({:.2} seconds)", elapsed.as_millis(), elapsed.as_secs_f64()).ok();
         writeln!(log, "Finished: {:?}", std::time::Instant::now()).ok();
         log.flush().ok();

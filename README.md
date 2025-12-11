@@ -47,6 +47,37 @@ Python will be sent back to the family estate for not working well!
 - **Test Coverage Analysis:** Identify untested public functions (99.6% accuracy)
 - **Parallelism Auditing:** Detect inherent and transitive parallel operations
 - **Codebase Migration:** Automated migration between module versions (e.g., Chap18 → Chap19)
+- **Stdlib Usage Analysis:** Analyze which std/core/alloc items are used across 1000+ Rust projects
+
+---
+
+## 🔥 NEW: Rust Standard Library Usage Analysis
+
+**For Verus verification prioritization:** Analyze which stdlib modules, types, methods, and traits are actually used in real-world Rust code.
+
+```bash
+# Generate MIR for 1000+ projects
+rusticate-mirify -C ~/projects/RustCodebases -j 6 --clean-artifacts
+
+# Analyze stdlib usage (30 seconds for 1036 projects, 3636 crates)
+rusticate-analyze-modules -M ~/projects/RustCodebases
+```
+
+**Key Results (from 3636 crates):**
+
+| Finding | Value |
+|---------|-------|
+| Crates with stdlib usage | 3343 (92%) |
+| Methods for 90% coverage | **9 methods** |
+| Types for 96% coverage | **1 type** (Result) |
+| Iterator methods for 92% | **2 methods** (next, try_fold) |
+
+**Greedy Set Cover:** Finds minimum stdlib items to cover N% of real-world crates:
+- `Result::unwrap` alone covers 57% of crates
+- 9 methods cover 90% of all stdlib usage
+- Iterator has 70+ methods, but 2 cover 92%
+
+**See:** [docs/RusticateAnalyzeModulesMir.md](docs/RusticateAnalyzeModulesMir.md) for full documentation.
 
 ---
 
@@ -338,6 +369,38 @@ Tools that count or measure code properties.
 | `count-vec` | Count `Vec` usage |
 | `count-where` | Count `where` clause usage |
 | `count-for-loops` | Count for loops, distinguishing range-based (0..n) from iterator-based loops |
+
+---
+
+### Rust Standard Library Analysis
+
+Tools for analyzing stdlib usage across large codebases. Critical for verification prioritization.
+
+| Tool | Description |
+|------|-------------|
+| `analyze-modules` | Analyze stdlib module/type/method usage from MIR files |
+| `mirify` | Generate MIR files for codebases (runs `cargo check --emit=mir`) |
+| `download-rust-codebases` | Clone repositories from crates.io top crates list |
+
+**See:** [docs/RusticateAnalyzeModulesMir.md](docs/RusticateAnalyzeModulesMir.md) for detailed documentation.
+
+**Workflow:**
+```bash
+# 1. Download top Rust crates
+rusticate-download-rust-codebases -i analyses/top1100_unique_repos.txt -o ~/projects/RustCodebases
+
+# 2. Generate MIR for all projects
+rusticate-mirify -C ~/projects/RustCodebases -j 6 --clean-artifacts
+
+# 3. Analyze stdlib usage
+rusticate-analyze-modules -M ~/projects/RustCodebases
+```
+
+**Key Features:**
+- Analyzes 1000+ projects in ~30 seconds
+- Greedy set cover: minimum stdlib items for N% crate coverage
+- Trait implementation analysis: Iterator, Clone, Debug, etc.
+- Per-type method coverage: which Vec/Option/Result methods to verify first
 
 **Example:**
 ```bash
