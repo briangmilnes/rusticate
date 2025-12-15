@@ -55,27 +55,48 @@ Python will be sent back to the family estate for not working well!
 
 **For Verus verification prioritization:** Analyze which stdlib modules, types, methods, and traits are actually used in real-world Rust code.
 
+### Tools
+
+| Tool | Description |
+|------|-------------|
+| `rusticate-mirify` | Generate MIR files from Rust codebases (runs `cargo check --emit=mir`) |
+| `rusticate-analyze-modules-mir` | Analyze stdlib usage from MIR files with greedy set cover |
+
+### Workflow
+
 ```bash
-# Generate MIR for 1000+ projects
+# 1. Generate MIR for 1000+ projects (slow: ~2-4 hours)
 rusticate-mirify -C ~/projects/RustCodebases -j 6 --clean-artifacts
 
-# Analyze stdlib usage (30 seconds for 1036 projects, 3636 crates)
-rusticate-analyze-modules -M ~/projects/RustCodebases
+# 2. Analyze stdlib usage (fast: ~50 seconds for 1036 projects, 3636 crates)
+rusticate-analyze-modules-mir ~/projects/RustCodebases
 ```
 
-**Key Results (from 3636 crates):**
+### Key Results (from 3636 crates)
 
 | Finding | Value |
 |---------|-------|
-| Crates with stdlib usage | 3343 (92%) |
-| Methods for 90% coverage | **9 methods** |
-| Types for 96% coverage | **1 type** (Result) |
-| Iterator methods for 92% | **2 methods** (next, try_fold) |
+| Crates with stdlib usage | 3336 (92%) |
+| Stdlib modules detected | 84 |
+| Stdlib types detected | 51 |
+| Stdlib traits detected | 79 |
+| Methods/functions detected | 3582 |
 
 **Greedy Set Cover:** Finds minimum stdlib items to cover N% of real-world crates:
-- `Result::unwrap` alone covers 57% of crates
+- `std::result` module alone covers 84% of crates
 - 9 methods cover 90% of all stdlib usage
 - Iterator has 70+ methods, but 2 cover 92%
+
+### Output
+
+The analysis generates `analyses/rusticate-analyze-modules-mir.log` with:
+1. Module usage by crate count
+2. Type usage by crate count  
+3. Trait usage by crate count
+4. Method/function usage by crate count
+5. Greedy cover analysis (touch and full support) for modules, types, traits, methods
+6. Per-type method breakdown
+7. Trait implementation analysis
 
 **See:** [docs/RusticateAnalyzeModulesMir.md](docs/RusticateAnalyzeModulesMir.md) for full documentation.
 
@@ -374,13 +395,13 @@ Tools that count or measure code properties.
 
 ### Rust Standard Library Analysis
 
-Tools for analyzing stdlib usage across large codebases. Critical for verification prioritization.
+Tools for analyzing stdlib usage across large codebases. Critical for Verus verification prioritization.
 
 | Tool | Description |
 |------|-------------|
-| `analyze-modules` | Analyze stdlib module/type/method usage from MIR files |
-| `mirify` | Generate MIR files for codebases (runs `cargo check --emit=mir`) |
-| `download-rust-codebases` | Clone repositories from crates.io top crates list |
+| `rusticate-mirify` | Generate MIR files for codebases (runs `cargo check --emit=mir`) |
+| `rusticate-analyze-modules-mir` | Analyze stdlib module/type/method/trait usage from MIR files |
+| `rusticate-download-rust-codebases` | Clone repositories from crates.io top crates list |
 
 **See:** [docs/RusticateAnalyzeModulesMir.md](docs/RusticateAnalyzeModulesMir.md) for detailed documentation.
 
@@ -389,18 +410,25 @@ Tools for analyzing stdlib usage across large codebases. Critical for verificati
 # 1. Download top Rust crates
 rusticate-download-rust-codebases -i analyses/top1100_unique_repos.txt -o ~/projects/RustCodebases
 
-# 2. Generate MIR for all projects
+# 2. Generate MIR for all projects (slow: ~2-4 hours, only needed once)
 rusticate-mirify -C ~/projects/RustCodebases -j 6 --clean-artifacts
 
-# 3. Analyze stdlib usage
-rusticate-analyze-modules -M ~/projects/RustCodebases
+# 3. Analyze stdlib usage (fast: ~50 seconds)
+rusticate-analyze-modules-mir ~/projects/RustCodebases
 ```
 
 **Key Features:**
-- Analyzes 1000+ projects in ~30 seconds
+- Analyzes 1000+ projects in ~50 seconds (after MIR generation)
+- Validates symbols against stdlib module whitelist (std, core, alloc)
+- Filters out false positives (C++ symbols, internal crate modules, constants)
 - Greedy set cover: minimum stdlib items for N% crate coverage
-- Trait implementation analysis: Iterator, Clone, Debug, etc.
+- Trait implementation analysis: Iterator, Clone, Debug, Display, etc.
 - Per-type method coverage: which Vec/Option/Result methods to verify first
+
+**Analysis Output:**
+- 84 stdlib modules, 51 types, 79 traits, 3582 methods detected
+- Greedy cover shows 9 methods cover 90% of crate usage
+- Logs to `analyses/rusticate-analyze-modules-mir.log`
 
 **Example:**
 ```bash
