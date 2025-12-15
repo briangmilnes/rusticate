@@ -547,3 +547,22 @@ Entering directory '/home/milnes/projects/veracity/src/bin/analyze_libs.rs'
 Total violations: 1 files checked, 0 violations found
 
 Completed in 9ms
+Entering directory 'src/bin/analyze_modules_mir.rs'
+
+src/bin/analyze_modules_mir.rs:181: String hacking detected: result.find(">::") - Use AST traversal instead
+src/bin/analyze_modules_mir.rs:185: String hacking detected: result.find(">::") - Use AST traversal instead
+src/bin/analyze_modules_mir.rs:261: String hacking detected: line.contains("std::") - Use AST traversal instead
+src/bin/analyze_modules_mir.rs:261: String hacking detected: line.contains("core::") - Use AST traversal instead
+src/bin/analyze_modules_mir.rs:261: String hacking detected: line.contains("alloc::") - Use AST traversal instead
+src/bin/analyze_modules_mir.rs:310: String hacking detected: name[..last_dash].to_string() - Extract path/items from AST structure, not raw text
+
+Total violations: 1 files checked, 6 violations found
+
+Completed in 10ms
+Entering directory 'src/bin/analyze_modules_mir.rs'
+
+src/bin/analyze_modules_mir.rs:173: String hacking detected: name[..last_dash].to_string() - Extract path/items from AST structure, not raw text
+
+Total violations: 1 files checked, 1 violations found
+
+Completed in 7ms
