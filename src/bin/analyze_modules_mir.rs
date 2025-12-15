@@ -176,28 +176,58 @@ fn strip_crate_hash(name: &str) -> String {
     name.to_string()
 }
 
+/// Valid top-level modules in Rust's std library (from doc.rust-lang.org/std/)
+const VALID_STD_MODULES: &[&str] = &[
+    "alloc", "any", "arch", "array", "ascii", "backtrace", "borrow", "boxed",
+    "cell", "char", "clone", "cmp", "collections", "convert", "default",
+    "env", "error", "f32", "f64", "ffi", "fmt", "fs", "future", "hash",
+    "hint", "io", "iter", "marker", "mem", "net", "num", "ops", "option",
+    "os", "panic", "path", "pin", "prelude", "primitive", "process", "ptr",
+    "rc", "result", "slice", "str", "string", "sync", "task", "thread",
+    "time", "vec",
+];
+
+/// Valid top-level modules in Rust's core library (from doc.rust-lang.org/core/)
+const VALID_CORE_MODULES: &[&str] = &[
+    "alloc", "any", "arch", "array", "ascii", "borrow", "cell", "char",
+    "clone", "cmp", "convert", "default", "error", "f32", "f64", "ffi",
+    "fmt", "future", "hash", "hint", "iter", "marker", "mem", "net", "num",
+    "ops", "option", "panic", "pin", "prelude", "primitive", "ptr", "result",
+    "slice", "str", "task", "time",
+];
+
+/// Valid top-level modules in Rust's alloc library (from doc.rust-lang.org/alloc/)
+const VALID_ALLOC_MODULES: &[&str] = &[
+    "alloc", "borrow", "boxed", "collections", "ffi", "fmt", "rc", "slice",
+    "str", "string", "sync", "task", "vec",
+];
+
 /// Check if a symbol is a valid Rust stdlib symbol (not C++ stdlib, not malformed)
 fn is_valid_stdlib_symbol(s: &str) -> bool {
     // Must start with std::, core::, or alloc::
     if !s.starts_with("std::") && !s.starts_with("core::") && !s.starts_with("alloc::") {
         return false;
     }
-    let after_prefix = if s.starts_with("std::") {
-        &s[5..]
+    
+    let (valid_modules, after_prefix) = if s.starts_with("std::") {
+        (VALID_STD_MODULES, &s[5..])
     } else if s.starts_with("core::") {
-        &s[6..]
+        (VALID_CORE_MODULES, &s[6..])
     } else {
-        &s[7..] // alloc::
+        (VALID_ALLOC_MODULES, &s[7..])
     };
+    
+    // Check that the first module segment is a valid stdlib module
+    let first_segment = after_prefix.split("::").next().unwrap_or("");
+    if !first_segment.is_empty() && !valid_modules.contains(&first_segment) {
+        return false;
+    }
     
     // Reject SCREAMING_CASE - Rust stdlib uses snake_case for modules
     // Symbols like core::CHANCE_OFFSET_INBOUNDS are from other crates' core modules
-    if !after_prefix.is_empty() {
-        let first_segment = after_prefix.split("::").next().unwrap_or("");
-        if !first_segment.is_empty() && first_segment.chars().next().unwrap().is_ascii_uppercase() 
-           && first_segment.chars().all(|c| c.is_ascii_uppercase() || c == '_' || c.is_ascii_digit()) {
-            return false;
-        }
+    if !first_segment.is_empty() && first_segment.chars().next().unwrap().is_ascii_uppercase() 
+       && first_segment.chars().all(|c| c.is_ascii_uppercase() || c == '_' || c.is_ascii_digit()) {
+        return false;
     }
     
     // C++ indicators: known C++ types and type traits
@@ -531,9 +561,13 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
                 let parts: Vec<&str> = normalized.split("::").collect();
                 if parts.len() >= 3 {
                     let qualified_type = format!("{}::{}::{}", parts[0], parts[1], parts[2]);
-                    local_types.entry(qualified_type).or_default().insert(crate_name.clone());
+                    if is_valid_stdlib_symbol(&qualified_type) {
+                        local_types.entry(qualified_type).or_default().insert(crate_name.clone());
+                    }
                 }
-                local_methods.entry(normalized).or_default().insert(crate_name.clone());
+                if is_valid_stdlib_symbol(&normalized) {
+                    local_methods.entry(normalized).or_default().insert(crate_name.clone());
+                }
             }
             
             // Extract unqualified type method calls (Option::<T>::Some, Result::<T,E>::unwrap)
@@ -597,6 +631,12 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
                     
                     // Create fully qualified trait name
                     let qualified_trait = format!("{}::{}::{}", stdlib_prefix, trait_module, trait_name);
+                    
+                    // Skip if this isn't a valid stdlib symbol
+                    if !is_valid_stdlib_symbol(&qualified_trait) {
+                        continue;
+                    }
+                    
                     // Create entry: "Type::method" for type breakdown
                     let impl_entry = format!("{}::{}", impl_type, method_name);
                     
