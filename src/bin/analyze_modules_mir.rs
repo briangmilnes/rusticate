@@ -182,8 +182,6 @@ fn is_valid_stdlib_symbol(s: &str) -> bool {
     if !s.starts_with("std::") && !s.starts_with("core::") && !s.starts_with("alloc::") {
         return false;
     }
-    // Must not be a C++ symbol (these get truncated to things like std::nullptr_t, std::unique_ptr)
-    // C++ stdlib doesn't use snake_case for type names
     let after_prefix = if s.starts_with("std::") {
         &s[5..]
     } else if s.starts_with("core::") {
@@ -191,7 +189,18 @@ fn is_valid_stdlib_symbol(s: &str) -> bool {
     } else {
         &s[7..] // alloc::
     };
-    // C++ indicators: starts with uppercase (C++ templates), or is a known C++ type
+    
+    // Reject SCREAMING_CASE - Rust stdlib uses snake_case for modules
+    // Symbols like core::CHANCE_OFFSET_INBOUNDS are from other crates' core modules
+    if !after_prefix.is_empty() {
+        let first_segment = after_prefix.split("::").next().unwrap_or("");
+        if !first_segment.is_empty() && first_segment.chars().next().unwrap().is_ascii_uppercase() 
+           && first_segment.chars().all(|c| c.is_ascii_uppercase() || c == '_' || c.is_ascii_digit()) {
+            return false;
+        }
+    }
+    
+    // C++ indicators: known C++ types and type traits
     let cpp_indicators = ["nullptr", "nullopt", "unique_", "shared_", "basic_", "allocator", 
                           "char_traits", "initializer_list", "__", "forward", "move",
                           "pair", "tuple", "vector", "string", "map", "set", "list",
@@ -432,6 +441,14 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
                 if cap.start() > 0 {
                     let prev_char = filtered_content.as_bytes().get(cap.start() - 1);
                     if prev_char == Some(&b':') {
+                        continue;
+                    }
+                }
+                // Skip if preceded by "const " - these are constant values from other crates
+                // e.g., "const deflate::core::LZ_CODE_BUF_SIZE" is not Rust's core
+                if cap.start() >= 6 && filtered_content.is_char_boundary(cap.start() - 6) {
+                    let before = &filtered_content[cap.start()-6..cap.start()];
+                    if before == "const " {
                         continue;
                     }
                 }
