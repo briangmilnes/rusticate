@@ -332,7 +332,9 @@ fn is_valid_stdlib_symbol(s: &str) -> bool {
     let cpp_indicators = ["nullptr", "nullopt", "unique_", "shared_", "basic_", "allocator", 
                           "char_traits", "initializer_list", "__", "forward", "move",
                           "pair", "tuple", "vector", "string", "map", "set", "list",
-                          "deque", "array", "function", "reference_wrapper"];
+                          "deque", "array", "function", "reference_wrapper",
+                          "remove_", "add_", "enable_if", "is_same", "conditional",
+                          "decay", "invoke", "bind", "mem_fn", "not_fn"];
     for ind in cpp_indicators {
         if after_prefix.starts_with(ind) {
             return false;
@@ -540,14 +542,23 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
             
             // Filter out lines that are string constants (contain embedded C++ symbols etc.)
             // These show up as: const "...", const b"..." (byte strings), or _N = "..."
+            // Also filter hex dump lines (format: "0x... │ hex bytes │ ascii")
             let filtered_content: String = content.lines()
                 .filter(|line| {
                     let trimmed = line.trim();
                     // Skip lines that are string constants (regular or byte strings)
-                    !trimmed.contains("const \"") && 
-                    !trimmed.contains("const b\"") && 
-                    !trimmed.contains("= \"") &&
-                    !trimmed.contains("= b\"")
+                    if trimmed.contains("const \"") || 
+                       trimmed.contains("const b\"") || 
+                       trimmed.contains("= \"") ||
+                       trimmed.contains("= b\"") {
+                        return false;
+                    }
+                    // Skip hex dump lines (contain ASCII interpretations of C++ symbols)
+                    // Format: "    0x1960 │ 61 70 70 65 72... │ pper<std::remove"
+                    if trimmed.starts_with("0x") && trimmed.contains('│') {
+                        return false;
+                    }
+                    true
                 })
                 .collect::<Vec<_>>()
                 .join("\n");
