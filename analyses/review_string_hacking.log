@@ -359,3 +359,191 @@ src/bin/review_where_clause_simplification.rs:71: String hacking detected: where
 Total violations: 84 files checked, 100 violations found
 
 Completed in 73ms
+Entering directory '/home/milnes/projects/veracity/src/bin/analyze_libs.rs'
+
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:608: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:714: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:784: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:839: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:891: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:948: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:992: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:1056: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:1129: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:1172: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:1211: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:1241: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+
+Total violations: 1 files checked, 12 violations found
+
+Completed in 12ms
+Entering directory '/home/milnes/projects/veracity/src/bin/analyze_libs.rs'
+
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:355: String hacking detected: node.sig.ident.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:432: String hacking detected: node.ident.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:493: String hacking detected: node.ident.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:513: String hacking detected: fn_item.sig.ident.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:540: String hacking detected: node.self_ty.to_token_stream().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:547: String hacking detected: fn_item.sig.ident.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:630: String hacking detected: node.ident.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:637: String hacking detected: node.ty.to_token_stream().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:648: String hacking detected: node.ident.to_string() - Extract path/items from AST structure, not raw text
+
+Total violations: 1 files checked, 9 violations found
+
+Completed in 3ms
+Entering directory '/home/milnes/projects/rusticate/src/bin/analyze_libs.rs'
+
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:856: String hacking detected: p.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1005: String hacking detected: p.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1468: String hacking detected: struct_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1485: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1492: String hacking detected: enum_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1508: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1515: String hacking detected: trait_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1524: String hacking detected: b.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1577: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1584: String hacking detected: fn_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1603: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1610: String hacking detected: macro_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1622: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1629: String hacking detected: macro_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1640: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1647: String hacking detected: const_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1651: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1657: String hacking detected: b.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1672: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1679: String hacking detected: static_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1683: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1693: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1700: String hacking detected: alias_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1704: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1713: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1723: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1728: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1784: String hacking detected: w.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1809: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1906: String hacking detected: text.contains("derive(") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1908: String hacking detected: text.find("derive(") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1929: String hacking detected: body.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1932: String hacking detected: text.contains("unwrap()") - Use AST traversal instead
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1933: String hacking detected: text.contains("expect(") - Use AST traversal instead
+
+Total violations: 1 files checked, 34 violations found
+
+Completed in 8ms
+Entering directory '/home/milnes/projects/rusticate/src/bin/analyze_libs.rs'
+
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:856: String hacking detected: p.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1005: String hacking detected: p.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1468: String hacking detected: struct_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1485: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1492: String hacking detected: enum_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1508: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1515: String hacking detected: trait_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1524: String hacking detected: b.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1577: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1584: String hacking detected: fn_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1603: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1610: String hacking detected: macro_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1622: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1629: String hacking detected: macro_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1640: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1647: String hacking detected: const_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1651: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1657: String hacking detected: b.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1672: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1679: String hacking detected: static_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1683: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1693: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1700: String hacking detected: alias_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1704: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1713: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1723: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1728: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1784: String hacking detected: w.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1809: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/rusticate/src/bin/analyze_libs.rs:1908: String hacking detected: path.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+
+Total violations: 1 files checked, 30 violations found
+
+Completed in 8ms
+Entering directory 'src/bin/analyze_libs.rs'
+
+src/bin/analyze_libs.rs:856: String hacking detected: p.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1005: String hacking detected: p.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1468: String hacking detected: struct_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1485: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1492: String hacking detected: enum_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1508: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1515: String hacking detected: trait_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1524: String hacking detected: b.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1577: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1584: String hacking detected: fn_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1603: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1610: String hacking detected: macro_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1622: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1629: String hacking detected: macro_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1640: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1647: String hacking detected: const_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1651: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1657: String hacking detected: b.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1672: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1679: String hacking detected: static_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1683: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1693: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1700: String hacking detected: alias_node.name()?.text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1704: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1713: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1723: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1728: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1784: String hacking detected: w.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1809: String hacking detected: source_file.to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1915: String hacking detected: path.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+
+Total violations: 1 files checked, 30 violations found
+
+Completed in 9ms
+Entering directory '/home/milnes/projects/veracity/src/bin/analyze_libs.rs'
+
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:355: String hacking detected: node.sig.ident.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:432: String hacking detected: node.ident.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:493: String hacking detected: node.ident.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:513: String hacking detected: fn_item.sig.ident.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:540: String hacking detected: node.self_ty.to_token_stream().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:547: String hacking detected: fn_item.sig.ident.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:630: String hacking detected: node.ident.to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:637: String hacking detected: node.ty.to_token_stream().to_string() - Extract path/items from AST structure, not raw text
+/home/milnes/projects/veracity/src/bin/analyze_libs.rs:648: String hacking detected: node.ident.to_string() - Extract path/items from AST structure, not raw text
+
+Total violations: 1 files checked, 9 violations found
+
+Completed in 3ms
+Entering directory 'src/bin/analyze_libs.rs'
+
+src/bin/analyze_libs.rs:856: String hacking detected: p.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1005: String hacking detected: p.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1524: String hacking detected: b.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1651: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1657: String hacking detected: b.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1683: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1704: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1723: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1728: String hacking detected: t.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+src/bin/analyze_libs.rs:1784: String hacking detected: w.syntax().text().to_string() - Extract path/items from AST structure, not raw text
+
+Total violations: 1 files checked, 10 violations found
+
+Completed in 6ms
+Entering directory 'src/bin/analyze_libs.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 13ms
+Entering directory '/home/milnes/projects/veracity/src/bin/analyze_libs.rs'
+
+
+Total violations: 1 files checked, 0 violations found
+
+Completed in 9ms

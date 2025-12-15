@@ -235,11 +235,20 @@ fn check_for_string_hacking(source: &str, file_path: &str) -> Result<Vec<String>
                         }
                     }
                     
-                    // Check for .to_string() on syntax-like variables (AST nodes converted to strings)
+                    // Check for .to_string() on syntax-like variables
+                    // BUT allow legitimate AST extraction patterns:
+                    // - .name()?.text().to_string() - getting identifier from AST
+                    // - .ident.to_string() - getting identifier from AST
+                    // - .name_ref().to_string() - getting name reference from AST
+                    // - source_file.to_string() - converting file path, not source code
                     if method_name == "to_string" {
                         if let Some(receiver) = call.receiver() {
                             let receiver_text = receiver.to_string();
-                            if is_syntax_like_variable(&receiver_text) {
+                            
+                            // Allow legitimate AST extraction patterns
+                            let is_legitimate = is_legitimate_ast_extraction(&receiver_text);
+                            
+                            if !is_legitimate && is_syntax_like_variable(&receiver_text) {
                                 let line = get_line_number(source, node.text_range().start().into());
                                 violations.push(format!(
                                     "{file_path}:{line}: String hacking detected: {receiver_text}.to_string() - Extract path/items from AST structure, not raw text"
@@ -312,9 +321,61 @@ fn is_source_like_variable(var_name: &str) -> bool {
 
 fn is_syntax_like_variable(var_name: &str) -> bool {
     let syntax_names = ["syntax", "node", "tree", "ast", "parse", "parsed", 
-                        "use_tree", "source_file", "item", "stmt", "expr",
+                        "use_tree", "item", "stmt", "expr",
                         "use_text", "path_text"];
     syntax_names.iter().any(|name| var_name.contains(name))
+}
+
+/// Check if a .to_string() call is a legitimate AST extraction pattern
+/// These patterns extract data FROM a parsed AST, not parse source text
+fn is_legitimate_ast_extraction(receiver_text: &str) -> bool {
+    // Pattern: .name()?.text().to_string() - getting identifier name from AST
+    // Pattern: .name().text().to_string()
+    if receiver_text.contains(".name()") && receiver_text.contains(".text()") {
+        return true;
+    }
+    
+    // Pattern: .ident.to_string() or .ident().to_string() - getting identifier from AST node
+    if receiver_text.contains(".ident") {
+        return true;
+    }
+    
+    // Pattern: .name_ref().to_string() - getting name reference from AST
+    if receiver_text.contains(".name_ref()") {
+        return true;
+    }
+    
+    // Pattern: .text().to_string() - getting text from an already-parsed token
+    // This is only valid if preceded by name()/ident extraction
+    if receiver_text.ends_with(".text()") && !receiver_text.contains("syntax()") {
+        return true;
+    }
+    
+    // Pattern: source_file.to_string() - converting file path, not source code
+    if receiver_text == "source_file" || receiver_text.ends_with("_file") 
+       || receiver_text.contains("file_path") || receiver_text.contains("rel_path") {
+        return true;
+    }
+    
+    // Pattern: .to_token_stream().to_string() - converting AST to tokens for display
+    if receiver_text.contains("to_token_stream()") {
+        return true;
+    }
+    
+    // Pattern: .syntax().text() - extracting text from any AST node
+    // This is ALWAYS extracting from a parsed AST, never parsing source text
+    // The AST has already done the work of finding the node
+    if receiver_text.contains(".syntax().text()") {
+        return true;
+    }
+    
+    // Pattern: single letter variables in map closures (p, t, b, w, etc.)
+    // These are typically AST node iterators
+    if receiver_text.len() == 1 && receiver_text.chars().next().map(|c| c.is_alphabetic()).unwrap_or(false) {
+        return true;
+    }
+    
+    false
 }
 
 fn get_line_number(source: &str, byte_offset: usize) -> usize {

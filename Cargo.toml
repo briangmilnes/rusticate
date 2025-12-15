@@ -21,6 +21,7 @@ walkdir = "2.5"
 rayon = "1.10"
 syn = { version = "2.0", features = ["full", "visit", "extra-traits"] }
 verus_syn = { path = "../verus-lang/dependencies/syn", features = ["full", "visit", "extra-traits"] }
+jsonschema = "0.37"
 
 [dev-dependencies]
 serial_test = "3.0"
@@ -354,8 +355,16 @@ name = "rusticate-download-rust-codebases"
 path = "src/bin/download_rust_codebases.rs"
 
 [[bin]]
-name = "rusticate-analyze-modules"
-path = "src/bin/analyze_modules.rs"
+name = "rusticate-analyze-modules-ast"
+path = "src/bin/analyze_modules_ast.rs"
+
+[[bin]]
+name = "rusticate-analyze-modules-mir"
+path = "src/bin/analyze_modules_mir.rs"
+
+[[bin]]
+name = "rusticate-analyze-libs"
+path = "src/bin/analyze_libs.rs"
 
 [[bin]]
 name = "rusticate-mirify"

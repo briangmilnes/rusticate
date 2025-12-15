@@ -8,6 +8,7 @@ use ra_ap_syntax::{ast, AstNode, SyntaxKind, SyntaxNode};
 use rusticate::parse_file;
 
 // Crates that wrap/re-export everything - we want to filter these out
+#[allow(dead_code)]
 const WRAPPER_CRATES: &[&str] = &[
     "tokio",
     "futures",
@@ -541,7 +542,7 @@ fn count_stdlib_functions(jobs: usize) -> Result<()> {
         let handles: Vec<_> = chunks
             .into_iter()
             .enumerate()
-            .map(|(chunk_idx, chunk)| {
+            .map(|(_chunk_idx, chunk)| {
                 let lib_root = lib_path_clone.clone();
                 std::thread::spawn(move || {
                     let mut pub_count = 0;
@@ -1048,7 +1049,7 @@ fn analyze_mir_crate(path: &Path) -> Result<()> {
     let start_time = chrono::Local::now().format("%Y-%m-%d %H:%M:%S %Z");
     
     // Set up logging
-    let log_path = PathBuf::from("analyses/analyze_modules_mir.log");
+    let log_path = PathBuf::from("analyses/rusticate-analyze-modules-mir.log");
     fs::create_dir_all("analyses")?;
     let mut log_file = fs::File::create(&log_path)?;
     
@@ -1411,6 +1412,8 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
         let mut local_types: BTreeMap<String, HashSet<String>> = BTreeMap::new();
         let mut local_methods: BTreeMap<String, HashSet<String>> = BTreeMap::new();
         let mut local_crates: HashSet<String> = HashSet::new();
+        // Traits: trait_name -> crates (for greedy cover of traits themselves)
+        let mut local_traits: BTreeMap<String, HashSet<String>> = BTreeMap::new();
         // Trait impls: trait_name -> (impl_type, method) -> crates
         let mut local_trait_impls: BTreeMap<String, BTreeMap<String, HashSet<String>>> = BTreeMap::new();
         
@@ -1568,8 +1571,12 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
                         .or_default()
                         .insert(crate_name.clone());
                     
+                    // Track the trait itself (for greedy cover of traits)
+                    local_traits.entry(qualified_trait.clone())
+                        .or_default()
+                        .insert(crate_name.clone());
+                    
                     // Also track by method name alone (for greedy cover across all types)
-                    let method_only_key = format!("{}::{}", qualified_trait, method_name);
                     local_trait_impls.entry(qualified_trait)
                         .or_default()
                         .entry(format!("__METHOD__::{}", method_name))
@@ -1579,7 +1586,7 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
             }
         }
         
-        (project_name, mir_count, local_crates, local_modules, local_types, local_methods, local_trait_impls)
+        (project_name, mir_count, local_crates, local_modules, local_types, local_methods, local_traits, local_trait_impls)
     }).collect();
     
     eprintln!("\r[{}/{}] Done!                    ", total_projects, total_projects);
@@ -1591,12 +1598,14 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     let mut module_total_crates: BTreeMap<String, HashSet<String>> = BTreeMap::new();
     let mut type_total_crates: BTreeMap<String, HashSet<String>> = BTreeMap::new();
     let mut method_total_crates: BTreeMap<String, HashSet<String>> = BTreeMap::new();
+    // Traits: trait -> crates (for greedy cover of traits themselves)
+    let mut trait_total_crates: BTreeMap<String, HashSet<String>> = BTreeMap::new();
     // Trait impls: trait -> impl_entry -> crates
     let mut trait_impl_total: BTreeMap<String, BTreeMap<String, HashSet<String>>> = BTreeMap::new();
     let mut total_mir_files = 0;
     let mut unique_crates: HashSet<String> = HashSet::new();
     
-    for (project_name, mir_count, local_crates, local_modules, local_types, local_methods, local_trait_impls) in results {
+    for (project_name, mir_count, local_crates, local_modules, local_types, local_methods, local_traits, local_trait_impls) in results {
         total_mir_files += mir_count;
         unique_crates.extend(local_crates);
         
@@ -1616,6 +1625,11 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
             method_project_crates.entry(method.clone()).or_default()
                 .insert(project_name.clone(), crates.clone());
             method_total_crates.entry(method).or_default().extend(crates);
+        }
+        
+        // Merge traits
+        for (trait_name, crates) in local_traits {
+            trait_total_crates.entry(trait_name).or_default().extend(crates);
         }
         
         // Merge trait impls
@@ -1705,6 +1719,7 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     
     // Compute key stats for Abstract - use covered_crate_count as denominator!
     let (types_for_90, types_achieved) = greedy_cover_90(&type_total_crates, covered_crate_count);
+    let (traits_for_90, traits_achieved) = greedy_cover_90(&trait_total_crates, covered_crate_count);
     let (methods_for_90, methods_achieved) = greedy_cover_90(&filtered_methods, covered_crate_count);
     
     // =========================================================================
@@ -1724,13 +1739,14 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     println!();
     println!("This report analyzes stdlib usage across {} Rust projects ({} unique crates)", 
         projects_with_mir.len(), unique_crates.len());
-    println!("compiled to MIR. We identify which modules, types, and methods are most used,");
-    println!("and compute minimum sets needed to cover 70-99% of real-world usage.");
+    println!("compiled to MIR. We identify which modules, types, traits, and methods are most");
+    println!("used, and compute minimum sets needed to cover 70-99% of real-world usage.");
     println!();
     println!("Key findings:");
     println!("  - {} crates ({:.4}%) have no stdlib usage (proc-macros, FFI, const-only)", uncovered_count, uncovered_pct);
     println!("  - Of {} crates WITH stdlib usage:", covered_crate_count);
     println!("    - {} types cover {:.4}%", types_for_90, types_achieved);
+    println!("    - {} traits cover {:.4}%", traits_for_90, traits_achieved);
     println!("    - {} methods cover {:.4}%", methods_for_90, methods_achieved);
     println!();
     
@@ -1741,12 +1757,13 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     log!("{}", "-".repeat(40));
     log!("\nThis report analyzes stdlib usage across {} Rust projects ({} unique crates)", 
         projects_with_mir.len(), unique_crates.len());
-    log!("compiled to MIR. We identify which modules, types, and methods are most used,");
-    log!("and compute minimum sets needed to cover 70-99% of real-world usage.");
+    log!("compiled to MIR. We identify which modules, types, traits, and methods are most");
+    log!("used, and compute minimum sets needed to cover 70-99% of real-world usage.");
     log!("\nKey findings:");
     log!("  - {} crates ({:.4}%) have no stdlib usage (proc-macros, FFI, const-only)", uncovered_count, uncovered_pct);
     log!("  - Of {} crates WITH stdlib usage:", covered_crate_count);
     log!("    - {} types cover {:.4}%", types_for_90, types_achieved);
+    log!("    - {} traits cover {:.4}%", traits_for_90, traits_achieved);
     log!("    - {} methods cover {:.4}%", methods_for_90, methods_achieved);
     
     // TABLE OF CONTENTS
@@ -1759,13 +1776,15 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     println!("  2.   STDLIB MODULES (by crate count)");
     println!("  3.   CRATES WITHOUT STDLIB USAGE");
     println!("  4.   DATA TYPES (by crate count)");  
-    println!("  5.   ALL STDLIB METHODS/FUNCTIONS (by crate count)");
-    println!("  6.   GREEDY COVER: MODULES");
-    println!("  7.   GREEDY COVER: DATA TYPES");
-    println!("  8.   GREEDY COVER: METHODS/FUNCTIONS");
-    println!("  9.   GREEDY COVER: METHODS PER TYPE");
-    println!(" 10.   TRAIT IMPLEMENTATIONS AND GREEDY METHOD COVER");
-    println!(" 11.   SUMMARY");
+    println!("  5.   STDLIB TRAITS (by crate count)");
+    println!("  6.   ALL STDLIB METHODS/FUNCTIONS (by crate count)");
+    println!("  7.   GREEDY COVER: MODULES");
+    println!("  8.   GREEDY COVER: DATA TYPES");
+    println!("  9.   GREEDY COVER: TRAITS");
+    println!(" 10.   GREEDY COVER: METHODS/FUNCTIONS");
+    println!(" 11.   GREEDY COVER: METHODS PER TYPE");
+    println!(" 12.   TRAIT IMPLEMENTATIONS AND GREEDY METHOD COVER");
+    println!(" 13.   SUMMARY");
     println!();
     
     log!("\nTABLE OF CONTENTS");
@@ -1775,13 +1794,15 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     log!("  2.   STDLIB MODULES (by crate count)");
     log!("  3.   CRATES WITHOUT STDLIB USAGE");
     log!("  4.   DATA TYPES (by crate count)");
-    log!("  5.   ALL STDLIB METHODS/FUNCTIONS (by crate count)");
-    log!("  6.   GREEDY COVER: MODULES");
-    log!("  7.   GREEDY COVER: DATA TYPES");
-    log!("  8.   GREEDY COVER: METHODS/FUNCTIONS");
-    log!("  9.   GREEDY COVER: METHODS PER TYPE");
-    log!(" 10.   TRAIT IMPLEMENTATIONS AND GREEDY METHOD COVER");
-    log!(" 11.   SUMMARY");
+    log!("  5.   STDLIB TRAITS (by crate count)");
+    log!("  6.   ALL STDLIB METHODS/FUNCTIONS (by crate count)");
+    log!("  7.   GREEDY COVER: MODULES");
+    log!("  8.   GREEDY COVER: DATA TYPES");
+    log!("  9.   GREEDY COVER: TRAITS");
+    log!(" 10.   GREEDY COVER: METHODS/FUNCTIONS");
+    log!(" 11.   GREEDY COVER: METHODS PER TYPE");
+    log!(" 12.   TRAIT IMPLEMENTATIONS AND GREEDY METHOD COVER");
+    log!(" 13.   SUMMARY");
     
     // 1. OVERVIEW
     println!();
@@ -1833,52 +1854,65 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     println!("   counted once per crate. Shows Uses, Uses%%, No-use, No-use%% relative to crates with");
     println!("   detected type usage.");
     println!();
-    println!("5. ALL STDLIB METHODS/FUNCTIONS (by crate count)");
+    println!("5. STDLIB TRAITS (by crate count)");
+    println!();
+    println!("   Lists {} stdlib traits (Iterator, Clone, Debug, IntoIterator, etc.) found in MIR.", trait_total_crates.len());
+    println!("   Traits are detected from trait method calls (<Type as Trait>::method patterns).");
+    println!("   Unlike types which are data structures, traits define behavioral contracts that must");
+    println!("   be specified separately for Verus verification. Each trait counted once per crate.");
+    println!();
+    println!("6. ALL STDLIB METHODS/FUNCTIONS (by crate count)");
     println!();
     println!("   Lists all {} stdlib methods and functions found in MIR, sorted by crate count.", method_total_crates.len());
     println!("   Extracted from direct calls (Vec::new()), method calls (result.unwrap()), and trait");
     println!("   method calls (<T as Iterator>::next()). Generic parameters are stripped for grouping");
     println!("   (Vec::<T>::push becomes Vec::push). Type names filtered out to show only methods.");
     println!();
-    println!("6. GREEDY COVER: MODULES");
+    println!("7. GREEDY COVER: MODULES");
     println!();
     println!("   Applies greedy set cover algorithm to find minimum modules needed to cover 70%%,");
     println!("   80%%, 90%%, 95%%, 99%%, 100%% of the {} crates with stdlib usage. At each step,", covered_crate_count);
     println!("   selects the module covering the most remaining uncovered crates. Shows cumulative");
     println!("   coverage percentage after each module is added.");
     println!();
-    println!("7. GREEDY COVER: DATA TYPES");
+    println!("8. GREEDY COVER: DATA TYPES");
     println!();
     println!("   Applies greedy set cover to find minimum types needed for each coverage target.");
     println!("   Uses only crates where type usage was detected as the denominator, ensuring 100%%");
     println!("   coverage is achievable. Critical for verification prioritization: which types must");
     println!("   be formally specified first to cover the most real-world code.");
     println!();
-    println!("8. GREEDY COVER: METHODS/FUNCTIONS");
+    println!("9. GREEDY COVER: TRAITS");
+    println!();
+    println!("   Applies greedy set cover to find minimum traits needed for each coverage target.");
+    println!("   Traits like Iterator, Clone, and IntoIterator require separate specs from their");
+    println!("   implementing types. This shows which trait specs provide the best coverage ROI.");
+    println!();
+    println!("10. GREEDY COVER: METHODS/FUNCTIONS");
     println!();
     println!("   Applies greedy set cover to methods/functions. Filters out type names to count only");
     println!("   actual callable methods. Uses crates with detected method calls as denominator.");
     println!("   Key insight: a small fraction of stdlib methods cover the vast majority of usage.");
     println!("   For Verus verification, proves which method specs provide the best coverage ROI.");
     println!();
-    println!("9. GREEDY COVER: METHODS PER TYPE");
+    println!("11. GREEDY COVER: METHODS PER TYPE");
     println!();
     println!("   For each major type (Vec, Option, Result, String, etc.), runs greedy set cover on");
     println!("   its methods. Denominator is crates that call methods on that specific type (not just");
     println!("   annotate it). Shows minimum methods needed per type for 70-100%% coverage. Critical");
     println!("   for prioritizing which Vec::* or Option::* methods to verify first.");
     println!();
-    println!("10. TRAIT IMPLEMENTATIONS AND GREEDY METHOD COVER");
+    println!("12. TRAIT IMPLEMENTATIONS AND GREEDY METHOD COVER");
     println!();
     println!("   Extracts trait implementations from MIR (e.g., <Vec as IntoIterator>::into_iter).");
     println!("   Groups by trait, showing which types implement each trait and which methods are");
     println!("   called. For key traits (Iterator, Clone, Debug, io::Read/Write), runs greedy cover");
     println!("   on trait methods. Iterator has 70+ methods but ~7 cover 99%% of real usage.");
     println!();
-    println!("11. SUMMARY");
+    println!("13. SUMMARY");
     println!();
     println!("   Final statistics: total projects, crates analyzed (with/without stdlib), modules,");
-    println!("   types, methods, and traits detected. Includes total analysis time.");
+    println!("   types, traits, methods detected. Includes total analysis time.");
     println!();
     println!("{}", report_line);
     println!();
@@ -1910,11 +1944,15 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     log!("coverage is achievable for each category.");
     log!("\n2. STDLIB MODULES (by crate count)");
     log!("");
+    log!("   This helps us answer: Which stdlib modules are most widely used across real codebases?");
+    log!("");
     log!("   Lists {} stdlib modules (std::, core::, alloc::) extracted from MIR files.", module_total_crates.len());
     log!("   Each module is counted once per crate that references it. Sorted by the number of");
     log!("   unique crates using each module, then alphabetically. Shows Uses, Uses%%, No-use,");
     log!("   No-use%% relative to the {} crates with detected stdlib usage.", covered_crate_count);
     log!("\n3. CRATES WITHOUT STDLIB USAGE");
+    log!("");
+    log!("   This helps us answer: How many crates don't use stdlib at all?");
     log!("");
     log!("   Lists {} crates where MIR analysis detected no stdlib calls. These are typically", uncovered_count);
     log!("   proc-macro crates (code runs at compile time), FFI stubs (extern \"C\" only), or");
@@ -1922,51 +1960,75 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     log!("   since they cannot be covered by any stdlib item.");
     log!("\n4. DATA TYPES (by crate count)");
     log!("");
+    log!("   This helps us answer: Which stdlib types are most frequently used?");
+    log!("");
     log!("   Lists {} stdlib types (Result, Option, Vec, HashMap, etc.) found in MIR.", type_total_crates.len());
     log!("   Types are detected from: constructor calls (Some(...), Ok(...)), method receivers");
     log!("   (vec.push()), type annotations in locals, and generic instantiations. Each type is");
     log!("   counted once per crate. Shows Uses, Uses%%, No-use, No-use%% relative to crates with");
     log!("   detected type usage.");
-    log!("\n5. ALL STDLIB METHODS/FUNCTIONS (by crate count)");
+    log!("\n5. STDLIB TRAITS (by crate count)");
+    log!("");
+    log!("   This helps us answer: Which stdlib traits are most frequently used?");
+    log!("");
+    log!("   Lists {} stdlib traits (Iterator, Clone, Debug, IntoIterator, etc.) found in MIR.", trait_total_crates.len());
+    log!("   Traits are detected from trait method calls (<Type as Trait>::method patterns).");
+    log!("   Unlike types which are data structures, traits define behavioral contracts that must");
+    log!("   be specified separately for Verus verification. Each trait counted once per crate.");
+    log!("\n6. ALL STDLIB METHODS/FUNCTIONS (by crate count)");
+    log!("");
+    log!("   This helps us answer: Which specific methods are called most often?");
     log!("");
     log!("   Lists all {} stdlib methods and functions found in MIR, sorted by crate count.", method_total_crates.len());
     log!("   Extracted from direct calls (Vec::new()), method calls (result.unwrap()), and trait");
     log!("   method calls (<T as Iterator>::next()). Generic parameters are stripped for grouping");
     log!("   (Vec::<T>::push becomes Vec::push). Type names filtered out to show only methods.");
-    log!("\n6. GREEDY COVER: MODULES");
+    log!("\n7. GREEDY COVER: MODULES");
     log!("");
-    log!("   Applies greedy set cover algorithm to find minimum modules needed to cover 70%%,");
-    log!("   80%%, 90%%, 95%%, 99%%, 100%% of the {} crates with stdlib usage. At each step,", covered_crate_count);
-    log!("   selects the module covering the most remaining uncovered crates. Shows cumulative");
-    log!("   coverage percentage after each module is added.");
-    log!("\n7. GREEDY COVER: DATA TYPES");
+    log!("   This helps us answer: What modules should we verify first for maximum IMPACT?");
     log!("");
-    log!("   Applies greedy set cover to find minimum types needed for each coverage target.");
-    log!("   Uses only crates where type usage was detected as the denominator, ensuring 100%%");
-    log!("   coverage is achievable. Critical for verification prioritization: which types must");
-    log!("   be formally specified first to cover the most real-world code.");
-    log!("\n8. GREEDY COVER: METHODS/FUNCTIONS");
+    log!("   Applies greedy set cover to find minimum modules to TOUCH 70-100%% of crates.");
+    log!("   'Touching' means at least one crate uses that module. Useful for prioritization:");
+    log!("   verifying std::result first impacts 84%% of crates. Note: this does NOT mean those");
+    log!("   crates are 'fully supported' - they may use other modules too.");
+    log!("\n8. GREEDY COVER: DATA TYPES");
     log!("");
-    log!("   Applies greedy set cover to methods/functions. Filters out type names to count only");
-    log!("   actual callable methods. Uses crates with detected method calls as denominator.");
-    log!("   Key insight: a small fraction of stdlib methods cover the vast majority of usage.");
-    log!("   For Verus verification, proves which method specs provide the best coverage ROI.");
-    log!("\n9. GREEDY COVER: METHODS PER TYPE");
+    log!("   This helps us answer: What types should we verify first for maximum IMPACT?");
     log!("");
-    log!("   For each major type (Vec, Option, Result, String, etc.), runs greedy set cover on");
-    log!("   its methods. Denominator is crates that call methods on that specific type (not just");
-    log!("   annotate it). Shows minimum methods needed per type for 70-100%% coverage. Critical");
-    log!("   for prioritizing which Vec::* or Option::* methods to verify first.");
-    log!("\n10. TRAIT IMPLEMENTATIONS AND GREEDY METHOD COVER");
+    log!("   Applies greedy set cover to find minimum types to TOUCH 70-100%% of crates.");
+    log!("   Like module cover, this shows which types have the widest usage. Result and Option");
+    log!("   alone touch 95%%+ of crates. Does NOT mean crates only need those types.");
+    log!("\n9. GREEDY COVER: TRAITS");
+    log!("");
+    log!("   This helps us answer: What traits should we verify first for maximum IMPACT?");
+    log!("");
+    log!("   Applies greedy set cover to find minimum traits to TOUCH 70-100%% of crates.");
+    log!("   Traits like Iterator, Clone, and IntoIterator require separate specs from their");
+    log!("   implementing types. This shows which trait specs provide the best coverage ROI.");
+    log!("\n10. GREEDY COVER: METHODS/FUNCTIONS");
+    log!("");
+    log!("   This helps us answer: What methods should we verify first for maximum IMPACT?");
+    log!("");
+    log!("   Applies greedy set cover to find minimum methods to TOUCH 70-100%% of crates.");
+    log!("   Key insight: ~30 methods touch 90%% of crates. For verification prioritization,");
+    log!("   this shows which method specs provide the best coverage ROI.");
+    log!("\n11. GREEDY COVER: METHODS PER TYPE");
+    log!("");
+    log!("   This helps us answer: For each type, which methods matter most?");
+    log!("");
+    log!("   For each type (Vec, Option, Result, etc.), runs greedy cover on its methods.");
+    log!("   Shows minimum methods needed per type for 70-100%% coverage of that type's users.");
+    log!("\n12. TRAIT IMPLEMENTATIONS AND GREEDY METHOD COVER");
+    log!("");
+    log!("   This helps us answer: Which trait methods are actually used in practice?");
     log!("");
     log!("   Extracts trait implementations from MIR (e.g., <Vec as IntoIterator>::into_iter).");
-    log!("   Groups by trait, showing which types implement each trait and which methods are");
-    log!("   called. For key traits (Iterator, Clone, Debug, io::Read/Write), runs greedy cover");
-    log!("   on trait methods. Iterator has 70+ methods but ~7 cover 99%% of real usage.");
-    log!("\n11. SUMMARY");
+    log!("   For key traits (Iterator, Clone, Debug), runs greedy cover on trait methods.");
+    log!("   Iterator has 70+ methods but ~7 cover 99%% of real usage.");
+    log!("\n13. SUMMARY");
     log!("");
     log!("   Final statistics: total projects, crates analyzed (with/without stdlib), modules,");
-    log!("   types, methods, and traits detected. Includes total analysis time.");
+    log!("   types, traits, methods detected. Includes total analysis time.");
     log!("\n{}", report_line);
     
     // =========================================================================
@@ -2056,12 +2118,38 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
         log!("{:40} {:>8} {:>10.4}% {:>8} {:>10.4}%", name, uses, uses_pct, no_use, no_use_pct);
     }
     
+    // Print trait stats - NEW SECTION 5
+    println!("\n=== 5. STDLIB TRAITS (by crate count) ===");
+    println!("This helps us answer: Which stdlib traits are most frequently used?");
+    println!("{:50} {:>8} {:>10} {:>8} {:>10}", "Trait", "Crates", "Crates%", "No-use", "No-use%");
+    println!("{}", "-".repeat(90));
+    log!("\n=== 5. STDLIB TRAITS (by crate count) ===");
+    log!("This helps us answer: Which stdlib traits are most frequently used?");
+    log!("{:50} {:>8} {:>10} {:>8} {:>10}", "Trait", "Crates", "Crates%", "No-use", "No-use%");
+    log!("{}", "-".repeat(90));
+    
+    let mut trait_stats: Vec<_> = trait_total_crates.iter().map(|(name, crates)| {
+        let uses = crates.len();
+        let uses_pct = (uses as f64 / covered_crate_count as f64) * 100.0;
+        let no_use = covered_crate_count - uses;
+        let no_use_pct = (no_use as f64 / covered_crate_count as f64) * 100.0;
+        (name.clone(), uses, uses_pct, no_use, no_use_pct)
+    }).collect();
+    trait_stats.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+    
+    for (name, uses, uses_pct, no_use, no_use_pct) in &trait_stats {
+        println!("{:50} {:>8} {:>10.4}% {:>8} {:>10.4}%", name, uses, uses_pct, no_use, no_use_pct);
+        log!("{:50} {:>8} {:>10.4}% {:>8} {:>10.4}%", name, uses, uses_pct, no_use, no_use_pct);
+    }
+    
     // Print ALL method stats (percentages based on crates WITH stdlib usage)
-    println!("\n=== 5. ALL STDLIB METHODS/FUNCTIONS (by crate count) ===");
+    println!("\n=== 6. ALL STDLIB METHODS/FUNCTIONS (by crate count) ===");
+    println!("This helps us answer: Which specific methods are called most often?");
     println!("({} entries, percentages of {} crates with stdlib)", method_total_crates.len(), covered_crate_count);
     println!("{:60} {:>8} {:>8} {:>8} {:>8}", "Method/Function", "Crates", "Crates%", "No-use", "No-use%");
     println!("{}", "-".repeat(96));
-    log!("\n=== 5. ALL STDLIB METHODS/FUNCTIONS (by crate count) ===");
+    log!("\n=== 6. ALL STDLIB METHODS/FUNCTIONS (by crate count) ===");
+    log!("This helps us answer: Which specific methods are called most often?");
     log!("({} entries, percentages of {} crates with stdlib)", method_total_crates.len(), covered_crate_count);
     log!("{:60} {:>8} {:>8} {:>8} {:>8}", "Method/Function", "Crates", "Crates%", "No-use", "No-use%");
     
@@ -2129,6 +2217,74 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
         selected
     }
     
+    // Full support greedy cover: how many items must be verified to FULLY SUPPORT X% of crates?
+    // A crate is "fully supported" when ALL items it uses are verified.
+    #[allow(dead_code)]
+    fn greedy_cover_full_support(
+        crate_to_items: &BTreeMap<String, HashSet<String>>,
+        target_pct: f64,
+    ) -> Vec<(String, usize, f64)> {
+        let total_crates = crate_to_items.len();
+        let target_count = (total_crates as f64 * target_pct / 100.0).ceil() as usize;
+        
+        // Collect all unique items
+        let all_items: HashSet<String> = crate_to_items.values()
+            .flat_map(|s| s.iter().cloned())
+            .collect();
+        
+        let mut verified_items: HashSet<String> = HashSet::new();
+        let mut selected: Vec<(String, usize, f64)> = Vec::new();
+        
+        // Count crates fully supported
+        let count_fully_supported = |verified: &HashSet<String>| -> usize {
+            crate_to_items.iter()
+                .filter(|(_, items)| items.iter().all(|i| verified.contains(i)))
+                .count()
+        };
+        
+        let mut current_supported = count_fully_supported(&verified_items);
+        
+        while current_supported < target_count {
+            // Find item that maximizes newly fully-supported crates
+            let mut best_item = None;
+            let mut best_delta = 0;
+            
+            for item in all_items.iter() {
+                if verified_items.contains(item) { continue; }
+                
+                let mut test = verified_items.clone();
+                test.insert(item.clone());
+                let new_supported = count_fully_supported(&test);
+                let delta = new_supported - current_supported;
+                
+                if delta > best_delta {
+                    best_delta = delta;
+                    best_item = Some(item.clone());
+                }
+            }
+            
+            if let Some(item) = best_item {
+                verified_items.insert(item.clone());
+                current_supported += best_delta;
+                let pct = (current_supported as f64 / total_crates as f64) * 100.0;
+                selected.push((item, best_delta, pct));
+            } else {
+                // No single item improves support - add most common remaining
+                let remaining: Vec<_> = all_items.iter()
+                    .filter(|i| !verified_items.contains(*i))
+                    .collect();
+                if let Some(item) = remaining.first() {
+                    verified_items.insert((*item).clone());
+                    let pct = (current_supported as f64 / total_crates as f64) * 100.0;
+                    selected.push(((*item).clone(), 0, pct));
+                } else {
+                    break;
+                }
+            }
+        }
+        selected
+    }
+    
     // =========================================================================
     // === GREEDY COVER: MODULES ONLY ===
     // Description: Find minimum set of stdlib modules to cover N% of crates.
@@ -2143,11 +2299,13 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     let module_covered_count = crates_with_modules.len();
     let module_uncovered_count = covered_crate_count - module_covered_count;
     
-    println!("\n=== 6. GREEDY COVER: MODULES ===");
+    println!("\n=== 7. GREEDY COVER: MODULES ===");
+    println!("This helps us answer: What modules should we verify first for maximum IMPACT?");
     println!("Description: Minimum stdlib modules to cover (70/80/90/95/99/100)% of {} crates WITH stdlib module usage.", module_covered_count);
     println!("Excludes {} crates with no stdlib usage, {} more with no module usage.", uncovered_count, module_uncovered_count);
     println!("{}", "=".repeat(80));
-    log!("\n=== 6. GREEDY COVER: MODULES ===");
+    log!("\n=== 7. GREEDY COVER: MODULES ===");
+    log!("This helps us answer: What modules should we verify first for maximum IMPACT?");
     log!("Description: Minimum stdlib modules to cover (70/80/90/95/99/100)% of {} crates WITH stdlib module usage.", module_covered_count);
     log!("Excludes {} crates with no stdlib usage, {} more with no module usage.", uncovered_count, module_uncovered_count);
     
@@ -2181,11 +2339,13 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     let type_covered_count = crates_with_types.len();
     let type_uncovered_count = covered_crate_count - type_covered_count;
     
-    println!("\n\n=== 7. GREEDY COVER: DATA TYPES ===");
+    println!("\n\n=== 8. GREEDY COVER: DATA TYPES ===");
+    println!("This helps us answer: What types should we verify first for maximum IMPACT?");
     println!("Description: Minimum data types to cover (70/80/90/95/99/100)% of {} crates WITH stdlib type usage.", type_covered_count);
     println!("Excludes {} crates with no stdlib usage, {} more with no type usage.", uncovered_count, type_uncovered_count);
     println!("{}", "=".repeat(80));
-    log!("\n\n=== 7. GREEDY COVER: DATA TYPES ===");
+    log!("\n\n=== 8. GREEDY COVER: DATA TYPES ===");
+    log!("This helps us answer: What types should we verify first for maximum IMPACT?");
     log!("Description: Minimum data types to cover (70/80/90/95/99/100)% of {} crates WITH stdlib type usage.", type_covered_count);
     log!("Excludes {} crates with no stdlib usage, {} more with no type usage.", uncovered_count, type_uncovered_count);
     
@@ -2234,12 +2394,67 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     let method_covered_count = crates_with_methods.len();
     let method_uncovered_count = covered_crate_count - method_covered_count;
     
-    println!("\n\n=== 8. GREEDY COVER: METHODS/FUNCTIONS ===");
+    // =========================================================================
+    // === GREEDY COVER: TRAITS ===
+    // Description: Find minimum set of stdlib traits to cover N% of crates.
+    // =========================================================================
+    
+    // Calculate crates that use at least one stdlib trait
+    let mut crates_with_traits: HashSet<String> = HashSet::new();
+    for crates in trait_total_crates.values() {
+        crates_with_traits.extend(crates.iter().cloned());
+    }
+    let trait_covered_count = crates_with_traits.len();
+    let trait_uncovered_count = covered_crate_count - trait_covered_count;
+    
+    println!("\n\n=== 9. GREEDY COVER: TRAITS ===");
+    println!("This helps us answer: What traits should we verify first for maximum IMPACT?");
+    println!("Description: Minimum stdlib traits to cover (70/80/90/95/99/100)% of {} crates WITH stdlib trait usage.", trait_covered_count);
+    println!("Excludes {} crates with no stdlib usage, {} more with no trait usage. {} traits total.", 
+        uncovered_count, trait_uncovered_count, trait_total_crates.len());
+    println!("{}", "=".repeat(80));
+    log!("\n\n=== 9. GREEDY COVER: TRAITS ===");
+    log!("This helps us answer: What traits should we verify first for maximum IMPACT?");
+    log!("Description: Minimum stdlib traits to cover (70/80/90/95/99/100)% of {} crates WITH stdlib trait usage.", trait_covered_count);
+    log!("Excludes {} crates with no stdlib usage, {} more with no trait usage. {} traits total.", 
+        uncovered_count, trait_uncovered_count, trait_total_crates.len());
+    
+    for &target in &targets {
+        let result = greedy_cover(&trait_total_crates, target, trait_covered_count);
+        let achieved = result.last().map(|(_, _, p)| *p).unwrap_or(0.0);
+        
+        println!("\n--- Target: {:.0}% ({} crates) ---", target,
+            (trait_covered_count as f64 * target / 100.0).ceil() as usize);
+        log!("\n--- Target: {:.0}% ({} crates) ---", target,
+            (trait_covered_count as f64 * target / 100.0).ceil() as usize);
+        
+        for (i, (name, new_cov, cum_pct)) in result.iter().enumerate() {
+            let display = if name.len() > 50 { format!("{}...", &name[..47]) } else { name.clone() };
+            if i < 20 {
+                println!("  {:3}. {:50} +{:>5} ({:>8.4}%)", i + 1, display, new_cov, cum_pct);
+            }
+            log!("  {:3}. {:50} +{:>5} ({:>8.4}%)", i + 1, name, new_cov, cum_pct);
+        }
+        if result.len() > 20 {
+            println!("  ... ({} more in log)", result.len() - 20);
+        }
+        println!("  => {} traits achieve {:.4}%", result.len(), achieved);
+        log!("  => {} traits achieve {:.4}%", result.len(), achieved);
+    }
+    
+    // =========================================================================
+    // === GREEDY COVER: METHODS/FUNCTIONS ===
+    // Description: Find minimum set of stdlib methods to cover N% of crates.
+    // =========================================================================
+    
+    println!("\n\n=== 10. GREEDY COVER: METHODS/FUNCTIONS ===");
+    println!("This helps us answer: What methods should we verify first for maximum IMPACT?");
     println!("Description: Minimum methods to cover (70/80/90/95/99/100)% of {} crates WITH stdlib method usage.", method_covered_count);
     println!("Excludes {} crates with no stdlib, {} more with no method usage. {} methods total.", 
         uncovered_count, method_uncovered_count, filtered_methods.len());
     println!("{}", "=".repeat(80));
-    log!("\n\n=== 8. GREEDY COVER: METHODS/FUNCTIONS ===");
+    log!("\n\n=== 10. GREEDY COVER: METHODS/FUNCTIONS ===");
+    log!("This helps us answer: What methods should we verify first for maximum IMPACT?");
     log!("Description: Minimum methods to cover (70/80/90/95/99/100)% of {} crates WITH stdlib method usage.", method_covered_count);
     log!("Excludes {} crates with no stdlib, {} more with no method usage. {} methods total.", 
         uncovered_count, method_uncovered_count, filtered_methods.len());
@@ -2269,15 +2484,17 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     }
     
     // =========================================================================
-    // === GREEDY COVER: METHODS PER MODULE ===
-    // Description: For each stdlib module, find minimum methods to cover 90% of 
-    // crates that use that module. Shows which methods matter most per module.
+    // === GREEDY COVER: METHODS PER TYPE ===
+    // Description: For each stdlib type, find minimum methods to cover 90% of 
+    // crates that use that type. Shows which methods matter most per type.
     // =========================================================================
     
-    println!("\n\n=== 9. GREEDY COVER: METHODS PER TYPE ===");
+    println!("\n\n=== 11. GREEDY COVER: METHODS PER TYPE ===");
+    println!("This helps us answer: For each type, which methods matter most?");
     println!("Description: For each data type, minimum methods to cover 70/80/90/95/99/100% of its users");
     println!("{}", "=".repeat(80));
-    log!("\n\n=== 9. GREEDY COVER: METHODS PER TYPE ===");
+    log!("\n\n=== 11. GREEDY COVER: METHODS PER TYPE ===");
+    log!("This helps us answer: For each type, which methods matter most?");
     log!("Description: For each data type, minimum methods to cover 70/80/90/95/99/100% of its users");
     
     // List all types with their method counts upfront
@@ -2394,11 +2611,13 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     // Critical for Verus: Iterator, Clone, Debug, IntoIterator, etc.
     // =========================================================================
     
-    println!("\n\n=== 10. TRAIT IMPLEMENTATIONS AND GREEDY METHOD COVER ===");
-    println!("Description: Stdlib trait usage by implementing type. Important for verification.");
+    println!("\n\n=== 12. TRAIT IMPLEMENTATIONS AND GREEDY METHOD COVER ===");
+    println!("This helps us answer: Which trait methods are actually used in practice?");
+    println!("Description: Stdlib trait usage by implementing type.");
     println!("{}", "=".repeat(80));
-    log!("\n\n=== 10. TRAIT IMPLEMENTATIONS AND GREEDY METHOD COVER ===");
-    log!("Description: Stdlib trait usage by implementing type. Important for verification.");
+    log!("\n\n=== 12. TRAIT IMPLEMENTATIONS AND GREEDY METHOD COVER ===");
+    log!("This helps us answer: Which trait methods are actually used in practice?");
+    log!("Description: Stdlib trait usage by implementing type.");
     log!("{}", "=".repeat(80));
     
     // Sort traits by total crate usage
@@ -2535,30 +2754,30 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     let elapsed = start.elapsed();
     let end_time = chrono::Local::now().format("%Y-%m-%d %H:%M:%S %Z");
     
-    println!("\n=== 11. SUMMARY ===\n");
+    println!("\n=== 13. SUMMARY ===\n");
     println!("Projects analyzed: {}", projects_with_mir.len());
     println!("Crates analyzed: {} ({} with stdlib, {} without)", unique_crates.len(), covered_crate_count, uncovered_count);
     println!("Std Library modules used: {}", module_stats.len());
     println!("Std Library types used: {}", type_stats.len());
+    println!("Std Library traits used: {}", trait_total_crates.len());
     println!("Std Library methods used: {} ({} actual methods, excluding type names)", method_stats.len(), filtered_methods.len());
-    println!("Std Library traits used: {}", trait_impl_total.len());
     println!("\nTOTAL TIME: {} ms ({:.2} seconds)", elapsed.as_millis(), elapsed.as_secs_f64());
     println!("Ended at: {}", end_time);
     
-    log!("\n=== 11. SUMMARY ===\n");
+    log!("\n=== 13. SUMMARY ===\n");
     log!("Projects analyzed: {}", projects_with_mir.len());
     log!("Crates analyzed: {} ({} with stdlib, {} without)", unique_crates.len(), covered_crate_count, uncovered_count);
     log!("Std Library modules used: {}", module_stats.len());
     log!("Std Library types used: {}", type_stats.len());
+    log!("Std Library traits used: {}", trait_total_crates.len());
     log!("Std Library methods used: {} ({} actual methods, excluding type names)", method_stats.len(), filtered_methods.len());
-    log!("Std Library traits used: {}", trait_impl_total.len());
     log!("\nTOTAL TIME: {} ms ({:.2} seconds)", elapsed.as_millis(), elapsed.as_secs_f64());
     log!("Ended at: {}", end_time);
     
     // Ensure log is flushed
     log_file.flush()?;
     
-    println!("\nLog written to: analyses/analyze_modules_mir.log");
+    println!("\nLog written to: analyses/rusticate-analyze-modules-mir.log");
     
     Ok(())
 }

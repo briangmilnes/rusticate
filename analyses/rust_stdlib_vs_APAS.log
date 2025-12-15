@@ -1,0 +1,178 @@
+=== Rust stdlib vs APAS-VERUS Coverage Analysis ===
+
+Generated: 2025-12-15
+Based on: ~/projects/VerusCodebases/APAS-VERUS/src/
+Compared to: ~/projects/rusticate/analyses/rust_stdlib_inventory.log
+
+================================================================================
+1. SUMMARY
+================================================================================
+
+Rust stdlib totals (from inventory):
+  Types:      1,310
+  Traits:       370
+  Functions:  1,549
+  Impls:      5,481
+
+APAS-VERUS uses:
+  Types:         9 (0.7% of stdlib types)
+  Traits:       16 (4.3% of stdlib traits)
+
+If APAS-VERUS were fully proven, it would cover a TINY slice of stdlib.
+
+================================================================================
+2. TYPES USED BY APAS-VERUS
+================================================================================
+
+Type                    | Category      | Methods needed for APAS
+------------------------|---------------|---------------------------
+Vec<T>                  | collections   | new, push, pop, len, iter, with_capacity,
+                        |               | extend, collect, clone, index
+HashSet<T>              | collections   | new, insert, contains, iter, len
+Arc<T>                  | sync          | new, clone (sharing only)
+Mutex<T>                | sync          | new, lock
+AtomicUsize             | atomic        | new, load, store, fetch_add
+AtomicPtr<T>            | atomic        | new, load, store, compare_exchange
+Range<Idx>              | ops           | Iterator impl only
+slice::Iter<T>          | slice         | next, size_hint
+vec::IntoIter<T>        | vec           | next, size_hint
+
+Total: 9 types out of 1,310 = 0.7%
+
+================================================================================
+3. TRAITS USED BY APAS-VERUS (as bounds)
+================================================================================
+
+Trait           | Category  | Methods | APAS needs
+----------------|-----------|---------|----------------------------------
+Clone           | clone     | 1       | clone()
+Copy            | marker    | 0       | (marker - automatic)
+Debug           | fmt       | 1       | fmt()
+Display         | fmt       | 1       | fmt()
+Hash            | hash      | 2       | hash(), hash_slice() - usually just hash
+Eq              | cmp       | 0       | (marker - requires PartialEq)
+PartialEq       | cmp       | 2       | eq(), ne() - usually just eq
+Ord             | cmp       | 4       | cmp(), max(), min(), clamp() - usually cmp
+PartialOrd      | cmp       | 4       | partial_cmp(), lt, le, gt, ge - usually partial_cmp
+Default         | default   | 1       | default()
+Iterator        | iter      | ~70     | next() + size_hint() mainly
+IntoIterator    | iter      | 1       | into_iter()
+Send            | marker    | 0       | (marker - automatic)
+Sync            | marker    | 0       | (marker - automatic)
+Add             | ops       | 1       | add()
+Fn/FnMut/FnOnce | ops       | 1 each  | call/call_mut/call_once
+
+Total: 16 traits out of 370 = 4.3%
+
+================================================================================
+4. WHAT APAS DOES NOT USE (Notable omissions)
+================================================================================
+
+Types NOT used:
+  - HashMap (uses HashSet only)
+  - BTreeMap, BTreeSet
+  - VecDeque, LinkedList
+  - String (uses &str)
+  - Box (uses Arc for shared ownership)
+  - Rc
+  - Cell, RefCell
+  - RwLock (uses Mutex)
+  - Condvar, Barrier
+  - mpsc channels
+  - Result (minimal), Option (via Verus)
+  - File, Path, IO types
+  - Network types
+  - Time types
+
+Traits NOT used:
+  - Read, Write, Seek (no IO)
+  - FromStr, ToString
+  - Borrow, BorrowMut, AsRef, AsMut
+  - Deref, DerefMut
+  - Index, IndexMut (uses methods instead)
+  - Drop (relies on RAII)
+  - From, Into, TryFrom, TryInto
+  - Error
+  - Future, async traits
+
+================================================================================
+5. COVERAGE BY STDLIB MODULE
+================================================================================
+
+Module                  | APAS uses | Total items | Coverage
+------------------------|-----------|-------------|----------
+std::vec                | Yes       | ~100        | ~10%
+std::collections        | Partial   | ~500        | ~2%
+std::sync               | Partial   | ~150        | ~5%
+std::sync::atomic       | Yes       | ~50         | ~10%
+std::iter               | Yes       | ~200        | ~5%
+std::ops                | Partial   | ~100        | ~5%
+std::fmt                | Yes       | ~50         | ~10%
+std::hash               | Yes       | ~20         | ~20%
+std::cmp                | Yes       | ~30         | ~30%
+std::clone              | Yes       | ~10         | ~30%
+std::default            | Minimal   | ~10         | ~10%
+std::marker             | Yes       | ~20         | ~20%
+std::io                 | No        | ~200        | 0%
+std::fs                 | No        | ~100        | 0%
+std::net                | No        | ~100        | 0%
+std::time               | No        | ~50         | 0%
+std::thread             | Minimal   | ~50         | ~5%
+std::string             | No        | ~100        | 0%
+std::path               | No        | ~100        | 0%
+
+================================================================================
+6. REALISTIC APAS COVERAGE ESTIMATE
+================================================================================
+
+If APAS-AI were fully proven in Verus:
+
+  Types covered:      9 / 1,310  =  0.7%
+  Traits covered:    16 / 370    =  4.3%
+  Methods covered:  ~50 / 11,840 =  0.4%
+  
+  Overall: ~1% of Rust stdlib would have proven wrappers
+
+This is expected because APAS is an algorithms textbook implementation:
+  - Pure computation (no IO, no networking, no filesystem)
+  - Sequential and parallel algorithms only
+  - Numeric and graph data structures
+  - No string processing, no parsing, no serialization
+
+================================================================================
+7. WHAT WOULD IT TAKE TO COVER MORE?
+================================================================================
+
+To reach 10% stdlib coverage, you'd need proven wrappers for:
+  - String and string operations
+  - HashMap
+  - Result/Option (beyond what vstd provides)
+  - Basic file IO
+  - More iterator combinators
+
+To reach 50% stdlib coverage, you'd need:
+  - All collections (BTree*, VecDeque, LinkedList)
+  - Full IO stack
+  - Networking basics
+  - Time and duration
+  - Threading primitives beyond what APAS uses
+  - Error handling traits
+
+================================================================================
+8. CONCLUSION
+================================================================================
+
+APAS-VERUS demonstrates that even a substantial algorithms library uses
+only a tiny fraction of Rust's stdlib. The stdlib is designed for:
+  - General purpose programming
+  - Systems programming
+  - Application development
+  - Cross-platform abstraction
+
+APAS needs only:
+  - Containers: Vec, HashSet
+  - Concurrency: Arc, Mutex, Atomics
+  - Traits: Clone, Hash, Eq, Ord, Iterator, Debug/Display
+
+This is ~1% of stdlib, but it's the CORE 1% that matters for algorithms.
+
