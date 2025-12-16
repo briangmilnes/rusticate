@@ -65,6 +65,26 @@ pub struct GreedyCover {
     pub types: GreedyCoverCategory,
     pub traits: GreedyCoverCategory,
     pub methods: GreedyCoverCategory,
+    /// Greedy cover of methods within each type (e.g., which Result methods to wrap)
+    pub methods_per_type: std::collections::BTreeMap<String, TypeMethodsCover>,
+    /// Greedy cover of methods within each trait (e.g., which Iterator methods to wrap)
+    pub methods_per_trait: std::collections::BTreeMap<String, TraitMethodsCover>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct TypeMethodsCover {
+    pub type_name: String,
+    pub total_crates: usize,
+    pub total_methods: usize,
+    pub milestones: std::collections::BTreeMap<String, CoverageMilestone>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct TraitMethodsCover {
+    pub trait_name: String,
+    pub total_crates: usize,
+    pub total_methods: usize,
+    pub milestones: std::collections::BTreeMap<String, CoverageMilestone>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -2216,6 +2236,8 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
         &crate_to_types,
         &crate_to_traits,
         &crate_to_methods,
+        &methods_by_type,
+        &trait_impl_total,
     );
     
     // Write JSON output
@@ -2254,6 +2276,171 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     Ok(())
 }
 
+/// Compute greedy cover for methods within each type
+fn compute_methods_per_type_greedy(
+    methods_by_type: &std::collections::BTreeMap<String, std::collections::BTreeMap<String, std::collections::HashSet<String>>>,
+) -> std::collections::BTreeMap<String, TypeMethodsCover> {
+    use std::collections::{BTreeMap, HashSet};
+    
+    let mut result: BTreeMap<String, TypeMethodsCover> = BTreeMap::new();
+    let targets = [70.0, 80.0, 90.0, 100.0];
+    
+    for (type_name, type_methods) in methods_by_type {
+        if type_methods.is_empty() { continue; }
+        
+        // Count crates that call methods on this type
+        let mut crates_calling: HashSet<String> = HashSet::new();
+        for crates in type_methods.values() {
+            crates_calling.extend(crates.iter().cloned());
+        }
+        let total_crates = crates_calling.len();
+        
+        if total_crates < 10 { continue; } // Skip rarely-used types
+        
+        let mut milestones: BTreeMap<String, CoverageMilestone> = BTreeMap::new();
+        
+        for &target in &targets {
+            let target_count = (total_crates as f64 * target / 100.0).ceil() as usize;
+            
+            // Run greedy cover on methods within this type
+            let mut covered: HashSet<String> = HashSet::new();
+            let mut selected: Vec<GreedyItem> = Vec::new();
+            let mut remaining: Vec<_> = type_methods.iter()
+                .map(|(name, crates)| (name.clone(), crates.clone()))
+                .collect();
+            
+            let mut rank = 0;
+            while covered.len() < target_count && !remaining.is_empty() {
+                remaining.iter_mut().for_each(|(_, crates)| {
+                    *crates = crates.difference(&covered).cloned().collect();
+                });
+                remaining.retain(|(_, crates)| !crates.is_empty());
+                remaining.sort_by(|a, b| b.1.len().cmp(&a.1.len()));
+                
+                if let Some((name, crates)) = remaining.first() {
+                    rank += 1;
+                    let new_coverage = crates.len();
+                    covered.extend(crates.iter().cloned());
+                    let cum_pct = (covered.len() as f64 / total_crates as f64) * 100.0;
+                    selected.push(GreedyItem {
+                        rank,
+                        name: name.clone(),
+                        crates_added: new_coverage,
+                        cumulative_coverage: cum_pct,
+                    });
+                } else {
+                    break;
+                }
+            }
+            
+            let actual = selected.last().map(|i| i.cumulative_coverage).unwrap_or(0.0);
+            milestones.insert(format!("{}", target as usize), CoverageMilestone {
+                target_crates: target_count,
+                actual_coverage: actual,
+                items: selected,
+            });
+        }
+        
+        result.insert(type_name.clone(), TypeMethodsCover {
+            type_name: type_name.clone(),
+            total_crates,
+            total_methods: type_methods.len(),
+            milestones,
+        });
+    }
+    
+    result
+}
+
+/// Compute greedy cover for methods within each trait
+fn compute_methods_per_trait_greedy(
+    trait_impl_total: &std::collections::BTreeMap<String, std::collections::BTreeMap<String, std::collections::HashSet<String>>>,
+) -> std::collections::BTreeMap<String, TraitMethodsCover> {
+    use std::collections::{BTreeMap, HashSet};
+    
+    let mut result: BTreeMap<String, TraitMethodsCover> = BTreeMap::new();
+    let targets = [70.0, 80.0, 90.0, 100.0];
+    
+    for (trait_name, impls) in trait_impl_total {
+        // Build method -> crates map from impls
+        // Each impl entry is like "Type::method" -> crates
+        // We want to extract just the method names
+        let mut method_crates: BTreeMap<String, HashSet<String>> = BTreeMap::new();
+        for (impl_name, crates) in impls {
+            // Extract method name from __METHOD__::method_name entries
+            if let Some(method_name) = impl_name.strip_prefix("__METHOD__::") {
+                method_crates.entry(method_name.to_string())
+                    .or_default()
+                    .extend(crates.iter().cloned());
+            }
+        }
+        
+        if method_crates.is_empty() { continue; }
+        
+        // Count total crates using this trait
+        let mut all_crates: HashSet<String> = HashSet::new();
+        for crates in impls.values() {
+            all_crates.extend(crates.iter().cloned());
+        }
+        let total_crates = all_crates.len();
+        
+        if total_crates < 10 { continue; } // Skip rarely-used traits
+        
+        let mut milestones: BTreeMap<String, CoverageMilestone> = BTreeMap::new();
+        
+        for &target in &targets {
+            let target_count = (total_crates as f64 * target / 100.0).ceil() as usize;
+            
+            // Run greedy cover on methods within this trait
+            let mut covered: HashSet<String> = HashSet::new();
+            let mut selected: Vec<GreedyItem> = Vec::new();
+            let mut remaining: Vec<_> = method_crates.iter()
+                .map(|(name, crates)| (name.clone(), crates.clone()))
+                .collect();
+            
+            let mut rank = 0;
+            while covered.len() < target_count && !remaining.is_empty() {
+                remaining.iter_mut().for_each(|(_, crates)| {
+                    *crates = crates.difference(&covered).cloned().collect();
+                });
+                remaining.retain(|(_, crates)| !crates.is_empty());
+                remaining.sort_by(|a, b| b.1.len().cmp(&a.1.len()));
+                
+                if let Some((name, crates)) = remaining.first() {
+                    rank += 1;
+                    let new_coverage = crates.len();
+                    covered.extend(crates.iter().cloned());
+                    let cum_pct = (covered.len() as f64 / total_crates as f64) * 100.0;
+                    selected.push(GreedyItem {
+                        rank,
+                        name: name.clone(),
+                        crates_added: new_coverage,
+                        cumulative_coverage: cum_pct,
+                    });
+                } else {
+                    break;
+                }
+            }
+            
+            let actual = selected.last().map(|i| i.cumulative_coverage).unwrap_or(0.0);
+            milestones.insert(format!("{}", target as usize), CoverageMilestone {
+                target_crates: target_count,
+                actual_coverage: actual,
+                items: selected,
+            });
+        }
+        
+        result.insert(trait_name.clone(), TraitMethodsCover {
+            trait_name: trait_name.clone(),
+            total_crates,
+            total_methods: method_crates.len(),
+            milestones,
+        });
+    }
+    
+    result
+}
+
 /// Build the JSON output structure from analysis results
 fn build_json_output(
     mir_path: &Path,
@@ -2269,6 +2456,8 @@ fn build_json_output(
     crate_to_types: &std::collections::BTreeMap<String, std::collections::HashSet<String>>,
     crate_to_traits: &std::collections::BTreeMap<String, std::collections::HashSet<String>>,
     crate_to_methods: &std::collections::BTreeMap<String, std::collections::HashSet<String>>,
+    methods_by_type: &std::collections::BTreeMap<String, std::collections::BTreeMap<String, std::collections::HashSet<String>>>,
+    trait_impl_total: &std::collections::BTreeMap<String, std::collections::BTreeMap<String, std::collections::HashSet<String>>>,
 ) -> AnalysisOutput {
     use std::collections::BTreeMap;
     
@@ -2528,6 +2717,8 @@ fn build_json_output(
                 types: types_greedy.clone(),
                 traits: traits_greedy.clone(),
                 methods: methods_greedy.clone(),
+                methods_per_type: compute_methods_per_type_greedy(methods_by_type),
+                methods_per_trait: compute_methods_per_trait_greedy(trait_impl_total),
             },
         },
         summary: Summary {

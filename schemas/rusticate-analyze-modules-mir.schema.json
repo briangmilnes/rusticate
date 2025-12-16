@@ -142,9 +142,68 @@
         },
         "methods_per_type": {
           "type": "object",
-          "description": "Greedy cover for methods within each type",
+          "description": "Greedy cover for methods within each type (e.g., which Result methods to wrap)",
           "additionalProperties": {
-            "$ref": "#/$defs/GreedyCoverCategory"
+            "$ref": "#/$defs/TypeMethodsCover"
+          }
+        },
+        "methods_per_trait": {
+          "type": "object",
+          "description": "Greedy cover for methods within each trait (e.g., which Iterator methods to wrap)",
+          "additionalProperties": {
+            "$ref": "#/$defs/TraitMethodsCover"
+          }
+        }
+      }
+    },
+    "TypeMethodsCover": {
+      "type": "object",
+      "description": "Greedy cover for methods within a specific type",
+      "required": ["type_name", "total_crates", "total_methods", "milestones"],
+      "properties": {
+        "type_name": {
+          "type": "string",
+          "description": "Fully qualified type name"
+        },
+        "total_crates": {
+          "type": "integer",
+          "description": "Total crates that call methods on this type"
+        },
+        "total_methods": {
+          "type": "integer",
+          "description": "Total unique methods called on this type"
+        },
+        "milestones": {
+          "type": "object",
+          "description": "Coverage milestones (keys are percentages like '70', '80', '90', '100')",
+          "additionalProperties": {
+            "$ref": "#/$defs/CoverageMilestone"
+          }
+        }
+      }
+    },
+    "TraitMethodsCover": {
+      "type": "object",
+      "description": "Greedy cover for methods within a specific trait",
+      "required": ["trait_name", "total_crates", "total_methods", "milestones"],
+      "properties": {
+        "trait_name": {
+          "type": "string",
+          "description": "Fully qualified trait name"
+        },
+        "total_crates": {
+          "type": "integer",
+          "description": "Total crates that use this trait"
+        },
+        "total_methods": {
+          "type": "integer",
+          "description": "Total unique trait methods used"
+        },
+        "milestones": {
+          "type": "object",
+          "description": "Coverage milestones (keys are percentages like '70', '80', '90', '100')",
+          "additionalProperties": {
+            "$ref": "#/$defs/CoverageMilestone"
           }
         }
       }
