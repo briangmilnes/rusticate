@@ -373,3 +373,7 @@ path = "src/bin/mirify.rs"
 [[bin]]
 name = "parse_mir_experiment"
 path = "src/experiments/parse_mir_with_ra_ap_syntax.rs"
+
+[[bin]]
+name = "rusticate-validate-mir-json"
+path = "src/bin/validate_mir_json.rs"
