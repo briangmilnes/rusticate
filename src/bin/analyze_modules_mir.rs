@@ -9,9 +9,115 @@
 //!   rusticate-analyze-modules-mir -h         Show help
 
 use anyhow::{Context, Result, bail};
+use serde::Serialize;
 use std::fs;
 use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
+
+// ============================================================================
+// JSON Output Structures (conform to rusticate-analyze-modules-mir.schema.json)
+// ============================================================================
+
+#[derive(Debug, Clone, Serialize)]
+pub struct AnalysisOutput {
+    #[serde(rename = "$schema")]
+    pub schema: String,
+    pub generated: String,
+    pub mir_path: String,
+    pub analysis: Analysis,
+    pub summary: Summary,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct Analysis {
+    pub projects: ProjectStats,
+    pub modules: ItemUsage,
+    pub types: ItemUsage,
+    pub traits: ItemUsage,
+    pub methods: ItemUsage,
+    pub greedy_cover: GreedyCover,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct ProjectStats {
+    pub total_projects: usize,
+    pub projects_with_mir: usize,
+    pub total_crates: usize,
+    pub crates_with_stdlib: usize,
+    pub crates_without_stdlib: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct ItemUsage {
+    pub count: usize,
+    pub items: Vec<UsageItem>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct UsageItem {
+    pub name: String,
+    pub crate_count: usize,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct GreedyCover {
+    pub modules: GreedyCoverCategory,
+    pub types: GreedyCoverCategory,
+    pub traits: GreedyCoverCategory,
+    pub methods: GreedyCoverCategory,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct GreedyCoverCategory {
+    pub touch: GreedyCoverResults,
+    pub full_support: GreedyCoverResults,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct GreedyCoverResults {
+    pub total_crates: usize,
+    pub milestones: std::collections::BTreeMap<String, CoverageMilestone>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct CoverageMilestone {
+    pub target_crates: usize,
+    pub actual_coverage: f64,
+    pub items: Vec<GreedyItem>,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct GreedyItem {
+    pub rank: usize,
+    pub name: String,
+    pub crates_added: usize,
+    pub cumulative_coverage: f64,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct Summary {
+    pub total_projects: usize,
+    pub total_crates: usize,
+    pub crates_with_stdlib: usize,
+    pub unique_modules: usize,
+    pub unique_types: usize,
+    pub unique_traits: usize,
+    pub unique_methods: usize,
+    pub coverage_to_support_70_pct: CoverageSummary,
+    pub coverage_to_support_80_pct: CoverageSummary,
+    pub coverage_to_support_90_pct: CoverageSummary,
+    pub coverage_to_support_100_pct: CoverageSummary,
+}
+
+#[derive(Debug, Clone, Serialize, Default)]
+pub struct CoverageSummary {
+    pub modules: usize,
+    pub types: usize,
+    pub traits: usize,
+    pub methods: usize,
+}
+
+// ============================================================================
 
 struct Args {
     mir_path: PathBuf,
@@ -2091,6 +2197,35 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     let elapsed = start.elapsed();
     let end_time = chrono::Local::now().format("%Y-%m-%d %H:%M:%S %Z");
     
+    // =========================================================================
+    // === JSON OUTPUT ===
+    // =========================================================================
+    
+    // Build JSON output structure
+    let json_output = build_json_output(
+        path,
+        &projects_with_mir,
+        &unique_crates,
+        &crates_with_stdlib,
+        &uncovered_crates,
+        &module_total_crates,
+        &type_total_crates,
+        &trait_total_crates,
+        &filtered_methods,
+        &crate_to_modules,
+        &crate_to_types,
+        &crate_to_traits,
+        &crate_to_methods,
+    );
+    
+    // Write JSON output
+    let json_path = PathBuf::from("analyses/rusticate-analyze-modules-mir.json");
+    let json_file = fs::File::create(&json_path)
+        .context("Failed to create JSON file")?;
+    serde_json::to_writer_pretty(json_file, &json_output)
+        .context("Failed to write JSON")?;
+    println!("\nJSON written to: {}", json_path.display());
+    
     println!("\n=== 17. SUMMARY ===\n");
     println!("Projects analyzed: {}", projects_with_mir.len());
     println!("Crates analyzed: {} ({} with stdlib, {} without)", unique_crates.len(), covered_crate_count, uncovered_count);
@@ -2117,6 +2252,318 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     println!("\nLog written to: analyses/rusticate-analyze-modules-mir.log");
     
     Ok(())
+}
+
+/// Build the JSON output structure from analysis results
+fn build_json_output(
+    mir_path: &Path,
+    projects_with_mir: &[PathBuf],
+    unique_crates: &std::collections::HashSet<String>,
+    crates_with_stdlib: &std::collections::HashSet<String>,
+    crates_without_stdlib: &[String],
+    module_total_crates: &std::collections::BTreeMap<String, std::collections::HashSet<String>>,
+    type_total_crates: &std::collections::BTreeMap<String, std::collections::HashSet<String>>,
+    trait_total_crates: &std::collections::BTreeMap<String, std::collections::HashSet<String>>,
+    method_total_crates: &std::collections::BTreeMap<String, std::collections::HashSet<String>>,
+    crate_to_modules: &std::collections::BTreeMap<String, std::collections::HashSet<String>>,
+    crate_to_types: &std::collections::BTreeMap<String, std::collections::HashSet<String>>,
+    crate_to_traits: &std::collections::BTreeMap<String, std::collections::HashSet<String>>,
+    crate_to_methods: &std::collections::BTreeMap<String, std::collections::HashSet<String>>,
+) -> AnalysisOutput {
+    use std::collections::BTreeMap;
+    
+    let generated = chrono::Local::now().format("%Y-%m-%d %H:%M:%S %:z").to_string();
+    
+    // Convert module stats to UsageItems
+    let mut module_items: Vec<UsageItem> = module_total_crates
+        .iter()
+        .map(|(name, crates)| UsageItem {
+            name: name.clone(),
+            crate_count: crates.len(),
+        })
+        .collect();
+    module_items.sort_by(|a, b| b.crate_count.cmp(&a.crate_count));
+    
+    // Convert type stats to UsageItems
+    let mut type_items: Vec<UsageItem> = type_total_crates
+        .iter()
+        .map(|(name, crates)| UsageItem {
+            name: name.clone(),
+            crate_count: crates.len(),
+        })
+        .collect();
+    type_items.sort_by(|a, b| b.crate_count.cmp(&a.crate_count));
+    
+    // Convert trait stats to UsageItems
+    let mut trait_items: Vec<UsageItem> = trait_total_crates
+        .iter()
+        .map(|(name, crates)| UsageItem {
+            name: name.clone(),
+            crate_count: crates.len(),
+        })
+        .collect();
+    trait_items.sort_by(|a, b| b.crate_count.cmp(&a.crate_count));
+    
+    // Convert method stats to UsageItems
+    let mut method_items: Vec<UsageItem> = method_total_crates
+        .iter()
+        .map(|(name, crates)| UsageItem {
+            name: name.clone(),
+            crate_count: crates.len(),
+        })
+        .collect();
+    method_items.sort_by(|a, b| b.crate_count.cmp(&a.crate_count));
+    
+    // Helper to compute greedy cover for JSON
+    fn compute_greedy_json(
+        items: &BTreeMap<String, std::collections::HashSet<String>>,
+        crate_to_items: &BTreeMap<String, std::collections::HashSet<String>>,
+        total_crates: usize,
+    ) -> GreedyCoverCategory {
+        let targets = [70.0, 80.0, 90.0, 100.0];
+        
+        // Touch coverage
+        let mut touch_milestones = BTreeMap::new();
+        for &target in &targets {
+            let result = greedy_cover_touch(items, target, total_crates);
+            let achieved = result.last().map(|(_, _, p)| *p).unwrap_or(0.0);
+            let milestone = CoverageMilestone {
+                target_crates: (total_crates as f64 * target / 100.0).ceil() as usize,
+                actual_coverage: achieved,
+                items: result
+                    .iter()
+                    .enumerate()
+                    .map(|(i, (name, added, cum))| GreedyItem {
+                        rank: i + 1,
+                        name: name.clone(),
+                        crates_added: *added,
+                        cumulative_coverage: *cum,
+                    })
+                    .collect(),
+            };
+            touch_milestones.insert(format!("{}", target as usize), milestone);
+        }
+        
+        // Full support coverage
+        let mut full_milestones = BTreeMap::new();
+        
+        for &target in &targets {
+            let result = greedy_cover_full_support_inner(crate_to_items, target);
+            let achieved = result.last().map(|(_, _, p)| *p).unwrap_or(0.0);
+            let milestone = CoverageMilestone {
+                target_crates: (total_crates as f64 * target / 100.0).ceil() as usize,
+                actual_coverage: achieved,
+                items: result
+                    .iter()
+                    .enumerate()
+                    .map(|(i, (name, added, cum))| GreedyItem {
+                        rank: i + 1,
+                        name: name.clone(),
+                        crates_added: *added,
+                        cumulative_coverage: *cum,
+                    })
+                    .collect(),
+            };
+            full_milestones.insert(format!("{}", target as usize), milestone);
+        }
+        
+        GreedyCoverCategory {
+            touch: GreedyCoverResults {
+                total_crates,
+                milestones: touch_milestones,
+            },
+            full_support: GreedyCoverResults {
+                total_crates,
+                milestones: full_milestones,
+            },
+        }
+    }
+    
+    // Full support greedy cover (copy of inner function for JSON output)
+    fn greedy_cover_full_support_inner(
+        crate_to_items: &BTreeMap<String, std::collections::HashSet<String>>,
+        target_pct: f64,
+    ) -> Vec<(String, usize, f64)> {
+        use std::collections::HashSet;
+        
+        let total_crates = crate_to_items.len();
+        if total_crates == 0 {
+            return Vec::new();
+        }
+        let target_count = (total_crates as f64 * target_pct / 100.0).ceil() as usize;
+        
+        // Build item -> crates mapping
+        let mut item_to_crates: BTreeMap<String, Vec<String>> = BTreeMap::new();
+        for (crate_name, items) in crate_to_items {
+            for item in items {
+                item_to_crates.entry(item.clone()).or_default().push(crate_name.clone());
+            }
+        }
+        
+        // Track remaining unverified items per crate
+        let mut remaining_count: BTreeMap<String, usize> = crate_to_items.iter()
+            .map(|(name, items)| (name.clone(), items.len()))
+            .collect();
+        
+        let mut current_supported = remaining_count.values().filter(|&&c| c == 0).count();
+        let mut verified_items: HashSet<String> = HashSet::new();
+        let mut selected: Vec<(String, usize, f64)> = Vec::new();
+        
+        while current_supported < target_count {
+            let mut best_item: Option<String> = None;
+            let mut best_delta = 0;
+            
+            for (item, crates) in &item_to_crates {
+                if verified_items.contains(item) { continue; }
+                let delta = crates.iter()
+                    .filter(|c| remaining_count.get(*c).copied().unwrap_or(0) == 1)
+                    .count();
+                if delta > best_delta {
+                    best_delta = delta;
+                    best_item = Some(item.clone());
+                }
+            }
+            
+            if let Some(item) = best_item {
+                if let Some(crates) = item_to_crates.get(&item) {
+                    for crate_name in crates {
+                        if let Some(count) = remaining_count.get_mut(crate_name) {
+                            if *count > 0 {
+                                *count -= 1;
+                                if *count == 0 {
+                                    current_supported += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+                verified_items.insert(item.clone());
+                let cum_pct = (current_supported as f64 / total_crates as f64) * 100.0;
+                selected.push((item, best_delta, cum_pct));
+            } else {
+                break;
+            }
+        }
+        
+        selected
+    }
+    
+    // Renamed greedy_cover to greedy_cover_touch to avoid confusion
+    fn greedy_cover_touch(
+        items: &BTreeMap<String, std::collections::HashSet<String>>,
+        target_pct: f64,
+        total_crates: usize,
+    ) -> Vec<(String, usize, f64)> {
+        let mut covered: std::collections::HashSet<String> = std::collections::HashSet::new();
+        let mut selected: Vec<(String, usize, f64)> = Vec::new();
+        let mut remaining: Vec<_> = items.iter()
+            .map(|(name, crates)| (name.clone(), crates.clone()))
+            .collect();
+        
+        let target_count = (total_crates as f64 * target_pct / 100.0).ceil() as usize;
+        
+        while covered.len() < target_count && !remaining.is_empty() {
+            remaining.iter_mut().for_each(|(_, crates)| {
+                *crates = crates.difference(&covered).cloned().collect();
+            });
+            remaining.retain(|(_, crates)| !crates.is_empty());
+            remaining.sort_by(|a, b| b.1.len().cmp(&a.1.len()));
+            
+            if let Some((name, crates)) = remaining.first() {
+                let new_coverage = crates.len();
+                covered.extend(crates.iter().cloned());
+                let cum_pct = (covered.len() as f64 / total_crates as f64) * 100.0;
+                selected.push((name.clone(), new_coverage, cum_pct));
+            } else {
+                break;
+            }
+        }
+        
+        selected
+    }
+    
+    let total_crates = crates_with_stdlib.len();
+    
+    // Compute greedy covers (this duplicates computation but ensures JSON accuracy)
+    let modules_greedy = compute_greedy_json(module_total_crates, crate_to_modules, total_crates);
+    let types_greedy = compute_greedy_json(type_total_crates, crate_to_types, total_crates);
+    let traits_greedy = compute_greedy_json(trait_total_crates, crate_to_traits, total_crates);
+    let methods_greedy = compute_greedy_json(method_total_crates, crate_to_methods, total_crates);
+    
+    // Extract coverage summaries
+    fn extract_count(cat: &GreedyCoverCategory, pct: &str) -> usize {
+        cat.full_support.milestones.get(pct).map(|m| m.items.len()).unwrap_or(0)
+    }
+    
+    AnalysisOutput {
+        schema: "https://github.com/rusticate/schemas/rusticate-analyze-modules-mir.schema.json".to_string(),
+        generated,
+        mir_path: mir_path.display().to_string(),
+        analysis: Analysis {
+            projects: ProjectStats {
+                total_projects: projects_with_mir.len(),
+                projects_with_mir: projects_with_mir.len(),
+                total_crates: unique_crates.len(),
+                crates_with_stdlib: crates_with_stdlib.len(),
+                crates_without_stdlib: crates_without_stdlib.to_vec(),
+            },
+            modules: ItemUsage {
+                count: module_items.len(),
+                items: module_items,
+            },
+            types: ItemUsage {
+                count: type_items.len(),
+                items: type_items,
+            },
+            traits: ItemUsage {
+                count: trait_items.len(),
+                items: trait_items,
+            },
+            methods: ItemUsage {
+                count: method_items.len(),
+                items: method_items,
+            },
+            greedy_cover: GreedyCover {
+                modules: modules_greedy.clone(),
+                types: types_greedy.clone(),
+                traits: traits_greedy.clone(),
+                methods: methods_greedy.clone(),
+            },
+        },
+        summary: Summary {
+            total_projects: projects_with_mir.len(),
+            total_crates: unique_crates.len(),
+            crates_with_stdlib: crates_with_stdlib.len(),
+            unique_modules: module_total_crates.len(),
+            unique_types: type_total_crates.len(),
+            unique_traits: trait_total_crates.len(),
+            unique_methods: method_total_crates.len(),
+            coverage_to_support_70_pct: CoverageSummary {
+                modules: extract_count(&modules_greedy, "70"),
+                types: extract_count(&types_greedy, "70"),
+                traits: extract_count(&traits_greedy, "70"),
+                methods: extract_count(&methods_greedy, "70"),
+            },
+            coverage_to_support_80_pct: CoverageSummary {
+                modules: extract_count(&modules_greedy, "80"),
+                types: extract_count(&types_greedy, "80"),
+                traits: extract_count(&traits_greedy, "80"),
+                methods: extract_count(&methods_greedy, "80"),
+            },
+            coverage_to_support_90_pct: CoverageSummary {
+                modules: extract_count(&modules_greedy, "90"),
+                types: extract_count(&types_greedy, "90"),
+                traits: extract_count(&traits_greedy, "90"),
+                methods: extract_count(&methods_greedy, "90"),
+            },
+            coverage_to_support_100_pct: CoverageSummary {
+                modules: extract_count(&modules_greedy, "100"),
+                types: extract_count(&types_greedy, "100"),
+                traits: extract_count(&traits_greedy, "100"),
+                methods: extract_count(&methods_greedy, "100"),
+            },
+        },
+    }
 }
 
 fn main() -> Result<()> {

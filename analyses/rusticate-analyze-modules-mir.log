@@ -14226,7 +14226,7 @@ Greedy cover: 6 methods to verify
 
 
 === GREEDY COVER SUMMARY ===
-Greedy set cover analysis time: 9387 ms
+Greedy set cover analysis time: 9052 ms
 
 === 17. SUMMARY ===
 
@@ -14237,5 +14237,5 @@ Std Library types used: 48
 Std Library traits used: 85
 Std Library methods used: 3582 (1963 actual methods, excluding type names)
 
-TOTAL TIME: 47088 ms (47.09 seconds)
-Ended at: 2025-12-15 15:10:53 -08:00
+TOTAL TIME: 47557 ms (47.56 seconds)
+Ended at: 2025-12-16 07:32:12 -08:00
