@@ -8,6 +8,49 @@ Python will be sent back to the family estate for not working well!
 
 ---
 
+## 📊 Featured: Rust Stdlib Usage Analysis
+
+**What does real Rust code actually use from the standard library?**
+
+We analyzed **3,336 crates** from the top 1,036 crates.io projects to find out—critical data for [Verus](https://github.com/verus-lang/verus) verification prioritization.
+
+### Key Findings
+
+| Category | Unique Items | Top Item Coverage |
+|----------|-------------|-------------------|
+| **Modules** | 84 | `std::result` alone → 84% of crates |
+| **Types** | 51 | Top 9 types → 70% coverage |
+| **Traits** | 79 | `Iterator` + `Clone` + `Debug` → 85% |
+| **Methods** | 3,582 | Top 9 methods → 90% coverage |
+
+**Greedy set cover** (minimum items to cover N% of crates):
+
+```
+Coverage   Modules   Types   Traits   Methods
+---------  -------   -----   ------   -------
+ 70%          40        9       15       301
+ 80%          45       14       20       510
+ 90%          59       19       32       552
+100%          84       48       79       552
+```
+
+### Run the Analysis
+
+```bash
+# 1. Generate MIR for projects (slow: ~2-4 hours, one-time)
+rusticate-mirify -C ~/projects/RustCodebases -j 6
+
+# 2. Analyze stdlib usage (fast: ~50 seconds)
+rusticate-analyze-modules-mir ~/projects/RustCodebases
+# Output: analyses/rusticate-analyze-modules-mir.json
+```
+
+📄 **Full report + JSON**: [`analyses/`](analyses/)
+
+🔗 **Gap analysis** (what vstd wraps vs what Rust uses): [veracity](https://github.com/briangmilnes/veracity)
+
+---
+
 ## Table of Contents
 
 1. [Overview](#overview)
