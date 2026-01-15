@@ -489,6 +489,95 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
     // This catches Iterator, Clone, Debug, IntoIterator, From, Into, etc.
     let trait_impl_pattern_re = Regex::new(r"<([A-Za-z_][A-Za-z0-9_:<>& ,]*?) as (?:std|core|alloc)::([a-z_]+)::([A-Za-z_][A-Za-z0-9_]*)(?:<[^>]*>)?>::([a-z_][a-z0-9_]*)").unwrap();
     
+    // Match UNQUALIFIED trait method calls: <AnyType as Iterator>::map, <T as Clone>::clone
+    // In MIR, common traits often appear without module prefix. This captures them.
+    // Group 1: implementing type, Group 2: trait name, Group 3: method name
+    let unqualified_trait_method_re = Regex::new(
+        r"<([A-Za-z_][A-Za-z0-9_:<>'& ,\[\]]*?) as (Iterator|IntoIterator|ExactSizeIterator|DoubleEndedIterator|Clone|Copy|Debug|Display|Default|From|Into|TryFrom|TryInto|PartialEq|Eq|PartialOrd|Ord|Hash|Drop|Deref|DerefMut|Index|IndexMut|Add|Sub|Mul|Div|Rem|Neg|Not|BitAnd|BitOr|BitXor|Shl|Shr|AddAssign|SubAssign|MulAssign|DivAssign|AsRef|AsMut|Borrow|BorrowMut|ToOwned|ToString|Read|Write|Seek|BufRead|FromStr|FromIterator|Extend|Sum|Product|FnOnce|FnMut|Fn|Future|Stream)(?:<[^>]*>)?>::([a-z_][a-z0-9_]*)"
+    ).unwrap();
+    
+    // Map unqualified trait names to their qualified stdlib paths
+    let get_qualified_trait = |trait_name: &str| -> &'static str {
+        match trait_name {
+            // core::iter traits
+            "Iterator" => "core::iter::Iterator",
+            "IntoIterator" => "core::iter::IntoIterator",
+            "ExactSizeIterator" => "core::iter::ExactSizeIterator",
+            "DoubleEndedIterator" => "core::iter::DoubleEndedIterator",
+            "FromIterator" => "core::iter::FromIterator",
+            "Extend" => "core::iter::Extend",
+            "Sum" => "core::iter::Sum",
+            "Product" => "core::iter::Product",
+            // core::clone
+            "Clone" => "core::clone::Clone",
+            // core::marker
+            "Copy" => "core::marker::Copy",
+            // core::fmt
+            "Debug" => "core::fmt::Debug",
+            "Display" => "core::fmt::Display",
+            // core::default
+            "Default" => "core::default::Default",
+            // core::convert
+            "From" => "core::convert::From",
+            "Into" => "core::convert::Into",
+            "TryFrom" => "core::convert::TryFrom",
+            "TryInto" => "core::convert::TryInto",
+            "AsRef" => "core::convert::AsRef",
+            "AsMut" => "core::convert::AsMut",
+            // core::cmp
+            "PartialEq" => "core::cmp::PartialEq",
+            "Eq" => "core::cmp::Eq",
+            "PartialOrd" => "core::cmp::PartialOrd",
+            "Ord" => "core::cmp::Ord",
+            // core::hash
+            "Hash" => "core::hash::Hash",
+            // core::ops
+            "Drop" => "core::ops::Drop",
+            "Deref" => "core::ops::Deref",
+            "DerefMut" => "core::ops::DerefMut",
+            "Index" => "core::ops::Index",
+            "IndexMut" => "core::ops::IndexMut",
+            "Add" => "core::ops::Add",
+            "Sub" => "core::ops::Sub",
+            "Mul" => "core::ops::Mul",
+            "Div" => "core::ops::Div",
+            "Rem" => "core::ops::Rem",
+            "Neg" => "core::ops::Neg",
+            "Not" => "core::ops::Not",
+            "BitAnd" => "core::ops::BitAnd",
+            "BitOr" => "core::ops::BitOr",
+            "BitXor" => "core::ops::BitXor",
+            "Shl" => "core::ops::Shl",
+            "Shr" => "core::ops::Shr",
+            "AddAssign" => "core::ops::AddAssign",
+            "SubAssign" => "core::ops::SubAssign",
+            "MulAssign" => "core::ops::MulAssign",
+            "DivAssign" => "core::ops::DivAssign",
+            "FnOnce" => "core::ops::FnOnce",
+            "FnMut" => "core::ops::FnMut",
+            "Fn" => "core::ops::Fn",
+            // core::borrow
+            "Borrow" => "core::borrow::Borrow",
+            "BorrowMut" => "core::borrow::BorrowMut",
+            // alloc::borrow
+            "ToOwned" => "alloc::borrow::ToOwned",
+            // alloc::string
+            "ToString" => "alloc::string::ToString",
+            // core::str
+            "FromStr" => "core::str::FromStr",
+            // std::io
+            "Read" => "std::io::Read",
+            "Write" => "std::io::Write",
+            "Seek" => "std::io::Seek",
+            "BufRead" => "std::io::BufRead",
+            // core::future
+            "Future" => "core::future::Future",
+            // futures::stream (commonly used)
+            "Stream" => "futures::stream::Stream",
+            _ => "core::unknown::Unknown",
+        }
+    };
+    
     // Map unqualified type names to their qualified stdlib paths
     let get_qualified_type = |type_name: &str| -> Option<&'static str> {
         match type_name {
@@ -779,6 +868,56 @@ fn analyze_mir_multi_project(path: &Path, log_file: &mut fs::File) -> Result<()>
                     
                     // Also track by method name alone (for greedy cover across all types)
                     local_trait_impls.entry(qualified_trait)
+                        .or_default()
+                        .entry(format!("__METHOD__::{}", method_name))
+                        .or_default()
+                        .insert(crate_name.clone());
+                }
+            }
+            
+            // Extract UNQUALIFIED trait method calls: <AnyType as Iterator>::map
+            // These are very common in MIR - Iterator::map, Clone::clone, etc.
+            for cap in unqualified_trait_method_re.captures_iter(&filtered_content) {
+                if let (Some(type_match), Some(trait_match), Some(method_match)) = 
+                    (cap.get(1), cap.get(2), cap.get(3)) {
+                    let impl_type = type_match.as_str();
+                    let trait_name = trait_match.as_str();
+                    let method_name = method_match.as_str();
+                    
+                    // Get qualified trait path
+                    let qualified_trait = get_qualified_trait(trait_name);
+                    
+                    // Skip unknown traits
+                    if qualified_trait.contains("unknown") {
+                        continue;
+                    }
+                    
+                    // Create qualified method: e.g., "core::iter::Iterator::map"
+                    let qualified_method = format!("{}::{}", qualified_trait, method_name);
+                    
+                    // Track the method call
+                    if is_valid_stdlib_symbol(&qualified_method) {
+                        local_methods.entry(qualified_method.clone())
+                            .or_default()
+                            .insert(crate_name.clone());
+                    }
+                    
+                    // Create entry: "Type::method" for type breakdown
+                    let impl_entry = format!("{}::{}", impl_type, method_name);
+                    
+                    local_trait_impls.entry(qualified_trait.to_string())
+                        .or_default()
+                        .entry(impl_entry)
+                        .or_default()
+                        .insert(crate_name.clone());
+                    
+                    // Track the trait itself (for greedy cover of traits)
+                    local_traits.entry(qualified_trait.to_string())
+                        .or_default()
+                        .insert(crate_name.clone());
+                    
+                    // Also track by method name alone (for greedy cover across all types)
+                    local_trait_impls.entry(qualified_trait.to_string())
                         .or_default()
                         .entry(format!("__METHOD__::{}", method_name))
                         .or_default()
